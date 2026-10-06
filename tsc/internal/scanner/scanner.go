@@ -2217,6 +2217,18 @@ func GetIdentifierToken(str string) ast.Kind {
 		if keyword != ast.KindUnknown {
 			return keyword
 		}
+	} else if len(str) > 0 && str[0] >= utf8.RuneSelf {
+		// ChineseTypeScript：汉语关键字别名。
+		//
+		// 走【独立表】zhTextToKeyword，绝不并入 textToKeyword —— 否则 tokenToText
+		// 的倒排会被中文污染，printer 落盘的关键字会在中英之间随机取值，
+		// 生成的 js 就成了非法 JS。理由与本表的单一真源见 zh_keywords.txt。
+		//
+		// 上面那个 ASCII 快路径原样保留，因此英文关键字的既有行为完全不变。
+		// 首个字节 >= utf8.RuneSelf 即非 ASCII 标识符（汉字必属此类）。
+		if keyword, ok := zhTextToKeyword[str]; ok {
+			return keyword
+		}
 	}
 	return ast.KindIdentifier
 }

@@ -1,0 +1,123 @@
+# ChineseTypeScript 关键字词表（唯一真源）
+#
+# 本文件是 ChineseTypeScript 汉语关键字译名的【唯一真源】。
+# tsc/internal/scanner/zh_keywords_generated.go 由本文件生成，
+# 生成器: chtstools/gen_zh_keywords.go     守卫: tsc/internal/scanner/zh_keywords_test.go
+#
+# 设计约束（与 Chinese++ 的 clang/include/clang/Basic/ChineseKeywords.def 同一套定则）：
+#
+#   1. 【只增不改】只"新增"拼写，绝不改 tsc/internal/scanner/scanner.go 里
+#      textToKeyword 的任何英文条目。英文关键字的既有行为完全不变。
+#
+#   2. 【单一 token】每个中文拼写都映射到与英文原关键字【完全相同】的 ast.Kind。
+#      因此词法分析之后的一切 —— parser / binder / checker / printer / ls ——
+#      无需任何改动。
+#
+#   3. 【独立成表】中文别名【绝不】并入 textToKeyword / textToToken。
+#      原因（有据，非推测）：scanner.go 的 tokenToText 是由 textToToken 倒排得到的
+#      （L2255 `for text, kind := range textToToken { result[kind] = text }`），
+#      而 Go 的 map 遍历顺序是随机的。若中文键混进去，tokenToText[KindIfKeyword]
+#      会在 "if" 与 "如果" 之间【随机】取值，生成的 js 会不确定地含中文关键字，
+#      即非法 JS。守卫 zh_keywords_test.go 会机器校核这一条。
+#
+#   4. 【译名唯一】译名不得重复。生成器与守卫都强制检查。
+#
+#   5. 【2–6 个汉字】译名不短于两个汉字、不多于六个汉字。
+#      定则来自 Chinese++（用户 2026-09-23 明确：关键字至少两个汉字、最多 6 个汉字）。
+#      理由：单字与用户标识符的冲突面太大，汉语术语本身也以双音节为主。
+#      汉字数按【汉字】算，不按字节或总字符算。生成器与守卫都强制检查。
+#
+#   6. 【与 Chinese++ 同词】英文词相同者复用 Chinese++ 的既定译名
+#      （如 if→如果、else→否则、class→类型、break→跳出、namespace→名域 …），
+#      使同一份汉语词汇在两个产品线里含义一致。Chinese++ 的定例：
+#      class 必须译作「类型」（不是「类」）。
+#      在 TypeScript 里 class 与 type 并存，故 class→类型、type→类型别名。
+#
+# 格式：每行 `<英文关键字> <中文译名>`，`#` 起注释，空行忽略。
+# 「英文关键字」必须与 scanner.go 的 textToKeyword 左侧完全一致。
+
+abstract 抽象
+accessor 访问器
+any 任意
+as 作为
+assert 断言
+asserts 断言式
+async 异步
+await 等待
+bigint 大整数
+boolean 布尔
+break 跳出
+case 情形
+catch 捕获
+class 类型
+const 常量
+constructor 构造器
+continue 跳过
+debugger 调试器
+declare 声明
+default 默认
+defer 推迟
+delete 删除
+do 执行
+else 否则
+enum 枚举
+export 导出
+extends 继承
+false 假值
+finally 最终
+for 对于
+from 来自
+function 函数
+get 取值
+global 全局
+if 如果
+immediate 立即
+implements 实现
+import 导入
+in 属于
+infer 推断
+instanceof 是实例
+interface 接口
+intrinsic 内建
+is 是类型
+keyof 取键
+let 局部变量
+module 模块
+namespace 名域
+never 永不
+new 新建
+null 空值
+number 数字
+object 对象
+of 遍历
+out 输出
+override 重写
+package 软件包
+private 私有
+protected 受保护
+public 公开
+readonly 只读
+require 需要
+return 返回
+satisfies 满足
+set 设值
+static 静态
+string 字符串
+super 父类
+switch 选择
+symbol 符号
+this 自身
+throw 抛出
+true 真值
+try 尝试
+type 类型别名
+typeof 取类型
+undefined 未定义
+unique 唯一
+unknown 未知
+using 使用
+var 变量
+void 空型
+while 每当
+with 伴随
+yield 产出
