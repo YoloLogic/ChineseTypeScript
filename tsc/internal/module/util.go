@@ -158,7 +158,10 @@ func GetResolutionDiagnostic(options *core.CompilerOptions, resolvedModule *Reso
 	switch resolvedModule.Extension {
 	case tspath.ExtensionTs, tspath.ExtensionDts,
 		tspath.ExtensionMts, tspath.ExtensionDmts,
-		tspath.ExtensionCts, tspath.ExtensionDcts:
+		tspath.ExtensionCts, tspath.ExtensionDcts,
+		// ChineseTypeScript：.chts 是原生 TS 家族的实现扩展名，
+		// 不是「任意扩展名」（后者才需要 --allowArbitraryExtensions）。
+		tspath.ExtensionChts:
 		// These are always allowed.
 		return nil
 	case tspath.ExtensionTsx:

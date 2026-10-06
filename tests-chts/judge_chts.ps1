@@ -20,6 +20,7 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path -Parent $PSScriptRoot
+. (Join-Path $PSScriptRoot 'zhcheck.ps1')
 $tscDir = Join-Path $repo 'tsc'
 $outChts = Join-Path $Work 'out-chts'
 $outBase = Join-Path $Work 'out-base'
@@ -118,25 +119,10 @@ Write-Host ''
 Write-Host '=== 5) 产物必须是标准英文关键字（汉语译名一个都不许作为关键字出现）==='
 if ($compiled) {
     $js = Get-Content $chtsJs -Raw -Encoding UTF8
-    $zhList = @()
-    Get-Content (Join-Path $tscDir 'internal\scanner\zh_keywords.txt') -Encoding UTF8 | ForEach-Object {
-        $l = $_.Trim()
-        if ($l -ne '' -and -not $l.StartsWith('#')) {
-            $p = $l -split '\s+'
-            if ($p.Count -eq 2) { $zhList += $p[1] }
-        }
-    }
-    $zhSet = [System.Collections.Generic.HashSet[string]]::new()
-    foreach ($z in $zhList) { [void]$zhSet.Add($z) }
-
-    # 判据必须按【汉字连续段整段比对】，不能做子串匹配 —— 否则会误报：
-    #   * 字符串字面量 "异常已捕获" 含子串「捕获」
-    #   * 合法汉语标识符 变量名 含子串「变量」（而 变量 是 var 的译名）
-    # 汉字连续段正好等于一个译名，才说明关键字泄漏进了产物。
-    $runs = [regex]::Matches($js, '\p{IsCJKUnifiedIdeographs}+') | ForEach-Object { $_.Value }
-    $leaked = @($runs | Where-Object { $zhSet.Contains($_) } | Sort-Object -Unique)
-    Check '⑤ 产物无汉语关键字' ($leaked.Count -eq 0) `
-        "扫描 $($runs.Count) 个汉字段，逐个比对 $($zhList.Count) 个译名，泄漏: $(if ($leaked) { $leaked -join ' ' } else { '无' })"
+    $zh = Get-ZhKeywordSet $tscDir
+    $r = Get-LeakedZhKeywords $js $zh
+    Check '⑤ 产物无汉语关键字' ($r.泄漏.Count -eq 0) `
+        "剥注释与字符串后扫描 $($r.汉字段数) 个汉字段，逐个比对 $($zh.List.Count) 个译名，泄漏: $(if ($r.泄漏) { $r.泄漏 -join ' ' } else { '无' })"
 
     $hasEnKinds = $js.Contains('if (') -and $js.Contains('class ') -and $js.Contains('const ') -and $js.Contains('return ')
     Check '⑤b 产物含标准英文关键字' $hasEnKinds 'if/class/const/return 均在'

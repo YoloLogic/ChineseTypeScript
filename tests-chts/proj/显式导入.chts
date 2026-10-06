@@ -1,0 +1,19 @@
+// 显式写扩展名的导入靶子。
+//
+// 与上游「显式写 .ts 扩展名」同构：需要打开
+//     --rewriteRelativeImportExtensions
+// 把产物里的 require 路径从 .chts 改写成 .js，否则运行时找不到文件。
+// 实测（judge_proj.ps1 第 6/7/8 节）：
+//   * 只开 --rewriteRelativeImportExtensions     -> 通过，require 改写为 ./数学.js，node 跑通
+//   * 再叠加 --allowImportingTsExtensions        -> 同样通过
+//   * 两个都不开                                  -> 报 TS5097（an import path can only end with ...）
+//
+// 推荐用法仍是【无扩展名导入】（见 proj/主.chts），那不需要任何额外选项。
+
+导入 { 平方 } 来自 "./数学.chts"
+
+如果 (平方(7) === 49) {
+  console.log("显式扩展名导入通过")
+} 否则 {
+  console.log("显式扩展名导入失败")
+}
