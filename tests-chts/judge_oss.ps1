@@ -36,10 +36,17 @@ $all = Get-ChildItem $corpusRoot -Recurse -File -Include '*.ts','*.tsx' |
     Sort-Object FullName
 Write-Host "  conformance 语料（排除 .d.ts）：$($all.Count) 个文件"
 
-$step = [Math]::Max(1, [Math]::Floor($all.Count / $Sample))
-$picked = @()
-for ($i = 0; $i -lt $all.Count -and $picked.Count -lt $Sample; $i += $step) { $picked += $all[$i] }
-Write-Host "  确定性抽样：$($picked.Count) 个文件（每 $step 个取 1）"
+if ($Sample -le 0 -or $Sample -ge $all.Count) {
+    # -Sample 0（或大于总数）表示【全量】—— 这是最强形式：
+    # 语料里每一个真实 .ts/.tsx 都要在两个编译器下给出同样的诊断与退出码。
+    $picked = $all
+    Write-Host "  全量：$($picked.Count) 个文件（-Sample 0 表示全部）"
+} else {
+    $step = [Math]::Max(1, [Math]::Floor($all.Count / $Sample))
+    $picked = @()
+    for ($i = 0; $i -lt $all.Count -and $picked.Count -lt $Sample; $i += $step) { $picked += $all[$i] }
+    Write-Host "  确定性抽样：$($picked.Count) 个文件（每 $step 个取 1）"
+}
 
 $flags = @('--noEmit', '--pretty', 'false', '--target', 'es2020', '--module', 'commonjs')
 
