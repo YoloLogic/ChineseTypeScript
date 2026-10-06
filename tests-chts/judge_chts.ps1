@@ -9,6 +9,7 @@
 #   ⑤ 生成的 js 是【标准英文关键字】：85 个汉语译名一个都不许出现在产物里
 #   ⑥ 真运行：node 跑产物，stdout 与英文对照的 stdout 完全一致
 #   ⑦ 非关键字汉语标识符仍然合法：demo_ident.chts 编译并运行通过
+#   ⑧ --strict 下同样编译并真跑通过
 #
 # 用法：pwsh -File tests-chts\judge_chts.ps1
 
@@ -152,6 +153,20 @@ if ($identOk) {
 } else {
     Write-Host $identLog
 }
+
+Write-Host ''
+Write-Host '=== 8) --strict 下同样成立（strict 是常见配置，值得单独钉）==='
+$outStrict = Join-Path $Work 'out-strict'
+if (Test-Path $outStrict) { Remove-Item $outStrict -Recurse -Force }
+New-Item -ItemType Directory -Force -Path $outStrict | Out-Null
+$strictLog = & $chtsTsc $chtsSrc --outDir $outStrict --target es2020 --module commonjs --strict --pretty false 2>&1 | Out-String
+$strictJs = Join-Path $outStrict 'demo.js'
+$strictOk = ($LASTEXITCODE -eq 0) -and (Test-Path $strictJs)
+Check '⑧ --strict 下编译通过' $strictOk "退出码=$LASTEXITCODE 产物=$(Test-Path $strictJs)"
+if ($strictOk) {
+    $runStrict = & $nodeExe $strictJs 2>&1 | Out-String
+    Check '⑧b --strict 产物 node 真跑通过' ($LASTEXITCODE -eq 0) "输出 $(@($runStrict.Trim() -split "`r?`n").Count) 行"
+} else { Write-Host $strictLog }
 
 Write-Host ''
 Write-Host '=== 判定汇总 ==='

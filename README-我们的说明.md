@@ -95,7 +95,7 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
 | 关键字机器守卫 | `tsc/internal/scanner/zh_keywords_test.go`（9 条） |
 | 扩展名机器守卫 | `tsc/internal/tspath/chts_extension_test.go`、`tsc/internal/core/chts_scriptkind_test.go` |
 | 共享检查器 | `tests-chts/zhcheck.ps1`（剥注释与字符串后按汉字段整段比对） |
-| 端到端判定 | `tests-chts/judge_chts.ps1`（9 项） |
+| 端到端判定 | `tests-chts/judge_chts.ps1`（11 项，含 `--strict`） |
 | 项目级判定 | `tests-chts/judge_proj.ps1`（15 项） |
 | 大规模零回归 | `tests-chts/judge_oss.ps1`（比诊断与产物） |
 | **全集回归** | `tests-chts/judge_gotest.ps1`（4 项，跑上游 Go 测试全集并与基线对照） |
@@ -108,7 +108,7 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
 ## 七、判定证据（本轮实测）
 
 ```
-judge_chts.ps1    9/9 通过
+judge_chts.ps1   11/11 通过（含第 8 节：`--strict` 下同样编译并真跑通过）
 judge_proj.ps1   15/15 通过
 judge_oss.ps1    真实语料 = 上游官方 conformance 目录里【全部】5894 个 .ts/.tsx（排除 .d.ts）
                  全量跑：【诊断输出 + 退出码】5894/5894 逐字节相同（一个不落）
