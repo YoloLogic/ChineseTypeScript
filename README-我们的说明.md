@@ -121,7 +121,7 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
 | 项目级判定 | `tests-chts/judge_proj.ps1`（15 项） |
 | 大规模零回归 | `tests-chts/judge_oss.ps1`（比诊断与产物） |
 | **全集回归** | `tests-chts/judge_gotest.ps1`（4 项，跑上游 Go 测试全集并与基线对照） |
-| **教学教程**（生成物） | `教程/ChineseTypeScript-教学教程.md`（9 课：关键字用法 + 符号用法 + 内建用法；守卫 `tests-chts/judge_tutorial.ps1` 真编译真跑每个例子） |
+| **教学教程**（生成物） | `教程/ChineseTypeScript-教学教程.md`（9 课：关键字用法 + 符号用法 + 内建用法）+ **Word 版 `教程/ChineseTypeScript-教学教程.docx`**；守卫 `tests-chts/judge_tutorial.ps1` 真编译真跑每个例子、核 docx 同步、并守例子目录构成 |
 | **一条命令全跑** | `tests-chts/run_all.ps1`（`-SkipGoTest` 可跳过最慢的第 4 项） |
 
 生成器**不信任任何手写清单**：它自己解析 `scanner.go` 的 `textToKeyword` 得到
