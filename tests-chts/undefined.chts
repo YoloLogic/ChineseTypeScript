@@ -20,12 +20,14 @@
 // 相等=true
 // typeof=undefined
 // 属性名=1/1
+// 简写键=undefined
 // 汉语标识符=7
 
 常量 值 = 未定义;                        // 值位置：汉语拼写
 常量 类型位: 未定义 = 未定义;             // 类型位 + 值位置
 常量 英文 = undefined;                   // 英文对照（归一化对它无影响）
 常量 戊 = { 未定义: 1 };                  // 属性名：必须原样保留
+常量 简写 = { 未定义 };                   // 简写属性：名字即值引用 → 必须归一化
 常量 我的对象 = 7;                        // 非关键字的汉语标识符：照旧
 
 console.log("值=" + 值);
@@ -34,4 +36,5 @@ console.log("英文=" + 英文);
 console.log("相等=" + (未定义 === undefined));
 console.log("typeof=" + typeof 未定义);
 console.log("属性名=" + 戊.未定义 + "/" + 戊["未定义"]);
+console.log("简写键=" + Object.keys(简写).join(","));
 console.log("汉语标识符=" + 我的对象);

@@ -5715,6 +5715,16 @@ func (p *Parser) parseObjectLiteralElement() *ast.Node {
 	var node *ast.Node
 	isShorthandPropertyAssignment := tokenIsIdentifier && p.token != ast.KindColonToken
 	if isShorthandPropertyAssignment {
+		// ChineseTypeScript：简写属性 `{ 未定义 }` 里【名字就是值引用】
+		// （JS 的 `{ x }` 等价于 `{ x: x }`），所以这里的汉语拼写也必须归一化成
+		// 规范拼写 "undefined"。否则：检查器报 TS18004「简写属性没有值」，
+		// 产物又会打印 `{ 未定义 }`，而 JS 里没有这个全局名 → 运行时 ReferenceError。
+		//
+		// ⚠ 只在这个分支做！`{ 未定义: 1 }`（有冒号）走 else 分支 ——
+		// 那是【属性名】位置，是运行时的真实属性名，必须原样保留。
+		if ast.IsIdentifier(name) && name.Text() != "undefined" && scanner.GetIdentifierToken(name.Text()) == ast.KindUndefinedKeyword {
+			name.AsIdentifier().Text = "undefined"
+		}
 		equalsToken := p.parseOptionalToken(ast.KindEqualsToken)
 		var initializer *ast.Expression
 		if equalsToken != nil {

@@ -226,15 +226,15 @@ Check '⑪a 汉语拼写 undefined 编译通过' $uOk "退出码=$LASTEXITCODE �
 if ($uOk) {
     # 剥掉注释与字符串再断言，免得源码注释里的「未定义」干扰
     $uCode = Remove-CommentsAndStrings ([System.IO.File]::ReadAllText($uJs))
-    Check '⑪b 值位置已归一化成 undefined' `
-        (($uCode -match '=\s*undefined') -and ($uCode -notmatch '=\s*未定义')) `
-        '产物里值位置是 undefined，没有残留汉语拼写'
+    Check '⑪b 值位置已归一化成 undefined（含简写属性）' `
+        (($uCode -match '=\s*undefined') -and $uCode.Contains('{ undefined }') -and ($uCode -notmatch '=\s*未定义')) `
+        '产物里值位置与简写属性都是 undefined，没有残留汉语拼写'
     Check '⑪c 属性名/成员名原样保留' `
         ($uCode.Contains('{ 未定义: 1 }') -and $uCode.Contains('.未定义')) `
         '属性名与成员名仍是「未定义」（它们是运行时的真实属性名）'
     $uRun = & $nodeExe $uJs 2>&1 | Out-String
     $uLines = @($uRun.Trim() -split "`r?`n" | ForEach-Object { $_.Trim() })
-    $uWant = @('值=undefined', '类型位=undefined', '英文=undefined', '相等=true', 'typeof=undefined', '属性名=1/1', '汉语标识符=7')
+    $uWant = @('值=undefined', '类型位=undefined', '英文=undefined', '相等=true', 'typeof=undefined', '属性名=1/1', '简写键=undefined', '汉语标识符=7')
     Check '⑪d node 真跑正确' (($uLines -join '|') -ceq ($uWant -join '|')) "实际: $($uLines -join ' / ')"
 } else { Write-Host $uLog }
 

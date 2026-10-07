@@ -6,6 +6,9 @@
 #   ③ 逐个例子用 node 真运行，实际输出与例子头部声明的「期望输出」逐行比对
 #   ④ 自带自测：故意把某条期望输出改掉，比对必须报不一致
 #      —— 判据要能失败，否则它是橡皮图章
+#   ⑤ Word 文档（教程\ChineseTypeScript-教学教程.docx）与教程正文同步
+#      （转调 tools\make_tutorial_docx.ps1 -Check；那个生成器是确定性的，
+#        所以直接比哈希）
 #
 # 为什么这是可信的：教程里印的输出是由生成器从【同一个来源】切进去的
 # （第①项已核对），所以①③过了，教程印的也就必然对。一个真相，两处呈现。
@@ -115,8 +118,22 @@ if (Test-Path $probeJs) {
 }
 
 Say ''
+Say '=== ⑤ Word 文档（.docx）是否与教程正文同步 ==='
+$docxGen = Join-Path $repo 'tools\make_tutorial_docx.ps1'
+if (-not (Test-Path $docxGen)) {
+    Write-Host '  ❌ 找不到 tools\make_tutorial_docx.ps1' -ForegroundColor Red
+    $bad++
+} else {
+    & pwsh -NoProfile -File $docxGen -Check
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host '  ❌ docx 与教程正文不同步（见上面提示）' -ForegroundColor Red
+        $bad++
+    } else { Say '  ✅ 同步' }
+}
+
+Say ''
 if ($bad -eq 0) {
-    Say ("教学教程守卫：通过（{0} 个例子全部真编译真运行、输出逐行相符；判据自测已证明会失败）" -f $passed)
+    Say ("教学教程守卫：通过（{0} 个例子全部真编译真运行、输出逐行相符；判据自测已证明会失败；docx 与正文同步）" -f $passed)
     exit 0
 }
 Write-Host ("教学教程守卫：失败 {0} 处" -f $bad) -ForegroundColor Red
