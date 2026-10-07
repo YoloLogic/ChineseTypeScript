@@ -63,7 +63,7 @@
 故取 **`.chts`**（= ChineseTypeScript）。扩展名一律**追加在末尾**，
 使 `.ts/.tsx/.d.ts` 的既有优先级与解析顺序一个字节都不变。
 
-## 五、改动清单：上游源码只动了 5 个文件
+## 五、改动清单：上游源码只动了 7 个文件
 
 | # | 文件 | 改动 |
 |---|---|---|
@@ -72,8 +72,11 @@
 | 3 | `tsc/internal/core/core.go` | `.chts` → `ScriptKindTS` |
 | 4 | `tsc/internal/module/resolver.go` | `extensionIsOk` 白名单加 `.chts`；`tryAddingExtensions` 加「无扩展名分支找 `.chts`」+ 新增 `case ExtensionChts` |
 | 5 | `tsc/internal/module/util.go` | `GetResolutionDiagnostic` 的「永远允许」白名单加 `.chts`（否则报 TS6263 说它是"任意扩展名"） |
+| 6 | `tsc/internal/parser/parser.go` | `parseUndefinedKeywordExpression`：值位置把「未定义」归一化成规范拼写 `undefined`（见 §九 第 6 条） |
+| 7 | `tsc/internal/printer/printer.go` | `getTextOfNode`：文本是规范 `undefined` 而源码拼写不是时，用节点文本落盘（与第 6 处配对） |
 
-**parser / binder / checker / printer / 语言服务零改动。**
+**binder / checker / 语言服务零改动**；`parser` 与 `printer` 只为**边界**各加了一小段
+（`.chts` 解析、`未定义` 值位置归一化），不是为「关键字」机制。
 
 > 教训：第 4、5 处是**一开始漏掉的**。第一版只改了扩展名表，结果
 > `导入 ... 来自 "./数学"` 报 TS2307 找不到模块 —— 因为解析器里另有一张
@@ -117,7 +120,7 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
 | 扩展名机器守卫 | `tsc/internal/tspath/chts_extension_test.go`、`tsc/internal/core/chts_scriptkind_test.go` |
 | **构建命令** | `tools/build_chtsc.ps1` → `chtsc.exe`（命令名见「三·五」节；自带版本号+真编译+真跑自证） |
 | 共享检查器 | `tests-chts/zhcheck.ps1`（剥注释与字符串后按汉字段整段比对） |
-| 端到端判定 | `tests-chts/judge_chts.ps1`（14 项，含 `--strict`、属性名、对照表自测） |
+| 端到端判定 | `tests-chts/judge_chts.ps1`（18 项，含 `--strict`、属性名、对照表自测、`未定义` 归一化） |
 | 项目级判定 | `tests-chts/judge_proj.ps1`（15 项） |
 | 大规模零回归 | `tests-chts/judge_oss.ps1`（比诊断与产物） |
 | **全集回归** | `tests-chts/judge_gotest.ps1`（4 项，跑上游 Go 测试全集并与基线对照） |
@@ -131,8 +134,9 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
 ## 七、判定证据（本轮实测）
 
 ```
-judge_chts.ps1   14/14 通过（含第 8 节 `--strict`、第 9 节 关键字作属性名、
-                 第 10 节 对照表新鲜度守卫的**自带自测**：改坏一个字节会被抓）
+judge_chts.ps1   18/18 通过（含第 8 节 `--strict`、第 9 节 关键字作属性名、
+                 第 10 节 对照表新鲜度守卫的**自带自测**：改坏一个字节会被抓、
+                 第 11 节 `未定义` 值位置归一化 / 属性名原样保留）
 judge_proj.ps1   15/15 通过
 judge_oss.ps1    真实语料 = 上游官方 conformance 目录里【全部】5894 个 .ts/.tsx（排除 .d.ts）
                  全量跑：【诊断输出 + 退出码】5894/5894 逐字节相同（一个不落）
@@ -213,5 +217,6 @@ judge_gotest.ps1  4/4 通过（上游自带 Go 测试全集，跑两遍：基线
    再逐处判断「该不该带上 `.chts`」，同时分清哪些是 **CJS 语义**（不该带）。
 
 生成时间：2026-10-06 23:18:59（初版）
-本版更新：通宵批次 —— 词表落盘、生成器与守卫就位、上游 5 文件补丁落地、
-四套判定全绿（含**全部** 5894 个真实 TS 文件的全量零回归，与上游 Go 测试全集逐行核对）
+本版更新：词表落盘、生成器与守卫就位、上游 7 文件补丁落地、五套判定全绿
+（含**全部** 5894 个真实 TS 文件的全量零回归、与上游 Go 测试全集逐行核对，
+以及「未定义」值位置归一化的修复与第 ⑪ 节守卫）

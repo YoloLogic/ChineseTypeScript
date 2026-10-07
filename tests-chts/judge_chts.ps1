@@ -14,6 +14,8 @@
 #   ⑩ 对照表新鲜度守卫【自带自测】：故意改坏 docs\中文对照表.md，
 #      genzhkeywords -check 必须失败；恢复后必须通过
 #      （— 判据要能失败，否则它是橡皮图章）
+#   ⑪ 汉语拼写的 undefined：值位置（含简写属性）归一化成 undefined，
+#      属性名 / 成员名（`{ 未定义: 1 }`、`甲.未定义`）原样保留；node 真跑
 #
 # 用法：pwsh -File tests-chts\judge_chts.ps1
 
