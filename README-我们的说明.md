@@ -121,6 +121,7 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
 | 项目级判定 | `tests-chts/judge_proj.ps1`（15 项） |
 | 大规模零回归 | `tests-chts/judge_oss.ps1`（比诊断与产物） |
 | **全集回归** | `tests-chts/judge_gotest.ps1`（4 项，跑上游 Go 测试全集并与基线对照） |
+| **教学教程**（生成物） | `教程/ChineseTypeScript-教学教程.md`（9 课：关键字用法 + 符号用法 + 内建用法；守卫 `tests-chts/judge_tutorial.ps1` 真编译真跑每个例子） |
 | **一条命令全跑** | `tests-chts/run_all.ps1`（`-SkipGoTest` 可跳过最慢的第 4 项） |
 
 生成器**不信任任何手写清单**：它自己解析 `scanner.go` 的 `textToKeyword` 得到
@@ -177,7 +178,16 @@ judge_gotest.ps1  4/4 通过（上游自带 Go 测试全集，跑两遍：基线
 2. **`.d.chts` 声明文件不支持**。
 3. **语言服务尚未把汉语关键字加入补全建议**（`GetViableKeywordSuggestions` 仍只给英文）。
 4. **诊断信息未汉化**（Chinese++ 侧已汉化 7344 条诊断；ChineseTypeScript 侧未做）。
-5. **未打包、未发布**：还没有面向用户的发行包，也没有 `chtsc` 之类的独立命令名。
+5. **未打包、未发布**：命令名已定（`chtsc`，见「三·五」节），但还没有面向用户的
+   发行包（发行形态、是否随包带 node、装到哪都未定）。
+6. **`未定义`（undefined）不能当【值】用**（本轮实测发现的真边界，已写进教程附录 C）。
+   英文 `undefined` 能当值，是因为上游把它按**文字**注册成了全局名
+   （`checker.go` 的 `c.globals["undefined"]`）；汉语拼写落在同一个关键字种类上，
+   当**类型**完全等价（`: 未定义` ✅），当**值**时名字解析按文字找不到该全局名。
+   就算让它解析通过也还不够：产物里的 `未定义` 会被原样打印成标识符，
+   而 JS 没有这个全局名 → 运行时 ReferenceError。
+   要真修得同时动**名字解析**与**打印器的拼写归一化**两处。
+   （`空值`/null 没有这个问题：它是词法字面量，两种位置都能用，产物正确输出 `null`。）
 
 ## 十、纪律（照本项目既有做法）
 
