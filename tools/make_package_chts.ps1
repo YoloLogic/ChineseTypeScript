@@ -63,7 +63,21 @@ if (-not (Test-Path $TscExe)) { throw ('no compiler at ' + $TscExe) }
 # ---------------------------------------------------------------------------
 $nodeLic = $NodeLicense
 if (-not $NoNode) {
-    if (-not (Test-Path $NodeExe)) { throw ('no node.exe at ' + $NodeExe + ' (pass -NodeExe, or -NoNode to skip)') }
+    if (-not (Test-Path $NodeExe)) {
+        # The default source lives under E:\cts-build (a scratch area, not part of
+        # this repo). On any machine with Node installed, fall back to it, so that
+        # packaging does not depend on a scratch file. The LICENSE always comes
+        # from packaging\node-LICENSE.txt, which IS in the repo.
+        $fallback = Join-Path $env:ProgramFiles 'nodejs\node.exe'
+        if (Test-Path $fallback) {
+            Write-Host ('  node not at ' + $NodeExe + '; falling back to ' + $fallback)
+            $NodeExe = $fallback
+        } else {
+            throw ('no node.exe at ' + $NodeExe + ' (pass -NodeExe, or -NoNode to skip)')
+        }
+    }
+    $nodeVer = (& $NodeExe --version 2>&1 | Out-String).Trim()
+    Write-Host ('  node source: ' + $NodeExe + '  (' + $nodeVer + ')')
     if (-not $nodeLic) {
         $c1 = Join-Path (Split-Path $NodeExe) 'LICENSE'
         $c2 = Join-Path $packSrc 'node-LICENSE.txt'
