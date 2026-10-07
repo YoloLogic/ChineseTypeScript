@@ -10,6 +10,10 @@
 #   ⑥ 真运行：node 跑产物，stdout 与英文对照的 stdout 完全一致
 #   ⑦ 非关键字汉语标识符仍然合法：demo_ident.chts 编译并运行通过
 #   ⑧ --strict 下同样编译并真跑通过
+#   ⑨ 关键字当【属性名】仍合法（prop.chts：对象字面量键 / 点号成员 / 字符串键）
+#   ⑩ 对照表新鲜度守卫【自带自测】：故意改坏 docs\中文对照表.md，
+#      genzhkeywords -check 必须失败；恢复后必须通过
+#      （— 判据要能失败，否则它是橡皮图章）
 #
 # 用法：pwsh -File tests-chts\judge_chts.ps1
 
@@ -167,6 +171,47 @@ if ($strictOk) {
     $runStrict = & $nodeExe $strictJs 2>&1 | Out-String
     Check '⑧b --strict 产物 node 真跑通过' ($LASTEXITCODE -eq 0) "输出 $(@($runStrict.Trim() -split "`r?`n").Count) 行"
 } else { Write-Host $strictLog }
+
+Write-Host ''
+Write-Host '=== 9) 关键字当【属性名】仍合法（保留的是标识符位，不是属性名位）==='
+$outProp = Join-Path $Work 'out-prop'
+if (Test-Path $outProp) { Remove-Item $outProp -Recurse -Force }
+New-Item -ItemType Directory -Force -Path $outProp | Out-Null
+$propSrc = Join-Path $repo 'tests-chts\prop.chts'
+$propLog = & $chtsTsc $propSrc --outDir $outProp --target es2020 --module commonjs --pretty false 2>&1 | Out-String
+$propJs = Join-Path $outProp 'prop.js'
+$propOk = ($LASTEXITCODE -eq 0) -and (Test-Path $propJs)
+Check '⑨a 关键字作属性名编译通过' $propOk "退出码=$LASTEXITCODE 产物=$(Test-Path $propJs)"
+if ($propOk) {
+    $propRun = & $nodeExe $propJs 2>&1 | Out-String
+    $propLines = @($propRun.Trim() -split "`r?`n" | ForEach-Object { $_.Trim() })
+    $want = @('10', '本地:20')
+    Check '⑨b 关键字作属性名真跑正确' (($propLines -join '|') -ceq ($want -join '|')) "实际: $($propLines -join ' / ')"
+} else { Write-Host $propLog }
+
+Write-Host ''
+Write-Host '=== 10) 对照表新鲜度守卫【自带自测】：改坏必须被抓 ==='
+$mdPath = Join-Path $repo 'docs\中文对照表.md'
+$origMd = [System.IO.File]::ReadAllText($mdPath)
+$caught = $false
+$restored = $false
+Push-Location $tscDir
+try {
+    # 故意把对照表改坏（追加一行），守卫必须拒绝
+    [System.IO.File]::AppendAllText($mdPath, "`n<!-- 故意改坏：守卫必须抓到 -->`n")
+    & $GoExe run ./cmd/genzhkeywords -check *> $null
+    $caught = ($LASTEXITCODE -ne 0)
+} catch {
+    $caught = $false
+} finally {
+    [System.IO.File]::WriteAllText($mdPath, $origMd)
+    try {
+        & $GoExe run ./cmd/genzhkeywords -check *> $null
+        $restored = ($LASTEXITCODE -eq 0)
+    } catch { $restored = $false }
+    Pop-Location
+}
+Check '⑩ 对照表过期会被抓（判据自测）' ($caught -and $restored) "改坏后被抓=$caught，恢复后通过=$restored"
 
 Write-Host ''
 Write-Host '=== 判定汇总 ==='

@@ -1,10 +1,12 @@
-// Command genzhkeywords 由 tsc/internal/scanner/zh_keywords.txt 生成
-// tsc/internal/scanner/zh_keywords_generated.go（ChineseTypeScript 汉语关键字别名表）。
+// Command genzhkeywords 由 tsc/internal/scanner/zh_keywords.txt 生成两份产物：
+//
+//	tsc/internal/scanner/zh_keywords_generated.go   —— 编译器真正在用的汉语别名表
+//	docs/中文对照表.md                                —— 给用户看的中英对照表
 //
 // 用法（在 tsc/ 目录下）：
 //
-//	go run ./cmd/genzhkeywords          # 重新生成
-//	go run ./cmd/genzhkeywords -check   # 只校验生成物是否与词表一致（CI 用）
+//	go run ./cmd/genzhkeywords          # 重新生成两份
+//	go run ./cmd/genzhkeywords -check   # 只校验两份产物是否都与词表一致（CI / 判定用）
 //
 // 设计：本生成器【不信任】任何手写清单。它自己解析 scanner.go 的 textToKeyword
 // 得到「英文关键字 -> ast.Kind」，再与词表比对，因此：
@@ -12,6 +14,10 @@
 //   - 扫描器新增/删除了英文关键字而词表没跟着改  -> 生成器报错退出（不静默）
 //   - 词表里写了扫描器没有的英文关键字          -> 生成器报错退出
 //   - 译名重复、汉字数不在 2..6                 -> 生成器报错退出
+//
+// 对照表也是【生成物】而不是手写文档：手写的副本一定会和编译器漂移
+// （Chinese++ 那边栽过多次「两份副本各说各话」）。
+// 而且 -check 会把对照表一并核对，所以「词表改了忘了重新生成」会被抓出来。
 //
 // 这样「绝不靠人记得」。
 package main
@@ -34,6 +40,8 @@ const (
 	wordListPath = "internal/scanner/zh_keywords.txt"
 	scannerPath  = "internal/scanner/scanner.go"
 	outputPath   = "internal/scanner/zh_keywords_generated.go"
+	// 相对 tsc/ 目录（生成器约定在 tsc/ 下运行）
+	mdPath = "../docs/中文对照表.md"
 )
 
 // scanner.go 里 textToKeyword 的条目长这样（含行内注释也允许）：
@@ -193,8 +201,135 @@ func render(entries []entry) []byte {
 	return b.Bytes()
 }
 
+// renderMarkdown 产出给用户看的对照表。
+//
+// ⚠ 本文件里所有「数字」都从 entries 算出来，不手写 —— 手写的数字一定会漂。
+func renderMarkdown(entries []entry) []byte {
+	n := len(entries)
+
+	// 汉字数分布与最长译名（都算出来，不手写）
+	dist := map[int]int{}
+	longest := entries[0]
+	for _, e := range entries {
+		c := hanCount(e.Chinese)
+		dist[c]++
+		if len(e.Chinese) > len(longest.Chinese) {
+			longest = e
+		}
+	}
+	var distKeys []int
+	for k := range dist {
+		distKeys = append(distKeys, k)
+	}
+	sort.Ints(distKeys)
+	var distParts []string
+	for _, k := range distKeys {
+		distParts = append(distParts, fmt.Sprintf("%d 字 %d 条", k, dist[k]))
+	}
+
+	var b bytes.Buffer
+	b.WriteString("# ChineseTypeScript 中文对照表\n\n")
+	b.WriteString("> 本表由 `tsc/cmd/genzhkeywords` 从**编译器真正在用的那张表**\n")
+	b.WriteString("> （`tsc/internal/scanner/zh_keywords.txt`）自动生成，**不是手写的** ——\n")
+	b.WriteString("> 手写的副本一定会和编译器漂移。\n")
+	b.WriteString(">\n")
+	b.WriteString("> 生成器同时产出 `tsc/internal/scanner/zh_keywords_generated.go`；\n")
+	b.WriteString("> `go run ./cmd/genzhkeywords -check` 会核对**两份产物**是否都与词表一致，\n")
+	b.WriteString("> 而 `tests-chts/judge_chts.ps1` 第①项每次判定都在跑它 ——\n")
+	b.WriteString("> 也就是说「词表改了忘了重新生成」会被机器抓出来，不靠人记得。\n\n")
+	b.WriteString("**中英两种写法都可以用，而且可以混着写。** 中文不是替换英文，是并列多出来的一种拼写。\n\n")
+
+	// 一、关键字（4 列对开，与 Chinese++ 的对照表同款排版）
+	fmt.Fprintf(&b, "## 一、关键字（%d 个）\n\n", n)
+	b.WriteString("| 中文 | 英文 | 中文 | 英文 |\n")
+	b.WriteString("|---|---|---|---|\n")
+	half := (n + 1) / 2
+	for i := 0; i < half; i++ {
+		l := entries[i]
+		if i+half < n {
+			r := entries[i+half]
+			fmt.Fprintf(&b, "| `%s` | `%s` | `%s` | `%s` |\n", l.Chinese, l.English, r.Chinese, r.English)
+		} else {
+			fmt.Fprintf(&b, "| `%s` | `%s` |  |  |\n", l.Chinese, l.English)
+		}
+	}
+
+	b.WriteString("\n## 二、译名定则\n\n")
+	b.WriteString("* **2–6 个汉字**（按汉字算，不按字节算）。实测分布：" + strings.Join(distParts, "、") + "。\n")
+	fmt.Fprintf(&b, "* **最长**：`%s`（%s 的译名），%d 个汉字 / %d 字节。\n",
+		longest.Chinese, longest.English, hanCount(longest.Chinese), len(longest.Chinese))
+	b.WriteString("* **唯一**：一词一译；没有两个汉语拼写指向同一个关键字。\n")
+	b.WriteString("* **与 Chinese++ 同词同义**：英文词相同者复用 Chinese++ 的既定译名\n")
+	b.WriteString("  （`if`→如果、`else`→否则、`class`→类型、`break`→跳出、`namespace`→名域 …），\n")
+	b.WriteString("  使同一份汉语词汇在两个产品线里含义一致。Chinese++ 的表在它的\n")
+	b.WriteString("  `packaging\\中文对照表.md`。\n")
+	b.WriteString("* ⚠ **一处故意不同**：TypeScript 里 `class` 与 `type` 并存，\n")
+	b.WriteString("  故 `class`→类型（沿用 Chinese++「class 必须译作类型」的定例）、`type`→类型别名。\n")
+
+	b.WriteString("\n## 三、这些仍然必须写英文\n\n")
+	b.WriteString("| 东西 | 例子 | 为什么 |\n")
+	b.WriteString("|---|---|---|\n")
+	b.WriteString("| 库 / 框架 / JS 内建的名字与成员 | `console.log`、`Array.from`、`JSON.parse` | 它们是**别人**的标识符（JS 内建、npm 包、DOM），不是关键字 |\n")
+	b.WriteString("| 类型工具名 | `Partial<T>`、`Record<K, V>`、`Promise<T>` | 同上，来自 `lib.*.d.ts` |\n")
+	b.WriteString("| 字符串里的东西 | `导入 { 平方 } 来自 \"./数学\"` | 路径与包名是运行时要解析的字符串，翻译了就找不到文件 |\n")
+	b.WriteString("| 属性名 | `对象.名字`、`甲[\"对象\"]` | 属性名位允许任何标识符（**包括关键字**）—— 见第五节 |\n")
+	b.WriteString("| 命令行开关 | `--target es2020`、`--strict` | 构建系统靠它 |\n")
+	b.WriteString("| `--help` 的输出 | —— | 尚未汉化 |\n\n")
+	b.WriteString("> ⚠ **与 Chinese++ 的一处重大差别**：Chinese++ 连标准库都做了汉化层\n")
+	b.WriteString("> （中文头名覆盖 103/103，`#包含 <向量>` 可用）。ChineseTypeScript **没有**做\n")
+	b.WriteString("> 「汉语标准库」—— `console`、`Array`、`Promise` 这些名字**没有**中文别名。\n")
+	b.WriteString("> 这是如实登记的一条，见 `README-我们的说明.md` 的「已知局限」。\n")
+
+	fmt.Fprintf(&b, "\n## 四、必须知道的副作用：这 %d 个词成了保留字\n\n", n)
+	b.WriteString("汉语关键字**在所有文件里都生效**（不限于 `.chts`）。因此：\n\n")
+	b.WriteString("```ts\n")
+	b.WriteString("常量 对象 = 1;      // ✗ 编不过：对象 是 object 的译名，占了标识符位\n")
+	b.WriteString("常量 我的对象 = 1;   // ✓ 不是关键字，照旧可用\n")
+	b.WriteString("```\n\n")
+	b.WriteString("`对象` / `变量` / `函数` / `类型` 这类词**不能再当标识符**用。\n")
+	b.WriteString("**英文关键字永远可写**（`const obj = 1`），这是逃生通道。\n\n")
+	b.WriteString("之所以选「全局生效」而不是「仅 `.chts` 生效」：改一处即可覆盖整条链，\n")
+	b.WriteString("且实测上游官方 conformance 语料 **5894 个真实 `.ts/.tsx` 零回归**\n")
+	b.WriteString("（`tests-chts/judge_oss.ps1 -Sample 0`）。取舍写在 README 的「已知局限」第 1 条。\n")
+
+	b.WriteString("\n## 五、关键字当属性名仍然合法（边界在哪）\n\n")
+	b.WriteString("保留的是**标识符位置**，不是**属性名位置**：\n\n")
+	b.WriteString("```ts\n")
+	b.WriteString("常量 甲 = { 对象: 1, 如果: 2, 名字: 3 }   // ✓ 属性名位\n")
+	b.WriteString("console.log(甲.对象 + 甲.如果 + 甲.名字)    // ✓ 点号后允许关键字\n")
+	b.WriteString("console.log(甲[\"对象\"])                   // ✓ 字符串键\n")
+	b.WriteString("```\n\n")
+	b.WriteString("可跑的靶子在 `tests-chts/prop.chts`（判定第⑨项：编译 + node 真跑）。\n")
+
+	b.WriteString("\n## 六、一个完整例子\n\n")
+	b.WriteString("示意（真实可跑的例子见 `tests-chts/demo.chts`，它的英文对照是 `demo_en.ts`，\n")
+	b.WriteString("两者运行结果必须完全一致 —— 判定第⑥项）：\n\n")
+	b.WriteString("```ts\n")
+	b.WriteString("// 汉语源（.chts）\n")
+	b.WriteString("类型 长方形 {\n")
+	b.WriteString("  宽: 数字\n")
+	b.WriteString("  构造器(宽: 数字) { 自身.宽 = 宽 }\n")
+	b.WriteString("  面积(): 数字 { 返回 自身.宽 * 自身.宽 }\n")
+	b.WriteString("}\n")
+	b.WriteString("常量 甲 = 新建 长方形(3)\n")
+	b.WriteString("如果 (甲.面积() === 9) { console.log(\"通过\") } 否则 { console.log(\"失败\") }\n")
+	b.WriteString("```\n\n")
+	b.WriteString("```js\n")
+	b.WriteString("// 编译产物（.js）—— 关键字全部变回英文，汉语标识符原样保留\n")
+	b.WriteString("class 长方形 {\n")
+	b.WriteString("    constructor(宽) { this.宽 = 宽; }\n")
+	b.WriteString("    面积() { return this.宽 * this.宽; }\n")
+	b.WriteString("}\n")
+	b.WriteString("const 甲 = new 长方形(3);\n")
+	b.WriteString("if (甲.面积() === 9) { console.log(\"通过\"); }\n")
+	b.WriteString("else { console.log(\"失败\"); }\n")
+	b.WriteString("```\n")
+
+	return b.Bytes()
+}
+
 func main() {
-	check := flag.Bool("check", false, "只校验生成物是否与词表一致，不写盘")
+	check := flag.Bool("check", false, "只校验两份产物是否都与词表一致，不写盘")
 	flag.Parse()
 
 	entries := parseWordList()
@@ -203,6 +338,7 @@ func main() {
 	if err != nil {
 		fatal("生成的源码不是合法 Go：%v\n%s", err, raw)
 	}
+	md := renderMarkdown(entries)
 
 	if *check {
 		existing, err := os.ReadFile(outputPath)
@@ -212,15 +348,28 @@ func main() {
 		if !bytes.Equal(existing, formatted) {
 			fatal("%s 与 %s 不一致，请运行 go run ./cmd/genzhkeywords", outputPath, wordListPath)
 		}
-		fmt.Printf("genzhkeywords: %s 与 %s 一致（%d 条译名）\n", outputPath, wordListPath, len(entries))
+		existingMd, err := os.ReadFile(mdPath)
+		if err != nil {
+			fatal("%s 不存在，请先运行 go run ./cmd/genzhkeywords", mdPath)
+		}
+		if !bytes.Equal(existingMd, md) {
+			fatal("%s 与 %s 不一致（对照表过期了），请运行 go run ./cmd/genzhkeywords", mdPath, wordListPath)
+		}
+		fmt.Printf("genzhkeywords: 两份产物均与 %s 一致（%d 条译名）：%s、%s\n",
+			wordListPath, len(entries), outputPath, mdPath)
 		return
 	}
 
-	if err := os.MkdirAll(filepath.Dir(outputPath), 0o755); err != nil {
-		fatal("建目录失败：%v", err)
+	for _, p := range []string{outputPath, mdPath} {
+		if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
+			fatal("建目录失败：%v", err)
+		}
 	}
 	if err := os.WriteFile(outputPath, formatted, 0o644); err != nil {
 		fatal("写 %s 失败：%v", outputPath, err)
 	}
-	fmt.Printf("genzhkeywords: 已生成 %s（%d 条译名）\n", outputPath, len(entries))
+	if err := os.WriteFile(mdPath, md, 0o644); err != nil {
+		fatal("写 %s 失败：%v", mdPath, err)
+	}
+	fmt.Printf("genzhkeywords: 已生成两份产物（%d 条译名）：%s、%s\n", len(entries), outputPath, mdPath)
 }
