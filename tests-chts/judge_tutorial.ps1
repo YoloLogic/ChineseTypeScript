@@ -75,6 +75,20 @@ New-Item -ItemType Directory -Force -Path $Work | Out-Null
 $files = @(Get-ChildItem "$exDir\*.chts" | Sort-Object Name)
 if ($files.Count -eq 0) { throw "例子目录里没有 .chts：$exDir" }
 
+# 先守【例子目录的构成】：只许有 `NN-名字.chts`，且不许为空。
+# 为什么加它（2026-10-07 真事故，发生在 Chinese++ 那一侧）：一次失败的 PowerShell
+# 操作（.NET 用进程目录、不认 Set-Location）在例子目录里留下了【空的杂项文件】，
+# 被闸门一并提交了 —— 空的所以谁也不吭声。构成也必须机器守。
+$all = @(Get-ChildItem $exDir -File | Sort-Object Name)
+$stray = @($all | Where-Object { $_.Name -notmatch '^\d\d-.+\.chts$' })
+$empty = @($all | Where-Object { $_.Length -eq 0 })
+if ($stray.Count -eq 0 -and $empty.Count -eq 0) { Say ("  ✅ 例子目录构成正常（{0} 个 .chts，无杂项、无空文件）" -f $all.Count) }
+else {
+    if ($stray.Count -gt 0) { Write-Host ("  ❌ 例子目录里有多余文件（只许 NN-名字.chts）：{0}" -f (($stray | ForEach-Object { $_.Name }) -join '、')) -ForegroundColor Red }
+    if ($empty.Count -gt 0) { Write-Host ("  ❌ 例子目录里有空文件：{0}" -f (($empty | ForEach-Object { $_.Name }) -join '、')) -ForegroundColor Red }
+    $bad++
+}
+
 $passed = 0
 foreach ($f in $files) {
     $outDir = Join-Path $Work $f.BaseName
