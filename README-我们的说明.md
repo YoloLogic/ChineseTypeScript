@@ -125,11 +125,34 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
 | 大规模零回归 | `tests-chts/judge_oss.ps1`（比诊断与产物） |
 | **全集回归** | `tests-chts/judge_gotest.ps1`（4 项，跑上游 Go 测试全集并与基线对照） |
 | **教学教程**（生成物） | `教程/ChineseTypeScript-教学教程.md`（9 课：关键字用法 + 符号用法 + 内建用法）+ **Word 版 `教程/ChineseTypeScript-教学教程.docx`**；守卫 `tests-chts/judge_tutorial.ps1` 真编译真跑每个例子、核 docx 同步、并守例子目录构成 |
-| **一条命令全跑** | `tests-chts/run_all.ps1`（`-SkipGoTest` 可跳过最慢的第 4 项） |
+| **打包器** | `tools/make_package_chts.ps1` → `dist\ChineseTypeScript-<ver>-win64.zip`（自带 `chtsc` + 便携 node + 生成物文档 + 例子） |
+| **包内自测** | `packaging/verify.ps1`（16 项，`$expectedChecks` 自证；含一个**必须失败**的用例） |
+| **一键安装/还原** | `packaging/install.ps1` + `一键安装.cmd` / `uninstall.ps1` + `一键还原.cmd`（只写会话级 `env.cmd`；`-AddToUserPath` 才动用户 PATH） |
+| **打包判定** | `tests-chts/judge_package.ps1`（5 项：真打包 → 解压到中文路径 → 安装 → 包内 16/16 → 破坏必被抓） |
+| **一条命令全跑** | `tests-chts/run_all.ps1`（`-SkipGoTest` 可跳过最慢的第 4 项；打包判定单独跑） |
 
 生成器**不信任任何手写清单**：它自己解析 `scanner.go` 的 `textToKeyword` 得到
 「英文关键字 → `ast.Kind`」，再与词表比对。因此扫描器新增英文关键字而词表漏译、
 词表写了扫描器没有的词、译名重复、汉字数不在 2–6 —— **一律报错退出，不静默**。
+
+## 六·五、独立发行包（0.1，win64）
+
+用户 2026-10-07 裁定：ChineseTypeScript 要出**独立发行包**，并**随包带便携版 node**。
+
+* **产物**：`dist\ChineseTypeScript-0.1-win64.zip`（51.6 MB；未压缩 125.7 MB / 25 个文件）。
+  内含 `bin\chtsc.exe`（38 MB）、`node\node.exe`（87 MB，官方 **v24.15.0**，SHA256 与官方 win-x64 发行包**逐字节一致**）、
+  生成物文档（`docs\中文对照表.md`、教程 md + docx）、`例子\`（9 个）、`LICENSE.txt`/`NOTICE.txt`、`node\LICENSE`、
+  安装/还原/自测脚本与 `MANIFEST.tsv`。
+* **打包**：`pwsh -File tools\make_package_chts.ps1`（`-Version` / `-OutDir` / `-Rebuild` / `-NoNode`）。
+  默认输出 `dist\`（`.gitignore` 已忽略，**不进库**）。
+* **包内自测**（`packaging\verify.ps1`，**纯 ASCII**，汉语从码点构造）：16 项，项数由
+  `$expectedChecks` **自证**（跑不到这个数就判失败）；第 5 项**故意编一个错程序**，确认它真的被拒 ——
+  「判据不是橡皮图章」的自证。
+* **一键安装**只写**会话级** `env.cmd`（`PATH` 只在该窗口生效）；`-AddToUserPath` 才动用户 PATH；
+  `一键还原.cmd` / `uninstall.ps1` 精确复原（实测 `PATH restored exactly = True`）。
+* **机器守卫**：`tests-chts\judge_package.ps1`（5 项）**真打包**、解压到**含中文**的外来目录、
+  跑安装与包内自测，并证明「把包内编译器改名后自测**必失败**」。
+* 实测：包内自测 **16/16**、打包判定 **5/5**。
 
 ## 七、判定证据（本轮实测）
 
@@ -148,6 +171,10 @@ judge_gotest.ps1  4/4 通过（上游自带 Go 测试全集，跑两遍：基线
                  工作副本多出的失败包 = tsctests、testrunner —— 全部是 baseline 文本差异
                  逐行核对：111 个 baseline 文件 111/111 合规，
                            431 条新增行 + 20 条被改行，全部可用「插入 .chts」解释
+judge_tutorial.ps1  5 步全过（9 个例子真编译真跑逐行比对、教程与模板/例子/对照表一致、
+                    Word 版 .docx 与正文同步、例子目录构成守卫、改坏期望输出必须被抓的自测）
+judge_package.ps1   5/5（真打包 51.6 MB → 解压到含中文的外来目录 → install 写 env.cmd →
+                    包内 verify 16/16 → 把包内 chtsc 改名后 verify 必失败）
 ```
 
 > **为什么全集判定要这么麻烦**：加一个新扩展名，会**自然地**改变
@@ -182,8 +209,9 @@ judge_gotest.ps1  4/4 通过（上游自带 Go 测试全集，跑两遍：基线
 2. **`.d.chts` 声明文件不支持**。
 3. **语言服务尚未把汉语关键字加入补全建议**（`GetViableKeywordSuggestions` 仍只给英文）。
 4. **诊断信息未汉化**（Chinese++ 侧已汉化 7344 条诊断；ChineseTypeScript 侧未做）。
-5. **未打包、未发布**：命令名已定（`chtsc`，见「三·五」节），但还没有面向用户的
-   发行包（发行形态、是否随包带 node、装到哪都未定）。
+5. ~~**未打包、未发布**~~ —— **已出独立发行包**（2026-10-07，见「六·五」节）：
+   `dist\ChineseTypeScript-0.1-win64.zip`（自带便携 node），包内自测 16/16、打包判定 5/5。
+   **但仍未发布到网上**（无上传 / 下载页 / CI）。
 6. ~~**`未定义`（undefined）不能当【值】用**~~ —— **已修**（2026-10-07，写教程时真编译撞出来的）。
    症状：`常量 甲 = 未定义;` 报 `TS2304 找不到名字`，而 `: 未定义`（当类型）正常。
    根因：`null`/`true`/`false` 是 JS 的**字面量**（按种类驱动，所以汉语拼写天然等价）；
@@ -217,6 +245,7 @@ judge_gotest.ps1  4/4 通过（上游自带 Go 测试全集，跑两遍：基线
    再逐处判断「该不该带上 `.chts`」，同时分清哪些是 **CJS 语义**（不该带）。
 
 生成时间：2026-10-06 23:18:59（初版）
-本版更新：词表落盘、生成器与守卫就位、上游 7 文件补丁落地、五套判定全绿
+本版更新：词表落盘、生成器与守卫就位、上游 7 文件补丁落地、五套语言判定全绿
 （含**全部** 5894 个真实 TS 文件的全量零回归、与上游 Go 测试全集逐行核对，
-以及「未定义」值位置归一化的修复与第 ⑪ 节守卫）
+以及「未定义」值位置归一化的修复与第 ⑪ 节守卫）；
+另加**独立发行包（0.1）**与打包判定（真打包 → 中文路径解压 → 包内自测 16/16 → 破坏必被抓）
