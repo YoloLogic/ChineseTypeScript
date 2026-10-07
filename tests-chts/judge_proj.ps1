@@ -21,7 +21,7 @@ $ErrorActionPreference = 'Stop'
 $repo = Split-Path -Parent $PSScriptRoot
 . (Join-Path $PSScriptRoot 'zhcheck.ps1')
 $tscDir = Join-Path $repo 'tsc'
-$chtsTsc = Join-Path $Work 'tsc-chts.exe'
+$chtsTsc = Join-Path $Work 'chtsc.exe'
 if (-not (Test-Path $chtsTsc)) { throw "找不到本编译器 $chtsTsc，请先跑 judge_chts.ps1" }
 $nodeExe = (Get-Command node -ErrorAction SilentlyContinue).Source
 if (-not $nodeExe) { throw '找不到 node' }

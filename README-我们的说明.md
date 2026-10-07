@@ -29,6 +29,26 @@
     （会出现「下了几分钟仍 0 MB」的假象）；一律改用 `curl -C -` 断点续传 + SHA256 校验。
 * node v24.15 / npm 11.12（跑产物用）
 
+## 三·五、命令名：`chtsc`（不是 `tsc`）
+
+| | 是什么 | 取值 |
+|---|---|---|
+| 文件格式 | 源文件的后缀 | **`.chts`** |
+| 命令名 | 终端里敲的那个可执行文件 | **`chtsc`** |
+
+用户 2026-10-07 裁定：**只叫 `chtsc`**，不做 `tsc` 别名。
+
+* 构建：`pwsh -File tools\build_chtsc.ps1` → `E:\cts-build\chtsc.exe`
+  （脚本自带自证：打版本号 + 真编译一个 `.chts` + node 真跑）
+* **为什么这是零成本的纯产品决定**：全仓**没有一处**按 `os.Args[0]`
+  （"我叫什么名字"）分支的代码，所以改二进制名字**不改变任何行为**。
+  这与 clang 那边**根本不同** —— clang 的 `argv[0]` 决定驱动模式、还要读同名
+  `.cfg`，所以那边的中文驱动名（`x86_64-unknown-linux-gnu-chinese++`）是**功能**，
+  必须严格区分。
+* 同类先例：上游自己把 Go 实现叫 **`tsgo`**（`Herebyfile.mjs` 的 tsgo 任务），
+  与经典 `tsc` 两名并存。
+* 实测：`chtsc.exe` 37.9 MB，`chtsc --version` 报 `Version 7.1.0-dev`。
+
 ## 四、文件扩展名：`.chts`（不是 `.cts`）
 
 用户裁定：「文件格式我建议 cts，cts 被占用了就用 chts」。
@@ -94,6 +114,7 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
 | 生成器 | `tsc/cmd/genzhkeywords`（`go run ./cmd/genzhkeywords`，`-check` 供 CI 校核） |
 | 关键字机器守卫 | `tsc/internal/scanner/zh_keywords_test.go`（9 条） |
 | 扩展名机器守卫 | `tsc/internal/tspath/chts_extension_test.go`、`tsc/internal/core/chts_scriptkind_test.go` |
+| **构建命令** | `tools/build_chtsc.ps1` → `chtsc.exe`（命令名见「三·五」节；自带版本号+真编译+真跑自证） |
 | 共享检查器 | `tests-chts/zhcheck.ps1`（剥注释与字符串后按汉字段整段比对） |
 | 端到端判定 | `tests-chts/judge_chts.ps1`（11 项，含 `--strict`） |
 | 项目级判定 | `tests-chts/judge_proj.ps1`（15 项） |

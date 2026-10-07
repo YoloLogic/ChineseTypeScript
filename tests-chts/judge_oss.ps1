@@ -24,7 +24,7 @@ param(
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path -Parent $PSScriptRoot
 $baseTsc = Join-Path $Work 'tsc-base.exe'
-$chtsTsc = Join-Path $Work 'tsc-chts.exe'
+$chtsTsc = Join-Path $Work 'chtsc.exe'
 
 if (-not (Test-Path $baseTsc)) { throw "找不到基线编译器 $baseTsc，请先跑 judge_chts.ps1" }
 if (-not (Test-Path $chtsTsc)) { throw "找不到本编译器 $chtsTsc，请先跑 judge_chts.ps1" }
