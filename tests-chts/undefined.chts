@@ -1,0 +1,37 @@
+// 汉语拼写的 undefined 守卫靶子。
+//
+// 为什么单独钉它：`undefined` 在 JS 里【不是字面量】，而是全局对象上的一个名字 ——
+// 上游按【文字】把它注册成全局符号（checker 的 c.globals["undefined"]），
+// 值位置也按普通标识符解析。所以汉语拼写「未定义」曾经两头落空：
+//   * 解析：查 c.globals["未定义"] → 找不到 → error TS2304（找不到名字）
+//   * 产物：标识符按源码拼写打印 → JS 里没有「未定义」这个全局名 → 运行时 ReferenceError
+//
+// 修法（两处，都落在边界上）：
+//   * parser.parseUndefinedKeywordExpression —— 值位置把标识符文本归一化成 "undefined"
+//   * printer.getTextOfNode —— 文本是规范 "undefined" 而源码拼写不是时，用节点文本
+//
+// 关键：只归一化【值位置】。属性名/成员名是运行时的真实属性名，必须原样保留 ——
+// 本靶子第 6 行专门验这一点。
+//
+// 期望输出：
+// 值=undefined
+// 类型位=undefined
+// 英文=undefined
+// 相等=true
+// typeof=undefined
+// 属性名=1/1
+// 汉语标识符=7
+
+常量 值 = 未定义;                        // 值位置：汉语拼写
+常量 类型位: 未定义 = 未定义;             // 类型位 + 值位置
+常量 英文 = undefined;                   // 英文对照（归一化对它无影响）
+常量 戊 = { 未定义: 1 };                  // 属性名：必须原样保留
+常量 我的对象 = 7;                        // 非关键字的汉语标识符：照旧
+
+console.log("值=" + 值);
+console.log("类型位=" + 类型位);
+console.log("英文=" + 英文);
+console.log("相等=" + (未定义 === undefined));
+console.log("typeof=" + typeof 未定义);
+console.log("属性名=" + 戊.未定义 + "/" + 戊["未定义"]);
+console.log("汉语标识符=" + 我的对象);

@@ -247,6 +247,18 @@ func (p *Printer) getTextOfNode(node *ast.Node, includeTrivia bool) string {
 		if !canUseSourceFile || ast.GetSourceFileOfNode(node) != p.emitContext.MostOriginal(p.currentSourceFile.AsNode()).AsSourceFile() {
 			return node.Text()
 		}
+		// ChineseTypeScript：值位置的 undefined 若写成汉语拼写（未定义），
+		// 解析器已把节点文本归一化成规范拼写 "undefined"
+		// （见 parser.parseUndefinedKeywordExpression），但【本函数默认切源码文本】——
+		// 于是汉语拼写会原样进产物，而 JS 里没有「未定义」这个全局名，
+		// 运行时就是 ReferenceError。这里只对「文本是规范 undefined、
+		// 而源码拼写不是」这一种情况用节点文本，别处一概照旧
+		// （不碰别的标识符，保留 unicode 转义等原始拼写）。
+		if node.Kind == ast.KindIdentifier && node.Text() == "undefined" {
+			if scanner.GetSourceTextOfNodeFromSourceFile(p.currentSourceFile, node, includeTrivia) != "undefined" {
+				return node.Text()
+			}
+		}
 	case ast.KindStringLiteral,
 		ast.KindNumericLiteral,
 		ast.KindBigIntLiteral,

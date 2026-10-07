@@ -5610,6 +5610,10 @@ func (p *Parser) parsePrimaryExpression() *ast.Expression {
 		return p.parseLiteralExpression()
 	case ast.KindThisKeyword, ast.KindSuperKeyword, ast.KindNullKeyword, ast.KindTrueKeyword, ast.KindFalseKeyword:
 		return p.parseKeywordExpression()
+	case ast.KindUndefinedKeyword:
+		// ChineseTypeScript：undefined 在 JS 里不是字面量而是【全局名字】，
+		// 值位置要把文本归一化成规范拼写（详见 parseUndefinedKeywordExpression）。
+		return p.parseUndefinedKeywordExpression()
 	case ast.KindOpenParenToken:
 		return p.parseParenthesizedExpression()
 	case ast.KindOpenBracketToken:
@@ -5828,6 +5832,29 @@ func (p *Parser) parseKeywordExpression() *ast.Node {
 	result := p.factory.NewKeywordExpression(p.token)
 	p.nextToken()
 	return p.finishNode(result, pos)
+}
+
+// parseUndefinedKeywordExpression 解析【值位置】的 undefined，并把标识符文本归一化成规范拼写。
+//
+// 为什么需要它（ChineseTypeScript 实测发现的真缺口）：
+//   `null` / `true` / `false` 是 JS 的【字面量】，词法关键字直接变成字面量节点，
+//   打印器再从种类取规范拼写 —— 所以汉语拼写（`空值`）与英文完全等价。
+//   但 `undefined` 在 JS 里【不是字面量】，而是全局对象上的一个名字：
+//   上游因此把它按【文字】注册成一个全局符号
+//   （checker.go 的 addUndefinedToGlobalsOrErrorOnRedeclaration：c.globals["undefined"]），
+//   值位置也按普通标识符解析。于是汉语拼写会两头落空：
+//     * 解析：查 c.globals["未定义"] → 不存在 → error TS2304（找不到名字）；
+//     * 产物：标识符按源码拼写打印，而 JS 里没有「未定义」这个全局名
+//             → 运行时 ReferenceError。
+//   在这里把值位置的文本归一化成 "undefined"，两头同时解决；
+//   英文路径完全不受影响（"undefined" 归一化之后还是 "undefined"）。
+//
+// 只归一化【值位置】：属性名位置（`{ 未定义: 1 }`、`甲.未定义`、字符串键）
+// 是运行时的真实属性名，必须原样保留 —— 它们不走这个函数。
+func (p *Parser) parseUndefinedKeywordExpression() *ast.Node {
+	pos := p.nodePos()
+	p.nextToken()
+	return p.finishNode(p.newIdentifier("undefined"), pos)
 }
 
 func (p *Parser) parseLiteralExpression() *ast.Node {
