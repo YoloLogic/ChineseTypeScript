@@ -66,7 +66,7 @@
 故取 **`.chts`**（= ChineseTypeScript）。扩展名一律**追加在末尾**，
 使 `.ts/.tsx/.d.ts` 的既有优先级与解析顺序一个字节都不变。
 
-## 五、改动清单：上游源码只动了 12 个文件
+## 五、改动清单：上游源码只动了 13 个文件
 
 | # | 文件 | 改动 |
 |---|---|---|
@@ -82,6 +82,7 @@
 | 10 | `tsc/internal/modulespecifiers/util.go` | 声明扩展名 → JS 扩展名的映射：`.d.chts` → `.js` |
 | 11 | `tsc/internal/ls/string_completions.go` | 字符串补全把 `.d.chts` 当 TS 声明文件（同 `.d.ts`） |
 | 12 | `tsc/cmd/tsc/main.go` | 命令行默认 `--locale zh-CN`（`argsWithDefaultLocale`；locale 是命令行专用选项，故不覆盖 tsconfig，库与上游测试零变化。见「六·八」） |
+| 13 | `tsc/internal/binder/binder.go` | 上下文标识符检查用 `GetIdentifierTokenForFileName(file, …)`（汉语关键字作用域随文件，见「六·九」） |
 
 **binder / checker 零改动**；其余各文件都是为**扩展名、边界、语言服务或修正**加的小段，
 都不是为「关键字落成同一个 token」这套机制本身（那套确实只需词法层一处）。
@@ -142,6 +143,7 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
 | **声明扩展名守卫** | `tsc/internal/tspath/dchts_extension_test.go`（`.d.chts` 被识别为声明文件、不属 CJS、产出仍 `.d.ts`） |
 | **.d.chts 判定** | `tests-chts/judge_dchts.ps1`（5 项：单独编译 → 无扩展名导入解析 → `tsc -p` → 声明产出 `.d.ts` → 藏起来必报 TS2307） |
 | **中文诊断判定** | `tests-chts/judge_zhdiag.ps1`（5 项：默认中文 / `--locale en` 回英文 / 默认==显式 zh-CN / 抽样多码中文 / 正确程序无诊断） |
+| **关键字作用域判定** | `tests-chts/judge_kwscope.ps1`（6 项：`.chts` 认汉语 / `.ts` 里是普通标识符 / `.ts` 里不是关键字（自证） / `.d.chts` 认汉语 / `.chts` 保留字仍是关键字 / 负对照） |
 | **一条命令全跑** | `tests-chts/run_all.ps1`（五套核心；`-SkipGoTest` 可跳过最慢的第 4 项。打包判定与语言服务判定单独跑；item① 的 Go 守卫也随 `judge_gotest` 一起跑） |
 
 生成器**不信任任何手写清单**：它自己解析 `scanner.go` 的 `textToKeyword` 得到
@@ -222,6 +224,22 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
   ② 译文是**上游**的，与 Chinese++ 的 7344 条**不保证同词同译**（两条产品线的诊断集基本不相交）；
   ③ `--help` 首行仍写 `tsc:`（不是 `chtsc`）。
 
+## 六·九、汉语关键字的作用域：仅 `.chts`（item④，2026-10-07）
+
+* **改动**：`Scanner` 加 `allowChineseKeywords` 标志；`getIdentifierToken` 变成方法；
+  新增 `GetIdentifierTokenForFileName`；`GetScannerForSourceFile` 与 `parser.initializeState`
+  按后缀设标志；`binder` 与 parser 的简写属性分支改用文件感知入口。
+  旧的包级 `GetIdentifierToken` 收敛为「无文件上下文＝只认英文」。
+* **效果**：英文 `.ts` 里 `对象`/`变量`/`函数` 又成了**普通标识符**（与上游一致），
+  `.chts`/`.d.chts` 里它们仍是关键字。判定 `judge_kwscope.ps1`（6/6），
+  其中第③项（`.ts` 里汉语必须**不是**关键字）是防「恢复成全局」的自证。
+* **已知影响面**：少数**不带文件上下文**的 `NewScanner()` 调用点
+  （`format/scanner.go`、`checker/utilities.go`、`ls/organizeimports.go`、`ls/completions.go`）
+  默认不认汉语；对 `.chts` 的这类辅助操作可能漏认，待按需补标志。
+* ⚠ **全量判定待跑**：item④ 改动了 scanner/parser/binder 三个上游文件，
+  按纪律必须重跑 `run_all.ps1`（尤其 `judge_oss` + `judge_gotest`）；**本轮尚未跑**，
+  见 `下一步.md` 第 3 条。
+
 ## 七、判定证据（本轮实测）
 
 ```
@@ -275,11 +293,10 @@ judge_zhdiag.ps1    5/5（默认出中文 → --locale en 回英文 → 默认==
 
 ## 九、已知局限（诚实登记，别当成已完成）
 
-1. **汉语关键字在所有文件里都生效**，不限于 `.chts`。这是为「改一处覆盖整条链」而选的
-   全局方案；实测 5894 个真实 TS 文件**零回归**，但它确实意味着
-   用户若把 `对象`/`变量`/`函数` 这类词当**标识符**用会与关键字撞。
-   英文关键字永远可写，是逃生通道。（若要改成「仅 `.chts` 生效」，需把
-   `GetIdentifierToken` 从包级函数改成扫描器方法并逐处传标志，属未做项。）
+1. ~~**汉语关键字在所有文件里都生效**~~ —— **已收敛为仅 `.chts`/`.d.chts` 生效**（2026-10-07，见「六·九」）：
+   英文 `.ts` 里 `对象`/`变量`/`函数` 又能当**普通标识符**（与上游一致），`.chts` 里仍是关键字。
+   判定 `judge_kwscope.ps1`（6/6）。**仍缺**：少数不带文件上下文的 `NewScanner()` 辅助调用点
+   默认不认汉语，待按需补标志；且 item④ 的**全量判定尚未跑**。
 2. ~~**`.d.chts` 声明文件不支持**~~ —— **已支持**（2026-10-07，见「六·七」）：
    `.d.chts` 被识别为声明文件、可被无扩展名导入解析、`tsc -p` 收录。
    **但 `.chts` 开 `--declaration` 产出的仍是标准 `.d.ts`**（设计选择，理由与改法见六·七）。
