@@ -82,6 +82,21 @@ $envPkgs = @(
 )
 $extra = @($fw | Where-Object { $fb -notcontains $_ })
 $onlyBase = @($fb | Where-Object { $fw -notcontains $_ })
+
+# 资源性失败（内存耗尽）【不是回归】：显式识别并排除，但打印出来提醒重跑。
+# 只认 `runtime: cannot allocate memory` 这个确凿标记 —— 不认普通的 [build failed]，
+# 因为后者也可能是真的编译错误（那必须报红）。
+# （2026-10-08 真踩过：连续跑全量把内存压垮，modulespecifiers 报 build failed，被误当成允许清单外的新失败。）
+$resourceFailed = @()
+if (Select-String -Path $logWork -Pattern 'runtime: cannot allocate memory' -Quiet -ErrorAction SilentlyContinue) {
+    $resourceFailed = @($extra | Where-Object {
+        Select-String -Path $logWork -Pattern ('FAIL\s+' + [regex]::Escape($_) + '.*\[build failed\]') -Quiet
+    })
+    if ($resourceFailed.Count -gt 0) {
+        $extra = @($extra | Where-Object { $resourceFailed -notcontains $_ })
+        Write-Host ('  [!] 内存耗尽造成的环境性失败，不计入回归，请重跑确认：' + ($resourceFailed -join ' '))
+    }
+}
 $allowed = @(
     'github.com/microsoft/TypeScript/tsc/internal/fourslash/tests',
     'github.com/microsoft/TypeScript/tsc/internal/execute/tsctests',
