@@ -61,6 +61,22 @@ foreach ($line in (Get-Content $Table -Encoding UTF8)) {
     $rows[$p[2].Trim()] = $p[1].Trim()
 }
 
+# 唯一性守卫（2026-10-08 定）：emit 改写做的是「汉语名 → 英文名」，与接收者类型无关，
+# 所以译名必须【一英一汉、全局唯一】：同一个汉语名不得对应两个英文名，反之亦然。
+# 否则 `Array.map` 与 `Map.map` 这类会改写错。
+$zhToEn = @{}
+$enToZh = @{}
+foreach ($line in (Get-Content $Table -Encoding UTF8)) {
+    if ($line -notmatch '\S') { continue }
+    $p = $line -split $TAB
+    if ($p.Count -lt 3) { continue }
+    $en = $p[1].Trim(); $zh = $p[2].Trim()
+    if ($zhToEn.ContainsKey($zh) -and $zhToEn[$zh] -ne $en) { throw ('译名重复映射：汉语「' + $zh + '」同时对应 ' + $zhToEn[$zh] + ' 与 ' + $en) }
+    if ($enToZh.ContainsKey($en) -and $enToZh[$en] -ne $zh) { throw ('英文重复映射：' + $en + ' 同时对应「' + $enToZh[$en] + '」与「' + $zh + '」') }
+    $zhToEn[$zh] = $en; $enToZh[$en] = $zh
+}
+Write-Host ('唯一性守卫通过：' + $zhToEn.Count + ' 条一英一汉')
+
 $content = @()
 $content += 'package scanner'
 $content += ''
