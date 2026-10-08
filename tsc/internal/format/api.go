@@ -75,6 +75,7 @@ func FormatSpan(ctx context.Context, span core.TextRange, file *ast.SourceFile, 
 			prepareRangeContainsErrorFunction(file.Diagnostics(), span),
 			file,
 		),
+		scanner.IsChineseTypeScriptFileName(file.FileName()),
 	)
 }
 
@@ -95,6 +96,7 @@ func FormatNodeGivenIndentation(ctx context.Context, node *ast.Node, file *ast.S
 			func(core.TextRange) bool { return false }, // assume that node does not have any errors
 			file,
 		),
+		scanner.IsChineseTypeScriptFileName(file.FileName()),
 	)
 }
 

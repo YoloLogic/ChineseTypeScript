@@ -2406,7 +2406,9 @@ func (l *LanguageService) createCompletionItem(
 			if parentNamedImportOrExport.Kind == ast.KindNamedImports {
 				// Check if it is `import { ^here as name } from '...'``.
 				// We have to access the scanner here to check if it is `{ ^here as name }`` or `{ ^here, as, name }`.
+				allowChinese := scanner.IsChineseTypeScriptFileName(file.FileName())
 				scanner := scanner.NewScanner()
+				scanner.SetAllowChineseKeywords(allowChinese)
 				scanner.SetText(file.Text())
 				scanner.ResetPos(position)
 				if !(scanner.Scan() == ast.KindAsKeyword && scanner.Scan() == ast.KindIdentifier) {

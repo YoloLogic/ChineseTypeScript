@@ -66,7 +66,7 @@
 故取 **`.chts`**（= ChineseTypeScript）。扩展名一律**追加在末尾**，
 使 `.ts/.tsx/.d.ts` 的既有优先级与解析顺序一个字节都不变。
 
-## 五、改动清单：上游源码只动了 13 个文件
+## 五、改动清单：上游源码只动了 16 个文件
 
 | # | 文件 | 改动 |
 |---|---|---|
@@ -83,6 +83,9 @@
 | 11 | `tsc/internal/ls/string_completions.go` | 字符串补全把 `.d.chts` 当 TS 声明文件（同 `.d.ts`） |
 | 12 | `tsc/cmd/tsc/main.go` | 命令行默认 `--locale zh-CN`（`argsWithDefaultLocale`；locale 是命令行专用选项，故不覆盖 tsconfig，库与上游测试零变化。见「六·八」） |
 | 13 | `tsc/internal/binder/binder.go` | 上下文标识符检查用 `GetIdentifierTokenForFileName(file, …)`（汉语关键字作用域随文件，见「六·九」） |
+| 14 | `tsc/internal/format/scanner.go` | 格式化扫描器加「是否认汉语」参数（否则 `.chts` 里的关键字会被当标识符） |
+| 15 | `tsc/internal/format/api.go` | `FormatSpan` / `FormatNodeGivenIndentation` 按 `file` 的 `.chts` 后缀传标志 |
+| 16 | `tsc/internal/ls/organizeimports.go` | 局部扫描器按 `sourceFile` 的 `.chts` 后缀设标志 |
 
 **binder / checker 零改动**；其余各文件都是为**扩展名、边界、语言服务或修正**加的小段，
 都不是为「关键字落成同一个 token」这套机制本身（那套确实只需词法层一处）。
@@ -233,9 +236,10 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
 * **效果**：英文 `.ts` 里 `对象`/`变量`/`函数` 又成了**普通标识符**（与上游一致），
   `.chts`/`.d.chts` 里它们仍是关键字。判定 `judge_kwscope.ps1`（6/6），
   其中第③项（`.ts` 里汉语必须**不是**关键字）是防「恢复成全局」的自证。
-* **已知影响面**：少数**不带文件上下文**的 `NewScanner()` 调用点
-  （`format/scanner.go`、`checker/utilities.go`、`ls/organizeimports.go`、`ls/completions.go`）
-  默认不认汉语；对 `.chts` 的这类辅助操作可能漏认，待按需补标志。
+* **辅助扫描器（已按文件补齐）**：`format` 的格式化扫描器与 `ls` 的 `organizeimports` /
+  `completions` 局部扫描器，现在都按文件的 `.chts` 后缀决定是否认汉语。
+  另两处 `NewScanner()`（`checker` 的 bigint 串校验 `isValidBigIntString` 与正则字面量扫描）
+  只扫数字/正则，**不需要**汉语关键字，故保持默认。
 * **全量判定已跑**（2026-10-08）：五套核心判定全绿 —— `judge_oss` 600/600 零回归、
   `judge_gotest` 4/4（140/140 可解释）。item④ 没有引入任何英文路径回归。
 
@@ -296,8 +300,8 @@ judge_kwscope.ps1   6/6（.chts 认汉语 → .ts 里汉语是普通标识符 �
 
 1. ~~**汉语关键字在所有文件里都生效**~~ —— **已收敛为仅 `.chts`/`.d.chts` 生效**（2026-10-07，见「六·九」）：
    英文 `.ts` 里 `对象`/`变量`/`函数` 又能当**普通标识符**（与上游一致），`.chts` 里仍是关键字。
-   判定 `judge_kwscope.ps1`（6/6），五套核心判定全绿。**仍缺**：少数不带文件上下文的
-   `NewScanner()` 辅助调用点默认不认汉语，待按需补标志。
+   判定 `judge_kwscope.ps1`（6/6），五套核心判定全绿。带文件上下文的辅助扫描器
+   （`format` / `ls/organizeimports` / `ls/completions`）也已按 `.chts` 补齐标志。
 2. ~~**`.d.chts` 声明文件不支持**~~ —— **已支持**（2026-10-07，见「六·七」）：
    `.d.chts` 被识别为声明文件、可被无扩展名导入解析、`tsc -p` 收录。
    **但 `.chts` 开 `--declaration` 产出的仍是标准 `.d.ts`**（设计选择，理由与改法见六·七）。
