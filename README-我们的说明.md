@@ -66,20 +66,21 @@
 故取 **`.chts`**（= ChineseTypeScript）。扩展名一律**追加在末尾**，
 使 `.ts/.tsx/.d.ts` 的既有优先级与解析顺序一个字节都不变。
 
-## 五、改动清单：上游源码只动了 7 个文件
+## 五、改动清单：上游源码只动了 8 个文件
 
 | # | 文件 | 改动 |
 |---|---|---|
 | 1 | `tsc/internal/scanner/scanner.go` | `GetIdentifierToken` 放开 ASCII 闸：非 ASCII 标识符查独立表 `zhTextToKeyword` |
 | 2 | `tsc/internal/tspath/extension.go` | 新增 `ExtensionChts = ".chts"`；并入 `extensionsToRemove`（**决定输出名**）、`ExtensionIsTs`、各受支持扩展名表、`GetDeclarationEmitExtensionForPath` |
-| 3 | `tsc/internal/core/core.go` | `.chts` → `ScriptKindTS` |
+| 3 | `tsc/internal/core/core.go` | ① `.chts` → `ScriptKindTS`；② 修 `getSpellingSuggestion` 的**字节/rune 长度混用**（否则汉语「你是不是想写…」永远命中不了，见「六·六」） |
 | 4 | `tsc/internal/module/resolver.go` | `extensionIsOk` 白名单加 `.chts`；`tryAddingExtensions` 加「无扩展名分支找 `.chts`」+ 新增 `case ExtensionChts` |
 | 5 | `tsc/internal/module/util.go` | `GetResolutionDiagnostic` 的「永远允许」白名单加 `.chts`（否则报 TS6263 说它是"任意扩展名"） |
-| 6 | `tsc/internal/parser/parser.go` | `parseUndefinedKeywordExpression`：值位置把「未定义」归一化成规范拼写 `undefined`（见 §九 第 6 条） |
+| 6 | `tsc/internal/parser/parser.go` | ① `parseUndefinedKeywordExpression`：值位置把「未定义」归一化成规范拼写 `undefined`（见 §九 第 6 条）；② 汉语「你是不是想写…」建议作为**回退**（见「六·六」） |
 | 7 | `tsc/internal/printer/printer.go` | `getTextOfNode`：文本是规范 `undefined` 而源码拼写不是时，用节点文本落盘（与第 6 处配对） |
+| 8 | `tsc/internal/ls/completions.go` | 编辑器补全并入汉语关键字（**只给 `.chts` 文件**）：新增汉语补全表、缓存键带「是否含汉语」、种类反查改用 `StringToTokenIncludingChinese`（见「六·六」） |
 
-**binder / checker / 语言服务零改动**；`parser` 与 `printer` 只为**边界**各加了一小段
-（`.chts` 解析、`未定义` 值位置归一化），不是为「关键字」机制。
+**binder / checker 零改动**；`parser` / `printer` / `ls` / `core` 各为**边界、语言服务或修正**
+加了一小段，都不是为「关键字落成同一个 token」这套机制本身（那套确实只需词法层一处）。
 
 > 教训：第 4、5 处是**一开始漏掉的**。第一版只改了扩展名表，结果
 > `导入 ... 来自 "./数学"` 报 TS2307 找不到模块 —— 因为解析器里另有一张
@@ -132,7 +133,9 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
 | **包内自测** | `packaging/verify.ps1`（16 项，`$expectedChecks` 自证；含一个**必须失败**的用例） |
 | **一键安装/还原** | `packaging/install.ps1` + `一键安装.cmd` / `uninstall.ps1` + `一键还原.cmd`（只写会话级 `env.cmd`；`-AddToUserPath` 才动用户 PATH） |
 | **打包判定** | `tests-chts/judge_package.ps1`（5 项：真打包 → 解压到中文路径 → 安装 → 包内 16/16 → 破坏必被抓） |
-| **一条命令全跑** | `tests-chts/run_all.ps1`（`-SkipGoTest` 可跳过最慢的第 4 项；打包判定单独跑） |
+| **汉语关键字只读 API** | `tsc/internal/scanner/zh_keywords_api.go`（`ChineseKeywordAliases` / `ChineseKeywordSpellings` / `StringToTokenIncludingChinese`，**升序确定性**；`StringToToken` 保持只认英文） |
+| **语言服务判定** | `tests-chts/judge_langservice.ps1`（9 项：三组 Go 守卫 + CLI 真编译三条汉语建议 + 两条负对照） |
+| **一条命令全跑** | `tests-chts/run_all.ps1`（五套核心；`-SkipGoTest` 可跳过最慢的第 4 项。打包判定与语言服务判定单独跑；item① 的 Go 守卫也随 `judge_gotest` 一起跑） |
 
 生成器**不信任任何手写清单**：它自己解析 `scanner.go` 的 `textToKeyword` 得到
 「英文关键字 → `ast.Kind`」，再与词表比对。因此扫描器新增英文关键字而词表漏译、
@@ -157,6 +160,24 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
   跑安装与包内自测，并证明「把包内编译器改名后自测**必失败**」。
 * 实测：包内自测 **16/16**、打包判定 **5/5**。
 
+## 六·六、语言服务与建议（item①，2026-10-07）
+
+* **编辑器补全**：`allKeywordCompletions` 旁新增汉语补全表，**只给 `.chts` 文件** ——
+  理由：85 条汉语塞进每个 `.ts/.js` 的补全列表，① 对写英文的人是噪声；
+  ② 会把上游 fourslash 的 `exact` 补全基线**全部撑大**（实测：不限定就多出 90 处
+  「Expected N exact completion items」）。编辑器入口是 `chtsc --lsp --stdio`。
+* **「你是不是想写…」建议**：汉语别名作为**回退**（英文能给建议时一字不改，英文诊断文本逐字相同）。
+  为此修了 `core` 的一处**真 bug**：长度比较把 `len(candidateName)`（**字节**）与
+  `len(runeName)`（**rune**）混用 —— ASCII 下看不出，汉语下把「函树 → 函数」直接跳过。
+  两字译名（71/85）另补一条「恰好差一个汉字」的判据：上游对 2 字符名**故意**不建议
+  （「用户通常能注意到两个字的名字的差异」），照搬会让绝大多数汉语建议失效。
+* **边界**：`StringToToken` **故意**保持只认英文（它被 `.d.ts` 生成、自动导入等位置用来
+  判断「这个名字是不是关键字」，让汉语悄悄参与会波及英文路径的产物）；
+  需要连汉语一起认的地方显式调用 `StringToTokenIncludingChinese`。
+* 判定：`judge_langservice.ps1` **9/9**；`ls` 6 条 + `parser` 4 条 + `scanner` 5 条 Go 守卫
+  （JS-only 过滤对汉语同样生效、补全确定、`.ts` 不含汉语、缓存不被 `.chts` 污染）；
+  五套核心判定不受影响（fourslash 恢复全过、`judge_oss` 600/600 零回归）。
+
 ## 七、判定证据（本轮实测）
 
 ```
@@ -178,6 +199,8 @@ judge_tutorial.ps1  5 步全过（9 个例子真编译真跑逐行比对、教�
                     Word 版 .docx 与正文同步、例子目录构成守卫、改坏期望输出必须被抓的自测）
 judge_package.ps1   5/5（真打包 51.6 MB → 解压到含中文的外来目录 → install 写 env.cmd →
                     包内 verify 16/16 → 把包内 chtsc 改名后 verify 必失败）
+judge_langservice.ps1  9/9（scanner 5 + parser 4 + ls 6 条 Go 守卫；CLI 三条汉语建议：
+                       函树→函数、局部变两→局部变量、如果甲→如果；两条负对照无建议）
 ```
 
 > **为什么全集判定要这么麻烦**：加一个新扩展名，会**自然地**改变
@@ -210,7 +233,10 @@ judge_package.ps1   5/5（真打包 51.6 MB → 解压到含中文的外来目�
    英文关键字永远可写，是逃生通道。（若要改成「仅 `.chts` 生效」，需把
    `GetIdentifierToken` 从包级函数改成扫描器方法并逐处传标志，属未做项。）
 2. **`.d.chts` 声明文件不支持**。
-3. **语言服务尚未把汉语关键字加入补全建议**（`GetViableKeywordSuggestions` 仍只给英文）。
+3. ~~**语言服务尚未把汉语关键字加入补全建议**~~ —— **已做**（2026-10-07，见「六·六」）：
+   编辑器补全（**只给 `.chts` 文件**）与「你是不是想写…」建议都认汉语关键字。
+   **但编辑器侧尚未打包/配置**：发行包里没有 `.vscode` 模板，用户要自己把
+   `chtsc --lsp --stdio` 配给编辑器。
 4. **诊断信息未汉化**（Chinese++ 侧已汉化 7344 条诊断；ChineseTypeScript 侧未做）。
 5. ~~**未打包、未发布**~~ —— **已出独立发行包**（2026-10-07，见「六·五」节）：
    `dist\ChineseTypeScript-0.1-win64.zip`（自带便携 node），包内自测 16/16、打包判定 5/5。
@@ -248,7 +274,8 @@ judge_package.ps1   5/5（真打包 51.6 MB → 解压到含中文的外来目�
    再逐处判断「该不该带上 `.chts`」，同时分清哪些是 **CJS 语义**（不该带）。
 
 生成时间：2026-10-06 23:18:59（初版）
-本版更新：词表落盘、生成器与守卫就位、上游 7 文件补丁落地、五套语言判定全绿
+本版更新：词表落盘、生成器与守卫就位、上游 8 文件补丁落地、五套语言判定全绿
 （含**全部** 5894 个真实 TS 文件的全量零回归、与上游 Go 测试全集逐行核对，
 以及「未定义」值位置归一化的修复与第 ⑪ 节守卫）；
-另加**独立发行包（0.1）**与打包判定（真打包 → 中文路径解压 → 包内自测 16/16 → 破坏必被抓）
+另加**独立发行包（0.1）**与打包判定；
+item①：**语言服务与建议**认汉语（含 `.chts` 限定、`core` 的字节/rune 修正），语言服务判定 9/9。

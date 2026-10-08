@@ -606,8 +606,15 @@ func getSpellingSuggestion[T any](name string, candidates iter.Seq[T], getName f
 			return zero
 		}
 		candidateName := getName(candidate)
-		maxLen := max(len(candidateName), len(runeName))
-		minLen := min(len(candidateName), len(runeName))
+		// ChineseTypeScript：长度必须【同样按 rune 计】。上游这里拿 len(candidateName)
+		// （字节）与 len(runeName)（rune）相比 —— ASCII 下二者相等，看不出问题；
+		// 一旦候选是多字节（汉语关键字），长度差会被算成 4 而不是 0，
+		// 「函树 → 函数」这种只差一个字的建议会被直接跳过。
+		// 注意：下面「< 3 字符只按大小写考虑」那一处【故意】仍按字节 —— 汉语译名
+		// 多为 2 个汉字（6 字节），按字节才会被当作「够长」而参与建议。
+		candidateRuneLen := utf8.RuneCountInString(candidateName)
+		maxLen := max(candidateRuneLen, len(runeName))
+		minLen := min(candidateRuneLen, len(runeName))
 		if candidateName != "" && maxLen-minLen <= maximumLengthDifference {
 			if candidateName == name {
 				continue

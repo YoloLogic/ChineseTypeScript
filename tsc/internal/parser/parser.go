@@ -109,6 +109,11 @@ func newParser() *Parser {
 
 var viableKeywordSuggestions = scanner.GetViableKeywordSuggestions()
 
+// ChineseTypeScript：汉语别名的「你是不是想写…」候选。作为【回退】使用 ——
+// 英文候选能给出建议时一个字节都不改，因此英文路径的诊断文本与上游逐字相同。
+// 顺序由 scanner.ChineseKeywordSpellings 保证（升序，确定性）。
+var viableChineseKeywordSuggestions = scanner.ChineseKeywordSpellings()
+
 // missingListNodes is a sentinel backing array used to distinguish "missing" node lists
 // (where the expected opening token was not found) from ordinary empty node lists.
 var missingListNodes = make([]*ast.Node, 0, 1)
@@ -2096,7 +2101,18 @@ func (p *Parser) parseErrorForMissingSemicolonAfter(node *ast.Node) {
 	// The user alternatively might have misspelled or forgotten to add a space after a common keyword.
 	suggestion := core.GetSpellingSuggestionForStrings(expressionText, slices.Values(viableKeywordSuggestions))
 	if suggestion == "" {
+		// ChineseTypeScript：只为汉语别名加一段【回退】。英文能给建议时不动，
+		// 所以英文路径的诊断文本与上游逐字相同（铁律①）。
+		suggestion = core.GetSpellingSuggestionForStrings(expressionText, slices.Values(viableChineseKeywordSuggestions))
+	}
+	if suggestion == "" {
 		suggestion = getSpaceSuggestion(expressionText)
+	}
+	if suggestion == "" {
+		suggestion = getSpaceSuggestionIn(expressionText, viableChineseKeywordSuggestions)
+	}
+	if suggestion == "" {
+		suggestion = getChineseKeywordSuggestion(expressionText)
 	}
 	if suggestion != "" {
 		p.parseErrorAt(pos, node.End(), diagnostics.Unknown_keyword_or_identifier_Did_you_mean_0, suggestion)
@@ -2111,12 +2127,90 @@ func (p *Parser) parseErrorForMissingSemicolonAfter(node *ast.Node) {
 }
 
 func getSpaceSuggestion(expressionText string) string {
-	for _, keyword := range viableKeywordSuggestions {
+	return getSpaceSuggestionIn(expressionText, viableKeywordSuggestions)
+}
+
+// getSpaceSuggestionIn 在给定候选里找「忘了加空格」的补救建议。
+// ChineseTypeScript 把它参数化，以便对汉语别名复用同一套逻辑。
+func getSpaceSuggestionIn(expressionText string, keywords []string) string {
+	for _, keyword := range keywords {
 		if len(expressionText) > len(keyword)+2 && strings.HasPrefix(expressionText, keyword) {
 			return keyword + " " + expressionText[len(keyword):]
 		}
 	}
 	return ""
+}
+
+// getChineseKeywordSuggestion 给汉语拼写做一次「恰好差一个汉字」的补救建议。
+//
+// 为什么不直接用 core.GetSpellingSuggestionForStrings：上游的距离权重把「替换」
+// 记作 2，而长度为 2 的名字阈值只有 floor(2*0.4)+0.9 = 1.7 —— 于是「函树」永远
+// 建议不出「函数」。上游对英文 2 字母名【故意】不建议（理由见 core.go 的注释：
+// 「用户通常能注意到两个字的名字的差异」），但汉语译名 71/85 是两个字，
+// 照搬这条会让绝大多数汉语建议失效，所以对汉语单独补一条「只差一个汉字」的判据。
+// 只在前面所有建议都为空时调用，因此英文路径的诊断文本一个字节都不变。
+func getChineseKeywordSuggestion(expressionText string) string {
+	runes := []rune(expressionText)
+	if len(runes) < 2 {
+		return ""
+	}
+	best := ""
+	for _, keyword := range viableChineseKeywordSuggestions {
+		candidate := []rune(keyword)
+		diff := len(candidate) - len(runes)
+		if diff < 0 {
+			diff = -diff
+		}
+		if diff > 1 {
+			continue
+		}
+		if !oneEditApart(runes, candidate) {
+			continue
+		}
+		// 多个候选都只差一个字时取字典序最小者，保证确定性与可复现。
+		if best == "" || keyword < best {
+			best = keyword
+		}
+	}
+	return best
+}
+
+// oneEditApart 判断两个 rune 序列是否【恰好】相差一次插入 / 删除 / 替换。
+func oneEditApart(a []rune, b []rune) bool {
+	if len(a) == len(b) {
+		differences := 0
+		for i := range a {
+			if a[i] != b[i] {
+				differences++
+				if differences > 1 {
+					return false
+				}
+			}
+		}
+		return differences == 1
+	}
+	short, long := a, b
+	if len(short) > len(long) {
+		short, long = long, short
+	}
+	if len(long)-len(short) != 1 {
+		return false
+	}
+	i, j := 0, 0
+	skipped := false
+	for i < len(short) && j < len(long) {
+		if short[i] == long[j] {
+			i++
+			j++
+			continue
+		}
+		if skipped {
+			return false
+		}
+		skipped = true
+		j++
+	}
+	return true
 }
 
 func (p *Parser) parseErrorForInvalidName(nameDiagnostic *diagnostics.Message, blankDiagnostic *diagnostics.Message, tokenIfBlankName ast.Kind) {
@@ -5847,17 +5941,18 @@ func (p *Parser) parseKeywordExpression() *ast.Node {
 // parseUndefinedKeywordExpression 解析【值位置】的 undefined，并把标识符文本归一化成规范拼写。
 //
 // 为什么需要它（ChineseTypeScript 实测发现的真缺口）：
-//   `null` / `true` / `false` 是 JS 的【字面量】，词法关键字直接变成字面量节点，
-//   打印器再从种类取规范拼写 —— 所以汉语拼写（`空值`）与英文完全等价。
-//   但 `undefined` 在 JS 里【不是字面量】，而是全局对象上的一个名字：
-//   上游因此把它按【文字】注册成一个全局符号
-//   （checker.go 的 addUndefinedToGlobalsOrErrorOnRedeclaration：c.globals["undefined"]），
-//   值位置也按普通标识符解析。于是汉语拼写会两头落空：
-//     * 解析：查 c.globals["未定义"] → 不存在 → error TS2304（找不到名字）；
-//     * 产物：标识符按源码拼写打印，而 JS 里没有「未定义」这个全局名
-//             → 运行时 ReferenceError。
-//   在这里把值位置的文本归一化成 "undefined"，两头同时解决；
-//   英文路径完全不受影响（"undefined" 归一化之后还是 "undefined"）。
+//
+//	`null` / `true` / `false` 是 JS 的【字面量】，词法关键字直接变成字面量节点，
+//	打印器再从种类取规范拼写 —— 所以汉语拼写（`空值`）与英文完全等价。
+//	但 `undefined` 在 JS 里【不是字面量】，而是全局对象上的一个名字：
+//	上游因此把它按【文字】注册成一个全局符号
+//	（checker.go 的 addUndefinedToGlobalsOrErrorOnRedeclaration：c.globals["undefined"]），
+//	值位置也按普通标识符解析。于是汉语拼写会两头落空：
+//	  * 解析：查 c.globals["未定义"] → 不存在 → error TS2304（找不到名字）；
+//	  * 产物：标识符按源码拼写打印，而 JS 里没有「未定义」这个全局名
+//	          → 运行时 ReferenceError。
+//	在这里把值位置的文本归一化成 "undefined"，两头同时解决；
+//	英文路径完全不受影响（"undefined" 归一化之后还是 "undefined"）。
 //
 // 只归一化【值位置】：属性名位置（`{ 未定义: 1 }`、`甲.未定义`、字符串键）
 // 是运行时的真实属性名，必须原样保留 —— 它们不走这个函数。

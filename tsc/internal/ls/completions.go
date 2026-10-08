@@ -666,7 +666,7 @@ func (l *LanguageService) getCompletionData(
 		if importStatementCompletionInfo.replacementSpan == nil && isCompletionListBlocker(contextToken, previousToken, location, file, position, typeChecker) {
 			if keywordFilters != KeywordCompletionFiltersNone {
 				isNewIdentifierLocation, _ := computeCommitCharactersAndIsNewIdentifier(contextToken, file, position)
-				return keywordCompletionData(keywordFilters, isJSOnlyLocation, isNewIdentifierLocation), nil
+				return keywordCompletionData(keywordFilters, isJSOnlyLocation, isNewIdentifierLocation, includeChineseKeywordCompletions(file)), nil
 			}
 			return nil, nil
 		}
@@ -1731,7 +1731,7 @@ func (l *LanguageService) getCompletionData(
 				return nil, err
 			}
 			if keywordFilters != KeywordCompletionFiltersNone {
-				return keywordCompletionData(keywordFilters, isJSOnlyLocation, isNewIdentifierLocation), nil
+				return keywordCompletionData(keywordFilters, isJSOnlyLocation, isNewIdentifierLocation, includeChineseKeywordCompletions(file)), nil
 			}
 			return nil, nil
 		}
@@ -1804,9 +1804,10 @@ func keywordCompletionData(
 	keywordFilters KeywordCompletionFilters,
 	filterOutTSOnlyKeywords bool,
 	isNewIdentifierLocation bool,
+	includeChinese bool,
 ) *completionDataKeyword {
 	return &completionDataKeyword{
-		keywordCompletions:      getKeywordCompletions(keywordFilters, filterOutTSOnlyKeywords),
+		keywordCompletions:      getKeywordCompletions(keywordFilters, filterOutTSOnlyKeywords, includeChinese),
 		isNewIdentifierLocation: isNewIdentifierLocation,
 	}
 }
@@ -1883,9 +1884,9 @@ func (l *LanguageService) completionInfoFromData(
 	}
 
 	if data.keywordFilters != KeywordCompletionFiltersNone {
-		keywordCompletions := getKeywordCompletions(data.keywordFilters, !data.insideJSDocTagTypeExpression && ast.IsSourceFileJS(file))
+		keywordCompletions := getKeywordCompletions(data.keywordFilters, !data.insideJSDocTagTypeExpression && ast.IsSourceFileJS(file), includeChineseKeywordCompletions(file))
 		for _, keywordEntry := range keywordCompletions {
-			if data.isTypeOnlyLocation && isTypeKeyword(scanner.StringToToken(keywordEntry.Label)) ||
+			if data.isTypeOnlyLocation && isTypeKeyword(scanner.StringToTokenIncludingChinese(keywordEntry.Label)) ||
 				!data.isTypeOnlyLocation && isContextualKeywordInAutoImportableExpressionSpace(keywordEntry.Label) ||
 				!uniqueNames.Has(keywordEntry.Label) {
 				uniqueNames.Add(keywordEntry.Label)
@@ -3837,8 +3838,19 @@ func CompareCompletionEntries(a, b *lsproto.CompletionItem) int {
 	return result
 }
 
+// keywordCompletionCacheKey 把「过滤器 + 是否滤掉 TS 专有关键字 + 是否含汉语」一起当键。
+//
+// ChineseTypeScript：以前缓存只用过滤器当键；现在同一个过滤器会因「文件是不是 .chts」
+// 有两种结果（见 includeChineseKeywordCompletions），键必须把这一点带进来，
+// 否则 .ts 与 .chts 会互相污染（先请求的那个决定后者的结果）。
+type keywordCompletionCacheKey struct {
+	filter          KeywordCompletionFilters
+	filterOutTsOnly bool
+	includeChinese  bool
+}
+
 var (
-	keywordCompletionsCache = collections.SyncMap[KeywordCompletionFilters, []*lsproto.CompletionItem]{}
+	keywordCompletionsCache = collections.SyncMap[keywordCompletionCacheKey, []*lsproto.CompletionItem]{}
 	allKeywordCompletions   = sync.OnceValue(func() []*lsproto.CompletionItem {
 		result := make([]*lsproto.CompletionItem, 0, ast.KindLastKeyword-ast.KindFirstKeyword+1)
 		for i := ast.KindFirstKeyword; i <= ast.KindLastKeyword; i++ {
@@ -3850,7 +3862,36 @@ var (
 		}
 		return result
 	})
+	// chineseKeywordCompletions 是汉语别名的补全项。顺序来自
+	// scanner.ChineseKeywordAliases（升序，确定性）。它们的 ast.Kind 由
+	// StringToTokenIncludingChinese 反查，所以按类别过滤时与英文同类同进退。
+	chineseKeywordCompletions = sync.OnceValue(func() []*lsproto.CompletionItem {
+		aliases := scanner.ChineseKeywordAliases()
+		result := make([]*lsproto.CompletionItem, 0, len(aliases))
+		for _, alias := range aliases {
+			result = append(result, &lsproto.CompletionItem{
+				Label:    alias.Text,
+				Kind:     new(lsproto.CompletionItemKindKeyword),
+				SortText: new(string(SortTextGlobalsOrKeywords)),
+			})
+		}
+		return result
+	})
+	// allKeywordCompletionsWithChinese = 英文 + 汉语（不改动 allKeywordCompletions 那份共享切片）。
+	allKeywordCompletionsWithChinese = sync.OnceValue(func() []*lsproto.CompletionItem {
+		return append(slices.Clone(allKeywordCompletions()), chineseKeywordCompletions()...)
+	})
 )
+
+// includeChineseKeywordCompletions 决定「这个文件的补全要不要带汉语关键字」。
+//
+// ChineseTypeScript：汉语关键字的【词法层】目前全局生效（取舍见 README 的已知局限），
+// 但把 85 个汉语条目塞进每一个 .ts/.js 文件的补全列表：① 对写英文的人是噪声；
+// ② 会把上游 fourslash 的 exact 补全基线全部撑大。所以补全这一层先按后缀收敛 ——
+// 只有 .chts 文件才给汉语关键字补全。这与 item④「仅 .chts 生效」的方向一致（那一项管词法层）。
+func includeChineseKeywordCompletions(file *ast.SourceFile) bool {
+	return file != nil && strings.HasSuffix(strings.ToLower(file.FileName()), tspath.ExtensionChts)
+}
 
 func cloneItems(items []*lsproto.CompletionItem) []*CompletionItem {
 	if items == nil {
@@ -3864,31 +3905,36 @@ func cloneItems(items []*lsproto.CompletionItem) []*CompletionItem {
 	return entries
 }
 
-func getKeywordCompletions(keywordFilter KeywordCompletionFilters, filterOutTsOnlyKeywords bool) []*CompletionItem {
+func getKeywordCompletions(keywordFilter KeywordCompletionFilters, filterOutTsOnlyKeywords bool, includeChinese bool) []*CompletionItem {
 	if !filterOutTsOnlyKeywords {
-		return cloneItems(getTypescriptKeywordCompletions(keywordFilter))
+		return cloneItems(getTypescriptKeywordCompletions(keywordFilter, includeChinese))
 	}
 
-	index := keywordFilter + KeywordCompletionFiltersLast + 1
-	if cached, ok := keywordCompletionsCache.Load(index); ok {
+	key := keywordCompletionCacheKey{filter: keywordFilter, filterOutTsOnly: true, includeChinese: includeChinese}
+	if cached, ok := keywordCompletionsCache.Load(key); ok {
 		return cloneItems(cached)
 	}
 	result := core.Filter(
-		getTypescriptKeywordCompletions(keywordFilter),
+		getTypescriptKeywordCompletions(keywordFilter, includeChinese),
 		func(ci *lsproto.CompletionItem) bool {
-			return !isTypeScriptOnlyKeyword(scanner.StringToToken(ci.Label))
+			return !isTypeScriptOnlyKeyword(scanner.StringToTokenIncludingChinese(ci.Label))
 		},
 	)
-	keywordCompletionsCache.Store(index, result)
+	keywordCompletionsCache.Store(key, result)
 	return cloneItems(result)
 }
 
-func getTypescriptKeywordCompletions(keywordFilter KeywordCompletionFilters) []*lsproto.CompletionItem {
-	if cached, ok := keywordCompletionsCache.Load(keywordFilter); ok {
+func getTypescriptKeywordCompletions(keywordFilter KeywordCompletionFilters, includeChinese bool) []*lsproto.CompletionItem {
+	key := keywordCompletionCacheKey{filter: keywordFilter, includeChinese: includeChinese}
+	if cached, ok := keywordCompletionsCache.Load(key); ok {
 		return cached
 	}
-	result := core.Filter(allKeywordCompletions(), func(entry *lsproto.CompletionItem) bool {
-		kind := scanner.StringToToken(entry.Label)
+	source := allKeywordCompletions()
+	if includeChinese {
+		source = allKeywordCompletionsWithChinese()
+	}
+	result := core.Filter(source, func(entry *lsproto.CompletionItem) bool {
+		kind := scanner.StringToTokenIncludingChinese(entry.Label)
 		switch keywordFilter {
 		case KeywordCompletionFiltersNone:
 			return false
@@ -3919,7 +3965,7 @@ func getTypescriptKeywordCompletions(keywordFilter KeywordCompletionFilters) []*
 		}
 	})
 
-	keywordCompletionsCache.Store(keywordFilter, result)
+	keywordCompletionsCache.Store(key, result)
 	return result
 }
 
