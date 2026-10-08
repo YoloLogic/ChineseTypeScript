@@ -1525,7 +1525,7 @@ func (r *resolutionState) tryAddingExtensions(extensionless string, extensions e
 			}
 		}
 		return continueSearching()
-	case tspath.ExtensionChts:
+	case tspath.ExtensionChts, tspath.ExtensionDchts:
 		// ChineseTypeScript：导入里显式写了 .chts 时，先找同名 .chts，
 		// 再退回 .ts / .tsx / .d.ts / .js / .jsx（与上面的 .ts 分支同构）。
 		//
@@ -1547,6 +1547,10 @@ func (r *resolutionState) tryAddingExtensions(extensionless string, extensions e
 		}
 		if extensions&extensionsDeclaration != 0 {
 			if resolved := r.tryExtension(tspath.ExtensionDts, extensionless, false); !resolved.shouldContinueSearching() {
+				return resolved
+			}
+			// ChineseTypeScript：声明文件也认 .d.chts（排在 .d.ts 之后，.ts 优先级不变）。
+			if resolved := r.tryExtension(tspath.ExtensionDchts, extensionless, false); !resolved.shouldContinueSearching() {
 				return resolved
 			}
 		}
@@ -1575,6 +1579,10 @@ func (r *resolutionState) tryAddingExtensions(extensionless string, extensions e
 		}
 		if extensions&extensionsDeclaration != 0 {
 			if resolved := r.tryExtension(tspath.ExtensionDts, extensionless, originalExtension == tspath.ExtensionTs || originalExtension == tspath.ExtensionDts); !resolved.shouldContinueSearching() {
+				return resolved
+			}
+			// ChineseTypeScript：无扩展名导入也找 .d.chts（排在 .d.ts 之后）。
+			if resolved := r.tryExtension(tspath.ExtensionDchts, extensionless, false); !resolved.shouldContinueSearching() {
 				return resolved
 			}
 		}
@@ -2113,7 +2121,7 @@ func matchesPatternWithTrailer(target string, name string) bool {
 func extensionIsOk(extensions extensions, extension string) bool {
 	return (extensions&extensionsJavaScript != 0 && (extension == tspath.ExtensionJs || extension == tspath.ExtensionJsx || extension == tspath.ExtensionMjs || extension == tspath.ExtensionCjs) ||
 		(extensions&extensionsTypeScript != 0 && (extension == tspath.ExtensionTs || extension == tspath.ExtensionTsx || extension == tspath.ExtensionMts || extension == tspath.ExtensionCts || extension == tspath.ExtensionChts)) ||
-		(extensions&extensionsDeclaration != 0 && (extension == tspath.ExtensionDts || extension == tspath.ExtensionDmts || extension == tspath.ExtensionDcts)) ||
+		(extensions&extensionsDeclaration != 0 && (extension == tspath.ExtensionDts || extension == tspath.ExtensionDmts || extension == tspath.ExtensionDcts || extension == tspath.ExtensionDchts)) ||
 		(extensions&extensionsJson != 0 && extension == tspath.ExtensionJson))
 }
 

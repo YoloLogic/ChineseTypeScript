@@ -1889,7 +1889,7 @@ func getFilenameWithExtensionOption(
 	if !isExportsOrImportsWildcard &&
 		len(allowedEndings) > 0 &&
 		(allowedEndings[0] == modulespecifiers.ModuleSpecifierEndingMinimal || allowedEndings[0] == modulespecifiers.ModuleSpecifierEndingIndex) &&
-		tspath.FileExtensionIsOneOf(name, []string{tspath.ExtensionJs, tspath.ExtensionJsx, tspath.ExtensionTs, tspath.ExtensionTsx, tspath.ExtensionDts}) {
+		tspath.FileExtensionIsOneOf(name, []string{tspath.ExtensionJs, tspath.ExtensionJsx, tspath.ExtensionTs, tspath.ExtensionTsx, tspath.ExtensionDts, tspath.ExtensionDchts}) {
 		return tspath.RemoveFileExtension(name), tspath.TryGetExtensionFromPath(name)
 	}
 

@@ -66,21 +66,24 @@
 故取 **`.chts`**（= ChineseTypeScript）。扩展名一律**追加在末尾**，
 使 `.ts/.tsx/.d.ts` 的既有优先级与解析顺序一个字节都不变。
 
-## 五、改动清单：上游源码只动了 8 个文件
+## 五、改动清单：上游源码只动了 11 个文件
 
 | # | 文件 | 改动 |
 |---|---|---|
 | 1 | `tsc/internal/scanner/scanner.go` | `GetIdentifierToken` 放开 ASCII 闸：非 ASCII 标识符查独立表 `zhTextToKeyword` |
-| 2 | `tsc/internal/tspath/extension.go` | 新增 `ExtensionChts = ".chts"`；并入 `extensionsToRemove`（**决定输出名**）、`ExtensionIsTs`、各受支持扩展名表、`GetDeclarationEmitExtensionForPath` |
+| 2 | `tsc/internal/tspath/extension.go` | 新增 `ExtensionChts = ".chts"` 与 **`ExtensionDchts = ".d.chts"`**；并入 `extensionsToRemove`（**决定输出名**；`.d.chts` 必须排在 `.chts` 之前）、`ExtensionIsTs`、各受支持扩展名表、`SupportedDeclarationExtensions`（见「六·七」）；`GetDeclarationEmitExtensionForPath` 仍把 `.chts` 映射到标准 `.d.ts` |
 | 3 | `tsc/internal/core/core.go` | ① `.chts` → `ScriptKindTS`；② 修 `getSpellingSuggestion` 的**字节/rune 长度混用**（否则汉语「你是不是想写…」永远命中不了，见「六·六」） |
 | 4 | `tsc/internal/module/resolver.go` | `extensionIsOk` 白名单加 `.chts`；`tryAddingExtensions` 加「无扩展名分支找 `.chts`」+ 新增 `case ExtensionChts` |
 | 5 | `tsc/internal/module/util.go` | `GetResolutionDiagnostic` 的「永远允许」白名单加 `.chts`（否则报 TS6263 说它是"任意扩展名"） |
 | 6 | `tsc/internal/parser/parser.go` | ① `parseUndefinedKeywordExpression`：值位置把「未定义」归一化成规范拼写 `undefined`（见 §九 第 6 条）；② 汉语「你是不是想写…」建议作为**回退**（见「六·六」） |
 | 7 | `tsc/internal/printer/printer.go` | `getTextOfNode`：文本是规范 `undefined` 而源码拼写不是时，用节点文本落盘（与第 6 处配对） |
 | 8 | `tsc/internal/ls/completions.go` | 编辑器补全并入汉语关键字（**只给 `.chts` 文件**）：新增汉语补全表、缓存键带「是否含汉语」、种类反查改用 `StringToTokenIncludingChinese`（见「六·六」） |
+| 9 | `tsc/internal/ast/utilities.go` | `GetImpliedNodeFormatForFile` 把 `.d.chts` 归入**标准 TS 那一类**（按 package.json 决定 ESM/CJS），**不是** CommonJS 那类（见「六·七」） |
+| 10 | `tsc/internal/modulespecifiers/util.go` | 声明扩展名 → JS 扩展名的映射：`.d.chts` → `.js` |
+| 11 | `tsc/internal/ls/string_completions.go` | 字符串补全把 `.d.chts` 当 TS 声明文件（同 `.d.ts`） |
 
-**binder / checker 零改动**；`parser` / `printer` / `ls` / `core` 各为**边界、语言服务或修正**
-加了一小段，都不是为「关键字落成同一个 token」这套机制本身（那套确实只需词法层一处）。
+**binder / checker 零改动**；其余各文件都是为**扩展名、边界、语言服务或修正**加的小段，
+都不是为「关键字落成同一个 token」这套机制本身（那套确实只需词法层一处）。
 
 > 教训：第 4、5 处是**一开始漏掉的**。第一版只改了扩展名表，结果
 > `导入 ... 来自 "./数学"` 报 TS2307 找不到模块 —— 因为解析器里另有一张
@@ -135,6 +138,8 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
 | **打包判定** | `tests-chts/judge_package.ps1`（5 项：真打包 → 解压到中文路径 → 安装 → 包内 16/16 → 破坏必被抓） |
 | **汉语关键字只读 API** | `tsc/internal/scanner/zh_keywords_api.go`（`ChineseKeywordAliases` / `ChineseKeywordSpellings` / `StringToTokenIncludingChinese`，**升序确定性**；`StringToToken` 保持只认英文） |
 | **语言服务判定** | `tests-chts/judge_langservice.ps1`（9 项：三组 Go 守卫 + CLI 真编译三条汉语建议 + 两条负对照） |
+| **声明扩展名守卫** | `tsc/internal/tspath/dchts_extension_test.go`（`.d.chts` 被识别为声明文件、不属 CJS、产出仍 `.d.ts`） |
+| **.d.chts 判定** | `tests-chts/judge_dchts.ps1`（5 项：单独编译 → 无扩展名导入解析 → `tsc -p` → 声明产出 `.d.ts` → 藏起来必报 TS2307） |
 | **一条命令全跑** | `tests-chts/run_all.ps1`（五套核心；`-SkipGoTest` 可跳过最慢的第 4 项。打包判定与语言服务判定单独跑；item① 的 Go 守卫也随 `judge_gotest` 一起跑） |
 
 生成器**不信任任何手写清单**：它自己解析 `scanner.go` 的 `textToKeyword` 得到
@@ -178,6 +183,23 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
   （JS-only 过滤对汉语同样生效、补全确定、`.ts` 不含汉语、缓存不被 `.chts` 污染）；
   五套核心判定不受影响（fourslash 恢复全过、`judge_oss` 600/600 零回归）。
 
+## 六·七、`.d.chts` 声明文件（item②，2026-10-07）
+
+* **支持**：`.d.chts` 被识别为**声明文件**（`IsDeclarationFileName` → true），可被
+  **无扩展名导入**解析到（`./甲` → `甲.d.chts`），`tsc -p` 也会收录它。
+  真跑证据：`judge_dchts.ps1` **5/5**，含「把 `.d.chts` 藏起来后必须报 TS2307」的负对照自测
+  （证明判据测的确实是 `.d.chts` 解析，不是别的东西在兜底）。
+* **产出仍是标准 `.d.ts`**（这是**设计选择**，不是漏做）：`.chts` 是 `.ts` 的平行拼写，
+  声明产出走标准后缀，任何 TS 工具都能直接消费。若要改成上游 `.cts → .d.cts` 那样的
+  `.chts → .d.chts`，只改 `tspath.GetDeclarationEmitExtensionForPath` 一处，
+  并同步 `dchts_extension_test.go` 与 `judge_dchts.ps1` 第④项即可。
+* **边界（绝不能弄错）**：`.d.cts` 是 **CommonJS 语义**（`ExtensionsNotSupportingExtensionlessResolution`、
+  `impliedNodeFormat`、CJS 声明产出），`.d.chts` **不是**；所有 CJS 分支一律没让它进去，
+  由 `dchts_extension_test.go` 的 `TestDchtsIsNotCommonJs` 机器钉住。
+* 实测：`judge_dchts.ps1` **5/5**；五套核心判定不受影响（`judge_oss` 600/600 零回归；
+  `judge_gotest` 的 baseline 预期差异从「一类 `.chts`」扩为「`.chts` + `.d.chts` 两类」，
+  解释器已同步扩了第二类）。
+
 ## 七、判定证据（本轮实测）
 
 ```
@@ -201,6 +223,8 @@ judge_package.ps1   5/5（真打包 51.6 MB → 解压到含中文的外来目�
                     包内 verify 16/16 → 把包内 chtsc 改名后 verify 必失败）
 judge_langservice.ps1  9/9（scanner 5 + parser 4 + ls 6 条 Go 守卫；CLI 三条汉语建议：
                        函树→函数、局部变两→局部变量、如果甲→如果；两条负对照无建议）
+judge_dchts.ps1     5/5（.d.chts 被当成声明文件 → ./甲 解析到 甲.d.chts → tsc -p 收录 →
+                    .chts 开 --declaration 产出标准 .d.ts → 藏起 .d.chts 必报 TS2307）
 ```
 
 > **为什么全集判定要这么麻烦**：加一个新扩展名，会**自然地**改变
@@ -232,7 +256,9 @@ judge_langservice.ps1  9/9（scanner 5 + parser 4 + ls 6 条 Go 守卫；CLI 三
    用户若把 `对象`/`变量`/`函数` 这类词当**标识符**用会与关键字撞。
    英文关键字永远可写，是逃生通道。（若要改成「仅 `.chts` 生效」，需把
    `GetIdentifierToken` 从包级函数改成扫描器方法并逐处传标志，属未做项。）
-2. **`.d.chts` 声明文件不支持**。
+2. ~~**`.d.chts` 声明文件不支持**~~ —— **已支持**（2026-10-07，见「六·七」）：
+   `.d.chts` 被识别为声明文件、可被无扩展名导入解析、`tsc -p` 收录。
+   **但 `.chts` 开 `--declaration` 产出的仍是标准 `.d.ts`**（设计选择，理由与改法见六·七）。
 3. ~~**语言服务尚未把汉语关键字加入补全建议**~~ —— **已做**（2026-10-07，见「六·六」）：
    编辑器补全（**只给 `.chts` 文件**）与「你是不是想写…」建议都认汉语关键字。
    **但编辑器侧尚未打包/配置**：发行包里没有 `.vscode` 模板，用户要自己把
@@ -278,4 +304,5 @@ judge_langservice.ps1  9/9（scanner 5 + parser 4 + ls 6 条 Go 守卫；CLI 三
 （含**全部** 5894 个真实 TS 文件的全量零回归、与上游 Go 测试全集逐行核对，
 以及「未定义」值位置归一化的修复与第 ⑪ 节守卫）；
 另加**独立发行包（0.1）**与打包判定；
-item①：**语言服务与建议**认汉语（含 `.chts` 限定、`core` 的字节/rune 修正），语言服务判定 9/9。
+item①：**语言服务与建议**认汉语（含 `.chts` 限定、`core` 的字节/rune 修正），语言服务判定 9/9；
+item②：**`.d.chts` 声明文件**可识别、可解析（产出仍为标准 `.d.ts`），.d.chts 判定 5/5。

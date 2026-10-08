@@ -1,6 +1,6 @@
 # ChineseTypeScript 全集回归判定（跑上游自带的 Go 测试全集，与基线对照）
 #
-# 这是本项目最硬的一条回归证据。做法：
+# 这是本项目最硬的一条回归证据。做法（预期差异有两类：.chts 与其声明 .d.chts）：
 #   1) 在【上游基线工作树】跑一次 go test ./...     （未改动的 e26b8d24）
 #   2) 在【工作副本】跑一次 go test ./...           （含汉语关键字）
 #   3) 对比两边【失败的包集合】
@@ -116,7 +116,10 @@ if (-not (Test-Path $locRoot)) {
         foreach ($r in $rm) {
             $matched = $false
             foreach ($a in $ad) {
-                if ($a.Replace("'.chts', ", '').Replace('".chts", ', '') -ceq $r) { $matched = $true; break }
+                # 预期的新增有两类：.chts 与其声明文件 .d.chts（都追加在受支持扩展名列表末尾）。
+                # 剥离顺序无关：'.d.chts', 里并不含子串 '.chts', 。
+                $candidate = $a.Replace("'.d.chts', ", '').Replace('".d.chts", ', '').Replace("'.chts', ", '').Replace('".chts", ', '')
+                if ($candidate -ceq $r) { $matched = $true; break }
             }
             if (-not $matched) { $prob += "旧行无法用『插入 .chts』解释: $($r.Trim())" }
         }
@@ -124,7 +127,7 @@ if (-not (Test-Path $locRoot)) {
         if ($prob.Count -eq 0) { $ok++ } else { $bad += "$rel -> $($prob[0])" }
     }
     Check '④ baseline 差异逐行可解释' ($bad.Count -eq 0) `
-        "$ok / $($files.Count) 个文件合规；新增行 $added 条、被改行 $changed 条，全部可用『插入 .chts』解释"
+        "$ok / $($files.Count) 个文件合规；新增行 $added 条、被改行 $changed 条，全部可用『插入 .chts/.d.chts』解释"
     if ($bad.Count -gt 0) { $bad | Select-Object -First 10 | ForEach-Object { Write-Host "     $_" } }
 }
 

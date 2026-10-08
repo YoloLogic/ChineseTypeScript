@@ -148,6 +148,8 @@ func GetJSExtensionForDeclarationFileExtension(ext string) string {
 		return tspath.ExtensionMjs
 	case tspath.ExtensionDcts:
 		return tspath.ExtensionCjs
+	case tspath.ExtensionDchts:
+		return tspath.ExtensionJs
 	default:
 		// .d.json.ts and the like
 		return ext[len(".d") : len(ext)-len(tspath.ExtensionTs)]

@@ -160,8 +160,9 @@ func GetResolutionDiagnostic(options *core.CompilerOptions, resolvedModule *Reso
 		tspath.ExtensionMts, tspath.ExtensionDmts,
 		tspath.ExtensionCts, tspath.ExtensionDcts,
 		// ChineseTypeScript：.chts 是原生 TS 家族的实现扩展名，
-		// 不是「任意扩展名」（后者才需要 --allowArbitraryExtensions）。
-		tspath.ExtensionChts:
+		// .d.chts 是它的声明文件；两者都不是「任意扩展名」
+		// （后者才需要 --allowArbitraryExtensions）。
+		tspath.ExtensionChts, tspath.ExtensionDchts:
 		// These are always allowed.
 		return nil
 	case tspath.ExtensionTsx:
@@ -185,7 +186,7 @@ func GetResolutionDiagnostic(options *core.CompilerOptions, resolvedModule *Reso
 func TryGetJSExtensionForFile(fileName string, options *core.CompilerOptions) string {
 	ext := tspath.TryGetExtensionFromPath(fileName)
 	switch ext {
-	case tspath.ExtensionTs, tspath.ExtensionDts:
+	case tspath.ExtensionTs, tspath.ExtensionDts, tspath.ExtensionDchts:
 		return tspath.ExtensionJs
 	case tspath.ExtensionTsx:
 		if options.Jsx == core.JsxEmitPreserve {
