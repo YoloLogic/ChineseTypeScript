@@ -388,7 +388,6 @@ func getImportAttributesKey(attributes *ast.ImportAttributesNode) string {
 // groupByNewlineContiguous groups declarations by blank lines between them.
 func groupByNewlineContiguous(sourceFile *ast.SourceFile, decls []*ast.Statement) [][]*ast.Statement {
 	s := scanner.NewScanner()
-	s.SetAllowChineseKeywords(scanner.IsChineseTypeScriptFileName(sourceFile.FileName()))
 	s.SetSkipTrivia(false) // Must not skip trivia to detect newlines
 	var groups [][]*ast.Statement
 	var currentGroup []*ast.Statement

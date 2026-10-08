@@ -125,23 +125,24 @@ func TestNoDuplicateKeywordCompletionLabels(t *testing.T) {
 	}
 }
 
-func TestChineseKeywordsOnlyForChtsFiles(t *testing.T) {
+func TestChineseKeywordsAvailableInAllFiles(t *testing.T) {
 	t.Parallel()
-	if includeChineseKeywordCompletions(testSourceFile("/a.ts")) {
-		t.Fatal(".ts 文件不该给汉语关键字补全")
+	// 本项目用普通 .ts 写汉语关键字（没有单独的 .chts 后缀），所以补全对所有文件都带汉语。
+	if !includeChineseKeywordCompletions(testSourceFile("/a.ts")) {
+		t.Fatal(".ts 文件必须给汉语关键字补全（能写就提示）")
 	}
 	if !includeChineseKeywordCompletions(testSourceFile("/a.chts")) {
-		t.Fatal(".chts 文件必须给汉语关键字补全")
+		t.Fatal("任何文件都必须给汉语关键字补全")
 	}
 
 	zh := zhKindByText()
 	enOnly := completionLabels(getKeywordCompletions(KeywordCompletionFiltersTypeKeywords, false, false))
 	if hasChineseLabel(enOnly, zh) {
-		t.Fatalf("英文模式（.ts）的类型补全里混进了汉语关键字：%v", enOnly)
+		t.Fatalf("显式关掉汉语时不该混进汉语关键字：%v", enOnly)
 	}
 	withZh := completionLabels(getKeywordCompletions(KeywordCompletionFiltersTypeKeywords, false, true))
 	if !hasChineseLabel(withZh, zh) {
-		t.Fatalf("汉语模式（.chts）的类型补全里没有汉语关键字：%v", withZh)
+		t.Fatalf("含汉语模式的类型补全里没有汉语关键字：%v", withZh)
 	}
 }
 

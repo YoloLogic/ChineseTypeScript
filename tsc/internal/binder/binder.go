@@ -1302,7 +1302,7 @@ func (b *Binder) checkContextualIdentifier(node *ast.Node) {
 	// Report error only if there are no parse errors in file
 	if len(b.file.Diagnostics()) == 0 && node.Flags&ast.NodeFlagsAmbient == 0 && node.Flags&ast.NodeFlagsJSDoc == 0 && !ast.IsIdentifierName(node) {
 		// strict mode identifiers
-		originalKeywordKind := scanner.GetIdentifierTokenForFileName(b.file.FileName(), node.Text())
+		originalKeywordKind := scanner.GetIdentifierToken(node.Text())
 		if originalKeywordKind == ast.KindIdentifier {
 			return
 		}

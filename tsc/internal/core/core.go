@@ -532,8 +532,7 @@ func GetScriptKindFromFileName(fileName string) ScriptKind {
 			return ScriptKindJS
 		case tspath.ExtensionJsx:
 			return ScriptKindJSX
-		case tspath.ExtensionTs, tspath.ExtensionCts, tspath.ExtensionMts, tspath.ExtensionChts:
-			// .chts = ChineseTypeScript，按 TS 处理（其中可书写汉语关键字）。
+		case tspath.ExtensionTs, tspath.ExtensionCts, tspath.ExtensionMts:
 			return ScriptKindTS
 		case tspath.ExtensionTsx:
 			return ScriptKindTSX

@@ -1,4 +1,4 @@
-# 构建 ChineseTypeScript 的命令行编译器：chtsc.exe
+﻿# 构建 ChineseTypeScript 的命令行编译器：chtsc.exe
 #
 # 【命令名为什么是 chtsc，以及为什么这是零成本的】（已核查，不是假设）
 #   * 全仓【没有一处】按 os.Args[0]（"我叫什么名字"）分支的代码 ——
@@ -54,11 +54,11 @@ Write-Host '=== 2) 产物自证：版本号 ==='
 & $chtsc --version 2>&1 | ForEach-Object { "  $_" }
 
 Write-Host ''
-Write-Host '=== 3) 产物自证：真编译一个 .chts 并真跑 ==='
+Write-Host '=== 3) 产物自证：真编译一个 .ts 并真跑 ==='
 $smoke = Join-Path $OutDir 'chtsc-smoke'
 if (Test-Path $smoke) { Remove-Item $smoke -Recurse -Force }
 New-Item -ItemType Directory -Force -Path $smoke | Out-Null
-$demo = Join-Path $repo 'tests-chts\demo.chts'
+$demo = Join-Path $repo 'tests-chts\demo.ts'
 & $chtsc $demo --outDir $smoke --target es2020 --module commonjs --pretty false 2>&1 | ForEach-Object { "  $_" }
 $js = Join-Path $smoke 'demo.js'
 if (-not (Test-Path $js)) { throw "自证失败：没有产出 demo.js" }

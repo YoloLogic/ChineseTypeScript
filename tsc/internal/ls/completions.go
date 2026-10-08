@@ -2406,9 +2406,7 @@ func (l *LanguageService) createCompletionItem(
 			if parentNamedImportOrExport.Kind == ast.KindNamedImports {
 				// Check if it is `import { ^here as name } from '...'``.
 				// We have to access the scanner here to check if it is `{ ^here as name }`` or `{ ^here, as, name }`.
-				allowChinese := scanner.IsChineseTypeScriptFileName(file.FileName())
 				scanner := scanner.NewScanner()
-				scanner.SetAllowChineseKeywords(allowChinese)
 				scanner.SetText(file.Text())
 				scanner.ResetPos(position)
 				if !(scanner.Scan() == ast.KindAsKeyword && scanner.Scan() == ast.KindIdentifier) {
@@ -3887,12 +3885,11 @@ var (
 
 // includeChineseKeywordCompletions 决定「这个文件的补全要不要带汉语关键字」。
 //
-// ChineseTypeScript：汉语关键字的【词法层】目前全局生效（取舍见 README 的已知局限），
-// 但把 85 个汉语条目塞进每一个 .ts/.js 文件的补全列表：① 对写英文的人是噪声；
-// ② 会把上游 fourslash 的 exact 补全基线全部撑大。所以补全这一层先按后缀收敛 ——
-// 只有 .chts 文件才给汉语关键字补全。这与 item④「仅 .chts 生效」的方向一致（那一项管词法层）。
+// ChineseTypeScript：本项目的用法就是【普通 .ts 里写汉语关键字】（没有单独的 .chts 后缀），
+// 所以补全对所有文件都带汉语关键字 —— 能写就提示，体验才完整。
+// 代价：上游 fourslash 的 exact 补全基线会多出汉语候选（判定里如实登记）。
 func includeChineseKeywordCompletions(file *ast.SourceFile) bool {
-	return file != nil && strings.HasSuffix(strings.ToLower(file.FileName()), tspath.ExtensionChts)
+	return file != nil
 }
 
 func cloneItems(items []*lsproto.CompletionItem) []*CompletionItem {

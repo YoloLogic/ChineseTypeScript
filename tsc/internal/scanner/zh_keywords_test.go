@@ -108,21 +108,13 @@ func TestTokenToTextHasNoChinese(t *testing.T) {
 	}
 }
 
-// TestChineseKeywordsAreRecognized 校核 item④ 的作用域：
-// 汉语拼写只在 .chts（含 .d.chts）里被认成关键字；.ts 与「无文件上下文」都不认。
+// TestChineseKeywordsAreRecognized 校核正向效果：
+// 每个汉语拼写都必须被 GetIdentifierToken 认成它对应的关键字 ——
+// 本项目用普通 .ts 写汉语关键字，所以【对所有文件一视同仁】。
 func TestChineseKeywordsAreRecognized(t *testing.T) {
 	for zh, want := range zhTextToKeyword {
-		if got := GetIdentifierTokenForFileName("a.chts", zh); got != want {
-			t.Errorf("GetIdentifierTokenForFileName(a.chts, %q) = %v，期望 %v", zh, got, want)
-		}
-		if got := GetIdentifierTokenForFileName("a.d.chts", zh); got != want {
-			t.Errorf("GetIdentifierTokenForFileName(a.d.chts, %q) = %v，期望 %v（声明文件也认）", zh, got, want)
-		}
-		if got := GetIdentifierTokenForFileName("a.ts", zh); got != ast.KindIdentifier {
-			t.Errorf("GetIdentifierTokenForFileName(a.ts, %q) = %v，期望 KindIdentifier（.ts 里汉语只是标识符）", zh, got)
-		}
-		if got := GetIdentifierToken(zh); got != ast.KindIdentifier {
-			t.Errorf("GetIdentifierToken(%q) = %v，期望 KindIdentifier（无文件上下文只认英文）", zh, got)
+		if got := GetIdentifierToken(zh); got != want {
+			t.Errorf("GetIdentifierToken(%q) = %v，期望 %v", zh, got, want)
 		}
 	}
 }

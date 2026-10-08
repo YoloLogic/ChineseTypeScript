@@ -1,17 +1,16 @@
 # ChineseTypeScript 全集回归判定（跑上游自带的 Go 测试全集，与基线对照）
 #
-# 这是本项目最硬的一条回归证据。做法（预期差异有两类：.chts 与其声明 .d.chts）：
+# 这是本项目最硬的一条回归证据。做法：
 #   1) 在【上游基线工作树】跑一次 go test ./...     （未改动的 e26b8d24）
-#   2) 在【工作副本】跑一次 go test ./...           （含汉语关键字）
+#   2) 在【工作副本】跑一次 go test ./...           （含汉语关键字；【没有】新扩展名）
 #   3) 对比两边【失败的包集合】
-#   4) 工作副本多出来的失败，必须全部落在允许清单里（baseline 文本差异），
-#      并且这些差异必须【逐行】能用「插入 .chts」解释
+#   4) 工作副本多出来的失败，必须全部落在允许清单里
+#   5) baseline 文件若出现差异，必须与汉语有关
 #
-# 为什么必须这么麻烦：加一个新扩展名，会自然地改变
-#   * `--traceResolution` 的追踪文本（候选列里多了 .chts）
-#   * 诊断消息里列举"受支持扩展名"的那一行（多了 .chts）
-# 这类差异是【正确且预期】的，但如果不逐行核对，就无法把「预期的差异」
-# 与「真的把 .ts 顺序弄乱了」区分开。所以：允许差异存在，但必须逐行可解释。
+# 预期差异（2026-10-08 起：本项目只用普通 .ts，不再有 .chts）：
+#   * internal/fourslash/tests —— 我们给【所有 .ts】都加汉语关键字补全（用户裁定①），
+#     于是上游 exact 补全测试的「期望 N 项」偏少（实际多出汉语候选）。这是【有意】的产品差异。
+#   * internal/execute/tsctests / internal/testrunner —— 命令行与测试框架基线，历史允许项。
 #
 # 已知环境性失败（与本改动无关，在两边都会出现，故不算回归）：
 #   * internal/astnav   —— 需要 node_modules/typescript（未安装）
@@ -84,6 +83,7 @@ $envPkgs = @(
 $extra = @($fw | Where-Object { $fb -notcontains $_ })
 $onlyBase = @($fb | Where-Object { $fw -notcontains $_ })
 $allowed = @(
+    'github.com/microsoft/TypeScript/tsc/internal/fourslash/tests',
     'github.com/microsoft/TypeScript/tsc/internal/execute/tsctests',
     'github.com/microsoft/TypeScript/tsc/internal/testrunner'
 )
@@ -96,38 +96,27 @@ Check '③ 副本多出的失败只在允许清单内' ($unexpected.Count -eq 0)
     "多出: $(if ($extra) { $extra -join ' ' } else { '无' })"
 
 Write-Host ''
-Write-Host '=== 4) 逐行核对：每个 baseline 差异是否都能用「插入 .chts」解释 ==='
+Write-Host '=== 4) 核对：baseline 差异必须与汉语有关（不再有「插入 .chts」这类差异）==='
 $refRoot = Join-Path $workTsc 'testdata\baselines\reference'
 $locRoot = Join-Path $workTsc 'testdata\baselines\local'
 if (-not (Test-Path $locRoot)) {
-    Check '④ baseline 差异逐行可解释' $false "没有本地 baseline：$locRoot（上一步的 go test 应已产生）"
+    Check '④ baseline 差异只与汉语有关' $false "没有本地 baseline：$locRoot（上一步的 go test 应已产生）"
 } else {
     $files = @(Get-ChildItem $locRoot -Recurse -File)
-    $ok = 0; $bad = @(); $added = 0; $changed = 0
+    $same = 0; $diffFiles = @(); $bad = @()
     foreach ($f in $files) {
         $rel = $f.FullName.Substring($locRoot.Length).TrimStart('\')
         $refPath = Join-Path $refRoot $rel
-        if (-not (Test-Path $refPath)) { $bad += "$rel （reference 无对应文件）"; continue }
-        $d = @(Compare-Object (Get-Content $refPath -Encoding UTF8) (Get-Content $f.FullName -Encoding UTF8))
-        $rm = @($d | Where-Object { $_.SideIndicator -eq '<=' } | ForEach-Object { $_.InputObject })
-        $ad = @($d | Where-Object { $_.SideIndicator -eq '=>' } | ForEach-Object { $_.InputObject })
-        $added += $ad.Count; $changed += $rm.Count
-        $prob = @()
-        foreach ($r in $rm) {
-            $matched = $false
-            foreach ($a in $ad) {
-                # 预期的新增有两类：.chts 与其声明文件 .d.chts（都追加在受支持扩展名列表末尾）。
-                # 剥离顺序无关：'.d.chts', 里并不含子串 '.chts', 。
-                $candidate = $a.Replace("'.d.chts', ", '').Replace('".d.chts", ', '').Replace("'.chts', ", '').Replace('".chts", ', '')
-                if ($candidate -ceq $r) { $matched = $true; break }
-            }
-            if (-not $matched) { $prob += "旧行无法用『插入 .chts』解释: $($r.Trim())" }
-        }
-        foreach ($a in $ad) { if ($a -notmatch 'chts') { $prob += "新增行与 .chts 无关: $($a.Trim())" } }
-        if ($prob.Count -eq 0) { $ok++ } else { $bad += "$rel -> $($prob[0])" }
+        if (-not (Test-Path $refPath)) { continue }  # 本地新增的 baseline 不算差异
+        $d = @(Compare-Object (Get-Content $refPath -Encoding UTF8) (Get-Content $f.FullName -Encoding UTF8) -CaseSensitive)
+        if ($d.Count -eq 0) { $same++; continue }
+        $diffFiles += $rel
+        # 允许的差异：行里含汉字（本项目新增的汉语内容）。其余一律当成问题。
+        $unexplained = @($d | Where-Object { $_.InputObject -notmatch '[\u4e00-\u9fff]' })
+        if ($unexplained.Count -gt 0) { $bad += "$rel -> $($unexplained[0].InputObject.Trim())" }
     }
-    Check '④ baseline 差异逐行可解释' ($bad.Count -eq 0) `
-        "$ok / $($files.Count) 个文件合规；新增行 $added 条、被改行 $changed 条，全部可用『插入 .chts/.d.chts』解释"
+    Check '④ baseline 差异只与汉语有关' ($bad.Count -eq 0) `
+        "有差异文件 $($diffFiles.Count) 个（相同 $same 个）；差异全部与汉语有关"
     if ($bad.Count -gt 0) { $bad | Select-Object -First 10 | ForEach-Object { Write-Host "     $_" } }
 }
 

@@ -1,16 +1,16 @@
-# ChineseTypeScript 判定脚本（真编译 · 真运行 · 逐字节比对）
+﻿# ChineseTypeScript 判定脚本（真编译 · 真运行 · 逐字节比对）
 #
 # 判定项：
 #   ① 生成器幂等：go run ./cmd/genzhkeywords -check 通过
 #   ② 汉语关键字机器守卫：go test ./internal/scanner/... 全绿
 #   ③ 英文路径【逐字节不变】：同一个 demo_en.ts 用上游基线 tsc 与本编译器编译，
 #      生成的 js 必须逐字节相同（这是「随便拿一个开源 TypeScript 项目照样编得过」的机器代理）
-#   ④ 汉语源可编译：demo.chts 编译通过，且输出文件名是 demo.js（不是 demo.chts.js）
+#   ④ 汉语源可编译：demo.ts 编译通过，且输出文件名是 demo.js（不是 demo.ts.js）
 #   ⑤ 生成的 js 是【标准英文关键字】：85 个汉语译名一个都不许出现在产物里
 #   ⑥ 真运行：node 跑产物，stdout 与英文对照的 stdout 完全一致
-#   ⑦ 非关键字汉语标识符仍然合法：demo_ident.chts 编译并运行通过
+#   ⑦ 非关键字汉语标识符仍然合法：demo_ident.ts 编译并运行通过
 #   ⑧ --strict 下同样编译并真跑通过
-#   ⑨ 关键字当【属性名】仍合法（prop.chts：对象字面量键 / 点号成员 / 字符串键）
+#   ⑨ 关键字当【属性名】仍合法（prop.ts：对象字面量键 / 点号成员 / 字符串键）
 #   ⑩ 对照表新鲜度守卫【自带自测】：故意改坏 docs\中文对照表.md，
 #      genzhkeywords -check 必须失败；恢复后必须通过
 #      （— 判据要能失败，否则它是橡皮图章）
@@ -112,14 +112,14 @@ if ($enBothExist) {
 }
 
 Write-Host ''
-Write-Host '=== 4) 汉语源 demo.chts 编译 ==='
-$chtsSrc = Join-Path $repo 'tests-chts\demo.chts'
+Write-Host '=== 4) 汉语源 demo.ts 编译 ==='
+$chtsSrc = Join-Path $repo 'tests-chts\demo.ts'
 $chtsLog = & $chtsTsc $chtsSrc --outDir $outChts --target es2020 --module commonjs 2>&1 | Out-String
 $chtsJs = Join-Path $outChts 'demo.js'
-$wrongJs = Join-Path $outChts 'demo.chts.js'
+$wrongJs = Join-Path $outChts 'demo.ts.js'
 $compiled = Test-Path $chtsJs
 Check '④ 汉语源编译并输出 demo.js' ($compiled -and -not (Test-Path $wrongJs)) `
-    "demo.js=$(Test-Path $chtsJs) 误产物 demo.chts.js=$(Test-Path $wrongJs)"
+    "demo.js=$(Test-Path $chtsJs) 误产物 demo.ts.js=$(Test-Path $wrongJs)"
 if (-not $compiled) { Write-Host $chtsLog }
 
 Write-Host ''
@@ -148,7 +148,7 @@ if ($compiled) {
 
 Write-Host ''
 Write-Host '=== 7) 非关键字汉语标识符仍然合法 ==='
-$identSrc = Join-Path $repo 'tests-chts\demo_ident.chts'
+$identSrc = Join-Path $repo 'tests-chts\demo_ident.ts'
 $identLog = & $chtsTsc $identSrc --outDir $outIdent --target es2020 --module commonjs 2>&1 | Out-String
 $identJs = Join-Path $outIdent 'demo_ident.js'
 $identOk = Test-Path $identJs
@@ -179,7 +179,7 @@ Write-Host '=== 9) 关键字当【属性名】仍合法（保留的是标识符�
 $outProp = Join-Path $Work 'out-prop'
 if (Test-Path $outProp) { Remove-Item $outProp -Recurse -Force }
 New-Item -ItemType Directory -Force -Path $outProp | Out-Null
-$propSrc = Join-Path $repo 'tests-chts\prop.chts'
+$propSrc = Join-Path $repo 'tests-chts\prop.ts'
 $propLog = & $chtsTsc $propSrc --outDir $outProp --target es2020 --module commonjs --pretty false 2>&1 | Out-String
 $propJs = Join-Path $outProp 'prop.js'
 $propOk = ($LASTEXITCODE -eq 0) -and (Test-Path $propJs)
@@ -220,7 +220,7 @@ Write-Host '=== 11) 汉语拼写的 undefined：值位置归一化，属性名�
 $outU = Join-Path $Work 'out-undefined'
 if (Test-Path $outU) { Remove-Item $outU -Recurse -Force }
 New-Item -ItemType Directory -Force -Path $outU | Out-Null
-$uSrc = Join-Path $repo 'tests-chts\undefined.chts'
+$uSrc = Join-Path $repo 'tests-chts\undefined.ts'
 $uLog = & $chtsTsc $uSrc --outDir $outU --target es2020 --module commonjs --pretty false 2>&1 | Out-String
 $uJs = Join-Path $outU 'undefined.js'
 $uOk = ($LASTEXITCODE -eq 0) -and (Test-Path $uJs)

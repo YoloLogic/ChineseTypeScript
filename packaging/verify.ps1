@@ -1,4 +1,4 @@
-# ============================================================================
+﻿# ============================================================================
 #  verify.ps1 -- prove THIS PACKAGE works, from inside the package.
 #
 #  Why this is separate from the repo's tests-chts judges
@@ -115,7 +115,7 @@ if ($enCompiled) {
 
 # ---------------------------------------------------------------------------
 Write-Host ''
-Write-Host '--- 4) Chinese .chts compiles, and the produced js is STANDARD English JS'
+Write-Host '--- 4) Chinese .ts compiles, and the produced js is STANDARD English JS'
 #    Shape used: class / constructor / this / return / const / new / if / else
 # ---------------------------------------------------------------------------
 $tType  = -join @([char]0x7C7B, [char]0x578B)                 # class
@@ -132,7 +132,7 @@ $tNew   = -join @([char]0x65B0, [char]0x5EFA)                 # new
 $tIf    = -join @([char]0x5982, [char]0x679C)                 # if
 $tElse  = -join @([char]0x5426, [char]0x5219)                 # else
 
-$zhSrc = Join-Path $tmp 'shape.chts'
+$zhSrc = Join-Path $tmp 'shape.ts'
 $zhLines = @(
     ($tType + ' ' + $tRect + ' {'),
     ('  ' + $tWide + ': ' + $tNum),
@@ -148,10 +148,10 @@ $zhOut = Join-Path $tmp 'zh'
 New-Item -ItemType Directory -Force $zhOut | Out-Null
 $logZh = (& $chtsc $zhSrc --outDir $zhOut --target es2020 --module commonjs --pretty false 2>&1 | Out-String)
 $zhJs    = Join-Path $zhOut 'shape.js'
-$zhWrong = Join-Path $zhOut 'shape.chts.js'
+$zhWrong = Join-Path $zhOut 'shape.ts.js'
 $zhCompiled = ($LASTEXITCODE -eq 0) -and (Test-Path $zhJs) -and (-not (Test-Path $zhWrong))
-if ($zhCompiled) { Ok 'Chinese .chts compiles to shape.js (not shape.chts.js)' }
-else { Bad ('Chinese .chts did not compile correctly: ' + (T $logZh)) }
+if ($zhCompiled) { Ok 'Chinese .ts compiles to shape.js (not shape.ts.js)' }
+else { Bad ('Chinese .ts did not compile correctly: ' + (T $logZh)) }
 
 if ($zhCompiled) {
     $jsText = [System.IO.File]::ReadAllText($zhJs)
@@ -195,8 +195,8 @@ foreach ($p in @($tbl, $tutMd, $tutDocx)) {
 }
 
 $exDir = Join-Path $here $nameEx
-$exFiles = @(Get-ChildItem $exDir -Filter '*.chts' -File -ErrorAction SilentlyContinue)
-if ($exFiles.Count -ge 9) { Ok ('examples shipped (' + $exFiles.Count + ' .chts files)') }
+$exFiles = @(Get-ChildItem $exDir -Filter '*.ts' -File -ErrorAction SilentlyContinue)
+if ($exFiles.Count -ge 9) { Ok ('examples shipped (' + $exFiles.Count + ' .ts files)') }
 else { Bad ('examples missing or incomplete in ' + $nameEx + ' (' + $exFiles.Count + ' files)') }
 
 # ---------------------------------------------------------------------------

@@ -1525,44 +1525,6 @@ func (r *resolutionState) tryAddingExtensions(extensionless string, extensions e
 			}
 		}
 		return continueSearching()
-	case tspath.ExtensionChts, tspath.ExtensionDchts:
-		// ChineseTypeScript：导入里显式写了 .chts 时，先找同名 .chts，
-		// 再退回 .ts / .tsx / .d.ts / .js / .jsx（与上面的 .ts 分支同构）。
-		//
-		// resolvedUsingTsExtension 置为 true，与上游对「显式写 .ts 扩展名」的处理一致：
-		// 于是要产出可运行的 js，需要同时打开
-		//     --allowImportingTsExtensions --rewriteRelativeImportExtensions
-		// （上游 TS 5.7 起允许这两者共存；只开 rewrite 会报 TS2876「unsafe to rewrite」，
-		//  两个都不开则报 TS5097）。推荐用法仍是【无扩展名导入】，那不需要任何额外选项。
-		if extensions&extensionsTypeScript != 0 {
-			if resolved := r.tryExtension(tspath.ExtensionChts, extensionless, true); !resolved.shouldContinueSearching() {
-				return resolved
-			}
-			if resolved := r.tryExtension(tspath.ExtensionTs, extensionless, false); !resolved.shouldContinueSearching() {
-				return resolved
-			}
-			if resolved := r.tryExtension(tspath.ExtensionTsx, extensionless, false); !resolved.shouldContinueSearching() {
-				return resolved
-			}
-		}
-		if extensions&extensionsDeclaration != 0 {
-			if resolved := r.tryExtension(tspath.ExtensionDts, extensionless, false); !resolved.shouldContinueSearching() {
-				return resolved
-			}
-			// ChineseTypeScript：声明文件也认 .d.chts（排在 .d.ts 之后，.ts 优先级不变）。
-			if resolved := r.tryExtension(tspath.ExtensionDchts, extensionless, false); !resolved.shouldContinueSearching() {
-				return resolved
-			}
-		}
-		if extensions&extensionsJavaScript != 0 {
-			if resolved := r.tryExtension(tspath.ExtensionJs, extensionless, false); !resolved.shouldContinueSearching() {
-				return resolved
-			}
-			if resolved := r.tryExtension(tspath.ExtensionJsx, extensionless, false); !resolved.shouldContinueSearching() {
-				return resolved
-			}
-		}
-		return continueSearching()
 	case tspath.ExtensionTs, tspath.ExtensionDts, tspath.ExtensionJs, "":
 		if extensions&extensionsTypeScript != 0 {
 			if resolved := r.tryExtension(tspath.ExtensionTs, extensionless, originalExtension == tspath.ExtensionTs || originalExtension == tspath.ExtensionDts); !resolved.shouldContinueSearching() {
@@ -1571,18 +1533,9 @@ func (r *resolutionState) tryAddingExtensions(extensionless string, extensions e
 			if resolved := r.tryExtension(tspath.ExtensionTsx, extensionless, originalExtension == tspath.ExtensionTs || originalExtension == tspath.ExtensionDts); !resolved.shouldContinueSearching() {
 				return resolved
 			}
-			// ChineseTypeScript：无扩展名导入也找 .chts。
-			// 放在 .ts/.tsx 之后，使 .ts 的既有优先级完全不变（.chts 一律追加在末尾）。
-			if resolved := r.tryExtension(tspath.ExtensionChts, extensionless, false); !resolved.shouldContinueSearching() {
-				return resolved
-			}
 		}
 		if extensions&extensionsDeclaration != 0 {
 			if resolved := r.tryExtension(tspath.ExtensionDts, extensionless, originalExtension == tspath.ExtensionTs || originalExtension == tspath.ExtensionDts); !resolved.shouldContinueSearching() {
-				return resolved
-			}
-			// ChineseTypeScript：无扩展名导入也找 .d.chts（排在 .d.ts 之后）。
-			if resolved := r.tryExtension(tspath.ExtensionDchts, extensionless, false); !resolved.shouldContinueSearching() {
 				return resolved
 			}
 		}
@@ -2120,8 +2073,8 @@ func matchesPatternWithTrailer(target string, name string) bool {
 /** True if `extension` is one of the supported `extensions`. */
 func extensionIsOk(extensions extensions, extension string) bool {
 	return (extensions&extensionsJavaScript != 0 && (extension == tspath.ExtensionJs || extension == tspath.ExtensionJsx || extension == tspath.ExtensionMjs || extension == tspath.ExtensionCjs) ||
-		(extensions&extensionsTypeScript != 0 && (extension == tspath.ExtensionTs || extension == tspath.ExtensionTsx || extension == tspath.ExtensionMts || extension == tspath.ExtensionCts || extension == tspath.ExtensionChts)) ||
-		(extensions&extensionsDeclaration != 0 && (extension == tspath.ExtensionDts || extension == tspath.ExtensionDmts || extension == tspath.ExtensionDcts || extension == tspath.ExtensionDchts)) ||
+		(extensions&extensionsTypeScript != 0 && (extension == tspath.ExtensionTs || extension == tspath.ExtensionTsx || extension == tspath.ExtensionMts || extension == tspath.ExtensionCts)) ||
+		(extensions&extensionsDeclaration != 0 && (extension == tspath.ExtensionDts || extension == tspath.ExtensionDmts || extension == tspath.ExtensionDcts)) ||
 		(extensions&extensionsJson != 0 && extension == tspath.ExtensionJson))
 }
 

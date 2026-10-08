@@ -1,4 +1,4 @@
-# ============================================================================
+﻿# ============================================================================
 #  install.ps1 -- make THIS extracted folder usable. Nothing global by default.
 #
 #  What it does
@@ -99,6 +99,6 @@ if (-not $SkipVerify) {
 Write-Host ''
 Write-Host 'done. In a window opened with env.cmd, try:' -ForegroundColor Green
 Write-Host '    chtsc --version'
-Write-Host '    chtsc app.chts --target es2020 --module commonjs'
+Write-Host '    chtsc app.ts --target es2020 --module commonjs'
 Write-Host '    node app.js'
 exit 0

@@ -40,10 +40,8 @@ type formattingScanner struct {
 	wasNewLine       bool
 }
 
-func newFormattingScanner(text string, languageVariant core.LanguageVariant, startPos int, endPos int, worker *formatSpanWorker, allowChineseKeywords bool) []core.TextChange {
+func newFormattingScanner(text string, languageVariant core.LanguageVariant, startPos int, endPos int, worker *formatSpanWorker) []core.TextChange {
 	scan := scanner.NewScanner()
-	// ChineseTypeScript：.chts 里的汉语关键字在格式化时也要认得，否则会把关键字当标识符。
-	scan.SetAllowChineseKeywords(allowChineseKeywords)
 	scan.SetSkipTrivia(false)
 	scan.SetLanguageVariant(languageVariant)
 	scan.SetText(text)

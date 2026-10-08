@@ -1,13 +1,15 @@
 ﻿# ============================================================================
-#  judge_kwscope.ps1 -- item④ 的端到端判定：汉语关键字【只在 .chts/.d.chts 生效】。
+#  judge_kwscope.ps1 -- 端到端判定：汉语关键字【在普通 .ts 里全局生效】。
+#
+#  背景（2026-10-08 用户裁定）：本项目的用法就是【用普通 .ts 写汉语关键字】，
+#  不再有单独的 .chts 后缀 —— 汉语 .ts 只有我们的版本能编译，这正是推广策略。
 #
 #  判据（都真跑编译器）：
-#    ① .chts 认汉语关键字（常量 甲=1 过；如果/真值/返回 被当前置关键字 → TS1108）
-#    ② .ts 里汉语拼写是普通标识符（const 对象=1 过；const 变量=1 过）
-#    ③ .ts 里汉语拼写【不是】关键字（常量 甲=1 必须失败）—— 这条会在有人把
-#       作用域恢复成「全局生效」时变红，是判据的自证
-#    ④ .d.chts 也认汉语关键字（导出 声明 常量 … 过）
-#    ⑤ .chts 里确凿保留字仍被当关键字（常量 变量=1 → TS1389）
+#    ① .ts 认汉语关键字（常量 甲=1 过；如果/真值/返回 被当关键字 → TS1108）
+#    ② 代价自证：汉语保留字不能当标识符（const 变量=1 → TS1389）
+#    ③ .tsx 也认（常量 甲=1 过）
+#    ④ .mts / .cts 也认（常量 甲=1 过）
+#    ⑤ .d.ts 也认（声明 常量 甲: 数字; 过）
 #    ⑥ 负对照：正确英文 .ts 无诊断
 #
 #  ENCODING: UTF-8 with BOM。
@@ -47,27 +49,27 @@ function NewFixture([string]$name, [string]$src) {
     return $p
 }
 
-# ① .chts 认汉语关键字
-$a = RunTsc (NewFixture 'a.chts' '常量 甲 = 1;')
-$f = RunTsc (NewFixture 'f.chts' '如果 (真值) { 返回; }')
-Check '① .chts 认汉语关键字' (($a.code -eq 0) -and ($f.text -match 'TS1108')) ('a.chts exit=' + $a.code + '；f.chts 含 TS1108=' + [bool]($f.text -match 'TS1108'))
+# ① .ts 认汉语关键字
+$a = RunTsc (NewFixture 'a.ts' '常量 甲 = 1;')
+$f = RunTsc (NewFixture 'f.ts' '如果 (真值) { 返回; }')
+Check '① 普通 .ts 认汉语关键字' (($a.code -eq 0) -and ($f.text -match 'TS1108')) ('a.ts exit=' + $a.code + '；f.ts 含 TS1108=' + [bool]($f.text -match 'TS1108'))
 
-# ② .ts 里汉语拼写是普通标识符
-$b = RunTsc (NewFixture 'b.ts' 'const 对象 = 1;')
-$d = RunTsc (NewFixture 'd.ts' 'const 变量 = 1;')
-Check '② .ts 里汉语拼写是普通标识符' (($b.code -eq 0) -and ($d.code -eq 0)) ('b.ts exit=' + $b.code + '；d.ts exit=' + $d.code)
+# ② 代价自证：汉语保留字不能当标识符（这正是「分不清」要接受的代价）
+$e = RunTsc (NewFixture 'e.ts' 'const 变量 = 1;')
+Check '② 汉语保留字不能当标识符（代价自证）' (($e.code -ne 0) -and ($e.text -match 'TS1389')) ('e.ts exit=' + $e.code + ' 含 TS1389=' + [bool]($e.text -match 'TS1389'))
 
-# ③ .ts 里汉语【不是】关键字（会抓到「恢复成全局」的回归）
-$c = RunTsc (NewFixture 'c.ts' '常量 甲 = 1;')
-Check '③ .ts 里汉语不是关键字（自证）' ($c.code -ne 0) ('c.ts exit=' + $c.code + '（必须非 0）')
+# ③ .tsx 也认
+$b = RunTsc (NewFixture 'b.tsx' '常量 甲 = 1;')
+Check '③ .tsx 也认' ($b.code -eq 0) ('b.tsx exit=' + $b.code)
 
-# ④ .d.chts 也认汉语
-$g = RunTsc (NewFixture 'g.d.chts' '导出 声明 常量 甲值: 数字;')
-Check '④ .d.chts 认汉语关键字' ($g.code -eq 0) ('g.d.chts exit=' + $g.code)
+# ④ .mts / .cts 也认
+$m = RunTsc (NewFixture 'm.mts' '常量 甲 = 1;')
+$c = RunTsc (NewFixture 'c.cts' '常量 甲 = 1;')
+Check '④ .mts / .cts 也认' (($m.code -eq 0) -and ($c.code -eq 0)) ('m.mts exit=' + $m.code + '；c.cts exit=' + $c.code)
 
-# ⑤ .chts 里确凿保留字仍是关键字
-$e = RunTsc (NewFixture 'e.chts' '常量 变量 = 1;')
-Check '⑤ .chts 里保留字仍是关键字' (($e.code -ne 0) -and ($e.text -match 'TS1389')) ('e.chts exit=' + $e.code + ' 含 TS1389=' + [bool]($e.text -match 'TS1389'))
+# ⑤ .d.ts 也认
+$d = RunTsc (NewFixture 'd.d.ts' '声明 常量 甲: 数字;')
+Check '⑤ .d.ts 也认' ($d.code -eq 0) ('d.d.ts exit=' + $d.code)
 
 # ⑥ 负对照：正确英文 .ts 无诊断
 $h = RunTsc (NewFixture 'h.ts' 'const n: number = 1; console.log(n);')
@@ -79,5 +81,5 @@ $results | ForEach-Object { '  [' + $_.结果 + '] ' + $_.判定 + ' —— ' + 
 $fail = @($results | Where-Object { $_.结果 -ne '通过' }).Count
 Write-Host ''
 Write-Host ('  合计 ' + $results.Count + ' 项，失败 ' + $fail + ' 项')
-if ($fail -eq 0) { Write-Host '  结论：关键字作用域判定全部通过'; exit 0 }
+if ($fail -eq 0) { Write-Host '  结论：汉语关键字全局生效判定全部通过'; exit 0 }
 Write-Host '  结论：有失败项，必须查清'; exit 1

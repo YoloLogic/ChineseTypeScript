@@ -3,6 +3,6 @@
     "target": "es2020",
     "module": "commonjs"
   },
-  "include": ["**/*.chts"],
-  "exclude": ["显式导入.chts"]
+  "include": ["**/*.ts"],
+  "exclude": ["显式导入.ts"]
 }

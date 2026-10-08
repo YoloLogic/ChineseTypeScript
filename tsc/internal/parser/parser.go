@@ -303,8 +303,6 @@ func (p *Parser) initializeState(opts ast.SourceFileParseOptions, sourceText str
 	} else {
 		p.scanner.Reset()
 	}
-	// ChineseTypeScript：汉语关键字只在 .chts（含 .d.chts）里生效。
-	p.scanner.SetAllowChineseKeywords(scanner.IsChineseTypeScriptFileName(opts.FileName))
 	p.opts = opts
 	p.sourceText = sourceText
 	p.scriptKind = scriptKind
@@ -5818,7 +5816,7 @@ func (p *Parser) parseObjectLiteralElement() *ast.Node {
 		//
 		// ⚠ 只在这个分支做！`{ 未定义: 1 }`（有冒号）走 else 分支 ——
 		// 那是【属性名】位置，是运行时的真实属性名，必须原样保留。
-		if ast.IsIdentifier(name) && name.Text() != "undefined" && scanner.GetIdentifierTokenForFileName(p.opts.FileName, name.Text()) == ast.KindUndefinedKeyword {
+		if ast.IsIdentifier(name) && name.Text() != "undefined" && scanner.GetIdentifierToken(name.Text()) == ast.KindUndefinedKeyword {
 			name.AsIdentifier().Text = "undefined"
 		}
 		equalsToken := p.parseOptionalToken(ast.KindEqualsToken)

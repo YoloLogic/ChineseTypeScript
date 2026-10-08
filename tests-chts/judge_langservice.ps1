@@ -1,4 +1,4 @@
-# ============================================================================
+﻿# ============================================================================
 #  judge_langservice.ps1 -- item① 的端到端判定：
 #  「汉语关键字真的进了编辑器补全与『你是不是想写…』建议」。
 #
@@ -66,10 +66,10 @@ Write-Host ''
 Write-Host '=== B) CLI 真编译（真诊断文本）==='
 $fixtures = @(
     @{ name = '英文建议不变';      file = 'en.ts';        src = 'functio x;';      want = "Did you mean 'function'?";  mode = 'has' },
-    @{ name = '汉语两字建议';      file = 'zh2.chts';     src = '函树 甲;';        want = "Did you mean '函数'?";      mode = 'has' },
-    @{ name = '汉语四字建议';      file = 'zh4.chts';     src = '局部变两 甲;';    want = "Did you mean '局部变量'?";  mode = 'has' },
-    @{ name = '汉语漏空格建议';    file = 'zhspace.chts'; src = '如果甲 乙;';      want = "Did you mean '如果'?";      mode = 'has' },
-    @{ name = '负对照：无关中文';  file = 'negzh.chts';   src = '我的东西 甲;';    want = 'Did you mean';              mode = 'not' },
+    @{ name = '汉语两字建议';      file = 'zh2.ts';     src = '函树 甲;';        want = "Did you mean '函数'?";      mode = 'has' },
+    @{ name = '汉语四字建议';      file = 'zh4.ts';     src = '局部变两 甲;';    want = "Did you mean '局部变量'?";  mode = 'has' },
+    @{ name = '汉语漏空格建议';    file = 'zhspace.ts'; src = '如果甲 乙;';      want = "Did you mean '如果'?";      mode = 'has' },
+    @{ name = '负对照：无关中文';  file = 'negzh.ts';   src = '我的东西 甲;';    want = 'Did you mean';              mode = 'not' },
     @{ name = '负对照：无关英文';  file = 'negen.ts';     src = 'zzqqxx yy;';      want = 'Did you mean';              mode = 'not' }
 )
 foreach ($fx in $fixtures) {

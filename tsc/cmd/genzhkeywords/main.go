@@ -1,4 +1,4 @@
-// Command genzhkeywords 由 tsc/internal/scanner/zh_keywords.txt 生成两份产物：
+﻿// Command genzhkeywords 由 tsc/internal/scanner/zh_keywords.txt 生成两份产物：
 //
 //	tsc/internal/scanner/zh_keywords_generated.go   —— 编译器真正在用的汉语别名表
 //	docs/中文对照表.md                                —— 给用户看的中英对照表
@@ -281,14 +281,14 @@ func renderMarkdown(entries []entry) []byte {
 	b.WriteString("> 这是如实登记的一条，见 `README-我们的说明.md` 的「已知局限」。\n")
 
 	fmt.Fprintf(&b, "\n## 四、必须知道的副作用：这 %d 个词成了保留字\n\n", n)
-	b.WriteString("汉语关键字**在所有文件里都生效**（不限于 `.chts`）。因此：\n\n")
+	b.WriteString("汉语关键字**在所有文件里都生效**（不限于 `.ts`）。因此：\n\n")
 	b.WriteString("```ts\n")
 	b.WriteString("常量 对象 = 1;      // ✗ 编不过：对象 是 object 的译名，占了标识符位\n")
 	b.WriteString("常量 我的对象 = 1;   // ✓ 不是关键字，照旧可用\n")
 	b.WriteString("```\n\n")
 	b.WriteString("`对象` / `变量` / `函数` / `类型` 这类词**不能再当标识符**用。\n")
 	b.WriteString("**英文关键字永远可写**（`const obj = 1`），这是逃生通道。\n\n")
-	b.WriteString("之所以选「全局生效」而不是「仅 `.chts` 生效」：改一处即可覆盖整条链，\n")
+	b.WriteString("之所以选「全局生效」而不是「仅 `.ts` 生效」：改一处即可覆盖整条链，\n")
 	b.WriteString("且实测上游官方 conformance 语料 **5894 个真实 `.ts/.tsx` 零回归**\n")
 	b.WriteString("（`tests-chts/judge_oss.ps1 -Sample 0`）。取舍写在 README 的「已知局限」第 1 条。\n")
 
@@ -299,13 +299,13 @@ func renderMarkdown(entries []entry) []byte {
 	b.WriteString("console.log(甲.对象 + 甲.如果 + 甲.名字)    // ✓ 点号后允许关键字\n")
 	b.WriteString("console.log(甲[\"对象\"])                   // ✓ 字符串键\n")
 	b.WriteString("```\n\n")
-	b.WriteString("可跑的靶子在 `tests-chts/prop.chts`（判定第⑨项：编译 + node 真跑）。\n")
+	b.WriteString("可跑的靶子在 `tests-chts/prop.ts`（判定第⑨项：编译 + node 真跑）。\n")
 
 	b.WriteString("\n## 六、一个完整例子\n\n")
-	b.WriteString("示意（真实可跑的例子见 `tests-chts/demo.chts`，它的英文对照是 `demo_en.ts`，\n")
+	b.WriteString("示意（真实可跑的例子见 `tests-chts/demo.ts`，它的英文对照是 `demo_en.ts`，\n")
 	b.WriteString("两者运行结果必须完全一致 —— 判定第⑥项）：\n\n")
 	b.WriteString("```ts\n")
-	b.WriteString("// 汉语源（.chts）\n")
+	b.WriteString("// 汉语源（.ts）\n")
 	b.WriteString("类型 长方形 {\n")
 	b.WriteString("  宽: 数字\n")
 	b.WriteString("  构造器(宽: 数字) { 自身.宽 = 宽 }\n")
