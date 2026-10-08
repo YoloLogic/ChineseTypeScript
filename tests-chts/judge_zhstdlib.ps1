@@ -76,14 +76,14 @@ $js = Join-Path $out '主.js'
 $jsText = if (Test-Path $js) { [System.IO.File]::ReadAllText($js) } else { '' }
 $hasEnglish = ($jsText -match '甲\.push\(4\)') -and ($jsText -match 'Math\.floor\(3\.7\)') -and ($jsText -match '\.length')
 # 只查「汉语名被当成员/全局用」的情形；字符串字面量里的汉语（如 "向下取整="）是用户文本，不该改写。
-$noChinese = (-not ($jsText -match '\.追加')) -and (-not ($jsText -match '\.向下取整')) -and (-not ($jsText -match '数学\.')) -and (-not ($jsText -match '控制台\.'))
+$noChinese = (-not ($jsText -match '\.追加')) -and (-not ($jsText -match '\.向下取整')) -and (-not ($jsText -match '数学\.')) -and (-not ($jsText -match '控制台\.')) -and (-not ($jsText -match '\.找序号'))
 Check '④ 产物是标准 JS（汉语名已打回英文）' ($hasEnglish -and $noChinese) ('含 push/floor/length=' + $hasEnglish + ' 无汉语标准库名=' + $noChinese)
 
 # ⑤ node 真跑，输出必须正确
 $node = (Get-Command node -ErrorAction SilentlyContinue).Source
 if ($node -and (Test-Path $js)) {
     $o = (& $node $js 2>&1 | Out-String).Trim()
-    Check '⑤ node 真跑输出正确' (($o -match '长度=4') -and ($o -match '合计=14') -and ($o -match '向下取整=3') -and ($o -match '控制台通过')) ('输出=' + ($o -replace [char]10, ' / '))
+    Check '⑤ node 真跑输出正确' (($o -match '长度=4') -and ($o -match '合计=14') -and ($o -match '向下取整=3') -and ($o -match '控制台通过') -and ($o -match '找序号=1') -and ($o -match '乘方=8')) ('输出=' + ($o -replace [char]10, ' / '))
 } else {
     Check '⑤ node 真跑输出正确' $false '找不到 node 或产物'
 }
