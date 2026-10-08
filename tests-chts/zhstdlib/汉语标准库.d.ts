@@ -104,3 +104,20 @@ type 正则 = RegExp;
 declare var 正则: RegExpConstructor;
 type 错误 = Error;
 declare var 错误: ErrorConstructor;
+
+// Map / Set 的核心成员（`大小/含有/删除/清空` 同时出现在两者上，映射到各自的英文原名）。
+interface Map<K, V> {
+    获取(键: K): V | undefined;
+    设置(键: K, 值: V): this;
+    含有(键: K): boolean;
+    删除(键: K): boolean;
+    清空(): void;
+    大小: number;
+}
+interface Set<T> {
+    添加(值: T): this;
+    含有(值: T): boolean;
+    删除(值: T): boolean;
+    清空(): void;
+    大小: number;
+}

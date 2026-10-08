@@ -53,6 +53,13 @@ member	cbrt	立方根
 member	log2	对数二
 member	log10	对数十
 member	hypot	斜边长
+member	get	获取
+member	set	设置
+member	has	含有
+member	delete	删除
+member	clear	清空
+member	size	大小
+member	add	添加
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
