@@ -66,3 +66,27 @@ interface Math {
     对数十(数: number): number;
     斜边长(...数: number[]): number;
 }
+
+interface String {
+    转字符串(): string;
+    取字符(位置: number): string;
+    取字符码(位置: number): number;
+    取码点(位置: number): number | undefined;
+    本地比较(比较对象: string): number;
+    匹配(正则: RegExp): RegExpMatchArray | null;
+    替换(查找: string, 替换成: string): string;
+    查找(正则: RegExp): number;
+    拆分(分隔: string): string[];
+    取子串(起: number, 末?: number): string;
+    转小写(): string;
+    转大写(): string;
+    去空白(): string;
+    重复(次数: number): string;
+    以开头(查找: string): boolean;
+    以结尾(查找: string): boolean;
+    包含(查找: string): boolean;
+    前补(总长: number, 填充?: string): string;
+    后补(总长: number, 填充?: string): string;
+    取值(): string;
+    规范化(): string;
+}
