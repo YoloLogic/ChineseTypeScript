@@ -78,6 +78,10 @@ member	stringify	序列化
 member	log	日志
 member	error	报错
 member	warn	警告
+member	find	找出
+member	findIndex	找出序号
+member	fill	填充
+member	at	取第
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

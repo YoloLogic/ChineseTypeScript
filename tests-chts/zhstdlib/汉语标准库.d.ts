@@ -161,3 +161,11 @@ interface Console {
     报错(...数据: any[]): void;
     警告(...数据: any[]): void;
 }
+
+// Array 的其余常用成员。
+interface Array<T> {
+    找出(谓词: (值: T, 序号: number, 数组: T[]) => boolean): T | undefined;
+    找出序号(谓词: (值: T, 序号: number, 数组: T[]) => boolean): number;
+    填充(值: T, 起?: number, 末?: number): this;
+    取第(序号: number): T | undefined;
+}
