@@ -3,13 +3,24 @@ package scanner
 // ChineseTypeScript：标准库汉语别名 → 英文规范名。
 //
 // 机制（2026-10-08 用户裁定，见 stdlib/README.md）：标准库名不是关键字，运行时（JS 引擎）
-// 里的真名仍是英文，所以我们改不动运行时；于是声明层用汉语名，emit 时把汉语名【打回英文规范名】，
-// 这样产物是标准 JS（甲.追加(4) → 甲.push(4)），无需任何运行时垫片。
+// 里的真名仍是英文；于是声明层用汉语名，emit 时把汉语名【打回英文规范名】，
+// 产物是标准 JS（甲.追加(4) → 甲.push(4)），无需任何运行时垫片。
 //
-// 试点只含「数组 + 数学」42 条；规模化时按 stdlib/名字清单.tsv 生成。
-var zhStdlibToEnglish = map[string]string{
-	"数组":     "Array",
-	"数学":     "Math",
+// 试点只含「数组 + 数学」；规模化时按 stdlib/名字清单.tsv 生成。
+//
+// ⚠ 为什么分两张表（全局 vs 成员）：emit 期【拿不到引用位的符号】（Node.Symbol() 只对声明节点
+// 有效），所以改写只能按文本做。为了尽量不误伤用户的汉语标识符，规矩分两档：
+//   - 全局名（数学/数组）：只要是【引用位】就改写；
+//   - 成员名（追加/长度）：只在【成员位置】（X.名）改写 ——
+//     用户自己声明的变量/函数叫「追加」不会被误改。
+//
+// 仍未解决：用户自定义的【成员】若叫「追加」仍会被误改（要真符号感知得上 checker）。
+var zhStdlibGlobals = map[string]string{
+	"数组": "Array",
+	"数学": "Math",
+}
+
+var zhStdlibMembers = map[string]string{
 	"长度":     "length",
 	"转字符串":   "toString",
 	"本地转字符串": "toLocaleString",
@@ -52,9 +63,14 @@ var zhStdlibToEnglish = map[string]string{
 	"正切":     "tan",
 }
 
-// ChineseStdlibCanonicalName 返回汉语标准库名对应的英文规范名。
-// 不在表里就返回 (text, false) —— 一字不改，英文用法完全不受影响。
-func ChineseStdlibCanonicalName(name string) (string, bool) {
-	english, ok := zhStdlibToEnglish[name]
+// ChineseStdlibGlobalName 返回汉语【全局】标准库名对应的英文规范名。
+func ChineseStdlibGlobalName(name string) (string, bool) {
+	english, ok := zhStdlibGlobals[name]
+	return english, ok
+}
+
+// ChineseStdlibMemberName 返回汉语【成员】标准库名对应的英文规范名。
+func ChineseStdlibMemberName(name string) (string, bool) {
+	english, ok := zhStdlibMembers[name]
 	return english, ok
 }

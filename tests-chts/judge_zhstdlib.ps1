@@ -77,6 +77,19 @@ if ($node -and (Test-Path $js)) {
     Check '⑤ node 真跑输出正确' $false '找不到 node 或产物'
 }
 
+# ⑥ 收窄守卫：用户自己声明的同名标识符【不得】被改写
+Set-Content -Path (Join-Path $Work '同名变量.ts') -Encoding utf8 -Value (@(
+    '/// <reference path="汉语标准库.d.ts" />',
+    '常量 追加 = 5;',
+    'console.log(追加 + 1);'
+) -join [char]10)
+$out2 = Join-Path $Work 'out2'
+if (Test-Path $out2) { Remove-Item $out2 -Recurse -Force }
+& $Tsc (Join-Path $Work '同名变量.ts') --outDir $out2 --target es2020 --module commonjs --pretty false --locale en 2>&1 | Out-Null
+$js2 = Join-Path $out2 '同名变量.js'
+$js2Text = if (Test-Path $js2) { [System.IO.File]::ReadAllText($js2) } else { '' }
+Check '⑥ 收窄守卫：用户自己的「追加」不被改写' (($js2Text -match '追加') -and (-not ($js2Text -match 'push'))) ('产物含 追加=' + [bool]($js2Text -match '追加') + ' 含 push=' + [bool]($js2Text -match 'push'))
+
 Write-Host ''
 Write-Host '=== 判定汇总 ==='
 $results | ForEach-Object { '  [' + $_.结果 + '] ' + $_.判定 + ' —— ' + $_.说明 }

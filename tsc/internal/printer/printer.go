@@ -1127,6 +1127,11 @@ func (p *Printer) emitTabStop(node *ast.Node, snippetElement *SnippetElement) {
 // Names
 //
 
+// isMemberNamePosition 判断标识符是不是站在「成员名」的位置（X.名）。
+func isMemberNamePosition(parent *ast.Node) bool {
+	return parent.Kind == ast.KindPropertyAccessExpression || parent.Kind == ast.KindQualifiedName
+}
+
 func (p *Printer) emitIdentifierText(node *ast.Identifier) {
 	f := ast.GetSourceFileOfNode(node.AsNode())
 	debug.Assert(f == nil || p.currentSourceFile == nil || f.FileName() == p.currentSourceFile.FileName())
@@ -1139,8 +1144,12 @@ func (p *Printer) emitIdentifierText(node *ast.Identifier) {
 	// node.Parent 可能为 nil（emit 期会有合成节点），而 IsDeclarationName 会取 Parent，
 	// 所以必须先判空，否则空指针崩溃。
 	if node.Parent != nil && !ast.IsDeclarationName(node.AsNode()) {
-		if english, ok := scanner.ChineseStdlibCanonicalName(text); ok {
+		if english, ok := scanner.ChineseStdlibGlobalName(text); ok {
 			text = english
+		} else if isMemberNamePosition(node.Parent) {
+			if english, ok := scanner.ChineseStdlibMemberName(text); ok {
+				text = english
+			}
 		}
 	}
 
