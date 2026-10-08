@@ -1,4 +1,4 @@
-﻿# ============================================================================
+# ============================================================================
 #  verify.ps1 -- prove THIS PACKAGE works, from inside the package.
 #
 #  Why this is separate from the repo's tests-chts judges
@@ -77,7 +77,9 @@ Write-Host '--- 2) the two programs start'
 # ---------------------------------------------------------------------------
 if (Test-Path $chtsc) {
     $v = (& $chtsc --version 2>&1 | Out-String).Trim()
-    if ($LASTEXITCODE -eq 0 -and $v -match 'Version') { Ok ('chtsc --version -> ' + $v) }
+    # ChineseTypeScript：命令行默认 --locale zh-CN，--version 出的是「版本 7.1.0-dev」，
+    # 所以这里两种写法都接受（否则会把「汉化成功」误判成失败）。
+    if ($LASTEXITCODE -eq 0 -and ($v -match 'Version' -or $v -match '版本')) { Ok ('chtsc --version -> ' + $v) }
     else { Bad ('chtsc --version failed (exit=' + $LASTEXITCODE + '): ' + $v) }
 } else { Bad 'chtsc --version skipped: the compiler is missing' }
 
