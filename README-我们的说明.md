@@ -236,9 +236,8 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
 * **已知影响面**：少数**不带文件上下文**的 `NewScanner()` 调用点
   （`format/scanner.go`、`checker/utilities.go`、`ls/organizeimports.go`、`ls/completions.go`）
   默认不认汉语；对 `.chts` 的这类辅助操作可能漏认，待按需补标志。
-* ⚠ **全量判定待跑**：item④ 改动了 scanner/parser/binder 三个上游文件，
-  按纪律必须重跑 `run_all.ps1`（尤其 `judge_oss` + `judge_gotest`）；**本轮尚未跑**，
-  见 `下一步.md` 第 3 条。
+* **全量判定已跑**（2026-10-08）：五套核心判定全绿 —— `judge_oss` 600/600 零回归、
+  `judge_gotest` 4/4（140/140 可解释）。item④ 没有引入任何英文路径回归。
 
 ## 七、判定证据（本轮实测）
 
@@ -267,6 +266,8 @@ judge_dchts.ps1     5/5（.d.chts 被当成声明文件 → ./甲 解析到 甲.
                     .chts 开 --declaration 产出标准 .d.ts → 藏起 .d.chts 必报 TS2307）
 judge_zhdiag.ps1    5/5（默认出中文 → --locale en 回英文 → 默认==显式 zh-CN 逐字节相同 →
                     TS2304/TS2554/TS2322 抽样都出中文 → 正确程序无诊断）
+judge_kwscope.ps1   6/6（.chts 认汉语 → .ts 里汉语是普通标识符 → .ts 里汉语不是关键字（自证）→
+                    .d.chts 认汉语 → .chts 保留字仍是关键字 → 负对照）
 ```
 
 > **为什么全集判定要这么麻烦**：加一个新扩展名，会**自然地**改变
@@ -295,8 +296,8 @@ judge_zhdiag.ps1    5/5（默认出中文 → --locale en 回英文 → 默认==
 
 1. ~~**汉语关键字在所有文件里都生效**~~ —— **已收敛为仅 `.chts`/`.d.chts` 生效**（2026-10-07，见「六·九」）：
    英文 `.ts` 里 `对象`/`变量`/`函数` 又能当**普通标识符**（与上游一致），`.chts` 里仍是关键字。
-   判定 `judge_kwscope.ps1`（6/6）。**仍缺**：少数不带文件上下文的 `NewScanner()` 辅助调用点
-   默认不认汉语，待按需补标志；且 item④ 的**全量判定尚未跑**。
+   判定 `judge_kwscope.ps1`（6/6），五套核心判定全绿。**仍缺**：少数不带文件上下文的
+   `NewScanner()` 辅助调用点默认不认汉语，待按需补标志。
 2. ~~**`.d.chts` 声明文件不支持**~~ —— **已支持**（2026-10-07，见「六·七」）：
    `.d.chts` 被识别为声明文件、可被无扩展名导入解析、`tsc -p` 收录。
    **但 `.chts` 开 `--declaration` 产出的仍是标准 `.d.ts`**（设计选择，理由与改法见六·七）。
@@ -349,4 +350,6 @@ judge_zhdiag.ps1    5/5（默认出中文 → --locale en 回英文 → 默认==
 另加**独立发行包（0.1）**与打包判定；
 item①：**语言服务与建议**认汉语（含 `.chts` 限定、`core` 的字节/rune 修正），语言服务判定 9/9；
 item②：**`.d.chts` 声明文件**可识别、可解析（产出仍为标准 `.d.ts`），.d.chts 判定 5/5；
-item③：**诊断默认中文**（上游 zh-CN 2118/2204；在 CLI 层默认，`--locale en` 回英文），中文诊断判定 5/5。
+item③：**诊断默认中文**（上游 zh-CN 2118/2204；在 CLI 层默认，`--locale en` 回英文），中文诊断判定 5/5；
+item④：**汉语关键字收敛为仅 `.chts`/`.d.chts` 生效**（`.ts` 里汉语恢复为普通标识符），
+作用域判定 6/6，五套核心判定全绿（`judge_oss` 600/600、`judge_gotest` 140/140）。
