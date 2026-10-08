@@ -147,7 +147,7 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
 | **.d.chts 判定** | `tests-chts/judge_dchts.ps1`（5 项：单独编译 → 无扩展名导入解析 → `tsc -p` → 声明产出 `.d.ts` → 藏起来必报 TS2307） |
 | **中文诊断判定** | `tests-chts/judge_zhdiag.ps1`（5 项：默认中文 / `--locale en` 回英文 / 默认==显式 zh-CN / 抽样多码中文 / 正确程序无诊断） |
 | **关键字作用域判定** | `tests-chts/judge_kwscope.ps1`（6 项：`.chts` 认汉语 / `.ts` 里是普通标识符 / `.ts` 里不是关键字（自证） / `.d.chts` 认汉语 / `.chts` 保留字仍是关键字 / 负对照） |
-| **一条命令全跑** | `tests-chts/run_all.ps1`（五套核心；`-SkipGoTest` 可跳过最慢的第 4 项。打包判定与语言服务判定单独跑；item① 的 Go 守卫也随 `judge_gotest` 一起跑） |
+| **一条命令全跑** | `tests-chts/run_all.ps1`（**九项**：五套核心 + 四个特性判定 langservice/dchts/zhdiag/kwscope；`-SkipGoTest` 可跳过最慢的 gotest。打包判定 `judge_package.ps1` 仍需单独跑） |
 
 生成器**不信任任何手写清单**：它自己解析 `scanner.go` 的 `textToKeyword` 得到
 「英文关键字 → `ast.Kind`」，再与词表比对。因此扫描器新增英文关键字而词表漏译、
