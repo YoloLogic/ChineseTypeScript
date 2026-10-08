@@ -53,6 +53,43 @@ func TestZhExtraMessages(t *testing.T) {
 	}
 }
 
+// 覆盖条目本身的结构守卫（与补译同一套规则；覆盖的键允许上游已有译文）。
+func TestZhOverrides(t *testing.T) {
+	t.Parallel()
+	if len(zhOverrides) == 0 {
+		t.Fatal("zhOverrides 是空的")
+	}
+	for key, text := range zhOverrides {
+		msg := keyToMessage(key)
+		if msg == nil {
+			t.Errorf("覆盖条目 %q 在 diagnostics_generated.go 里不存在", key)
+			continue
+		}
+		if !hasHan(text) {
+			t.Errorf("覆盖条目 %q 的译文不含汉字：%q", key, text)
+		}
+		if got, want := placeholders(text), placeholders(msg.text); !slices.Equal(got, want) {
+			t.Errorf("覆盖条目 %q 的占位符 %v 与英文原文 %v 不一致", key, got, want)
+		}
+	}
+}
+
+// 覆盖只应作用于简体中文：中文 --help 首行是 chtsc:，英文必须仍是 tsc:（零回归）。
+func TestHelpHeaderOverriddenInChineseOnly(t *testing.T) {
+	t.Parallel()
+	const key = Key("tsc_Colon_The_TypeScript_Compiler_6922")
+	zh, _ := locale.Parse("zh-CN")
+	en, _ := locale.Parse("en")
+	gotZh := Localize(zh, nil, key)
+	gotEn := Localize(en, nil, key)
+	if !strings.HasPrefix(gotZh, "chtsc:") {
+		t.Fatalf("中文 --help 首行应以 chtsc: 开头，实际 %q", gotZh)
+	}
+	if !strings.HasPrefix(gotEn, "tsc:") {
+		t.Fatalf("英文即便在覆盖后也应保持 tsc:（零回归），实际 %q", gotEn)
+	}
+}
+
 // 端到端：这条（TS5090）上游 zh-CN 缺译，zh-CN 下应得到中文，英文下不得出现汉字。
 func TestZhExtraIsUsedByLocalize(t *testing.T) {
 	t.Parallel()

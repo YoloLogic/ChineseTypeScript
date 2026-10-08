@@ -101,3 +101,13 @@ var zhExtraMessages = map[Key]string{
 	"true_unless_strict_is_false_6905":                                                                            "true，除非 strict 为 false",
 	"Virtual_code_produced_by_the_content_mapper_0_has_problems_with_no_corresponding_location_in_this_fi_100036": "内容映射器“{0}”生成的虚拟代码存在问题，且在本文件中没有对应位置。",
 }
+
+// zhOverrides 是「覆盖」：这些键上游 zh-CN 已经有译文，但我们希望换个说法。
+//
+// 目前只有一条：--help 的首行。上游把它写成 “tsc: TypeScript 编译器”（产品名沿用 tsc），
+// 而本产品的命令叫 chtsc，所以中文里改成 “chtsc: …”。
+// **只覆盖简体中文**：英文仍是 “tsc: The TypeScript Compiler”，因此与上游 help 基线
+// 逐字节一致（零回归），不需要给 judge_gotest 增加新一类解释规则。
+var zhOverrides = map[Key]string{
+	"tsc_Colon_The_TypeScript_Compiler_6922": "chtsc: TypeScript 编译器",
+}

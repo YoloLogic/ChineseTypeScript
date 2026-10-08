@@ -95,6 +95,12 @@ $incEn = (& $Tsc $okFile --noEmit --incremental --pretty false --locale en 2>&1 
 Check '⑥ 上游缺译条目也出中文' (($incZh -match 'TS5074') -and (HasCjk $incZh) -and (-not (HasCjk $incEn))) ('中文=' + (HasCjk $incZh) + ' 英文含汉字=' + (HasCjk $incEn))
 
 Write-Host ''
+Write-Host '=== ⑦ --help 首行：中文 chtsc:、英文 tsc: ==='
+$helpZhLine = ((& $Tsc --help 2>&1 | Out-String) -split [char]10 | Select-Object -First 1)
+$helpEnLine = ((& $Tsc --help --locale en 2>&1 | Out-String) -split [char]10 | Select-Object -First 1)
+Check '⑦ --help 首行产品名（只改中文）' (($helpZhLine -match 'chtsc:') -and ($helpEnLine -match 'tsc:') -and ($helpEnLine -notmatch 'chtsc:')) ('中文=' + $helpZhLine + '；英文=' + $helpEnLine)
+
+Write-Host ''
 Write-Host '=== 判定汇总 ==='
 $results | ForEach-Object { '  [' + $_.结果 + '] ' + $_.判定 + ' —— ' + $_.说明 }
 $fail = @($results | Where-Object { $_.结果 -ne '通过' }).Count
