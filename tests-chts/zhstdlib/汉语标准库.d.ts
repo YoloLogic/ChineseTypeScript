@@ -154,3 +154,10 @@ interface JSON {
     解析(文本: string): any;
     序列化(值: any): string;
 }
+
+// console 的常用成员（`控制台` 全局别名已在上面声明）。
+interface Console {
+    日志(...数据: any[]): void;
+    报错(...数据: any[]): void;
+    警告(...数据: any[]): void;
+}

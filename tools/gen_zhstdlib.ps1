@@ -74,8 +74,11 @@ foreach ($line in (Get-Content $Table -Encoding UTF8)) {
     if ($p.Count -lt 3) { continue }
     $en = $p[1].Trim(); $zh = $p[2].Trim()
     if ($zhToEn.ContainsKey($zh) -and $zhToEn[$zh] -ne $en) { throw ('译名重复映射：汉语「' + $zh + '」同时对应 ' + $zhToEn[$zh] + ' 与 ' + $en) }
-    if ($enToZh.ContainsKey($en) -and $enToZh[$en] -ne $zh) { throw ('英文重复映射：' + $en + ' 同时对应「' + $enToZh[$en] + '」与「' + $zh + '」') }
-    $zhToEn[$zh] = $en; $enToZh[$en] = $zh
+    # 注意：这里【只】查「一个汉语名 → 一个英文名」（改写只需要这个方向）。
+    # 「一个英文名 → 一个汉语名」是【故意不查】的：`log` 在 Math 上叫「对数」、在 console 上叫「日志」，
+    # 两个汉语名都改写回 `log`，**改写结果同样正确**，而按语义分开命名反而更清楚。
+    # （2026-10-08：原先多查了一层反向唯一性，被 console.log 与 Math.log 撞出来，属过度约束。）
+    $zhToEn[$zh] = $en
 }
 Write-Host ('唯一性守卫通过：' + $zhToEn.Count + ' 条一英一汉')
 

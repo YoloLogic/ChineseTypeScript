@@ -75,6 +75,9 @@ member	test	测试
 member	exec	执行
 member	parse	解析
 member	stringify	序列化
+member	log	日志
+member	error	报错
+member	warn	警告
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
