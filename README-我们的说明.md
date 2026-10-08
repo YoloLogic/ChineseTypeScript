@@ -66,7 +66,7 @@
 故取 **`.chts`**（= ChineseTypeScript）。扩展名一律**追加在末尾**，
 使 `.ts/.tsx/.d.ts` 的既有优先级与解析顺序一个字节都不变。
 
-## 五、改动清单：上游源码只动了 16 个文件
+## 五、改动清单：上游源码只动了 17 个文件
 
 | # | 文件 | 改动 |
 |---|---|---|
@@ -86,6 +86,7 @@
 | 14 | `tsc/internal/format/scanner.go` | 格式化扫描器加「是否认汉语」参数（否则 `.chts` 里的关键字会被当标识符） |
 | 15 | `tsc/internal/format/api.go` | `FormatSpan` / `FormatNodeGivenIndentation` 按 `file` 的 `.chts` 后缀传标志 |
 | 16 | `tsc/internal/ls/organizeimports.go` | 局部扫描器按 `sourceFile` 的 `.chts` 后缀设标志 |
+| 17 | `tsc/internal/diagnostics/diagnostics.go` | zh-CN 下挂接我们的**补译表** `zhExtraMessages`（上游 zh-CN 缺的 86 条；只补缺，英文/其它语言不变，见「六·八」） |
 
 **binder / checker 零改动**；其余各文件都是为**扩展名、边界、语言服务或修正**加的小段，
 都不是为「关键字落成同一个 token」这套机制本身（那套确实只需词法层一处）。
@@ -145,7 +146,7 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
 | **语言服务判定** | `tests-chts/judge_langservice.ps1`（9 项：三组 Go 守卫 + CLI 真编译三条汉语建议 + 两条负对照） |
 | **声明扩展名守卫** | `tsc/internal/tspath/dchts_extension_test.go`（`.d.chts` 被识别为声明文件、不属 CJS、产出仍 `.d.ts`） |
 | **.d.chts 判定** | `tests-chts/judge_dchts.ps1`（5 项：单独编译 → 无扩展名导入解析 → `tsc -p` → 声明产出 `.d.ts` → 藏起来必报 TS2307） |
-| **中文诊断判定** | `tests-chts/judge_zhdiag.ps1`（5 项：默认中文 / `--locale en` 回英文 / 默认==显式 zh-CN / 抽样多码中文 / 正确程序无诊断） |
+| **中文诊断判定** | `tests-chts/judge_zhdiag.ps1`（6 项：默认中文 / `--locale en` 回英文 / 默认==显式 zh-CN / 抽样多码中文 / 正确程序无诊断 / **上游缺译条目也出中文**） |
 | **关键字作用域判定** | `tests-chts/judge_kwscope.ps1`（6 项：`.chts` 认汉语 / `.ts` 里是普通标识符 / `.ts` 里不是关键字（自证） / `.d.chts` 认汉语 / `.chts` 保留字仍是关键字 / 负对照） |
 | **一条命令全跑** | `tests-chts/run_all.ps1`（**九项**：五套核心 + 四个特性判定 langservice/dchts/zhdiag/kwscope；`-SkipGoTest` 可跳过最慢的 gotest。打包判定 `judge_package.ps1` 仍需单独跑） |
 
@@ -223,9 +224,13 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
   默认与显式 `zh-CN` **逐字节相同**、抽样 TS2304/TS2554/TS2322 都出中文、
   正确程序无诊断（负对照）。英文路径的判定（`judge_oss` / `judge_langservice`）
   已显式加 `--locale en`，零回归照旧。
-* **仍缺的（诚实登记）**：① zh-CN 只覆盖 **2118/2204**，86 条没有中文（回退英文）；
-  ② 译文是**上游**的，与 Chinese++ 的 7344 条**不保证同词同译**（两条产品线的诊断集基本不相交）；
-  ③ `--help` 首行仍写 `tsc:`（不是 `chtsc`）。
+* **上游缺的 86 条已由我们补齐**（2026-10-08）：新增 `tsc/internal/diagnostics/zh_extra.go`
+  的 `zhExtraMessages`（86 条，多为 content mapper 新诊断与若干命令行选项说明），
+  由 `diagnostics.go` 在 zh-CN 下「只补缺」合并；`zh_extra_test.go` 机器校核
+  「键存在 / 含汉字 / 占位符与英文一致 / 上游已收录则冗余」。这样 **2204/2204 都有中文**。
+  译文风格对齐上游 zh-CN（「」→“”、术语一致）。
+* **仍缺的（诚实登记）**：① 译文与 Chinese++ 的 7344 条**不保证同词同译**（诊断集基本不相交）；
+  ② `--help` 首行仍写 `tsc:`（不是 `chtsc`）。
 
 ## 六·九、汉语关键字的作用域：仅 `.chts`（item④，2026-10-07）
 
@@ -268,8 +273,9 @@ judge_langservice.ps1  9/9（scanner 5 + parser 4 + ls 6 条 Go 守卫；CLI 三
                        函树→函数、局部变两→局部变量、如果甲→如果；两条负对照无建议）
 judge_dchts.ps1     5/5（.d.chts 被当成声明文件 → ./甲 解析到 甲.d.chts → tsc -p 收录 →
                     .chts 开 --declaration 产出标准 .d.ts → 藏起 .d.chts 必报 TS2307）
-judge_zhdiag.ps1    5/5（默认出中文 → --locale en 回英文 → 默认==显式 zh-CN 逐字节相同 →
-                    TS2304/TS2554/TS2322 抽样都出中文 → 正确程序无诊断）
+judge_zhdiag.ps1    6/6（默认出中文 → --locale en 回英文 → 默认==显式 zh-CN 逐字节相同 →
+                    TS2304/TS2554/TS2322 抽样都出中文 → 正确程序无诊断 →
+                    上游缺译条目（如 TS5074）也出中文）
 judge_kwscope.ps1   6/6（.chts 认汉语 → .ts 里汉语是普通标识符 → .ts 里汉语不是关键字（自证）→
                     .d.chts 认汉语 → .chts 保留字仍是关键字 → 负对照）
 ```
@@ -309,9 +315,9 @@ judge_kwscope.ps1   6/6（.chts 认汉语 → .ts 里汉语是普通标识符 �
    编辑器补全（**只给 `.chts` 文件**）与「你是不是想写…」建议都认汉语关键字。
    **但编辑器侧尚未打包/配置**：发行包里没有 `.vscode` 模板，用户要自己把
    `chtsc --lsp --stdio` 配给编辑器。
-4. **诊断已是「默认中文」**（2026-10-07，见「六·八」）：上游自带 zh-CN 翻译（2118/2204），
-   `chtsc` 命令行默认就用它，`--locale en` 回英文。但仍缺 86 条，且译文与 Chinese++ 的
-   7344 条**不保证同词同译**。另外 `--help` 首行仍写 `tsc:`。
+4. **诊断已是「默认中文」且覆盖 2204/2204**（2026-10-07/08，见「六·八」）：上游 zh-CN 2118 条
+   + 我们补的 86 条（`zh_extra.go`），`chtsc` 命令行默认就用它，`--locale en` 回英文。
+   译文与 Chinese++ 的 7344 条**不保证同词同译**；`--help` 首行仍写 `tsc:`。
 5. ~~**未打包、未发布**~~ —— **已出独立发行包**（2026-10-07，见「六·五」节）：
    `dist\ChineseTypeScript-0.1-win64.zip`（自带便携 node），包内自测 16/16、打包判定 5/5。
    **但仍未发布到网上**（无上传 / 下载页 / CI）。

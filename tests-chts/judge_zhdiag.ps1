@@ -87,6 +87,14 @@ $outClean = (& $Tsc $clean --noEmit --pretty false 2>&1 | Out-String)
 Check '⑤ 负对照：正确程序无诊断' (-not ($outClean -match 'error TS')) ('输出=' + $outClean.Trim())
 
 Write-Host ''
+Write-Host '=== ⑥ 上游缺译的条目也出中文（补译表生效）==='
+$okFile = Join-Path $Work 'ok.ts'
+Set-Content -Path $okFile -Value 'const n: number = 1;' -Encoding utf8
+$incZh = (& $Tsc $okFile --noEmit --incremental --pretty false 2>&1 | Out-String)
+$incEn = (& $Tsc $okFile --noEmit --incremental --pretty false --locale en 2>&1 | Out-String)
+Check '⑥ 上游缺译条目也出中文' (($incZh -match 'TS5074') -and (HasCjk $incZh) -and (-not (HasCjk $incEn))) ('中文=' + (HasCjk $incZh) + ' 英文含汉字=' + (HasCjk $incEn))
+
+Write-Host ''
 Write-Host '=== 判定汇总 ==='
 $results | ForEach-Object { '  [' + $_.结果 + '] ' + $_.判定 + ' —— ' + $_.说明 }
 $fail = @($results | Where-Object { $_.结果 -ne '通过' }).Count

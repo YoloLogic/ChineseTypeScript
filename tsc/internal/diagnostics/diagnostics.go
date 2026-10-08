@@ -3,6 +3,7 @@ package diagnostics
 
 import (
 	"fmt"
+	"maps"
 	"regexp"
 	"strconv"
 	"strings"
@@ -105,11 +106,38 @@ func getLocalizedMessages(loc language.Tag) map[Key]string {
 	if confidence >= language.Low && index >= 0 && index < len(localeFuncs) {
 		if fn := localeFuncs[index]; fn != nil {
 			messages = fn()
+			if index == zhCNMatchedIndex {
+				// ChineseTypeScript：上游 zh-CN 还缺一些条目（多为 content mapper 新诊断
+				// 与若干命令行选项说明），这里补上我们自己的译文。
+				// 只影响简体中文；English 与其它语言一个字节不变。
+				messages = mergeZhExtra(messages)
+			}
 		}
 	}
 
 	localizedMessagesCache.Store(loc, messages)
 	return messages
+}
+
+// zhCNMatchedIndex 是 matcher 把「简体中文」解析到的 localeFuncs 下标。
+// 由 matcher 自己算出来（而不是写死 1），这样将来换顺序也不会悄悄失效。
+var zhCNMatchedIndex int
+
+func init() {
+	_, zhCNMatchedIndex, _ = matcher.Match(language.MustParse("zh-CN"))
+}
+
+// mergeZhExtra 在 zh-CN 词条之外补上 zhExtraMessages（不改动上游那份 map）。
+// 只「补缺」：上游若已有同键译文，以它为准（zh_extra_test.go 会要求删掉冗余条目）。
+func mergeZhExtra(base map[Key]string) map[Key]string {
+	result := make(map[Key]string, len(base)+len(zhExtraMessages))
+	maps.Copy(result, base)
+	for key, text := range zhExtraMessages {
+		if _, exists := result[key]; !exists {
+			result[key] = text
+		}
+	}
+	return result
 }
 
 var placeholderRegexp = regexp.MustCompile(`{(\d+)}`)
