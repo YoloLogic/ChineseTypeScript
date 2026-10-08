@@ -8,6 +8,7 @@
 
 var zhStdlibGlobals = map[string]string{
 	"数组": "Array",
+	"控制台": "console",
 	"数学": "Math",
 }
 

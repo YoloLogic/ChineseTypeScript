@@ -30,4 +30,5 @@ interface Math {
 }
 
 declare var 数学: Math;
+declare var 控制台: Console;
 type 数组<T> = Array<T>;

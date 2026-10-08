@@ -1,4 +1,5 @@
 global	Array	数组
+global	console	控制台
 global	Math	数学
 member	length	长度
 member	toString	转字符串

@@ -105,6 +105,22 @@ Check '⑥ 收窄守卫：用户自己的「追加」不被改写' (($js2Text -m
 & pwsh -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repo 'tools\gen_zhstdlib.ps1') -Check *>&1 | Out-Null
 Check '⑦ 生成物与译名表同步（单一真源守卫）' ($LASTEXITCODE -eq 0) ('gen_zhstdlib -Check exit=' + $LASTEXITCODE)
 
+# ⑧ 全局名增量（console → 控制台）：编译 → 产物用英文名 → node 真跑
+$w3 = Join-Path $Work 'ctrl'
+if (Test-Path $w3) { Remove-Item $w3 -Recurse -Force }
+New-Item -ItemType Directory -Force $w3 | Out-Null
+Copy-Item (Join-Path $Work '汉语标准库.d.ts') $w3 -Force
+Set-Content -Path (Join-Path $w3 '主.ts') -Encoding utf8 -Value (@(
+    '/// <reference path="汉语标准库.d.ts" />',
+    '控制台.log("你好，世界");'
+) -join [char]10)
+& $Tsc (Join-Path $w3 '主.ts') --outDir (Join-Path $w3 'out') --target es2020 --module commonjs --pretty false --locale en 2>&1 | Out-Null
+$js3 = Join-Path $w3 'out主.js'
+$js3Text = if (Test-Path $js3) { [System.IO.File]::ReadAllText($js3) } else { '' }
+$node2 = (Get-Command node -ErrorAction SilentlyContinue).Source
+$ran = if ($node2 -and (Test-Path $js3)) { (& $node2 $js3 2>&1 | Out-String).Trim() } else { '' }
+Check '⑧ console → 控制台（编译 → 英文名产物 → node 输出对）' (($js3Text -match 'console\.log') -and (-not ($js3Text -match '控制台')) -and ($ran -match '你好，世界')) ('产物用 console=' + [bool]($js3Text -match 'console\.log') + ' 输出=' + $ran)
+
 Write-Host ''
 Write-Host '=== 判定汇总 ==='
 $results | ForEach-Object { '  [' + $_.结果 + '] ' + $_.判定 + ' —— ' + $_.说明 }
