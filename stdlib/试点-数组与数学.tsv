@@ -66,6 +66,11 @@ member	resolve	解决
 member	reject	拒绝
 member	all	全部
 member	race	竞速
+member	getTime	取时刻
+member	getFullYear	取年
+member	getMonth	取月
+member	getDate	取日
+member	now	此刻
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

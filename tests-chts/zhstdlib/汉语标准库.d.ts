@@ -133,3 +133,14 @@ interface PromiseConstructor {
     全部<T>(值: Iterable<T | Promise<T>>): Promise<T[]>;
     竞速<T>(值: Iterable<T | Promise<T>>): Promise<Awaited<T>>;
 }
+
+// Date 的常用取值（`日期` 全局别名已在上面声明）。
+interface Date {
+    取时刻(): number;
+    取年(): number;
+    取月(): number;
+    取日(): number;
+}
+interface DateConstructor {
+    此刻(): number;
+}
