@@ -14,6 +14,7 @@
 #   6) judge_langservice.ps1  语言服务：编辑器补全与「你是不是想写…」建议
 #   7) judge_zhdiag.ps1       诊断默认中文
 #   8) judge_kwscope.ps1      汉语关键字在普通 .ts 里全局生效（本项目的用法）
+#   9) judge_zhstdlib.ps1     标准库汉化【试点：数组+数学】端到端（类型检查 → 标准 JS → node 真跑）
 #
 # 用 -SkipGoTest 可跳过第 4 项（它要把全集测试跑两遍，最慢）。
 
@@ -34,7 +35,8 @@ $runs = @(
     # 特性判定：复用第 1 项构建的 chtsc.exe，故 -NoBuild。
     @{ 名称 = 'judge_langservice.ps1'; 参数 = @('-NoBuild') },
     @{ 名称 = 'judge_zhdiag.ps1'; 参数 = @('-NoBuild') },
-    @{ 名称 = 'judge_kwscope.ps1'; 参数 = @('-NoBuild') }
+    @{ 名称 = 'judge_kwscope.ps1'; 参数 = @('-NoBuild') },
+    @{ 名称 = 'judge_zhstdlib.ps1'; 参数 = @('-NoBuild') }
 )
 if (-not $SkipGoTest) { $runs += @{ 名称 = 'judge_gotest.ps1'; 参数 = @() } }
 
@@ -56,6 +58,6 @@ Write-Host ('#' * 78)
 $summary | ForEach-Object { "  [$($_.结果)] $($_.判定脚本)  (退出码 $($_.退出码))" }
 $fail = ($summary | Where-Object { $_.退出码 -ne 0 }).Count
 Write-Host ''
-Write-Host "  八项判定，失败 $fail 项"
+Write-Host "  九项判定，失败 $fail 项"
 if ($fail -eq 0) { Write-Host '  结论：ChineseTypeScript 全部判定通过'; exit 0 }
 else { Write-Host '  结论：有判定失败，必须查清'; exit 1 }

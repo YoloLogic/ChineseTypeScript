@@ -1132,6 +1132,18 @@ func (p *Printer) emitIdentifierText(node *ast.Identifier) {
 	debug.Assert(f == nil || p.currentSourceFile == nil || f.FileName() == p.currentSourceFile.FileName())
 	text := p.getTextOfNode(node.AsNode(), false /*includeTrivia*/)
 
+	// ChineseTypeScript：标准库汉语别名在 emit 时打回英文规范名
+	// （甲.追加(4) → 甲.push(4)），产物因此是标准 JS、无需运行时垫片。
+	// 只在【引用位】改：声明名（用户自己写的 `函数 追加(){}`）原样保留，
+	// 英文用法不在表里，一个字都不动。
+	// node.Parent 可能为 nil（emit 期会有合成节点），而 IsDeclarationName 会取 Parent，
+	// 所以必须先判空，否则空指针崩溃。
+	if node.Parent != nil && !ast.IsDeclarationName(node.AsNode()) {
+		if english, ok := scanner.ChineseStdlibCanonicalName(text); ok {
+			text = english
+		}
+	}
+
 	if p.IdToSymbol != nil {
 		if symbol, ok := p.IdToSymbol[node.AsNode()]; ok {
 			p.writeSymbol(text, symbol)

@@ -1,4 +1,4 @@
-﻿# ============================================================================
+# ============================================================================
 #  judge_zhstdlib.ps1 -- 标准库汉化【试点：数组 + 数学】的阶段判定。
 #
 #  本轮（阶段②）只覆盖【声明层】：汉语名要能通过类型检查，且英文用法同时可用。
@@ -57,11 +57,31 @@ Set-Content -Path (Join-Path $Work '并存.ts') -Encoding utf8 -Value (@(
 $c = RunTsc (Join-Path $Work '并存.ts')
 Check '③ 英文与汉语用法并存' ($c.code -eq 0) ('并存.ts exit=' + $c.code)
 
+# ④ 产物必须是标准 JS：汉语标准库名已打回英文规范名
+$out = Join-Path $Work 'out'
+if (Test-Path $out) { Remove-Item $out -Recurse -Force }
+& $Tsc (Join-Path $Work '主.ts') --outDir $out --target es2020 --module commonjs --pretty false --locale en 2>&1 | Out-Null
+$js = Join-Path $out '主.js'
+$jsText = if (Test-Path $js) { [System.IO.File]::ReadAllText($js) } else { '' }
+$hasEnglish = ($jsText -match '甲\.push\(4\)') -and ($jsText -match 'Math\.floor\(3\.7\)') -and ($jsText -match '\.length')
+# 只查「汉语名被当成员/全局用」的情形；字符串字面量里的汉语（如 "向下取整="）是用户文本，不该改写。
+$noChinese = (-not ($jsText -match '\.追加')) -and (-not ($jsText -match '\.向下取整')) -and (-not ($jsText -match '数学\.'))
+Check '④ 产物是标准 JS（汉语名已打回英文）' ($hasEnglish -and $noChinese) ('含 push/floor/length=' + $hasEnglish + ' 无汉语标准库名=' + $noChinese)
+
+# ⑤ node 真跑，输出必须正确
+$node = (Get-Command node -ErrorAction SilentlyContinue).Source
+if ($node -and (Test-Path $js)) {
+    $o = (& $node $js 2>&1 | Out-String).Trim()
+    Check '⑤ node 真跑输出正确' (($o -match '长度=4') -and ($o -match '合计=14') -and ($o -match '向下取整=3')) ('输出=' + ($o -replace [char]10, ' / '))
+} else {
+    Check '⑤ node 真跑输出正确' $false '找不到 node 或产物'
+}
+
 Write-Host ''
 Write-Host '=== 判定汇总 ==='
 $results | ForEach-Object { '  [' + $_.结果 + '] ' + $_.判定 + ' —— ' + $_.说明 }
 $fail = @($results | Where-Object { $_.结果 -ne '通过' }).Count
 Write-Host ''
 Write-Host ('  合计 ' + $results.Count + ' 项，失败 ' + $fail + ' 项')
-if ($fail -eq 0) { Write-Host '  结论：标准库汉化【声明层】判定通过（emit 改写待下一阶段）'; exit 0 }
+if ($fail -eq 0) { Write-Host '  结论：标准库汉化【试点：数组+数学】端到端通过（类型检查 → 标准 JS 产物 → node 真跑）'; exit 0 }
 Write-Host '  结论：有失败项，必须查清'; exit 1
