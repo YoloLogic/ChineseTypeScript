@@ -14,13 +14,19 @@
 
 param(
     [string] $Tsc  = 'E:\cts-build\chtsc.exe',
-    [string] $Work = '',
+    [string] $Src  = '',   # 夹具源（仓库内，已跟踪：汉语标准库.d.ts / 主.ts）
+    [string] $Work = '',   # 判定工作目录（默认在仓库【外】，避免生成物混进仓库）
     [switch] $NoBuild
 )
 
 $ErrorActionPreference = 'Stop'
 $repo = Split-Path -Parent $PSScriptRoot
-if (-not $Work) { $Work = Join-Path $repo 'tests-chts\zhstdlib' }
+if (-not $Src)  { $Src  = Join-Path $repo 'tests-chts\zhstdlib' }
+if (-not $Work) { $Work = Join-Path $env:TEMP 'zhstdlib-judge' }
+if (Test-Path $Work) { Remove-Item $Work -Recurse -Force }
+New-Item -ItemType Directory -Force $Work | Out-Null
+Copy-Item (Join-Path $Src '汉语标准库.d.ts') $Work -Force
+Copy-Item (Join-Path $Src '主.ts') $Work -Force
 
 $results = New-Object System.Collections.Generic.List[object]
 function Check([string]$name, [bool]$ok, [string]$detail) {
@@ -42,7 +48,12 @@ if (-not (Test-Path $Tsc)) { throw ('找不到编译器 ' + $Tsc) }
 $a = RunTsc (Join-Path $Work '主.ts')
 Check '① 汉语标准库名通过类型检查' ($a.code -eq 0) ('主.ts exit=' + $a.code + $(if ($a.code -ne 0) { '；' + ($a.text -split [char]10)[0] } else { '' }))
 
-# ② 负对照：未声明的汉语成员必须报错
+# ② 负对照：未声明的汉语成员必须报错（文件由判定自己生成，不依赖仓库里有没有）
+Set-Content -Path (Join-Path $Work '负对照.ts') -Encoding utf8 -Value (@(
+    '/// <reference path="汉语标准库.d.ts" />',
+    'declare const 甲: number[];',
+    '甲.发送(1);'
+) -join [char]10)
 $b = RunTsc (Join-Path $Work '负对照.ts')
 Check '② 负对照：未声明的汉语成员报 TS2339' (($b.code -ne 0) -and ($b.text -match 'TS2339')) ('负对照.ts exit=' + $b.code + ' 含 TS2339=' + [bool]($b.text -match 'TS2339'))
 
