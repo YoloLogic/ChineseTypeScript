@@ -101,6 +101,10 @@ $js2 = Join-Path $out2 '同名变量.js'
 $js2Text = if (Test-Path $js2) { [System.IO.File]::ReadAllText($js2) } else { '' }
 Check '⑥ 收窄守卫：用户自己的「追加」不被改写' (($js2Text -match '追加') -and (-not ($js2Text -match 'push'))) ('产物含 追加=' + [bool]($js2Text -match '追加') + ' 含 push=' + [bool]($js2Text -match 'push'))
 
+# ⑦ 单一真源守卫：Go 里的两张表必须与 stdlib 的译名表同步
+& pwsh -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repo 'tools\gen_zhstdlib.ps1') -Check *>&1 | Out-Null
+Check '⑦ 生成物与译名表同步（单一真源守卫）' ($LASTEXITCODE -eq 0) ('gen_zhstdlib -Check exit=' + $LASTEXITCODE)
+
 Write-Host ''
 Write-Host '=== 判定汇总 ==='
 $results | ForEach-Object { '  [' + $_.结果 + '] ' + $_.判定 + ' —— ' + $_.说明 }

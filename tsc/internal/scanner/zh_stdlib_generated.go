@@ -1,0 +1,55 @@
+package scanner
+
+// ChineseTypeScript：标准库汉语别名 → 英文规范名【生成物，请勿手改】。
+//
+// 单一真源：stdlib/试点-数组与数学.tsv
+// 生成：pwsh -File tools/gen_zhstdlib.ps1（-Check 只核对）
+// 手写逻辑（查询函数与设计说明）在 zh_stdlib.go。
+
+var zhStdlibGlobals = map[string]string{
+	"数组": "Array",
+	"数学": "Math",
+}
+
+var zhStdlibMembers = map[string]string{
+	"长度":     "length",
+	"转字符串":   "toString",
+	"本地转字符串": "toLocaleString",
+	"末尾弹出":   "pop",
+	"追加":     "push",
+	"拼接":     "concat",
+	"连接成串":   "join",
+	"反转":     "reverse",
+	"开头弹出":   "shift",
+	"截取":     "slice",
+	"排序":     "sort",
+	"剪接":     "splice",
+	"开头插入":   "unshift",
+	"找序号":    "indexOf",
+	"末次序号":   "lastIndexOf",
+	"全部满足":   "every",
+	"存在满足":   "some",
+	"逐个处理":   "forEach",
+	"映射":     "map",
+	"过滤":     "filter",
+	"归纳":     "reduce",
+	"反向归纳":   "reduceRight",
+	"绝对值":    "abs",
+	"反余弦":    "acos",
+	"反正弦":    "asin",
+	"反正切":    "atan",
+	"反正切二":   "atan2",
+	"向上取整":   "ceil",
+	"余弦":     "cos",
+	"指数":     "exp",
+	"向下取整":   "floor",
+	"对数":     "log",
+	"最大":     "max",
+	"最小":     "min",
+	"乘方":     "pow",
+	"随机":     "random",
+	"四舍五入":   "round",
+	"正弦":     "sin",
+	"平方根":    "sqrt",
+	"正切":     "tan",
+}
