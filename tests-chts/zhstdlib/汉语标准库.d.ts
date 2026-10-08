@@ -59,4 +59,10 @@ interface Math {
     乘方(底: number, 指: number): number;
     正弦(数: number): number;
     正切(数: number): number;
+    截断(数: number): number;
+    符号(数: number): number;
+    立方根(数: number): number;
+    对数二(数: number): number;
+    对数十(数: number): number;
+    斜边长(...数: number[]): number;
 }

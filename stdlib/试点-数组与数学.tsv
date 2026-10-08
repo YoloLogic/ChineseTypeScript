@@ -41,3 +41,9 @@ member	round	四舍五入
 member	sin	正弦
 member	sqrt	平方根
 member	tan	正切
+member	trunc	截断
+member	sign	符号
+member	cbrt	立方根
+member	log2	对数二
+member	log10	对数十
+member	hypot	斜边长

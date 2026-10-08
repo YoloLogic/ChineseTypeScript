@@ -54,5 +54,11 @@ var zhStdlibMembers = map[string]string{
 	"正弦": "sin",
 	"平方根": "sqrt",
 	"正切": "tan",
+	"截断": "trunc",
+	"符号": "sign",
+	"立方根": "cbrt",
+	"对数二": "log2",
+	"对数十": "log10",
+	"斜边长": "hypot",
 }
 
