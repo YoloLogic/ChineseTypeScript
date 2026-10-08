@@ -32,3 +32,31 @@ interface Math {
 declare var 数学: Math;
 declare var 控制台: Console;
 type 数组<T> = Array<T>;
+
+// 以下两段补上译名表里其余名字的声明（TS 接口会【合并】，所以在这里再开一块完全合法）。
+// 由 judge_zhstdlib 第⑧项守卫：译名表里每个名字都必须有声明，否则判定变红。
+interface Array<T> {
+    转字符串(): string;
+    本地转字符串(): string;
+    拼接(...项: T[][]): T[];
+    连接成串(分隔符?: string): string;
+    剪接(起: number, 删除数?: number, ...项: T[]): T[];
+    找序号(值: T, 起?: number): number;
+    末次序号(值: T, 起?: number): number;
+    全部满足(谓词: (值: T, 序号: number, 数组: T[]) => boolean): boolean;
+    存在满足(谓词: (值: T, 序号: number, 数组: T[]) => boolean): boolean;
+    反向归纳<U>(回调: (累积: U, 值: T, 序号: number, 数组: T[]) => U, 初值: U): U;
+}
+
+interface Math {
+    反余弦(数: number): number;
+    反正弦(数: number): number;
+    反正切(数: number): number;
+    反正切二(纵: number, 横: number): number;
+    余弦(数: number): number;
+    指数(数: number): number;
+    对数(数: number): number;
+    乘方(底: number, 指: number): number;
+    正弦(数: number): number;
+    正切(数: number): number;
+}

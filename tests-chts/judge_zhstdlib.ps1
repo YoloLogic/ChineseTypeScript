@@ -105,6 +105,20 @@ Check '⑥ 收窄守卫：用户自己的「追加」不被改写' (($js2Text -m
 & pwsh -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repo 'tools\gen_zhstdlib.ps1') -Check *>&1 | Out-Null
 Check '⑦ 生成物与译名表同步（单一真源守卫）' ($LASTEXITCODE -eq 0) ('gen_zhstdlib -Check exit=' + $LASTEXITCODE)
 
+# ⑧ 防漂移守卫：译名表里每个名字都必须【有对应声明】——
+#    防「先翻译、后补声明」：译名一进表 emit 改写就生效，声明没跟上会误改用户自己的标识符。
+$tsv = Join-Path $repo 'stdlib\试点-数组与数学.tsv'
+$dts = [System.IO.File]::ReadAllText((Join-Path $Src '汉语标准库.d.ts'))
+$missing = New-Object System.Collections.Generic.List[string]
+foreach ($line in (Get-Content $tsv -Encoding UTF8)) {
+    if ($line -notmatch '\S') { continue }
+    $parts = $line -split ([string][char]9)
+    if ($parts.Count -lt 3) { continue }
+    $zh = $parts[2].Trim()
+    if ($zh -and ($dts -notmatch [regex]::Escape($zh))) { $missing.Add($zh) }
+}
+Check '⑧ 译名表每个名字都有对应声明（防先翻译后补声明）' ($missing.Count -eq 0) ('缺声明: ' + $(if ($missing.Count) { $missing -join ' ' } else { '无' }))
+
 Write-Host '=== 判定汇总 ==='
 $results | ForEach-Object { '  [' + $_.结果 + '] ' + $_.判定 + ' —— ' + $_.说明 }
 $fail = @($results | Where-Object { $_.结果 -ne '通过' }).Count
