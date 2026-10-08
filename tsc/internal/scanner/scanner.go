@@ -207,6 +207,9 @@ type Scanner struct {
 	scriptTarget    core.ScriptTarget
 	onError         ErrorCallback
 	skipTrivia      bool
+	// ChineseTypeScript：本扫描器是否认汉语关键字别名。
+	// 由「本文件是不是 .chts」决定（见 GetScannerForSourceFile 与 parser.initializeState）。
+	allowChineseKeywords bool
 	ScannerState
 
 	numberCache    map[string]string
@@ -890,7 +893,7 @@ func (s *Scanner) Scan() ast.Kind {
 			cp := s.peekUnicodeEscape()
 			if cp >= 0 && IsIdentifierStart(cp) {
 				s.tokenValue = string(s.scanUnicodeEscape(true)) + s.scanIdentifierParts()
-				s.token = GetIdentifierToken(s.tokenValue)
+				s.token = s.getIdentifierToken(s.tokenValue)
 			} else {
 				s.scanInvalidCharacter()
 			}
@@ -929,7 +932,7 @@ func (s *Scanner) Scan() ast.Kind {
 				break
 			}
 			if s.scanIdentifier(0) {
-				s.token = GetIdentifierToken(s.tokenValue)
+				s.token = s.getIdentifierToken(s.tokenValue)
 				break
 			}
 			ch, size := s.charAndSize()
@@ -1340,7 +1343,7 @@ func (s *Scanner) ScanJsxIdentifier() ast.Kind {
 				break
 			}
 		}
-		s.token = GetIdentifierToken(s.tokenValue)
+		s.token = s.getIdentifierToken(s.tokenValue)
 	}
 	return s.token
 }
@@ -1492,7 +1495,7 @@ func (s *Scanner) ScanJSDocToken() ast.Kind {
 		cp := s.peekUnicodeEscape()
 		if cp >= 0 && IsIdentifierStart(cp) {
 			s.tokenValue = string(s.scanUnicodeEscape(true)) + s.scanIdentifierParts()
-			s.token = GetIdentifierToken(s.tokenValue)
+			s.token = s.getIdentifierToken(s.tokenValue)
 		} else {
 			s.pos++
 			s.token = ast.KindUnknown
@@ -1516,7 +1519,7 @@ func (s *Scanner) ScanJSDocToken() ast.Kind {
 		if char == '\\' {
 			s.tokenValue += s.scanIdentifierParts()
 		}
-		s.token = GetIdentifierToken(s.tokenValue)
+		s.token = s.getIdentifierToken(s.tokenValue)
 		return s.token
 	} else {
 		s.token = ast.KindUnknown
@@ -2211,26 +2214,55 @@ func (s *Scanner) scanInvalidCharacter() {
 	s.token = ast.KindUnknown
 }
 
-func GetIdentifierToken(str string) ast.Kind {
+// getIdentifierToken 是扫描器版本的标识符判定。
+//
+// ChineseTypeScript：汉语别名只在【这个扫描器被标记为允许】时才参与；标记由
+// 「本文件是不是 .chts」决定。于是英文 .ts 文件里 `对象`/`变量`/`函数` 又能当
+// 标识符用（与上游一致），而 .chts 里它们仍是关键字。
+func (s *Scanner) getIdentifierToken(str string) ast.Kind {
 	if len(str) >= 2 && len(str) <= 12 && str[0] >= 'a' && str[0] <= 'z' {
 		keyword := textToKeyword[str]
 		if keyword != ast.KindUnknown {
 			return keyword
 		}
-	} else if len(str) > 0 && str[0] >= utf8.RuneSelf {
-		// ChineseTypeScript：汉语关键字别名。
-		//
+	} else if s.allowChineseKeywords && len(str) > 0 && str[0] >= utf8.RuneSelf {
 		// 走【独立表】zhTextToKeyword，绝不并入 textToKeyword —— 否则 tokenToText
 		// 的倒排会被中文污染，printer 落盘的关键字会在中英之间随机取值，
 		// 生成的 js 就成了非法 JS。理由与本表的单一真源见 zh_keywords.txt。
 		//
 		// 上面那个 ASCII 快路径原样保留，因此英文关键字的既有行为完全不变。
-		// 首个字节 >= utf8.RuneSelf 即非 ASCII 标识符（汉字必属此类）。
 		if keyword, ok := zhTextToKeyword[str]; ok {
 			return keyword
 		}
 	}
 	return ast.KindIdentifier
+}
+
+// SetAllowChineseKeywords 由「知道本文件是什么」的调用方设置。
+func (s *Scanner) SetAllowChineseKeywords(v bool) {
+	s.allowChineseKeywords = v
+}
+
+// GetIdentifierToken 是【没有文件上下文】时的入口：只认英文关键字。
+//
+// 旧的全局行为（任何文件都认汉语）已收敛为「文件是 .chts 才认」，所以这里默认不认；
+// 需要按文件判定请用 GetIdentifierTokenForFileName。
+func GetIdentifierToken(str string) ast.Kind {
+	var s Scanner
+	return s.getIdentifierToken(str)
+}
+
+// GetIdentifierTokenForFileName 按文件名决定要不要认汉语别名。
+func GetIdentifierTokenForFileName(fileName string, str string) ast.Kind {
+	var s Scanner
+	s.allowChineseKeywords = IsChineseTypeScriptFileName(fileName)
+	return s.getIdentifierToken(str)
+}
+
+// IsChineseTypeScriptFileName 判断文件是不是 ChineseTypeScript 源/声明文件。
+// 同时覆盖 .chts 与 .d.chts（后者也以 .chts 结尾）。
+func IsChineseTypeScriptFileName(fileName string) bool {
+	return strings.HasSuffix(strings.ToLower(fileName), ".chts")
 }
 
 func IsValidIdentifier(s string) bool {
@@ -2517,6 +2549,7 @@ func GetShebang(text string) string {
 
 func GetScannerForSourceFile(sourceFile *ast.SourceFile, pos int) *Scanner {
 	s := NewScanner()
+	s.allowChineseKeywords = IsChineseTypeScriptFileName(sourceFile.FileName())
 	s.text = sourceFile.Text()
 	s.pos = pos
 	s.end = len(s.text)
