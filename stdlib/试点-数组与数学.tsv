@@ -60,6 +60,12 @@ member	delete	删除
 member	clear	清空
 member	size	大小
 member	add	添加
+member	then	然后
+member	finally	最终
+member	resolve	解决
+member	reject	拒绝
+member	all	全部
+member	race	竞速
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

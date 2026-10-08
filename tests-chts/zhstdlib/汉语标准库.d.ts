@@ -121,3 +121,15 @@ interface Set<T> {
     清空(): void;
     大小: number;
 }
+
+// Promise（`catch` 与关键字「捕获」同名，这里先不译，留给后续统一处理）。
+interface Promise<T> {
+    然后<U>(回调: (值: T) => U | Promise<U>): Promise<U>;
+    最终(回调?: () => void): Promise<T>;
+}
+interface PromiseConstructor {
+    解决<T>(值: T | Promise<T>): Promise<T>;
+    拒绝(原因?: any): Promise<never>;
+    全部<T>(值: Iterable<T | Promise<T>>): Promise<T[]>;
+    竞速<T>(值: Iterable<T | Promise<T>>): Promise<Awaited<T>>;
+}
