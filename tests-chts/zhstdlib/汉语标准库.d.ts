@@ -144,3 +144,13 @@ interface Date {
 interface DateConstructor {
     此刻(): number;
 }
+
+// RegExp / JSON 的常用成员。
+interface RegExp {
+    测试(串: string): boolean;
+    执行(串: string): RegExpExecArray | null;
+}
+interface JSON {
+    解析(文本: string): any;
+    序列化(值: any): string;
+}

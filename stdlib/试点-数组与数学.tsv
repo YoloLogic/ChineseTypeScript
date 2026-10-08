@@ -71,6 +71,10 @@ member	getFullYear	取年
 member	getMonth	取月
 member	getDate	取日
 member	now	此刻
+member	test	测试
+member	exec	执行
+member	parse	解析
+member	stringify	序列化
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

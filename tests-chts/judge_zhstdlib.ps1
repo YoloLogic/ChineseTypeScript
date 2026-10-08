@@ -83,7 +83,7 @@ Check '④ 产物是标准 JS（汉语名已打回英文）' ($hasEnglish -and $
 $node = (Get-Command node -ErrorAction SilentlyContinue).Source
 if ($node -and (Test-Path $js)) {
     $o = (& $node $js 2>&1 | Out-String).Trim()
-    Check '⑤ node 真跑输出正确' (($o -match '长度=4') -and ($o -match '合计=14') -and ($o -match '向下取整=3') -and ($o -match '控制台通过') -and ($o -match '找序号=1') -and ($o -match '乘方=8') -and ($o -match '映射取=1') -and ($o -match '承诺值=42') -and ($o -match '年=2026')) ('输出=' + ($o -replace [char]10, ' / '))
+    Check '⑤ node 真跑输出正确' (($o -match '长度=4') -and ($o -match '合计=14') -and ($o -match '向下取整=3') -and ($o -match '控制台通过') -and ($o -match '找序号=1') -and ($o -match '乘方=8') -and ($o -match '映射取=1') -and ($o -match '承诺值=42') -and ($o -match '年=2026') -and ($o -match '正则匹配=true') -and ($o -match '解析=42')) ('输出=' + ($o -replace [char]10, ' / '))
 } else {
     Check '⑤ node 真跑输出正确' $false '找不到 node 或产物'
 }
