@@ -76,14 +76,14 @@ $js = Join-Path $out '主.js'
 $jsText = if (Test-Path $js) { [System.IO.File]::ReadAllText($js) } else { '' }
 $hasEnglish = ($jsText -match '甲\.push\(4\)') -and ($jsText -match 'Math\.floor\(3\.7\)') -and ($jsText -match '\.length')
 # 只查「汉语名被当成员/全局用」的情形；字符串字面量里的汉语（如 "向下取整="）是用户文本，不该改写。
-$noChinese = (-not ($jsText -match '\.追加')) -and (-not ($jsText -match '\.向下取整')) -and (-not ($jsText -match '数学\.'))
+$noChinese = (-not ($jsText -match '\.追加')) -and (-not ($jsText -match '\.向下取整')) -and (-not ($jsText -match '数学\.')) -and (-not ($jsText -match '控制台\.'))
 Check '④ 产物是标准 JS（汉语名已打回英文）' ($hasEnglish -and $noChinese) ('含 push/floor/length=' + $hasEnglish + ' 无汉语标准库名=' + $noChinese)
 
 # ⑤ node 真跑，输出必须正确
 $node = (Get-Command node -ErrorAction SilentlyContinue).Source
 if ($node -and (Test-Path $js)) {
     $o = (& $node $js 2>&1 | Out-String).Trim()
-    Check '⑤ node 真跑输出正确' (($o -match '长度=4') -and ($o -match '合计=14') -and ($o -match '向下取整=3')) ('输出=' + ($o -replace [char]10, ' / '))
+    Check '⑤ node 真跑输出正确' (($o -match '长度=4') -and ($o -match '合计=14') -and ($o -match '向下取整=3') -and ($o -match '控制台通过')) ('输出=' + ($o -replace [char]10, ' / '))
 } else {
     Check '⑤ node 真跑输出正确' $false '找不到 node 或产物'
 }
@@ -105,23 +105,6 @@ Check '⑥ 收窄守卫：用户自己的「追加」不被改写' (($js2Text -m
 & pwsh -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repo 'tools\gen_zhstdlib.ps1') -Check *>&1 | Out-Null
 Check '⑦ 生成物与译名表同步（单一真源守卫）' ($LASTEXITCODE -eq 0) ('gen_zhstdlib -Check exit=' + $LASTEXITCODE)
 
-# ⑧ 全局名增量（console → 控制台）：编译 → 产物用英文名 → node 真跑
-$w3 = Join-Path $Work 'ctrl'
-if (Test-Path $w3) { Remove-Item $w3 -Recurse -Force }
-New-Item -ItemType Directory -Force $w3 | Out-Null
-Copy-Item (Join-Path $Work '汉语标准库.d.ts') $w3 -Force
-Set-Content -Path (Join-Path $w3 '主.ts') -Encoding utf8 -Value (@(
-    '/// <reference path="汉语标准库.d.ts" />',
-    '控制台.log("你好，世界");'
-) -join [char]10)
-& $Tsc (Join-Path $w3 '主.ts') --outDir (Join-Path $w3 'out') --target es2020 --module commonjs --pretty false --locale en 2>&1 | Out-Null
-$js3 = Join-Path $w3 'out主.js'
-$js3Text = if (Test-Path $js3) { [System.IO.File]::ReadAllText($js3) } else { '' }
-$node2 = (Get-Command node -ErrorAction SilentlyContinue).Source
-$ran = if ($node2 -and (Test-Path $js3)) { (& $node2 $js3 2>&1 | Out-String).Trim() } else { '' }
-Check '⑧ console → 控制台（编译 → 英文名产物 → node 输出对）' (($js3Text -match 'console\.log') -and (-not ($js3Text -match '控制台')) -and ($ran -match '你好，世界')) ('产物用 console=' + [bool]($js3Text -match 'console\.log') + ' 输出=' + $ran)
-
-Write-Host ''
 Write-Host '=== 判定汇总 ==='
 $results | ForEach-Object { '  [' + $_.结果 + '] ' + $_.判定 + ' —— ' + $_.说明 }
 $fail = @($results | Where-Object { $_.结果 -ne '通过' }).Count
