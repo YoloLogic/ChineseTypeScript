@@ -1,11 +1,13 @@
-﻿# ChineseTypeScript —— 我们的工作副本
+# ChineseTypeScript —— 我们的工作副本
 
 > 本目录是 **ChineseTypeScript**（不要把名字写成 "ChineseScript"）。
 > 它是 Chinese++ 项目的第四条产品线：几何定位「最快的（C++）/ 最全面的（Python）/
 > 最适合浏览器页面的（JS 或 TS 魔改）」中**网页那一角**。
 >
 > ⚠ **协作边界**（用户 2026-10-07 裁定）：**本仓一般只负责 `E:\ChineseTypeScript`**。
-> 父项目 `E:\Chinese++` 的登记文档由**父仓负责人**维护；本仓只在明确受命时做父仓登记同步。
+> `E:\Chinese++` 是**中文 C++ 项目**的目录 —— 与我们**并列**的另一个汉化项目（不是父子关系）。
+> 那里 `docs/ChineseTypeScript/…` 是**中文 C++ 项目侧维护的「关于 ChineseTypeScript 的登记文档」**；
+> 本仓只在**明确受命**时才去同步那份登记。
 
 ## 一、底本来源（必须留档）
 
