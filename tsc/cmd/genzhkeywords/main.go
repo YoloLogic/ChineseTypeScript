@@ -274,7 +274,7 @@ func renderMarkdown(entries []entry) []byte {
 	b.WriteString("| 字符串里的东西 | `导入 { 平方 } 来自 \"./数学\"` | 路径与包名是运行时要解析的字符串，翻译了就找不到文件 |\n")
 	b.WriteString("| 属性名 | `对象.名字`、`甲[\"对象\"]` | 属性名位允许任何标识符（**包括关键字**）—— 见第五节 |\n")
 	b.WriteString("| 命令行开关 | `--target es2020`、`--strict` | 构建系统靠它 |\n")
-	b.WriteString("| `--help` 的输出 | —— | 尚未汉化 |\n\n")
+	b.WriteString("| `--help` 的输出 | —— | **已汉化**：命令行默认 `--locale zh-CN`；要英文用 `--locale en` |\n\n")
 	b.WriteString("> ⚠ **与 Chinese++ 的一处重大差别**：Chinese++ 连标准库都做了汉化层\n")
 	b.WriteString("> （中文头名覆盖 103/103，`#包含 <向量>` 可用）。ChineseTypeScript **没有**做\n")
 	b.WriteString("> 「汉语标准库」—— `console`、`Array`、`Promise` 这些名字**没有**中文别名。\n")

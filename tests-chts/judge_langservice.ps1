@@ -75,7 +75,8 @@ $fixtures = @(
 foreach ($fx in $fixtures) {
     $path = Join-Path $Work $fx.file
     Set-Content -Path $path -Value $fx.src -Encoding utf8
-    $out = (& $Tsc $path --noEmit --pretty false 2>&1 | Out-String)
+    # 显式 --locale en：本判定的断言用的是英文诊断文本，不能被「默认中文」影响。
+    $out = (& $Tsc $path --noEmit --pretty false --locale en 2>&1 | Out-String)
     $hit = $out -match [regex]::Escape($fx.want)
     $ok = if ($fx.mode -eq 'has') { $hit } else { -not $hit }
     $first = ($out -split '\r?\n' | Where-Object { $_ -match 'error TS' } | Select-Object -First 1)

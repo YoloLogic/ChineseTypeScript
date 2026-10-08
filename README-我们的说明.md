@@ -66,7 +66,7 @@
 故取 **`.chts`**（= ChineseTypeScript）。扩展名一律**追加在末尾**，
 使 `.ts/.tsx/.d.ts` 的既有优先级与解析顺序一个字节都不变。
 
-## 五、改动清单：上游源码只动了 11 个文件
+## 五、改动清单：上游源码只动了 12 个文件
 
 | # | 文件 | 改动 |
 |---|---|---|
@@ -81,6 +81,7 @@
 | 9 | `tsc/internal/ast/utilities.go` | `GetImpliedNodeFormatForFile` 把 `.d.chts` 归入**标准 TS 那一类**（按 package.json 决定 ESM/CJS），**不是** CommonJS 那类（见「六·七」） |
 | 10 | `tsc/internal/modulespecifiers/util.go` | 声明扩展名 → JS 扩展名的映射：`.d.chts` → `.js` |
 | 11 | `tsc/internal/ls/string_completions.go` | 字符串补全把 `.d.chts` 当 TS 声明文件（同 `.d.ts`） |
+| 12 | `tsc/cmd/tsc/main.go` | 命令行默认 `--locale zh-CN`（`argsWithDefaultLocale`；locale 是命令行专用选项，故不覆盖 tsconfig，库与上游测试零变化。见「六·八」） |
 
 **binder / checker 零改动**；其余各文件都是为**扩展名、边界、语言服务或修正**加的小段，
 都不是为「关键字落成同一个 token」这套机制本身（那套确实只需词法层一处）。
@@ -140,6 +141,7 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
 | **语言服务判定** | `tests-chts/judge_langservice.ps1`（9 项：三组 Go 守卫 + CLI 真编译三条汉语建议 + 两条负对照） |
 | **声明扩展名守卫** | `tsc/internal/tspath/dchts_extension_test.go`（`.d.chts` 被识别为声明文件、不属 CJS、产出仍 `.d.ts`） |
 | **.d.chts 判定** | `tests-chts/judge_dchts.ps1`（5 项：单独编译 → 无扩展名导入解析 → `tsc -p` → 声明产出 `.d.ts` → 藏起来必报 TS2307） |
+| **中文诊断判定** | `tests-chts/judge_zhdiag.ps1`（5 项：默认中文 / `--locale en` 回英文 / 默认==显式 zh-CN / 抽样多码中文 / 正确程序无诊断） |
 | **一条命令全跑** | `tests-chts/run_all.ps1`（五套核心；`-SkipGoTest` 可跳过最慢的第 4 项。打包判定与语言服务判定单独跑；item① 的 Go 守卫也随 `judge_gotest` 一起跑） |
 
 生成器**不信任任何手写清单**：它自己解析 `scanner.go` 的 `textToKeyword` 得到
@@ -200,6 +202,26 @@ for text, kind := range textToToken { result[kind] = text }   // ← Go map 顺�
   `judge_gotest` 的 baseline 预期差异从「一类 `.chts`」扩为「`.chts` + `.d.chts` 两类」，
   解释器已同步扩了第二类）。
 
+## 六·八、诊断默认中文（item③，2026-10-07）
+
+* **先纠正一条旧结论**：本文件早先写「诊断信息未汉化」，**不准确** ——
+  上游 tsc-go 本来就自带 **zh-CN 翻译**（`tsc/internal/diagnostics/loc/zh-CN.json.gz`）
+  与 `--locale` 机制，实测词条 **2118/2204（96%，全部含汉字）**。
+* **本项目做的汉化**：让 `chtsc` **命令行默认用中文**（用户 2026-10-07 裁定）。
+  实现只有一处：`tsc/cmd/tsc/main.go` 的 `argsWithDefaultLocale` —— 没给 `--locale` 时
+  补上 `--locale zh-CN`。
+  * **为什么放在 CLI 层**：`locale` 是**命令行专用**选项（`IsCommandLineOnly`），
+    所以注入默认值**不会覆盖任何 tsconfig 设置**；而库与上游 Go 测试不走 `cmd/tsc`，
+    因此它们的默认行为**一个字节不变**（`judge_gotest` 的差异仍旧只是那一类）。
+  * `--locale en` 回到英文；显式 `--locale <任何语言>` 一律尊重。
+* **判定**：`judge_zhdiag.ps1`（5 项）—— 默认出中文、`--locale en` 回英文、
+  默认与显式 `zh-CN` **逐字节相同**、抽样 TS2304/TS2554/TS2322 都出中文、
+  正确程序无诊断（负对照）。英文路径的判定（`judge_oss` / `judge_langservice`）
+  已显式加 `--locale en`，零回归照旧。
+* **仍缺的（诚实登记）**：① zh-CN 只覆盖 **2118/2204**，86 条没有中文（回退英文）；
+  ② 译文是**上游**的，与 Chinese++ 的 7344 条**不保证同词同译**（两条产品线的诊断集基本不相交）；
+  ③ `--help` 首行仍写 `tsc:`（不是 `chtsc`）。
+
 ## 七、判定证据（本轮实测）
 
 ```
@@ -225,6 +247,8 @@ judge_langservice.ps1  9/9（scanner 5 + parser 4 + ls 6 条 Go 守卫；CLI 三
                        函树→函数、局部变两→局部变量、如果甲→如果；两条负对照无建议）
 judge_dchts.ps1     5/5（.d.chts 被当成声明文件 → ./甲 解析到 甲.d.chts → tsc -p 收录 →
                     .chts 开 --declaration 产出标准 .d.ts → 藏起 .d.chts 必报 TS2307）
+judge_zhdiag.ps1    5/5（默认出中文 → --locale en 回英文 → 默认==显式 zh-CN 逐字节相同 →
+                    TS2304/TS2554/TS2322 抽样都出中文 → 正确程序无诊断）
 ```
 
 > **为什么全集判定要这么麻烦**：加一个新扩展名，会**自然地**改变
@@ -263,7 +287,9 @@ judge_dchts.ps1     5/5（.d.chts 被当成声明文件 → ./甲 解析到 甲.
    编辑器补全（**只给 `.chts` 文件**）与「你是不是想写…」建议都认汉语关键字。
    **但编辑器侧尚未打包/配置**：发行包里没有 `.vscode` 模板，用户要自己把
    `chtsc --lsp --stdio` 配给编辑器。
-4. **诊断信息未汉化**（Chinese++ 侧已汉化 7344 条诊断；ChineseTypeScript 侧未做）。
+4. **诊断已是「默认中文」**（2026-10-07，见「六·八」）：上游自带 zh-CN 翻译（2118/2204），
+   `chtsc` 命令行默认就用它，`--locale en` 回英文。但仍缺 86 条，且译文与 Chinese++ 的
+   7344 条**不保证同词同译**。另外 `--help` 首行仍写 `tsc:`。
 5. ~~**未打包、未发布**~~ —— **已出独立发行包**（2026-10-07，见「六·五」节）：
    `dist\ChineseTypeScript-0.1-win64.zip`（自带便携 node），包内自测 16/16、打包判定 5/5。
    **但仍未发布到网上**（无上传 / 下载页 / CI）。
@@ -305,4 +331,5 @@ judge_dchts.ps1     5/5（.d.chts 被当成声明文件 → ./甲 解析到 甲.
 以及「未定义」值位置归一化的修复与第 ⑪ 节守卫）；
 另加**独立发行包（0.1）**与打包判定；
 item①：**语言服务与建议**认汉语（含 `.chts` 限定、`core` 的字节/rune 修正），语言服务判定 9/9；
-item②：**`.d.chts` 声明文件**可识别、可解析（产出仍为标准 `.d.ts`），.d.chts 判定 5/5。
+item②：**`.d.chts` 声明文件**可识别、可解析（产出仍为标准 `.d.ts`），.d.chts 判定 5/5；
+item③：**诊断默认中文**（上游 zh-CN 2118/2204；在 CLI 层默认，`--locale en` 回英文），中文诊断判定 5/5。

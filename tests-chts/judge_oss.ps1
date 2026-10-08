@@ -48,7 +48,7 @@ if ($Sample -le 0 -or $Sample -ge $all.Count) {
     Write-Host "  确定性抽样：$($picked.Count) 个文件（每 $step 个取 1）"
 }
 
-$flags = @('--noEmit', '--pretty', 'false', '--target', 'es2020', '--module', 'commonjs')
+$flags = @('--noEmit', '--pretty', 'false', '--target', 'es2020', '--module', 'commonjs', '--locale', 'en')
 
 Write-Host ''
 Write-Host "=== 2) 逐个文件对比【诊断 + 退出码】 ==="
