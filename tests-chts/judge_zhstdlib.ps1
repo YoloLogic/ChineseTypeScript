@@ -119,6 +119,18 @@ foreach ($line in (Get-Content $tsv -Encoding UTF8)) {
 }
 Check '⑧ 译名表每个名字都有对应声明（防先翻译后补声明）' ($missing.Count -eq 0) ('缺声明: ' + $(if ($missing.Count) { $missing -join ' ' } else { '无' }))
 
+# ⑨ 二进制新鲜度：chtsc.exe 不得比生成的译名表旧 ——
+#    否则 -NoBuild 会拿【旧表】判定：表里有、二进制里没有，出现「加了名字却不生效」的假失败/假通过。
+#    （2026-10-08 真踩过：加 控制台/集合 等名字后用 -NoBuild 跑，产物里仍是汉语名、node 报 not defined。）
+$genGo = Join-Path $repo 'tsc\internal\scanner\zh_stdlib_generated.go'
+if (Test-Path $genGo) {
+    $binTime = (Get-Item $Tsc).LastWriteTimeUtc
+    $genTime = (Get-Item $genGo).LastWriteTimeUtc
+    Check '⑨ 二进制不比译名表旧（防 -NoBuild 用旧表）' ($binTime -ge $genTime) ('bin=' + $binTime.ToString('HH:mm:ss') + ' gen=' + $genTime.ToString('HH:mm:ss'))
+} else {
+    Check '⑨ 二进制不比译名表旧（防 -NoBuild 用旧表）' $false '找不到生成的译名表'
+}
+
 Write-Host '=== 判定汇总 ==='
 $results | ForEach-Object { '  [' + $_.结果 + '] ' + $_.判定 + ' —— ' + $_.说明 }
 $fail = @($results | Where-Object { $_.结果 -ne '通过' }).Count

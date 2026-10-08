@@ -90,3 +90,17 @@ interface String {
     取值(): string;
     规范化(): string;
 }
+
+// 内建构造器的汉语别名：类型位与值位都给（`新建 集合<数字>()` 与 `集合<数字>` 都能写）。
+type 承诺<T> = Promise<T>;
+declare var 承诺: PromiseConstructor;
+type 映射表<K, V> = Map<K, V>;
+declare var 映射表: MapConstructor;
+type 集合<T> = Set<T>;
+declare var 集合: SetConstructor;
+type 日期 = Date;
+declare var 日期: DateConstructor;
+type 正则 = RegExp;
+declare var 正则: RegExpConstructor;
+type 错误 = Error;
+declare var 错误: ErrorConstructor;

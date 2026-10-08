@@ -64,8 +64,10 @@ foreach ($line in (Get-Content $Table -Encoding UTF8)) {
 # 唯一性守卫（2026-10-08 定）：emit 改写做的是「汉语名 → 英文名」，与接收者类型无关，
 # 所以译名必须【一英一汉、全局唯一】：同一个汉语名不得对应两个英文名，反之亦然。
 # 否则 `Array.map` 与 `Map.map` 这类会改写错。
-$zhToEn = @{}
-$enToZh = @{}
+# 必须【区分大小写】：英文标识符大小写敏感（map 是 Array 的成员、Map 是构造器，两者不同名）。
+# PowerShell 的 @{} 哈希表默认不区分大小写，会把它们误判成重复。
+$zhToEn = New-Object 'System.Collections.Generic.Dictionary[string,string]'
+$enToZh = New-Object 'System.Collections.Generic.Dictionary[string,string]'
 foreach ($line in (Get-Content $Table -Encoding UTF8)) {
     if ($line -notmatch '\S') { continue }
     $p = $line -split $TAB

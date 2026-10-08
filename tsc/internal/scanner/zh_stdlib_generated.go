@@ -9,6 +9,12 @@
 var zhStdlibGlobals = map[string]string{
 	"数组": "Array",
 	"控制台": "console",
+	"承诺": "Promise",
+	"映射表": "Map",
+	"集合": "Set",
+	"日期": "Date",
+	"正则": "RegExp",
+	"错误": "Error",
 	"数学": "Math",
 }
 
