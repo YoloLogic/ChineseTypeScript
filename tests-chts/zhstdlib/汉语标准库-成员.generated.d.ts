@@ -227,10 +227,12 @@ interface ReadableStreamBYOBReaderReadOptions {
 }
 
 interface ReadableStreamReadDoneResult<T> {
+    已完成: true;
     值内容: T | undefined;
 }
 
 interface ReadableStreamReadValueResult<T> {
+    已完成: false;
     值内容: T;
 }
 
@@ -675,7 +677,16 @@ interface CustomStateSet {
 }
 
 interface DOMMatrixReadOnly {
+    转数据(): any;
     转字符串(): string;
+}
+
+interface DOMPointReadOnly {
+    转数据(): any;
+}
+
+interface DOMQuad {
+    转数据(): any;
 }
 
 interface DOMRect {
@@ -691,6 +702,7 @@ interface DOMRectList {
 interface DOMRectReadOnly {
     readonly 高度: number;
     readonly 宽度: number;
+    转数据(): any;
 }
 
 interface DOMStringList {
@@ -717,6 +729,10 @@ interface DataTransferItemList {
     添加(data: File): DataTransferItem | null;
     清空(): void;
     移除(index: number): void;
+}
+
+interface DigitalCredential {
+    转数据(): any;
 }
 
 interface Document {
@@ -911,6 +927,7 @@ interface FileList {
 interface FileReader {
     readonly 报错: DOMException | null;
     中止(): void;
+    readonly 已完成: 2;
     加事件监听<K extends keyof FileReaderEventMap>(type: K, listener: (this: FileReader, ev: FileReaderEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof FileReaderEventMap>(type: K, listener: (this: FileReader, ev: FileReaderEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -988,6 +1005,14 @@ interface GamepadButton {
 
 interface GamepadHapticActuator {
     重置(): Promise<GamepadHapticsResult>;
+}
+
+interface GeolocationCoordinates {
+    转数据(): any;
+}
+
+interface GeolocationPosition {
+    转数据(): any;
 }
 
 interface GlobalEventHandlers {
@@ -1739,6 +1764,7 @@ interface KeyboardEvent {
 
 interface LargestContentfulPaint {
     readonly 大小: number;
+    转数据(): any;
 }
 
 interface Location {
@@ -1793,6 +1819,10 @@ interface MathMLElement {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MathMLElementEventMap>(type: K, listener: (this: MathMLElement, ev: MathMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface MediaDeviceInfo {
+    转数据(): any;
 }
 
 interface MediaDevices {
@@ -2009,6 +2039,10 @@ interface ParentNode {
     查全部选择器<E extends Element = Element>(selectors: string): NodeListOf<E>;
 }
 
+interface PaymentAddress {
+    转数据(): any;
+}
+
 interface PaymentRequest {
     中止(): Promise<void>;
     加事件监听<K extends keyof PaymentRequestEventMap>(type: K, listener: (this: PaymentRequest, ev: PaymentRequestEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2018,6 +2052,7 @@ interface PaymentRequest {
 }
 
 interface PaymentResponse {
+    转数据(): any;
     加事件监听<K extends keyof PaymentResponseEventMap>(type: K, listener: (this: PaymentResponse, ev: PaymentResponseEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof PaymentResponseEventMap>(type: K, listener: (this: PaymentResponse, ev: PaymentResponseEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2026,10 +2061,43 @@ interface PaymentResponse {
 
 interface Performance {
     此刻(): DOMHighResTimeStamp;
+    转数据(): any;
     加事件监听<K extends keyof PerformanceEventMap>(type: K, listener: (this: Performance, ev: PerformanceEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof PerformanceEventMap>(type: K, listener: (this: Performance, ev: PerformanceEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface PerformanceEntry {
+    转数据(): any;
+}
+
+interface PerformanceEventTiming {
+    转数据(): any;
+}
+
+interface PerformanceNavigation {
+    转数据(): any;
+}
+
+interface PerformanceNavigationTiming {
+    转数据(): any;
+}
+
+interface PerformancePaintTiming {
+    转数据(): any;
+}
+
+interface PerformanceResourceTiming {
+    转数据(): any;
+}
+
+interface PerformanceServerTiming {
+    转数据(): any;
+}
+
+interface PerformanceTiming {
+    转数据(): any;
 }
 
 interface PermissionStatus {
@@ -2063,6 +2131,14 @@ interface PointerEvent {
     readonly 宽度: number;
 }
 
+interface PublicKeyCredential {
+    转数据(): RegistrationResponseJSON | AuthenticationResponseJSON;
+}
+
+interface PushSubscription {
+    转数据(): PushSubscriptionJSON;
+}
+
 interface RTCDTMFSender {
     加事件监听<K extends keyof RTCDTMFSenderEventMap>(type: K, listener: (this: RTCDTMFSender, ev: RTCDTMFSenderEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -2093,6 +2169,10 @@ interface RTCErrorEvent {
     readonly 报错: RTCError;
 }
 
+interface RTCIceCandidate {
+    转数据(): RTCIceCandidateInit;
+}
+
 interface RTCIceTransport {
     加事件监听<K extends keyof RTCIceTransportEventMap>(type: K, listener: (this: RTCIceTransport, ev: RTCIceTransportEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -2113,6 +2193,10 @@ interface RTCSctpTransport {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof RTCSctpTransportEventMap>(type: K, listener: (this: RTCSctpTransport, ev: RTCSctpTransportEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface RTCSessionDescription {
+    转数据(): RTCSessionDescriptionInit;
 }
 
 interface RTCStatsReport {
@@ -2934,6 +3018,7 @@ interface URL {
     链接: string;
     转字符串(): string;
     查找: string;
+    转数据(): string;
 }
 
 interface URLPattern {
@@ -2964,6 +3049,10 @@ interface VTTCue {
 
 interface VTTRegion {
     宽度: number;
+}
+
+interface VideoColorSpace {
+    转数据(): VideoColorSpaceInit;
 }
 
 interface VideoDecoder {
@@ -3094,6 +3183,7 @@ interface XMLHttpRequest {
     打开(method: string, url: string | URL): void;
     打开(method: string, url: string | URL, async: boolean, username?: string | null, password?: string | null): void;
     发送(body?: Document | XMLHttpRequestBodyInit | null): void;
+    readonly 已完成: 4;
     加事件监听<K extends keyof XMLHttpRequestEventMap>(type: K, listener: (this: XMLHttpRequest, ev: XMLHttpRequestEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof XMLHttpRequestEventMap>(type: K, listener: (this: XMLHttpRequest, ev: XMLHttpRequestEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3341,6 +3431,10 @@ interface Float64Array<TArrayBuffer extends ArrayBufferLike> {
     本地转字符串(locales: string | string[], options?: Intl.NumberFormatOptions): string;
 }
 
+interface Generator<T = unknown, TReturn = any, TNext = any> {
+    下一个(...[value]: [] | [TNext]): IteratorResult<T, TReturn>;
+}
+
 interface GeneratorFunction {
     readonly 长度: number;
 }
@@ -3350,11 +3444,17 @@ interface GeneratorFunctionConstructor {
 }
 
 interface IteratorYieldResult<TYield> {
+    已完成?: false;
     值内容: TYield;
 }
 
 interface IteratorReturnResult<TReturn> {
+    已完成: true;
     值内容: TReturn;
+}
+
+interface Iterator<T, TReturn = any, TNext = any> {
+    下一个(...[value]: [] | [TNext]): IteratorResult<T, TReturn>;
 }
 
 interface Array<T> {
@@ -3481,12 +3581,20 @@ interface String {
     后补(targetLength: number, padString?: string): string;
 }
 
+interface AsyncGenerator<T = unknown, TReturn = any, TNext = any> {
+    下一个(...[value]: [] | [TNext]): Promise<IteratorResult<T, TReturn>>;
+}
+
 interface AsyncGeneratorFunction {
     readonly 长度: number;
 }
 
 interface AsyncGeneratorFunctionConstructor {
     readonly 长度: number;
+}
+
+interface AsyncIterator<T, TReturn = any, TNext = any> {
+    下一个(...[value]: [] | [TNext]): Promise<IteratorResult<T, TReturn>>;
 }
 
 interface Promise<T> {
@@ -3820,15 +3928,25 @@ interface Date {
     取值(): number;
     取时刻(): number;
     取年(): number;
+    取世界年(): number;
     取月(): number;
     取日(): number;
     取星期(): number;
     取时(): number;
     取分(): number;
     取秒(): number;
+    取毫秒(): number;
     取时区偏移(): number;
     设时刻(time: number): number;
+    设毫秒(ms: number): number;
+    设秒(sec: number, ms?: number): number;
+    设分(min: number, sec?: number, ms?: number): number;
+    设时(hours: number, min?: number, sec?: number, ms?: number): number;
+    设日(date: number): number;
+    设月(month: number, date?: number): number;
     设年(year: number, month?: number, date?: number): number;
+    转国际串(): string;
+    转数据(key?: any): string;
 }
 
 interface DateConstructor {
