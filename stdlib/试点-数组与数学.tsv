@@ -134,6 +134,16 @@ member	nodeName	节点名
 member	nodeType	节点种类
 member	textContent	文本内容
 member	innerHTML	内部标记
+member	getElementsByTagName	按标签取元素
+member	getElementsByClassName	按类取元素组
+member	classList	类列表
+member	style	样式
+member	dataset	数据集
+member	href	链接
+member	src	源址
+member	alt	替代文本
+member	width	宽度
+member	height	高度
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
