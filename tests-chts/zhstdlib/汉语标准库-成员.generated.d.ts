@@ -100,10 +100,12 @@ interface AudioEncoderInit {
 }
 
 interface AuthenticationExtensionsLargeBlobInputs {
+    读取?: boolean;
     写入?: BufferSource;
 }
 
 interface AuthenticationExtensionsLargeBlobInputsJSON {
+    读取?: boolean;
     写入?: Base64URLString;
 }
 
@@ -619,6 +621,10 @@ interface MIDIMessageEventInit {
     数据?: Uint8Array<ArrayBuffer>;
 }
 
+interface MediaCapabilitiesKeySystemConfiguration {
+    密钥系统: string;
+}
+
 interface MediaDecodingConfiguration {
     种类: MediaDecodingType;
 }
@@ -1109,6 +1115,7 @@ interface Report {
 
 interface ReportingObserverOptions {
     缓冲区间?: boolean;
+    类型列?: string[];
 }
 
 interface RequestInit {
@@ -1222,6 +1229,7 @@ interface SpeechSynthesisEventInit {
 }
 
 interface StartViewTransitionOptions {
+    类型列?: string[] | null;
     更新?: ViewTransitionUpdateCallback | null;
 }
 
@@ -1270,6 +1278,10 @@ interface TextDecodeOptions {
 interface TextDecoderOptions {
     遇错即止?: boolean;
     忽略序标记?: boolean;
+}
+
+interface TextEncoderEncodeIntoResult {
+    读取: number;
 }
 
 interface TimelineRangeOffset {
@@ -2014,6 +2026,10 @@ interface CSSUnparsedValue {
     逐个处理(callbackfn: (value: CSSUnparsedSegment, key: number, parent: CSSUnparsedValue) => void, thisArg?: any): void;
 }
 
+interface CSSViewTransitionRule {
+    readonly 类型列: ReadonlyArray<string>;
+}
+
 interface Cache {
     添加(request: RequestInfo | URL): Promise<void>;
     全部添加(requests: RequestInfo[]): Promise<void>;
@@ -2200,12 +2216,19 @@ interface ChildNode {
 }
 
 interface Clipboard {
+    读取(): Promise<ClipboardItems>;
     读取文本(): Promise<string>;
     写入(data: ClipboardItems): Promise<void>;
+    写入文本(data: string): Promise<void>;
 }
 
 interface ClipboardEvent {
     readonly 剪贴板数据: DataTransfer | null;
+}
+
+interface ClipboardItem {
+    readonly 类型列: ReadonlyArray<string>;
+    按类型取(type: string): Promise<Blob>;
 }
 
 interface CloseEvent {
@@ -2382,6 +2405,7 @@ interface DOMTokenList {
 
 interface DataTransfer {
     readonly 文件列: FileList;
+    readonly 类型列: ReadonlyArray<string>;
 }
 
 interface DataTransferItem {
@@ -4314,7 +4338,9 @@ interface MediaKeyMessageEvent {
 }
 
 interface MediaKeySession {
+    readonly 会话编号: string;
     关闭(): Promise<void>;
+    生成请求(initDataType: string, initData: BufferSource): Promise<void>;
     加载(sessionId: string): Promise<boolean>;
     移除(): Promise<void>;
     更新(response: BufferSource): Promise<void>;
@@ -4329,6 +4355,15 @@ interface MediaKeyStatusMap {
     获取(keyId: BufferSource): MediaKeyStatus | undefined;
     含有(keyId: BufferSource): boolean;
     逐个处理(callbackfn: (value: MediaKeyStatus, key: BufferSource, parent: MediaKeyStatusMap) => void, thisArg?: any): void;
+}
+
+interface MediaKeySystemAccess {
+    readonly 密钥系统: string;
+    创建媒体密钥(): Promise<MediaKeys>;
+}
+
+interface MediaKeys {
+    创建会话(sessionType?: MediaKeySessionType): MediaKeySession;
 }
 
 interface MediaList {
@@ -5177,6 +5212,10 @@ interface ReadableStream<R = any> {
     分叉(): [ReadableStream<R>, ReadableStream<R>];
 }
 
+interface ReadableStreamBYOBReader {
+    读取<T extends Exclude<BufferSource, ArrayBuffer>>(view: T, options?: ReadableStreamBYOBReaderReadOptions): Promise<ReadableStreamReadResult<T>>;
+}
+
 interface ReadableStreamBYOBRequest {
     readonly 视图: ArrayBufferView<ArrayBuffer> | null;
 }
@@ -5186,6 +5225,10 @@ interface ReadableStreamDefaultController<R = any> {
     关闭(): void;
     入队(chunk: R): void;
     报错(e?: any): void;
+}
+
+interface ReadableStreamDefaultReader<R = any> {
+    读取(): Promise<ReadableStreamReadResult<R>>;
 }
 
 interface ReadableStreamGenericReader {
@@ -6354,6 +6397,7 @@ interface TextEvent {
 }
 
 interface TextMetrics {
+    readonly 实际上界: number;
     readonly 宽度: number;
 }
 
@@ -6579,6 +6623,7 @@ interface ViewTimeline {
 
 interface ViewTransition {
     readonly 就绪: Promise<void>;
+    readonly 类型列: ViewTransitionTypeSet;
 }
 
 interface ViewTransitionTypeSet {

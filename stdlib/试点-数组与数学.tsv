@@ -1225,6 +1225,16 @@ member	silent	静默
 member	userVisibleOnly	仅用户可见
 member	query	查询
 member	image	图像
+member	read	读取
+member	writeText	写入文本
+member	types	类型列
+member	getType	按类型取
+member	keySystem	密钥系统
+member	createMediaKeys	创建媒体密钥
+member	createSession	创建会话
+member	generateRequest	生成请求
+member	sessionId	会话编号
+member	actualBoundingBoxAscent	实际上界
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
