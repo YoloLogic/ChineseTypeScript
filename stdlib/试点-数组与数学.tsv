@@ -525,6 +525,17 @@ member	highWaterMark	高水位
 member	locked	已锁定
 member	getReader	取读取器
 member	credentials	凭据
+member	clone	复制
+member	formData	表单数据
+member	bytes	字节
+member	cache	缓存
+member	redirect	重定向
+member	referrer	来源页
+member	integrity	完整性
+member	keepalive	保持活动
+member	priority	优先级
+member	terminate	终止
+member	observe	观察
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

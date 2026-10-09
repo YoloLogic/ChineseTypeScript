@@ -262,6 +262,10 @@ interface FontFaceDescriptors {
     样式?: string;
 }
 
+interface FormDataEventInit {
+    表单数据: FormData;
+}
+
 interface GPUBindGroupDescriptor {
     条目: GPUBindGroupEntry[];
 }
@@ -538,6 +542,7 @@ interface MutationObserverInit {
 }
 
 interface NavigateEventInit {
+    表单数据?: FormData | null;
     信号: AbortSignal;
 }
 
@@ -734,6 +739,10 @@ interface RTCRtpContributingSource {
     时间戳: DOMHighResTimeStamp;
 }
 
+interface RTCRtpEncodingParameters {
+    优先级?: RTCPriorityType;
+}
+
 interface RTCRtpHeaderExtensionParameters {
     编号: number;
 }
@@ -791,9 +800,15 @@ interface Report {
 }
 
 interface RequestInit {
+    缓存?: RequestCache;
     凭据?: RequestCredentials;
     头集合?: HeadersInit;
+    完整性?: string;
+    保持活动?: boolean;
     模式?: RequestMode;
+    优先级?: RequestPriority;
+    重定向?: RequestRedirect;
+    来源页?: string;
     信号?: AbortSignal | null;
 }
 
@@ -842,11 +857,16 @@ interface SanitizerElementNamespaceWithAttributes {
 }
 
 interface SchedulerPostTaskOptions {
+    优先级?: TaskPriority;
     信号?: AbortSignal;
 }
 
 interface ScrollTimelineOptions {
     来源?: Element | null;
+}
+
+interface SecurityPolicyViolationEventInit {
+    来源页?: string;
 }
 
 interface ShadowRootInit {
@@ -888,6 +908,14 @@ interface StreamPipeOptions {
 
 interface StructuredSerializeOptions {
     转移?: Transferable[];
+}
+
+interface TaskControllerInit {
+    优先级?: TaskPriority;
+}
+
+interface TaskSignalAnyInit {
+    优先级?: TaskPriority | TaskSignal;
 }
 
 interface TimelineRangeOffset {
@@ -1113,6 +1141,7 @@ interface AudioData {
     readonly 格式化: AudioSampleFormat | null;
     readonly 采样率: number;
     readonly 时间戳: number;
+    复制(): AudioData;
     关闭(): void;
 }
 
@@ -1205,6 +1234,7 @@ interface Blob {
     readonly 大小: number;
     readonly 种类: string;
     转缓冲(): Promise<ArrayBuffer>;
+    字节(): Promise<Uint8Array<ArrayBuffer>>;
     截取(start?: number, end?: number, contentType?: string): Blob;
     转文本(): Promise<string>;
 }
@@ -1216,6 +1246,8 @@ interface BlobEvent {
 interface Body {
     转缓冲(): Promise<ArrayBuffer>;
     转二进制块(): Promise<Blob>;
+    字节(): Promise<Uint8Array<ArrayBuffer>>;
+    表单数据(): Promise<FormData>;
     转对象(): Promise<any>;
     转文本(): Promise<string>;
 }
@@ -1813,6 +1845,7 @@ interface Document {
     书写方向: string;
     readonly 隐藏: boolean;
     readonly 就绪态: DocumentReadyState;
+    readonly 来源页: string;
     标题: string;
     收养节点<T extends Node>(node: T): T;
     清空(): void;
@@ -2142,6 +2175,10 @@ interface FormData {
     设置(name: string, value: string): void;
     设置(name: string, blobValue: Blob, filename?: string): void;
     逐个处理(callbackfn: (value: FormDataEntryValue, key: string, parent: FormData) => void, thisArg?: any): void;
+}
+
+interface FormDataEvent {
+    readonly 表单数据: FormData;
 }
 
 interface GPUBuffer {
@@ -2633,6 +2670,7 @@ interface HTMLLegendElement {
 interface HTMLLinkElement {
     已禁用: boolean;
     链接: string;
+    完整性: string;
     媒体: string;
     目标: string;
     种类: string;
@@ -2842,6 +2880,7 @@ interface HTMLQuoteElement {
 }
 
 interface HTMLScriptElement {
+    完整性: string;
     源址: string;
     转文本: string;
     种类: string;
@@ -3078,6 +3117,7 @@ interface Headers {
 }
 
 interface Highlight {
+    优先级: number;
     种类: HighlightType;
     逐个处理(callbackfn: (value: AbstractRange, key: AbstractRange, parent: Highlight) => void, thisArg?: any): void;
 }
@@ -3210,6 +3250,7 @@ interface InputEvent {
 
 interface IntersectionObserver {
     断开(): void;
+    观察(target: Element): void;
 }
 
 interface IntersectionObserverEntry {
@@ -3393,6 +3434,7 @@ interface MediaSource {
 
 interface MediaStream {
     readonly 编号: string;
+    复制(): MediaStream;
     加事件监听<K extends keyof MediaStreamEventMap>(type: K, listener: (this: MediaStream, ev: MediaStreamEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MediaStreamEventMap>(type: K, listener: (this: MediaStream, ev: MediaStreamEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3405,6 +3447,7 @@ interface MediaStreamTrack {
     readonly 标签: string;
     readonly 就绪态: MediaStreamTrackState;
     应用约束(constraints?: MediaTrackConstraints): Promise<void>;
+    复制(): MediaStreamTrack;
     取能力(): MediaTrackCapabilities;
     取设置(): MediaTrackSettings;
     加事件监听<K extends keyof MediaStreamTrackEventMap>(type: K, listener: (this: MediaStreamTrack, ev: MediaStreamTrackEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3452,6 +3495,7 @@ interface MouseEvent {
 
 interface MutationObserver {
     断开(): void;
+    观察(target: Node, options?: MutationObserverInit): void;
 }
 
 interface MutationRecord {
@@ -3470,6 +3514,7 @@ interface NamedNodeMap {
 }
 
 interface NavigateEvent {
+    readonly 表单数据: FormData | null;
     readonly 信号: AbortSignal;
 }
 
@@ -3497,6 +3542,10 @@ interface NavigationHistoryEntry {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof NavigationHistoryEntryEventMap>(type: K, listener: (this: NavigationHistoryEntry, ev: NavigationHistoryEntryEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface NavigationPrecommitController {
+    重定向(url: string | URL, options?: NavigationNavigateOptions): void;
 }
 
 interface Navigator {
@@ -3663,6 +3712,7 @@ interface PerformanceNavigationTiming {
 
 interface PerformanceObserver {
     断开(): void;
+    观察(options?: PerformanceObserverInit): void;
 }
 
 interface PerformancePaintTiming {
@@ -3787,6 +3837,7 @@ interface RTCErrorEvent {
 
 interface RTCIceCandidate {
     readonly 端口: number | null;
+    readonly 优先级: number | null;
     readonly 种类: RTCIceCandidateType | null;
     转数据(): RTCIceCandidateInit;
 }
@@ -3897,18 +3948,26 @@ interface RemotePlayback {
 
 interface ReportingObserver {
     断开(): void;
+    观察(): void;
 }
 
 interface Request {
+    readonly 缓存: RequestCache;
     readonly 凭据: RequestCredentials;
     readonly 头集合: Headers;
+    readonly 完整性: string;
+    readonly 保持活动: boolean;
     readonly 模式: RequestMode;
+    readonly 重定向: RequestRedirect;
+    readonly 来源页: string;
     readonly 信号: AbortSignal;
     readonly 地址: string;
+    复制(): Request;
 }
 
 interface ResizeObserver {
     断开(): void;
+    观察(target: Element, options?: ResizeObserverOptions): void;
 }
 
 interface ResizeObserverEntry {
@@ -3922,6 +3981,7 @@ interface Response {
     readonly 状态文本: string;
     readonly 种类: ResponseType;
     readonly 地址: string;
+    复制(): Response;
 }
 
 interface SVGAElement {
@@ -4574,6 +4634,10 @@ interface ScrollTimeline {
     readonly 来源: Element | null;
 }
 
+interface SecurityPolicyViolationEvent {
+    readonly 来源页: string;
+}
+
 interface Selection {
     readonly 种类: string;
     转字符串(): string;
@@ -4758,6 +4822,7 @@ interface SubtleCrypto {
 }
 
 interface TaskSignal {
+    readonly 优先级: TaskPriority;
     加事件监听<K extends keyof TaskSignalEventMap>(type: K, listener: (this: TaskSignal, ev: TaskSignalEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof TaskSignalEventMap>(type: K, listener: (this: TaskSignal, ev: TaskSignalEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4848,6 +4913,7 @@ interface TransformStreamDefaultController<O = any> {
     readonly 期望大小: number | null;
     入队(chunk?: O): void;
     报错(reason?: any): void;
+    终止(): void;
 }
 
 interface TreeWalker {
@@ -4935,6 +5001,7 @@ interface VideoFrame {
     readonly 时长: number | null;
     readonly 格式化: VideoPixelFormat | null;
     readonly 时间戳: number;
+    复制(): VideoFrame;
     关闭(): void;
 }
 
@@ -5088,6 +5155,7 @@ interface WindowOrWorkerGlobalScope {
 interface Worker {
     发消息(message: any, transfer: Transferable[]): void;
     发消息(message: any, options?: StructuredSerializeOptions): void;
+    终止(): void;
     加事件监听<K extends keyof WorkerEventMap>(type: K, listener: (this: Worker, ev: WorkerEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof WorkerEventMap>(type: K, listener: (this: Worker, ev: WorkerEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
