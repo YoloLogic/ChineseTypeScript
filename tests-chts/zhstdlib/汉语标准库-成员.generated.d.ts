@@ -2878,7 +2878,9 @@ interface Geolocation {
 }
 
 interface GeolocationCoordinates {
+    readonly 精度: number;
     readonly 海拔: number | null;
+    readonly 海拔精度: number | null;
     readonly 航向: number | null;
     readonly 纬度: number;
     readonly 经度: number;
@@ -2887,6 +2889,7 @@ interface GeolocationCoordinates {
 }
 
 interface GeolocationPosition {
+    readonly 坐标: GeolocationCoordinates;
     readonly 时间戳: EpochTimeStamp;
     转数据(): any;
 }
@@ -2909,6 +2912,7 @@ interface HTMLAllCollection {
 }
 
 interface HTMLAnchorElement {
+    坐标: string;
     下载: string;
     名称: string;
     来源页策略: string;
@@ -2926,6 +2930,7 @@ interface HTMLAnchorElement {
 
 interface HTMLAreaElement {
     替代文本: string;
+    坐标: string;
     下载: string;
     来源页策略: string;
     关系: string;
@@ -4240,6 +4245,8 @@ interface MediaMetadata {
 interface MediaQueryList {
     readonly 匹配选择器: boolean;
     readonly 媒体: string;
+    加监听(callback: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null): void;
+    删监听(callback: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null): void;
     加事件监听<K extends keyof MediaQueryListEventMap>(type: K, listener: (this: MediaQueryList, ev: MediaQueryListEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MediaQueryListEventMap>(type: K, listener: (this: MediaQueryList, ev: MediaQueryListEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4388,6 +4395,7 @@ interface MutationObserver {
 }
 
 interface MutationRecord {
+    readonly 新增节点列: NodeList;
     readonly 后兄弟: Node | null;
     readonly 旧值: string | null;
     readonly 前兄弟: Node | null;
@@ -4512,7 +4520,10 @@ interface Node {
 interface NodeIterator {
     readonly 过滤: NodeFilter | null;
     readonly 滤镜: NodeFilter | null;
+    readonly 参考节点: Node;
     readonly 根元素: Node;
+    readonly 显示过滤: number;
+    上一个节点(): Node | null;
 }
 
 interface NodeList {
@@ -5870,6 +5881,7 @@ interface Screen {
     readonly 可用宽: number;
     readonly 颜色深度: number;
     readonly 高度: number;
+    readonly 朝向: ScreenOrientation;
     readonly 像素深度: number;
     readonly 宽度: number;
 }
@@ -6274,13 +6286,16 @@ interface TransformStreamDefaultController<O = any> {
 }
 
 interface TreeWalker {
+    当前节点: Node;
     readonly 过滤: NodeFilter | null;
     readonly 滤镜: NodeFilter | null;
     readonly 根元素: Node;
+    readonly 显示过滤: number;
     首子节点(): Node | null;
     末子节点(): Node | null;
     后兄弟(): Node | null;
     父节点(): Node | null;
+    上一个节点(): Node | null;
     前兄弟(): Node | null;
 }
 
@@ -6603,6 +6618,7 @@ interface WheelEvent {
 interface Window {
     readonly 长度: number;
     名称: string;
+    readonly 朝向: number;
     readonly 屏幕横坐标: number;
     状态码: string;
     readonly 顶部: WindowProxy | null;

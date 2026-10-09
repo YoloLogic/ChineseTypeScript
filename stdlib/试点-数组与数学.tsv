@@ -1139,6 +1139,17 @@ member	longitude	经度
 member	altitude	海拔
 member	heading	航向
 member	speed	速度
+member	accuracy	精度
+member	altitudeAccuracy	海拔精度
+member	coords	坐标
+member	addListener	加监听
+member	removeListener	删监听
+member	orientation	朝向
+member	referenceNode	参考节点
+member	whatToShow	显示过滤
+member	previousNode	上一个节点
+member	currentNode	当前节点
+member	addedNodes	新增节点列
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
