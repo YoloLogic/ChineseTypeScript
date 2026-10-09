@@ -2867,6 +2867,10 @@ interface ImportMeta {
     解决(specifier: string): string;
 }
 
+interface InputDeviceInfo {
+    取能力(): MediaTrackCapabilities;
+}
+
 interface InputEvent {
     readonly 数据: string | null;
 }
@@ -2975,6 +2979,9 @@ interface MediaDeviceInfo {
 }
 
 interface MediaDevices {
+    枚举设备(): Promise<MediaDeviceInfo[]>;
+    取屏幕媒体(options?: DisplayMediaStreamOptions): Promise<MediaStream>;
+    取支持约束(): MediaTrackSupportedConstraints;
     取用户媒体(constraints?: MediaStreamConstraints): Promise<MediaStream>;
     加事件监听<K extends keyof MediaDevicesEventMap>(type: K, listener: (this: MediaDevices, ev: MediaDevicesEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -3063,6 +3070,9 @@ interface MediaStreamTrack {
     readonly 类别: string;
     readonly 标签: string;
     readonly 就绪态: MediaStreamTrackState;
+    应用约束(constraints?: MediaTrackConstraints): Promise<void>;
+    取能力(): MediaTrackCapabilities;
+    取设置(): MediaTrackSettings;
     加事件监听<K extends keyof MediaStreamTrackEventMap>(type: K, listener: (this: MediaStreamTrack, ev: MediaStreamTrackEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MediaStreamTrackEventMap>(type: K, listener: (this: MediaStreamTrack, ev: MediaStreamTrackEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3219,6 +3229,7 @@ interface OfflineAudioContext {
 interface OffscreenCanvas {
     高度: number;
     宽度: number;
+    转图块(options?: ImageEncodeOptions): Promise<Blob>;
     取上下文(contextId: "2d", options?: any): OffscreenCanvasRenderingContext2D | null;
     取上下文(contextId: "bitmaprenderer", options?: any): ImageBitmapRenderingContext | null;
     取上下文(contextId: "webgl", options?: any): WebGLRenderingContext | null;
@@ -3442,9 +3453,15 @@ interface RTCIceTransport {
 }
 
 interface RTCPeerConnection {
+    加交互候选(candidate?: RTCIceCandidateInit | null): Promise<void>;
+    加交互候选(candidate: RTCIceCandidateInit | null, successCallback: VoidFunction, failureCallback: RTCPeerConnectionErrorCallback): Promise<void>;
     关闭(): void;
+    创建应答(options?: RTCAnswerOptions): Promise<RTCSessionDescriptionInit>;
+    创建应答(successCallback: RTCSessionDescriptionCallback, failureCallback: RTCPeerConnectionErrorCallback): Promise<void>;
     创建提议(options?: RTCOfferOptions): Promise<RTCSessionDescriptionInit>;
     创建提议(successCallback: RTCSessionDescriptionCallback, failureCallback: RTCPeerConnectionErrorCallback, options?: RTCOfferOptions): Promise<void>;
+    设远端描述(description: RTCSessionDescriptionInit): Promise<void>;
+    设远端描述(description: RTCSessionDescriptionInit, successCallback: VoidFunction, failureCallback: RTCPeerConnectionErrorCallback): Promise<void>;
     加事件监听<K extends keyof RTCPeerConnectionEventMap>(type: K, listener: (this: RTCPeerConnection, ev: RTCPeerConnectionEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof RTCPeerConnectionEventMap>(type: K, listener: (this: RTCPeerConnection, ev: RTCPeerConnectionEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3458,10 +3475,13 @@ interface RTCPeerConnectionIceErrorEvent {
 
 interface RTCRtpReceiver {
     变换: RTCRtpReceiverTransform | null;
+    取参数(): RTCRtpReceiveParameters;
 }
 
 interface RTCRtpSender {
     变换: RTCRtpSenderTransform | null;
+    取参数(): RTCRtpSendParameters;
+    设参数(parameters: RTCRtpSendParameters, setParameterOptions?: RTCSetParameterOptions): Promise<void>;
 }
 
 interface RTCSctpTransport {
