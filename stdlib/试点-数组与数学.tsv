@@ -1376,6 +1376,14 @@ member	onstorage	存储变化时
 member	onhashchange	哈希变化时
 member	onpopstate	历史变化时
 member	onanimationstart	动画开始时
+member	onmessageerror	消息出错时
+member	onupgradeneeded	需要升级时
+member	onsuccess	成功时
+member	onblocked	被阻止时
+member	onversionchange	版本变化时
+member	oncomplete	完成时
+member	onconnect	连接时
+member	ongamepadconnected	手柄连接时
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

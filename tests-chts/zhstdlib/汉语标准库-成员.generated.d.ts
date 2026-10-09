@@ -1867,6 +1867,7 @@ interface Body {
 interface BroadcastChannel {
     readonly 名称: string;
     收消息时: ((this: BroadcastChannel, ev: MessageEvent) => any) | null;
+    消息出错时: ((this: BroadcastChannel, ev: MessageEvent) => any) | null;
     关闭(): void;
     发消息(message: any): void;
     加事件监听<K extends keyof BroadcastChannelEventMap>(type: K, listener: (this: BroadcastChannel, ev: BroadcastChannelEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4243,6 +4244,7 @@ interface IDBDatabase {
     中止时: ((this: IDBDatabase, ev: Event) => any) | null;
     关闭时: ((this: IDBDatabase, ev: Event) => any) | null;
     出错时: ((this: IDBDatabase, ev: Event) => any) | null;
+    版本变化时: ((this: IDBDatabase, ev: IDBVersionChangeEvent) => any) | null;
     关闭(): void;
     创建对象存储(name: string, options?: IDBObjectStoreParameters): IDBObjectStore;
     删除对象存储(name: string): void;
@@ -4292,6 +4294,8 @@ interface IDBObjectStore {
 }
 
 interface IDBOpenDBRequest {
+    被阻止时: ((this: IDBOpenDBRequest, ev: IDBVersionChangeEvent) => any) | null;
+    需要升级时: ((this: IDBOpenDBRequest, ev: IDBVersionChangeEvent) => any) | null;
     加事件监听<K extends keyof IDBOpenDBRequestEventMap>(type: K, listener: (this: IDBOpenDBRequest, ev: IDBOpenDBRequestEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof IDBOpenDBRequestEventMap>(type: K, listener: (this: IDBOpenDBRequest, ev: IDBOpenDBRequestEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4301,6 +4305,7 @@ interface IDBOpenDBRequest {
 interface IDBRequest<T = any> {
     readonly 报错: DOMException | null;
     出错时: ((this: IDBRequest<T>, ev: Event) => any) | null;
+    成功时: ((this: IDBRequest<T>, ev: Event) => any) | null;
     readonly 就绪态: IDBRequestReadyState;
     readonly 来源: IDBObjectStore | IDBIndex | IDBCursor;
     readonly 事务: IDBTransaction | null;
@@ -4314,6 +4319,7 @@ interface IDBTransaction {
     readonly 报错: DOMException | null;
     readonly 模式: IDBTransactionMode;
     中止时: ((this: IDBTransaction, ev: Event) => any) | null;
+    完成时: ((this: IDBTransaction, ev: Event) => any) | null;
     出错时: ((this: IDBTransaction, ev: Event) => any) | null;
     中止(): void;
     落实(): void;
@@ -4718,6 +4724,7 @@ interface MessageEvent<T = any> {
 
 interface MessageEventTarget<T> {
     收消息时: ((this: T, ev: MessageEvent) => any) | null;
+    消息出错时: ((this: T, ev: MessageEvent) => any) | null;
     加事件监听<K extends keyof MessageEventTargetEventMap>(type: K, listener: (this: T, ev: MessageEventTargetEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MessageEventTargetEventMap>(type: K, listener: (this: T, ev: MessageEventTargetEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4965,6 +4972,7 @@ interface Notification {
 
 interface OfflineAudioContext {
     readonly 长度: number;
+    完成时: ((this: OfflineAudioContext, ev: OfflineAudioCompletionEvent) => any) | null;
     继续(): Promise<void>;
     开始渲染(): Promise<AudioBuffer>;
     挂起(suspendTime: number): Promise<void>;
@@ -5511,6 +5519,7 @@ interface ReadableStreamGenericReader {
 }
 
 interface RemotePlayback {
+    连接时: ((this: RemotePlayback, ev: Event) => any) | null;
     readonly 状态: RemotePlaybackState;
     加事件监听<K extends keyof RemotePlaybackEventMap>(type: K, listener: (this: RemotePlayback, ev: RemotePlaybackEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -6413,6 +6422,7 @@ interface ServiceWorker {
 interface ServiceWorkerContainer {
     readonly 控制器: ServiceWorker | null;
     收消息时: ((this: ServiceWorkerContainer, ev: MessageEvent) => any) | null;
+    消息出错时: ((this: ServiceWorkerContainer, ev: MessageEvent) => any) | null;
     readonly 就绪: Promise<ServiceWorkerRegistration>;
     取注册(clientURL?: string | URL): Promise<ServiceWorkerRegistration | undefined>;
     取全部注册(): Promise<ReadonlyArray<ServiceWorkerRegistration>>;
@@ -7189,8 +7199,10 @@ interface Window {
 }
 
 interface WindowEventHandlers {
+    手柄连接时: ((this: WindowEventHandlers, ev: GamepadEvent) => any) | null;
     哈希变化时: ((this: WindowEventHandlers, ev: HashChangeEvent) => any) | null;
     收消息时: ((this: WindowEventHandlers, ev: MessageEvent) => any) | null;
+    消息出错时: ((this: WindowEventHandlers, ev: MessageEvent) => any) | null;
     离线时: ((this: WindowEventHandlers, ev: Event) => any) | null;
     上线时: ((this: WindowEventHandlers, ev: Event) => any) | null;
     历史变化时: ((this: WindowEventHandlers, ev: PopStateEvent) => any) | null;
