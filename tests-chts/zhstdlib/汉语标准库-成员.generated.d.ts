@@ -290,6 +290,10 @@ interface FileSystemGetFileOptions {
     创建?: boolean;
 }
 
+interface FocusEventInit {
+    相关目标?: EventTarget | null;
+}
+
 interface FontFaceDescriptors {
     样式?: string;
 }
@@ -375,6 +379,14 @@ interface GPUOrigin3DDict {
 
 interface GPUQuerySetDescriptor {
     种类: GPUQueryType;
+}
+
+interface GPURenderPassColorAttachment {
+    视图: GPUTexture | GPUTextureView;
+}
+
+interface GPURenderPassDepthStencilAttachment {
+    视图: GPUTexture | GPUTextureView;
 }
 
 interface GPUSamplerBindingLayout {
@@ -488,7 +500,9 @@ interface KeyAlgorithm {
 }
 
 interface KeyboardEventInit {
+    字符码?: number;
     键名?: string;
+    键码?: number;
     重复?: boolean;
 }
 
@@ -595,7 +609,12 @@ interface MessageEventInit<T = any> {
 }
 
 interface MouseEventInit {
+    按钮?: number;
+    按钮集?: number;
     客户横坐标?: number;
+    移动横量?: number;
+    移动纵量?: number;
+    相关目标?: EventTarget | null;
     屏幕横坐标?: number;
 }
 
@@ -724,6 +743,7 @@ interface PlaneLayout {
 
 interface PointerEventInit {
     高度?: number;
+    指针编号?: number;
     宽度?: number;
 }
 
@@ -1059,6 +1079,8 @@ interface Transformer<I = any, O = any> {
 
 interface UIEventInit {
     细节?: number;
+    视图?: Window | null;
+    键序号?: number;
 }
 
 interface ULongRange {
@@ -1167,6 +1189,10 @@ interface WebTransportErrorOptions {
 
 interface WebTransportHash {
     值内容: BufferSource;
+}
+
+interface WheelEventInit {
+    滚动横量?: number;
 }
 
 interface WorkerOptions {
@@ -2406,6 +2432,10 @@ interface FileSystemWritableFileStream {
     写入(data: FileSystemWriteChunkType): Promise<void>;
 }
 
+interface FocusEvent {
+    readonly 相关目标: EventTarget | null;
+}
+
 interface FontFace {
     readonly 状态码: FontFaceLoadStatus;
     样式: string;
@@ -2512,6 +2542,7 @@ interface GainNode {
 }
 
 interface Gamepad {
+    readonly 按钮集: ReadonlyArray<GamepadButton>;
     readonly 编号: string;
     readonly 序号: number;
     readonly 时间戳: DOMHighResTimeStamp;
@@ -3610,8 +3641,11 @@ interface IntersectionObserverEntry {
 }
 
 interface KeyboardEvent {
+    readonly 字符码: number;
     readonly 键名: string;
+    readonly 键码: number;
     readonly 重复: boolean;
+    取修饰状态(keyArg: string): boolean;
 }
 
 interface KeyframeEffect {
@@ -3871,10 +3905,16 @@ interface MimeTypeArray {
 }
 
 interface MouseEvent {
+    readonly 按钮: number;
+    readonly 按钮集: number;
     readonly 客户横坐标: number;
+    readonly 移动横量: number;
+    readonly 移动纵量: number;
+    readonly 相关目标: EventTarget | null;
     readonly 屏幕横坐标: number;
     readonly 横坐标: number;
     readonly 纵坐标: number;
+    取修饰状态(keyArg: string): boolean;
 }
 
 interface MutationObserver {
@@ -4248,6 +4288,7 @@ interface PluginArray {
 
 interface PointerEvent {
     readonly 高度: number;
+    readonly 指针编号: number;
     readonly 宽度: number;
 }
 
@@ -4429,6 +4470,10 @@ interface ReadableStream<R = any> {
     管道通过<T>(transform: ReadableWritablePair<T, R>, options?: StreamPipeOptions): ReadableStream<T>;
     管道到(destination: WritableStream<R>, options?: StreamPipeOptions): Promise<void>;
     分叉(): [ReadableStream<R>, ReadableStream<R>];
+}
+
+interface ReadableStreamBYOBRequest {
+    readonly 视图: ArrayBufferView<ArrayBuffer> | null;
 }
 
 interface ReadableStreamDefaultController<R = any> {
@@ -5609,6 +5654,8 @@ interface TreeWalker {
 
 interface UIEvent {
     readonly 细节: number;
+    readonly 视图: Window | null;
+    readonly 键序号: number;
 }
 
 interface URL {
@@ -5891,6 +5938,10 @@ interface WebTransportDatagramDuplexStream {
 
 interface WebTransportError {
     readonly 来源: WebTransportErrorSource;
+}
+
+interface WheelEvent {
+    readonly 滚动横量: number;
 }
 
 interface Window {
