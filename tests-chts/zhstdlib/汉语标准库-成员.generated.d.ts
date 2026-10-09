@@ -3163,6 +3163,8 @@ interface GlobalEventHandlers {
     关闭时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     右键菜单时: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null;
     双击时: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null;
+    拖起时: ((this: GlobalEventHandlers, ev: DragEvent) => any) | null;
+    放下时: ((this: GlobalEventHandlers, ev: DragEvent) => any) | null;
     出错时: OnErrorEventHandler;
     聚焦时: ((this: GlobalEventHandlers, ev: FocusEvent) => any) | null;
     输入时: ((this: GlobalEventHandlers, ev: InputEvent) => any) | null;
@@ -3174,9 +3176,19 @@ interface GlobalEventHandlers {
     鼠标移出时: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null;
     鼠标移入时: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null;
     鼠标抬起时: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null;
+    指针取消时: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null;
+    指针按下时: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null;
+    指针进入时: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null;
+    指针离开时: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null;
+    指针移动时: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null;
+    指针抬起时: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null;
     改变大小时: ((this: GlobalEventHandlers, ev: UIEvent) => any) | null;
     滚动时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     提交时: ((this: GlobalEventHandlers, ev: SubmitEvent) => any) | null;
+    触控取消时?: ((this: GlobalEventHandlers, ev: TouchEvent) => any) | null | undefined;
+    触控结束时?: ((this: GlobalEventHandlers, ev: TouchEvent) => any) | null | undefined;
+    触控移动时?: ((this: GlobalEventHandlers, ev: TouchEvent) => any) | null | undefined;
+    触控开始时?: ((this: GlobalEventHandlers, ev: TouchEvent) => any) | null | undefined;
     滚轮时: ((this: GlobalEventHandlers, ev: WheelEvent) => any) | null;
     加事件监听<K extends keyof GlobalEventHandlersEventMap>(type: K, listener: (this: GlobalEventHandlers, ev: GlobalEventHandlersEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
