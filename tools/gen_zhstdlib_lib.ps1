@@ -30,7 +30,9 @@ if (-not $Out)    { $Out    = Join-Path $repo 'tests-chts\zhstdlib\汉语标准�
 $TAB = [string][char]9
 $CRLF = [string][char]13 + [string][char]10
 
-$en2zh = @{}
+# 必须【区分大小写】：英文标识符大小写敏感（readOnly 与 readonly 不是同一个名字）。
+# 否则 `readonly [index: number]: string;` 这类索引签名的 `readonly` 会被误当成员名改名。
+$en2zh = New-Object 'System.Collections.Generic.Dictionary[string,string]'
 foreach ($line in (Get-Content $Table -Encoding UTF8)) {
     if ($line -notmatch '\S') { continue }
     $p = $line -split $TAB
