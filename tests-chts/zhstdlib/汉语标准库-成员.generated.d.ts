@@ -218,6 +218,7 @@ interface CSSStyleSheetInit {
 interface CanvasRenderingContext2DSettings {
     透明度?: boolean;
     色彩空间?: PredefinedColorSpace;
+    已失同步?: boolean;
 }
 
 interface ClientQueryOptions {
@@ -555,6 +556,10 @@ interface GPUOrigin3DDict {
 
 interface GPUPrimitiveState {
     拓扑?: GPUPrimitiveTopology;
+}
+
+interface GPUProgrammableStage {
+    常量集?: Record<string, GPUPipelineConstantValue>;
 }
 
 interface GPUQuerySetDescriptor {
@@ -962,6 +967,7 @@ interface OptionalEffectTiming {
 }
 
 interface OpusEncoderConfig {
+    复杂度?: number;
     格式化?: OpusBitstreamFormat;
 }
 
@@ -1222,6 +1228,7 @@ interface RTCIceCandidatePairStats {
 }
 
 interface RTCIceServer {
+    凭据项?: string;
     地址集: string | string[];
     用户名?: string;
 }
@@ -1737,6 +1744,7 @@ interface WebGLContextAttributes {
     透明度?: boolean;
     抗锯齿?: boolean;
     深度?: boolean;
+    已失同步?: boolean;
     模板缓冲?: boolean;
 }
 
@@ -1954,6 +1962,7 @@ interface AudioEncoder {
 }
 
 interface AudioNode {
+    readonly 上下文: BaseAudioContext;
     连接(destinationNode: AudioNode, output?: number, input?: number): AudioNode;
     连接(destinationParam: AudioParam, output?: number): void;
     断开(): void;
@@ -2285,6 +2294,7 @@ interface CSSStyleProperties {
     底部: string;
     清空: string;
     裁剪: string;
+    容器: string;
     容器名: string;
     容器类型: string;
     光标: string;
@@ -5311,6 +5321,10 @@ interface OscillatorNode {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface OverconstrainedError {
+    readonly 约束: string;
+}
+
 interface PageTransitionEvent {
     readonly 已保持: boolean;
     readonly 已持久化: boolean;
@@ -5657,6 +5671,7 @@ interface RTCErrorEvent {
 
 interface RTCIceCandidate {
     readonly 候选: string;
+    readonly 组件: RTCIceComponent | null;
     readonly 端口: number | null;
     readonly 优先级: number | null;
     readonly 协议: RTCIceProtocol | null;
@@ -6826,6 +6841,7 @@ interface SourceBufferList {
 }
 
 interface SpeechRecognitionAlternative {
+    readonly 置信度: number;
     readonly 笔录: string;
 }
 
@@ -7469,6 +7485,7 @@ interface WebSocket {
 
 interface WebTransport {
     readonly 已关闭: Promise<WebTransportCloseInfo>;
+    readonly 数据报集: WebTransportDatagramDuplexStream;
     readonly 就绪: Promise<void>;
     关闭(closeInfo?: WebTransportCloseInfo): void;
 }
@@ -7552,6 +7569,7 @@ interface WindowEventHandlers {
 
 interface WindowOrWorkerGlobalScope {
     readonly 缓存集: CacheStorage;
+    readonly 加密模块: Crypto;
     readonly 源点: string;
     readonly 调度器: Scheduler;
     创建位图(image: ImageBitmapSource, options?: ImageBitmapOptions): Promise<ImageBitmap>;
@@ -8595,6 +8613,7 @@ interface Symbol {
 }
 
 interface PropertyDescriptor {
+    可配置?: boolean;
     值内容?: any;
     可写?: boolean;
     获取?(): any;
@@ -8842,6 +8861,7 @@ interface Array<T> {
 }
 
 interface TypedPropertyDescriptor<T> {
+    可配置?: boolean;
     可写?: boolean;
     值内容?: T;
     获取?: () => T;
