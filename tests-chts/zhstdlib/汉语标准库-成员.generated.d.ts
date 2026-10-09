@@ -536,6 +536,7 @@ interface HashChangeEventInit {
 
 interface HkdfParams {
     散列: HashAlgorithmIdentifier;
+    附加信息: BufferSource;
 }
 
 interface HmacImportParams {
@@ -768,9 +769,14 @@ interface MutationObserverInit {
 }
 
 interface NavigateEventInit {
+    可拦截?: boolean;
     输出端: NavigationDestination;
+    下载请求?: string | null;
     表单数据?: FormData | null;
+    哈希变化?: boolean;
+    附加信息?: any;
     信号: AbortSignal;
+    用户发起?: boolean;
 }
 
 interface NavigationInterceptOptions {
@@ -779,6 +785,10 @@ interface NavigationInterceptOptions {
 
 interface NavigationNavigateOptions {
     状态?: any;
+}
+
+interface NavigationOptions {
+    附加信息?: any;
 }
 
 interface NavigationPreloadState {
@@ -1229,6 +1239,7 @@ interface SchedulerPostTaskOptions {
 }
 
 interface ScrollTimelineOptions {
+    轴向?: ScrollAxis;
     来源?: Element | null;
 }
 
@@ -1507,6 +1518,10 @@ interface VideoFrameInit {
     时长?: number;
     时间戳?: number;
     可见矩形?: DOMRectInit;
+}
+
+interface ViewTimelineOptions {
+    轴向?: ScrollAxis;
 }
 
 interface WaveShaperOptions {
@@ -2976,6 +2991,10 @@ interface FormDataEvent {
     readonly 表单数据: FormData;
 }
 
+interface GPUAdapter {
+    readonly 附加信息: GPUAdapterInfo;
+}
+
 interface GPUBuffer {
     readonly 大小: GPUSize64Out;
 }
@@ -3928,6 +3947,7 @@ interface HTMLTableCaptionElement {
 
 interface HTMLTableCellElement {
     对齐: string;
+    轴向: string;
     头集合: string;
     高度: string;
     作用域: string;
@@ -4676,9 +4696,15 @@ interface NamedNodeMap {
 }
 
 interface NavigateEvent {
+    readonly 可拦截: boolean;
     readonly 输出端: NavigationDestination;
+    readonly 下载请求: string | null;
     readonly 表单数据: FormData | null;
+    readonly 哈希变化: boolean;
+    readonly 附加信息: any;
     readonly 信号: AbortSignal;
+    readonly 用户发起: boolean;
+    拦截(options?: NavigationInterceptOptions): void;
     滚动(): void;
 }
 
@@ -4688,7 +4714,10 @@ interface Navigation {
     后退(options?: NavigationOptions): NavigationResult;
     条目(): NavigationHistoryEntry[];
     前进(options?: NavigationOptions): NavigationResult;
+    导航到(url: string | URL, options?: NavigationNavigateOptions): NavigationResult;
     重新加载(options?: NavigationReloadOptions): NavigationResult;
+    遍历到(key: string, options?: NavigationOptions): NavigationResult;
+    更新当前条目(options: NavigationUpdateCurrentEntryOptions): void;
     加事件监听<K extends keyof NavigationEventMap>(type: K, listener: (this: Navigation, ev: NavigationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof NavigationEventMap>(type: K, listener: (this: Navigation, ev: NavigationEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4699,14 +4728,18 @@ interface NavigationDestination {
     readonly 编号: string;
     readonly 序号: number;
     readonly 键名: string;
+    readonly 同文档: boolean;
     readonly 地址: string;
+    取状态(): any;
 }
 
 interface NavigationHistoryEntry {
     readonly 编号: string;
     readonly 序号: number;
     readonly 键名: string;
+    readonly 同文档: boolean;
     readonly 地址: string | null;
+    取状态(): any;
     加事件监听<K extends keyof NavigationHistoryEntryEventMap>(type: K, listener: (this: NavigationHistoryEntry, ev: NavigationHistoryEntryEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof NavigationHistoryEntryEventMap>(type: K, listener: (this: NavigationHistoryEntry, ev: NavigationHistoryEntryEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4720,6 +4753,7 @@ interface NavigationPrecommitController {
 interface NavigationPreloadManager {
     禁用(): Promise<void>;
     启用(): Promise<void>;
+    取状态(): Promise<NavigationPreloadState>;
 }
 
 interface Navigator {
@@ -5556,6 +5590,7 @@ interface SVGClipPathElement {
 }
 
 interface SVGComponentTransferFunctionElement {
+    readonly 拦截: SVGAnimatedNumber;
     readonly 偏移: SVGAnimatedNumber;
     readonly 种类: SVGAnimatedEnumeration;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGComponentTransferFunctionElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -6233,6 +6268,7 @@ interface ScriptProcessorNode {
 }
 
 interface ScrollTimeline {
+    readonly 轴向: ScrollAxis;
     readonly 来源: Element | null;
 }
 
@@ -7151,6 +7187,7 @@ interface Console {
     清空(): void;
     书写方向(item?: any, options?: any): void;
     报错(...data: any[]): void;
+    附加信息(...data: any[]): void;
     对数(...data: any[]): void;
     日志(...data: any[]): void;
     警告(...data: any[]): void;
