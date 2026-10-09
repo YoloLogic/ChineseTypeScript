@@ -46,7 +46,7 @@ $blocks = New-Object System.Collections.Generic.List[string]
 $blocks.Add('// 【生成物，请勿手改】由 tools/gen_zhstdlib_lib.ps1 从上游 lib + stdlib 译名表生成。')
 $blocks.Add('// 只做「成员改名」的增补：接口名与类型原样保留，英文用法照旧可用。')
 $blocks.Add('')
-$ifaceCount = 0; $skipped = 0
+$ifaceCount = 0; $skipped = New-Object System.Collections.Generic.List[string]
 foreach ($lib in $libs) {
     $cur = $null; $depth = 0
     $members = New-Object System.Collections.Generic.List[string]
@@ -73,13 +73,15 @@ foreach ($lib in $libs) {
         $name = $m.Groups[3].Value
         if (-not $en2zh.ContainsKey($name)) { continue }
         $rest = $m.Groups[4].Value
-        if ($rest -notmatch ';\s*$') { $skipped++; continue }
-        if (([regex]::Matches($rest, '\(')).Count -ne ([regex]::Matches($rest, '\)')).Count) { $skipped++; continue }
+        # 多行/重载成员暂时跳过（登记为待办）；把名字记下来，便于后续补。
+        if ($rest -notmatch ';\s*$') { $skipped.Add($name); continue }
+        if (([regex]::Matches($rest, '\(')).Count -ne ([regex]::Matches($rest, '\)')).Count) { $skipped.Add($name); continue }
         $members.Add($m.Groups[1].Value + $m.Groups[2].Value + $en2zh[$name] + $rest)
     }
 }
 $text = ($blocks -join $CRLF) + $CRLF
-Write-Host ('lib ' + $libs.Count + ' 个；接口块 ' + $ifaceCount + ' 个；跳过 ' + $skipped + ' 处')
+Write-Host ('lib ' + $libs.Count + ' 个；接口块 ' + $ifaceCount + ' 个；跳过 ' + $skipped.Count + ' 处')
+if ($skipped.Count -gt 0) { Write-Host ('  跳过的成员（多行/重载，待支持）：' + ((@($skipped | Sort-Object -Unique)) -join ' ')) }
 
 if ($Check) {
     if (-not (Test-Path $Out)) { throw ('生成物不存在：' + $Out) }

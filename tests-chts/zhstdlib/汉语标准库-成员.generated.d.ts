@@ -69,8 +69,28 @@ interface ErrorEventInit {
     报错?: any;
 }
 
+interface FileSystemFlags {
+    创建?: boolean;
+}
+
+interface FileSystemGetDirectoryOptions {
+    创建?: boolean;
+}
+
+interface FileSystemGetFileOptions {
+    创建?: boolean;
+}
+
 interface FontFaceDescriptors {
     样式?: string;
+}
+
+interface GPUBindGroupDescriptor {
+    条目: GPUBindGroupEntry[];
+}
+
+interface GPUBindGroupLayoutDescriptor {
+    条目: GPUBindGroupLayoutEntry[];
 }
 
 interface GPUBufferBinding {
@@ -170,6 +190,10 @@ interface PaymentValidationErrors {
 interface PointerEventInit {
     高度?: number;
     宽度?: number;
+}
+
+interface PushSubscriptionJSON {
+    键列?: Record<string, string>;
 }
 
 interface QueuingStrategy<T = any> {
@@ -407,8 +431,24 @@ interface CSSMathInvert {
     readonly 值内容: CSSNumericValue;
 }
 
+interface CSSMathMax {
+    readonly 值列: CSSNumericArray;
+}
+
+interface CSSMathMin {
+    readonly 值列: CSSNumericArray;
+}
+
 interface CSSMathNegate {
     readonly 值内容: CSSNumericValue;
+}
+
+interface CSSMathProduct {
+    readonly 值列: CSSNumericArray;
+}
+
+interface CSSMathSum {
+    readonly 值列: CSSNumericArray;
 }
 
 interface CSSNestedDeclarations {
@@ -508,6 +548,7 @@ interface CSSUnparsedValue {
 interface Cache {
     添加(request: RequestInfo | URL): Promise<void>;
     删除(request: RequestInfo | URL, options?: CacheQueryOptions): Promise<boolean>;
+    键列(request?: RequestInfo | URL, options?: CacheQueryOptions): Promise<ReadonlyArray<Request>>;
     匹配(request: RequestInfo | URL, options?: CacheQueryOptions): Promise<Response | undefined>;
     全匹配(request?: RequestInfo | URL, options?: CacheQueryOptions): Promise<ReadonlyArray<Response>>;
 }
@@ -515,6 +556,7 @@ interface Cache {
 interface CacheStorage {
     删除(cacheName: string): Promise<boolean>;
     含有(cacheName: string): Promise<boolean>;
+    键列(): Promise<string[]>;
     匹配(request: RequestInfo | URL, options?: MultiCacheQueryOptions): Promise<Response | undefined>;
 }
 
@@ -573,6 +615,7 @@ interface CountQueuingStrategy {
 }
 
 interface CredentialsContainer {
+    创建(options?: CredentialCreationOptions): Promise<Credential | null>;
     获取(options?: CredentialRequestOptions): Promise<Credential | null>;
 }
 
@@ -1263,6 +1306,7 @@ interface HTMLSelectElement {
 }
 
 interface HTMLSlotElement {
+    合入(...nodes: (Element | Text)[]): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLSlotElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLSlotElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1518,6 +1562,7 @@ interface Location {
     链接: string;
     转字符串(): string;
     查找: string;
+    合入(url: string | URL): void;
     替换(url: string | URL): void;
 }
 
@@ -1663,6 +1708,7 @@ interface NamedNodeMap {
 }
 
 interface Navigation {
+    条目(): NavigationHistoryEntry[];
     加事件监听<K extends keyof NavigationEventMap>(type: K, listener: (this: Navigation, ev: NavigationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof NavigationEventMap>(type: K, listener: (this: Navigation, ev: NavigationEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1979,6 +2025,7 @@ interface SVGFEBlendElement {
 }
 
 interface SVGFEColorMatrixElement {
+    readonly 值列: SVGAnimatedNumberList;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEColorMatrixElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEColorMatrixElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2802,6 +2849,82 @@ interface Console {
     警告(...data: any[]): void;
 }
 
+interface CSSNumericArray {
+    条目(): ArrayIterator<[number, CSSNumericValue]>;
+    键列(): ArrayIterator<number>;
+    值列(): ArrayIterator<CSSNumericValue>;
+}
+
+interface CSSTransformValue {
+    条目(): ArrayIterator<[number, CSSTransformComponent]>;
+    键列(): ArrayIterator<number>;
+    值列(): ArrayIterator<CSSTransformComponent>;
+}
+
+interface CSSUnparsedValue {
+    条目(): ArrayIterator<[number, CSSUnparsedSegment]>;
+    键列(): ArrayIterator<number>;
+    值列(): ArrayIterator<CSSUnparsedSegment>;
+}
+
+interface DOMTokenList {
+    条目(): ArrayIterator<[number, string]>;
+    键列(): ArrayIterator<number>;
+    值列(): ArrayIterator<string>;
+}
+
+interface FormData {
+    条目(): FormDataIterator<[string, FormDataEntryValue]>;
+    键列(): FormDataIterator<string>;
+    值列(): FormDataIterator<FormDataEntryValue>;
+}
+
+interface Headers {
+    条目(): HeadersIterator<[string, string]>;
+    键列(): HeadersIterator<string>;
+    值列(): HeadersIterator<string>;
+}
+
+interface MediaKeyStatusMap {
+    条目(): MediaKeyStatusMapIterator<[BufferSource, MediaKeyStatus]>;
+    键列(): MediaKeyStatusMapIterator<BufferSource>;
+    值列(): MediaKeyStatusMapIterator<MediaKeyStatus>;
+}
+
+interface NodeList {
+    条目(): ArrayIterator<[number, Node]>;
+    键列(): ArrayIterator<number>;
+    值列(): ArrayIterator<Node>;
+}
+
+interface NodeListOf<TNode extends Node> {
+    条目(): ArrayIterator<[number, TNode]>;
+    键列(): ArrayIterator<number>;
+    值列(): ArrayIterator<TNode>;
+}
+
+interface StylePropertyMapReadOnly {
+    条目(): StylePropertyMapReadOnlyIterator<[string, Iterable<CSSStyleValue>]>;
+    键列(): StylePropertyMapReadOnlyIterator<string>;
+    值列(): StylePropertyMapReadOnlyIterator<Iterable<CSSStyleValue>>;
+}
+
+interface URLSearchParams {
+    条目(): URLSearchParamsIterator<[string, string]>;
+    键列(): URLSearchParamsIterator<string>;
+    值列(): URLSearchParamsIterator<string>;
+}
+
+interface FileSystemDirectoryHandle {
+    条目(): FileSystemDirectoryHandleAsyncIterator<[string, FileSystemDirectoryHandle | FileSystemFileHandle]>;
+    键列(): FileSystemDirectoryHandleAsyncIterator<string>;
+    值列(): FileSystemDirectoryHandleAsyncIterator<FileSystemDirectoryHandle | FileSystemFileHandle>;
+}
+
+interface ReadableStream<R = any> {
+    值列(options?: ReadableStreamIteratorOptions): ReadableStreamAsyncIterator<R>;
+}
+
 interface Map<K, V> {
     清空(): void;
     删除(key: K): boolean;
@@ -2852,6 +2975,7 @@ interface Array<T> {
     找出(predicate: (value: T, index: number, obj: T[]) => unknown, thisArg?: any): T | undefined;
     找出序号(predicate: (value: T, index: number, obj: T[]) => unknown, thisArg?: any): number;
     填充(value: T, start?: number, end?: number): this;
+    内部复制(target: number, start: number, end?: number): this;
     本地转字符串(locales: string | string[], options?: Intl.NumberFormatOptions & Intl.DateTimeFormatOptions): string;
 }
 
@@ -2868,6 +2992,14 @@ interface Math {
     截断(x: number): number;
     单精度(x: number): number;
     立方根(x: number): number;
+}
+
+interface ObjectConstructor {
+    合入<T extends {}, U>(target: T, source: U): T & U;
+    合入<T extends {}, U, V>(target: T, source1: U, source2: V): T & U & V;
+    合入<T extends {}, U, V, W>(target: T, source1: U, source2: V, source3: W): T & U & V & W;
+    合入(target: object, ...sources: any[]): any;
+    键列(o: {}): string[];
 }
 
 interface ReadonlyArray<T> {
@@ -2939,6 +3071,30 @@ interface IteratorReturnResult<TReturn> {
     值内容: TReturn;
 }
 
+interface Array<T> {
+    条目(): ArrayIterator<[number, T]>;
+    键列(): ArrayIterator<number>;
+    值列(): ArrayIterator<T>;
+}
+
+interface ReadonlyArray<T> {
+    条目(): ArrayIterator<[number, T]>;
+    键列(): ArrayIterator<number>;
+    值列(): ArrayIterator<T>;
+}
+
+interface Map<K, V> {
+    条目(): MapIterator<[K, V]>;
+    键列(): MapIterator<K>;
+    值列(): MapIterator<V>;
+}
+
+interface ReadonlyMap<K, V> {
+    条目(): MapIterator<[K, V]>;
+    键列(): MapIterator<K>;
+    值列(): MapIterator<V>;
+}
+
 interface PromiseConstructor {
     全部<T extends readonly unknown[] | []>(values: T): Promise<{ -readonly [P in keyof T]: Awaited<T[P]>; }>;
     竞速<T extends readonly unknown[] | []>(values: T): Promise<Awaited<T[number]>>;
@@ -2949,8 +3105,11 @@ interface PromiseConstructor {
 }
 
 interface ProxyHandler<T extends object> {
+    定义属性?(target: T, property: string | symbol, attributes: PropertyDescriptor): boolean;
     获取?(target: T, p: string | symbol, receiver: any): any;
+    取原型?(target: T): object | null;
     含有?(target: T, p: string | symbol): boolean;
+    止扩展?(target: T): boolean;
     设置?(target: T, p: string | symbol, newValue: any, receiver: any): boolean;
 }
 
@@ -3013,6 +3172,13 @@ interface Float64Array<TArrayBuffer extends ArrayBufferLike> {
     包含(searchElement: number, fromIndex?: number): boolean;
 }
 
+interface ObjectConstructor {
+    值列<T>(o: { [s: string]: T; } | ArrayLike<T>): T[];
+    值列(o: {}): any[];
+    条目<T>(o: { [s: string]: T; } | ArrayLike<T>): [string, T][];
+    条目(o: {}): [string, any][];
+}
+
 interface SharedArrayBuffer {
     截取(begin?: number, end?: number): SharedArrayBuffer;
 }
@@ -3054,6 +3220,8 @@ interface BigInt {
 }
 
 interface BigInt64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
+    内部复制(target: number, start: number, end?: number): this;
+    条目(): ArrayIterator<[number, bigint]>;
     全部满足(predicate: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => boolean, thisArg?: any): boolean;
     填充(value: bigint, start?: number, end?: number): this;
     过滤(predicate: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => any, thisArg?: any): BigInt64Array<ArrayBuffer>;
@@ -3063,6 +3231,7 @@ interface BigInt64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> 
     包含(searchElement: bigint, fromIndex?: number): boolean;
     找序号(searchElement: bigint, fromIndex?: number): number;
     连接成串(separator?: string): string;
+    键列(): ArrayIterator<number>;
     末次序号(searchElement: bigint, fromIndex?: number): number;
     readonly 长度: number;
     映射(callbackfn: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => bigint, thisArg?: any): BigInt64Array<ArrayBuffer>;
@@ -3078,9 +3247,12 @@ interface BigInt64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> 
     本地转字符串(locales?: string | string[], options?: Intl.NumberFormatOptions): string;
     转字符串(): string;
     取值(): BigInt64Array<TArrayBuffer>;
+    值列(): ArrayIterator<bigint>;
 }
 
 interface BigUint64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
+    内部复制(target: number, start: number, end?: number): this;
+    条目(): ArrayIterator<[number, bigint]>;
     全部满足(predicate: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => boolean, thisArg?: any): boolean;
     填充(value: bigint, start?: number, end?: number): this;
     过滤(predicate: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => any, thisArg?: any): BigUint64Array<ArrayBuffer>;
@@ -3090,6 +3262,7 @@ interface BigUint64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike>
     包含(searchElement: bigint, fromIndex?: number): boolean;
     找序号(searchElement: bigint, fromIndex?: number): number;
     连接成串(separator?: string): string;
+    键列(): ArrayIterator<number>;
     末次序号(searchElement: bigint, fromIndex?: number): number;
     readonly 长度: number;
     映射(callbackfn: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => bigint, thisArg?: any): BigUint64Array<ArrayBuffer>;
@@ -3105,11 +3278,13 @@ interface BigUint64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike>
     本地转字符串(locales?: string | string[], options?: Intl.NumberFormatOptions): string;
     转字符串(): string;
     取值(): BigUint64Array<TArrayBuffer>;
+    值列(): ArrayIterator<bigint>;
 }
 
 interface Date {
     本地转字符串(locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
     本地日期串(locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
+    本地时刻串(locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
 }
 
 interface Number {
@@ -3200,12 +3375,14 @@ interface PromiseWithResolvers<T> {
 }
 
 interface ReadonlySetLike<T> {
+    键列(): Iterator<T>;
     含有(value: T): boolean;
     readonly 大小: number;
 }
 
 interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
     取第(index: number): number | undefined;
+    内部复制(target: number, start: number, end?: number): this;
     全部满足(predicate: (value: number, index: number, array: this) => unknown, thisArg?: any): boolean;
     填充(value: number, start?: number, end?: number): this;
     过滤(predicate: (value: number, index: number, array: this) => any, thisArg?: any): Float16Array<ArrayBuffer>;
@@ -3232,6 +3409,9 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
     本地转字符串(locales?: string | string[], options?: Intl.NumberFormatOptions): string;
     转字符串(): string;
     取值(): this;
+    条目(): ArrayIterator<[number, number]>;
+    键列(): ArrayIterator<number>;
+    值列(): ArrayIterator<number>;
 }
 
 interface Symbol {
@@ -3251,6 +3431,23 @@ interface Object {
     取值(): Object;
     有自有属性(v: PropertyKey): boolean;
     是原型(v: Object): boolean;
+    属性可枚举(v: PropertyKey): boolean;
+}
+
+interface ObjectConstructor {
+    取原型(o: any): any;
+    取自有属性名(o: any): string[];
+    创建(o: object | null): any;
+    创建(o: object | null, properties: PropertyDescriptorMap & ThisType<any>): any;
+    定义属性<T>(o: T, p: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): T;
+    密封<T>(o: T): T;
+    冻结<T extends Function>(f: T): T;
+    冻结<T extends { [idx: string]: U | null | undefined | object; }, U extends string | bigint | number | boolean | symbol>(o: T): Readonly<T>;
+    冻结<T>(o: T): Readonly<T>;
+    止扩展<T>(o: T): T;
+    是密封(o: any): boolean;
+    是冻结(o: any): boolean;
+    键列(o: object): string[];
 }
 
 interface Function {
@@ -3323,6 +3520,7 @@ interface Date {
     转时刻串(): string;
     本地转字符串(): string;
     本地日期串(): string;
+    本地时刻串(): string;
     取值(): number;
     取时刻(): number;
     取年(): number;
