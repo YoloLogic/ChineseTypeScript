@@ -442,6 +442,11 @@ interface InputEventInit {
     数据?: string | null;
 }
 
+interface IntersectionObserverInit {
+    根元素?: Element | Document | null;
+    根边距?: string;
+}
+
 interface JsonWebKey {
     横坐标?: string;
     纵坐标?: string;
@@ -1891,6 +1896,8 @@ interface DOMTokenList {
     取项(index: number): string | null;
     移除(...tokens: string[]): void;
     替换(token: string, newToken: string): boolean;
+    支持(token: string): boolean;
+    切换(token: string, force?: boolean): boolean;
     逐个处理(callbackfn: (value: string, key: number, parent: DOMTokenList) => void, thisArg?: any): void;
 }
 
@@ -2225,6 +2232,7 @@ interface FileReader {
 
 interface FileSystem {
     readonly 名称: string;
+    readonly 根元素: FileSystemDirectoryEntry;
 }
 
 interface FileSystemDirectoryEntry {
@@ -3386,9 +3394,13 @@ interface InputEvent {
 }
 
 interface IntersectionObserver {
+    readonly 根元素: Element | Document | null;
+    readonly 根边距: string;
+    readonly 阈值列: ReadonlyArray<number>;
     断开(): void;
     观察(target: Element): void;
     取记录(): IntersectionObserverEntry[];
+    停止观察(target: Element): void;
 }
 
 interface IntersectionObserverEntry {
@@ -3728,6 +3740,7 @@ interface Node {
 interface NodeIterator {
     readonly 过滤: NodeFilter | null;
     readonly 滤镜: NodeFilter | null;
+    readonly 根元素: Node;
 }
 
 interface NodeList {
@@ -3832,7 +3845,12 @@ interface PaymentResponse {
 }
 
 interface Performance {
+    清标记(markName?: string): void;
+    取条目列(): PerformanceEntryList;
+    标记(markName: string, markOptions?: PerformanceMarkOptions): PerformanceMark;
+    度量(measureName: string, startOrMeasureOptions?: string | PerformanceMeasureOptions, endMark?: string): PerformanceMeasure;
     此刻(): DOMHighResTimeStamp;
+    当前值(): DOMHighResTimeStamp;
     转数据(): any;
     加事件监听<K extends keyof PerformanceEventMap>(type: K, listener: (this: Performance, ev: PerformanceEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -3873,6 +3891,10 @@ interface PerformanceObserver {
     断开(): void;
     观察(options?: PerformanceObserverInit): void;
     取记录(): PerformanceEntryList;
+}
+
+interface PerformanceObserverEntryList {
+    取条目列(): PerformanceEntryList;
 }
 
 interface PerformancePaintTiming {
@@ -4145,6 +4167,7 @@ interface Request {
 interface ResizeObserver {
     断开(): void;
     观察(target: Element, options?: ResizeObserverOptions): void;
+    停止观察(target: Element): void;
 }
 
 interface ResizeObserverEntry {
@@ -5099,6 +5122,7 @@ interface TransformStreamDefaultController<O = any> {
 interface TreeWalker {
     readonly 过滤: NodeFilter | null;
     readonly 滤镜: NodeFilter | null;
+    readonly 根元素: Node;
     首子节点(): Node | null;
     末子节点(): Node | null;
     后兄弟(): Node | null;
@@ -5434,6 +5458,11 @@ interface XPathResult {
 
 interface XSLTProcessor {
     重置(): void;
+}
+
+declare namespace CSS {
+    function 支持(property: string, value: string): boolean;
+    function 支持(conditionText: string): boolean;
 }
 
 declare namespace WebAssembly {
@@ -6455,6 +6484,7 @@ interface Date {
 interface DateConstructor {
     解析(s: string): number;
     此刻(): number;
+    当前值(): number;
 }
 
 interface RegExpMatchArray {

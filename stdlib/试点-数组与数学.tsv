@@ -596,6 +596,17 @@ member	parentStyleSheet	父样式表
 member	play	播放
 member	pause	暂停
 member	finish	完成
+member	toggle	切换
+member	supports	支持
+member	unobserve	停止观察
+member	root	根元素
+member	rootMargin	根边距
+member	thresholds	阈值列
+member	now	当前值
+member	mark	标记
+member	measure	度量
+member	getEntries	取条目列
+member	clearMarks	清标记
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
