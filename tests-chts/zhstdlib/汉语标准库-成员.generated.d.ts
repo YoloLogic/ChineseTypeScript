@@ -994,6 +994,7 @@ interface Animation {
 }
 
 interface AnimationFrameProvider {
+    取消动画帧(handle: number): void;
     请求动画帧(callback: FrameRequestCallback): number;
 }
 
@@ -1141,6 +1142,7 @@ interface Body {
 interface BroadcastChannel {
     readonly 名称: string;
     关闭(): void;
+    发消息(message: any): void;
     加事件监听<K extends keyof BroadcastChannelEventMap>(type: K, listener: (this: BroadcastChannel, ev: BroadcastChannelEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof BroadcastChannelEventMap>(type: K, listener: (this: BroadcastChannel, ev: BroadcastChannelEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1530,6 +1532,11 @@ interface Credential {
 interface CredentialsContainer {
     创建(options?: CredentialCreationOptions): Promise<Credential | null>;
     获取(options?: CredentialRequestOptions): Promise<Credential | null>;
+}
+
+interface Crypto {
+    取随机值<T extends Exclude<BufferSource, ArrayBuffer>>(array: T): T;
+    随机编号(): `${string}-${string}-${string}-${string}-${string}`;
 }
 
 interface CryptoKey {
@@ -3093,6 +3100,8 @@ interface MessageEventTarget<T> {
 
 interface MessagePort {
     关闭(): void;
+    发消息(message: any, transfer: Transferable[]): void;
+    发消息(message: any, options?: StructuredSerializeOptions): void;
     开始(): void;
     加事件监听<K extends keyof MessagePortEventMap>(type: K, listener: (this: MessagePort, ev: MessagePortEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -4214,6 +4223,8 @@ interface Selection {
 
 interface ServiceWorker {
     readonly 状态: ServiceWorkerState;
+    发消息(message: any, transfer: Transferable[]): void;
+    发消息(message: any, options?: StructuredSerializeOptions): void;
     加事件监听<K extends keyof ServiceWorkerEventMap>(type: K, listener: (this: ServiceWorker, ev: ServiceWorkerEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof ServiceWorkerEventMap>(type: K, listener: (this: ServiceWorker, ev: ServiceWorkerEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4357,6 +4368,7 @@ interface StyleSheetList {
 }
 
 interface SubtleCrypto {
+    摘要(algorithm: AlgorithmIdentifier, data: BufferSource): Promise<ArrayBuffer>;
     符号(algorithm: AlgorithmIdentifier | RsaPssParams | EcdsaParams, key: CryptoKey, data: BufferSource): Promise<ArrayBuffer>;
 }
 
@@ -4608,12 +4620,17 @@ interface Window {
     名称: string;
     状态码: string;
     失焦(): void;
+    取消空闲(handle: number): void;
     关闭(): void;
     聚焦(): void;
     取计算样式(elt: Element, pseudoElt?: string | null): CSSStyleDeclaration;
     取选区(): Selection | null;
+    匹配媒体(query: string): MediaQueryList;
     移到(x: number, y: number): void;
     打开(url?: string | URL, target?: string, features?: string): WindowProxy | null;
+    发消息(message: any, targetOrigin: string, transfer?: Transferable[]): void;
+    发消息(message: any, options?: WindowPostMessageOptions): void;
+    请求空闲(callback: IdleRequestCallback, options?: IdleRequestOptions): number;
     滚动偏移(options?: ScrollToOptions): void;
     滚动偏移(x: number, y: number): void;
     滚动到(options?: ScrollToOptions): void;
@@ -4634,9 +4651,13 @@ interface WindowEventHandlers {
 interface WindowOrWorkerGlobalScope {
     创建位图(image: ImageBitmapSource, options?: ImageBitmapOptions): Promise<ImageBitmap>;
     创建位图(image: ImageBitmapSource, sx: number, sy: number, sw: number, sh: number, options?: ImageBitmapOptions): Promise<ImageBitmap>;
+    排队微任务(callback: VoidFunction): void;
+    结构化复制<T = any>(value: T, options?: StructuredSerializeOptions): T;
 }
 
 interface Worker {
+    发消息(message: any, transfer: Transferable[]): void;
+    发消息(message: any, options?: StructuredSerializeOptions): void;
     加事件监听<K extends keyof WorkerEventMap>(type: K, listener: (this: Worker, ev: WorkerEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof WorkerEventMap>(type: K, listener: (this: Worker, ev: WorkerEventMap[K]) => any, options?: boolean | EventListenerOptions): void;

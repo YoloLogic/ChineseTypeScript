@@ -26,3 +26,7 @@ type 正则 = RegExp;
 declare var 正则: RegExpConstructor;
 type 错误 = Error;
 declare var 错误: ErrorConstructor;
+
+// 全局函数（不是接口成员，生成器不管；emit 里全局名在引用位就会改写）
+declare function 创建对象地址(对象: Blob | MediaSource): string;
+declare function 撤销对象地址(地址: string): void;
