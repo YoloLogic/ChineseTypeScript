@@ -303,6 +303,7 @@ interface ErrorEventInit {
 
 interface EventInit {
     会冒泡?: boolean;
+    可取消?: boolean;
     可穿透?: boolean;
 }
 
@@ -813,6 +814,11 @@ interface PopStateEventInit {
     状态?: any;
 }
 
+interface ProgressEventInit {
+    长度可算?: boolean;
+    已加载?: number;
+}
+
 interface PropertyDefinition {
     名称: string;
 }
@@ -1119,6 +1125,7 @@ interface StereoPannerOptions {
 
 interface StorageEventInit {
     键名?: string | null;
+    旧值?: string | null;
     地址?: string;
 }
 
@@ -1324,6 +1331,8 @@ interface AbortController {
 }
 
 interface AbortSignal {
+    readonly 已中止: boolean;
+    已中止则抛(): void;
     加事件监听<K extends keyof AbortSignalEventMap>(type: K, listener: (this: AbortSignal, ev: AbortSignalEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof AbortSignalEventMap>(type: K, listener: (this: AbortSignal, ev: AbortSignalEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2053,6 +2062,8 @@ interface CookieStore {
     删除(options: CookieStoreDeleteOptions): Promise<void>;
     获取(name: string): Promise<CookieListItem | null>;
     获取(options?: CookieStoreGetOptions): Promise<CookieListItem | null>;
+    取全部(name: string): Promise<CookieList>;
+    取全部(options?: CookieStoreGetOptions): Promise<CookieList>;
     设置(name: string, value: string): Promise<void>;
     设置(options: CookieInit): Promise<void>;
     加事件监听<K extends keyof CookieStoreEventMap>(type: K, listener: (this: CookieStore, ev: CookieStoreEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2501,13 +2512,18 @@ interface ErrorEvent {
 
 interface Event {
     readonly 会冒泡: boolean;
+    readonly 可取消: boolean;
     readonly 可穿透: boolean;
     readonly 当前目标: EventTarget | null;
+    readonly 默认已阻止: boolean;
     readonly 事件阶段: number;
+    readonly 可信: boolean;
     返回值: boolean;
     readonly 目标: EventTarget | null;
     readonly 种类: string;
+    穿透路径(): EventTarget[];
     阻止默认(): void;
+    立即停止传播(): void;
     停止传播(): void;
 }
 
@@ -2593,6 +2609,7 @@ interface FocusEvent {
 }
 
 interface FontFace {
+    readonly 已加载: Promise<FontFace>;
     readonly 状态码: FontFaceLoadStatus;
     样式: string;
     加载(): Promise<FontFace>;
@@ -2615,6 +2632,7 @@ interface FormData {
     后插(name: string, blobValue: Blob, filename?: string): void;
     删除(name: string): void;
     获取(name: string): FormDataEntryValue | null;
+    取全部(name: string): FormDataEntryValue[];
     含有(name: string): boolean;
     设置(name: string, value: string | Blob): void;
     设置(name: string, value: string): void;
@@ -3774,6 +3792,7 @@ interface IDBIndex {
     名称: string;
     readonly 对象存储: IDBObjectStore;
     获取(query: IDBValidKey | IDBKeyRange): IDBRequest<any>;
+    取全部(queryOrOptions?: IDBValidKey | IDBKeyRange | null, count?: number): IDBRequest<any[]>;
     取全部键(queryOrOptions?: IDBValidKey | IDBKeyRange | null, count?: number): IDBRequest<IDBValidKey[]>;
     打开游标(query?: IDBValidKey | IDBKeyRange | null, direction?: IDBCursorDirection): IDBRequest<IDBCursorWithValue | null>;
 }
@@ -3793,6 +3812,7 @@ interface IDBObjectStore {
     删除(query: IDBValidKey | IDBKeyRange): IDBRequest<undefined>;
     删除索引(name: string): void;
     获取(query: IDBValidKey | IDBKeyRange): IDBRequest<any>;
+    取全部(queryOrOptions?: IDBValidKey | IDBKeyRange | null, count?: number): IDBRequest<any[]>;
     取全部键(queryOrOptions?: IDBValidKey | IDBKeyRange | null, count?: number): IDBRequest<IDBValidKey[]>;
     序号(name: string): IDBIndex;
     打开游标(query?: IDBValidKey | IDBKeyRange | null, direction?: IDBCursorDirection): IDBRequest<IDBCursorWithValue | null>;
@@ -4192,6 +4212,7 @@ interface MutationObserver {
 
 interface MutationRecord {
     readonly 后兄弟: Node | null;
+    readonly 旧值: string | null;
     readonly 前兄弟: Node | null;
     readonly 目标: Node;
     readonly 种类: MutationRecordType;
@@ -4470,6 +4491,7 @@ interface PerformanceEntry {
 }
 
 interface PerformanceEventTiming {
+    readonly 可取消: boolean;
     readonly 处理结束: DOMHighResTimeStamp;
     readonly 处理开始: DOMHighResTimeStamp;
     readonly 目标: Node | null;
@@ -4611,6 +4633,8 @@ interface ProcessingInstruction {
 }
 
 interface ProgressEvent<T extends EventTarget = EventTarget> {
+    readonly 长度可算: boolean;
+    readonly 已加载: number;
     readonly 目标: T | null;
 }
 
@@ -5830,6 +5854,7 @@ interface Storage {
 
 interface StorageEvent {
     readonly 键名: string | null;
+    readonly 旧值: string | null;
     readonly 地址: string;
 }
 
@@ -5843,6 +5868,7 @@ interface StylePropertyMap {
 interface StylePropertyMapReadOnly {
     readonly 大小: number;
     获取(property: string): undefined | CSSStyleValue;
+    取全部(property: string): CSSStyleValue[];
     含有(property: string): boolean;
     逐个处理(callbackfn: (value: CSSStyleValue[], key: string, parent: StylePropertyMapReadOnly) => void, thisArg?: any): void;
 }
@@ -6034,6 +6060,7 @@ interface URL {
     端口: string;
     协议: string;
     查找: string;
+    readonly 查询参数: URLSearchParams;
     用户名: string;
     转数据(): string;
 }
@@ -6056,6 +6083,7 @@ interface URLSearchParams {
     后插(name: string, value: string): void;
     删除(name: string, value?: string): void;
     获取(name: string): string | null;
+    取全部(name: string): string[];
     含有(name: string, value?: string): boolean;
     设置(name: string, value: string): void;
     排序(): void;
