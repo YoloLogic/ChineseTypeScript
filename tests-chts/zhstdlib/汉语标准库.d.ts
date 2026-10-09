@@ -184,3 +184,10 @@ interface Math {
     双曲余弦(数: number): number;
     双曲正切(数: number): number;
 }
+
+// Number 的格式化成员。
+interface Number {
+    定点(位数?: number): string;
+    定精度(精度?: number): string;
+    指数记法(位数?: number): string;
+}
