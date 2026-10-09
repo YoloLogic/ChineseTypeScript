@@ -1329,6 +1329,17 @@ member	onfocus	聚焦时
 member	onblur	失焦时
 member	onscroll	滚动时
 member	onmessage	收消息时
+member	onkeydown	按键按下时
+member	onkeyup	按键抬起时
+member	onmousedown	鼠标按下时
+member	onmouseup	鼠标抬起时
+member	onmousemove	鼠标移动时
+member	onmouseover	鼠标移入时
+member	onmouseout	鼠标移出时
+member	ondblclick	双击时
+member	oncontextmenu	右键菜单时
+member	onwheel	滚轮时
+member	onresize	改变大小时
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

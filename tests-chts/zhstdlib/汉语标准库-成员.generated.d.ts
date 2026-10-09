@@ -3161,12 +3161,23 @@ interface GlobalEventHandlers {
     变化时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     点击时: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null;
     关闭时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
+    右键菜单时: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null;
+    双击时: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null;
     出错时: OnErrorEventHandler;
     聚焦时: ((this: GlobalEventHandlers, ev: FocusEvent) => any) | null;
     输入时: ((this: GlobalEventHandlers, ev: InputEvent) => any) | null;
+    按键按下时: ((this: GlobalEventHandlers, ev: KeyboardEvent) => any) | null;
+    按键抬起时: ((this: GlobalEventHandlers, ev: KeyboardEvent) => any) | null;
     加载时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
+    鼠标按下时: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null;
+    鼠标移动时: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null;
+    鼠标移出时: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null;
+    鼠标移入时: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null;
+    鼠标抬起时: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null;
+    改变大小时: ((this: GlobalEventHandlers, ev: UIEvent) => any) | null;
     滚动时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     提交时: ((this: GlobalEventHandlers, ev: SubmitEvent) => any) | null;
+    滚轮时: ((this: GlobalEventHandlers, ev: WheelEvent) => any) | null;
     加事件监听<K extends keyof GlobalEventHandlersEventMap>(type: K, listener: (this: GlobalEventHandlers, ev: GlobalEventHandlersEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof GlobalEventHandlersEventMap>(type: K, listener: (this: GlobalEventHandlers, ev: GlobalEventHandlersEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -5162,6 +5173,7 @@ interface Permissions {
 
 interface PictureInPictureWindow {
     readonly 高度: number;
+    改变大小时: ((this: PictureInPictureWindow, ev: Event) => any) | null;
     readonly 宽度: number;
     加事件监听<K extends keyof PictureInPictureWindowEventMap>(type: K, listener: (this: PictureInPictureWindow, ev: PictureInPictureWindowEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -6906,6 +6918,7 @@ interface VisualViewport {
     readonly 高度: number;
     readonly 偏移左: number;
     readonly 偏移顶: number;
+    改变大小时: ((this: VisualViewport, ev: Event) => any) | null;
     滚动时: ((this: VisualViewport, ev: Event) => any) | null;
     readonly 页面左: number;
     readonly 页面顶: number;
