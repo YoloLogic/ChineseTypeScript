@@ -803,6 +803,10 @@ interface SanitizerAttributeNamespace {
     名称: string;
 }
 
+interface SanitizerConfig {
+    元素集合?: SanitizerElementWithAttributes[];
+}
+
 interface SanitizerElementNamespace {
     名称: string;
 }
@@ -1880,6 +1884,14 @@ interface ElementCSSInlineStyle {
     set 样式(cssText: string);
 }
 
+interface ElementInternals {
+    readonly 表单: HTMLFormElement | null;
+    readonly 校验消息: string;
+    readonly 有效性: ValidityState;
+    检查校验(): boolean;
+    报告校验(): boolean;
+}
+
 interface EncodedAudioChunk {
     readonly 字节长度: number;
     readonly 时长: number | null;
@@ -2148,9 +2160,15 @@ interface HTMLBodyElement {
 
 interface HTMLButtonElement {
     已禁用: boolean;
+    readonly 表单: HTMLFormElement | null;
     名称: string;
     种类: "submit" | "reset" | "button";
+    readonly 校验消息: string;
+    readonly 有效性: ValidityState;
     值内容: string;
+    检查校验(): boolean;
+    报告校验(): boolean;
+    设自定义校验(error: string): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLButtonElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLButtonElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2198,6 +2216,7 @@ interface HTMLDataElement {
 }
 
 interface HTMLDataListElement {
+    readonly 选项列: HTMLCollectionOf<HTMLOptionElement>;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDataListElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDataListElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2269,8 +2288,15 @@ interface HTMLEmbedElement {
 
 interface HTMLFieldSetElement {
     已禁用: boolean;
+    readonly 元素集合: HTMLCollection;
+    readonly 表单: HTMLFormElement | null;
     名称: string;
     readonly 种类: string;
+    readonly 校验消息: string;
+    readonly 有效性: ValidityState;
+    检查校验(): boolean;
+    报告校验(): boolean;
+    设自定义校验(error: string): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLFieldSetElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLFieldSetElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2287,9 +2313,12 @@ interface HTMLFontElement {
 
 interface HTMLFormElement {
     自动完成: AutoFillBase;
+    readonly 元素集合: HTMLFormControlsCollection;
     readonly 长度: number;
     名称: string;
     目标: string;
+    检查校验(): boolean;
+    报告校验(): boolean;
     重置(): void;
     提交(): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLFormElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2391,6 +2420,7 @@ interface HTMLInputElement {
     默认值: string;
     已禁用: boolean;
     文件列: FileList | null;
+    readonly 表单: HTMLFormElement | null;
     高度: number;
     最大: string;
     最大限制: string;
@@ -2401,12 +2431,20 @@ interface HTMLInputElement {
     占位提示: string;
     只读: boolean;
     必填: boolean;
+    选区起点: number | null;
     大小: number;
     源址: string;
     步长: string;
     种类: string;
+    readonly 校验消息: string;
+    readonly 有效性: ValidityState;
     值内容: string;
     宽度: number;
+    检查校验(): boolean;
+    报告校验(): boolean;
+    全选(): void;
+    设自定义校验(error: string): void;
+    设选区范围(start: number | null, end: number | null, direction?: SelectionDirection): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLInputElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLInputElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2423,6 +2461,7 @@ interface HTMLLIElement {
 }
 
 interface HTMLLabelElement {
+    readonly 表单: HTMLFormElement | null;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLLabelElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLLabelElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2431,6 +2470,7 @@ interface HTMLLabelElement {
 
 interface HTMLLegendElement {
     对齐: string;
+    readonly 表单: HTMLFormElement | null;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLLegendElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLLegendElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2525,10 +2565,16 @@ interface HTMLOListElement {
 interface HTMLObjectElement {
     对齐: string;
     数据: string;
+    readonly 表单: HTMLFormElement | null;
     高度: string;
     名称: string;
     种类: string;
+    readonly 校验消息: string;
+    readonly 有效性: ValidityState;
     宽度: string;
+    检查校验(): boolean;
+    报告校验(): boolean;
+    设自定义校验(error: string): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLObjectElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLObjectElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2546,6 +2592,7 @@ interface HTMLOptGroupElement {
 
 interface HTMLOptionElement {
     已禁用: boolean;
+    readonly 表单: HTMLFormElement | null;
     readonly 序号: number;
     标签: string;
     已选中: boolean;
@@ -2559,6 +2606,7 @@ interface HTMLOptionElement {
 
 interface HTMLOptionsCollection {
     长度: number;
+    选中序号: number;
     添加(element: HTMLOptionElement | HTMLOptGroupElement, before?: HTMLElement | number | null): void;
     移除(index: number): void;
 }
@@ -2572,9 +2620,15 @@ interface HTMLOrSVGElement {
 
 interface HTMLOutputElement {
     默认值: string;
+    readonly 表单: HTMLFormElement | null;
     名称: string;
     readonly 种类: string;
+    readonly 校验消息: string;
+    readonly 有效性: ValidityState;
     值内容: string;
+    检查校验(): boolean;
+    报告校验(): boolean;
+    设自定义校验(error: string): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLOutputElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLOutputElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2644,17 +2698,25 @@ interface HTMLScriptElement {
 interface HTMLSelectElement {
     自动完成: AutoFill;
     已禁用: boolean;
+    readonly 表单: HTMLFormElement | null;
     长度: number;
     多选: boolean;
     名称: string;
+    readonly 选项列: HTMLOptionsCollection;
     必填: boolean;
+    选中序号: number;
     大小: number;
     readonly 种类: "select-one" | "select-multiple";
+    readonly 校验消息: string;
+    readonly 有效性: ValidityState;
     值内容: string;
     添加(element: HTMLOptionElement | HTMLOptGroupElement, before?: HTMLElement | number | null): void;
+    检查校验(): boolean;
     取项(index: number): HTMLOptionElement | null;
     移除(): void;
     移除(index: number): void;
+    报告校验(): boolean;
+    设自定义校验(error: string): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLSelectElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLSelectElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2777,12 +2839,21 @@ interface HTMLTextAreaElement {
     自动完成: AutoFill;
     默认值: string;
     已禁用: boolean;
+    readonly 表单: HTMLFormElement | null;
     名称: string;
     占位提示: string;
     只读: boolean;
     必填: boolean;
+    选区起点: number;
     readonly 种类: string;
+    readonly 校验消息: string;
+    readonly 有效性: ValidityState;
     值内容: string;
+    检查校验(): boolean;
+    报告校验(): boolean;
+    全选(): void;
+    设自定义校验(error: string): void;
+    设选区范围(start: number | null, end: number | null, direction?: SelectionDirection): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTextAreaElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTextAreaElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2962,6 +3033,7 @@ interface ImageTrack {
 
 interface ImageTrackList {
     readonly 长度: number;
+    readonly 选中序号: number;
 }
 
 interface ImportMeta {
@@ -3493,6 +3565,7 @@ interface PublicKeyCredential {
 }
 
 interface PushSubscription {
+    readonly 选项列: PushSubscriptionOptions;
     转数据(): PushSubscriptionJSON;
 }
 
