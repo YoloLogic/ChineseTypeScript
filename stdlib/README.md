@@ -34,9 +34,9 @@ TS 的标准库是**只有声明、没有实现**的 `.d.ts`（真正的 `push`/
 
 * 抽取：**已完成**（7687 条）
 * 机制：**已定 ①**（编译器改写）
-* 译名：**166 / 7687**
-* **lib 转换器 v1 已落地**（2026-10-08）：`tools/gen_zhstdlib_lib.ps1` 从上游 **102 个 lib**（含 DOM，
-  排除 webworker/scripthost）抽出 **540 个 interface 块**，按译名表把**成员改名为汉语**，生成**增补式**声明
+* 译名：**505 / 7687**
+* **lib 转换器**：`tools/gen_zhstdlib_lib.ps1` 从上游 **102 个 lib**（含 DOM，
+  排除 webworker/scripthost）抽出 **911 个 interface 块 + 3 个命名空间块**（`WebAssembly`/`Reflect`/`Intl`），按译名表把**成员改名为汉语**，生成**增补式**声明
   `tests-chts/zhstdlib/汉语标准库-成员.generated.d.ts`（约 3000 行，**勿手改**）。
   接口名与类型**原样保留** → 绕开「交叉引用」难题，英文用法照旧可用。
   于是**加译名的成本 = 表里一行 + 跑生成器**（声明自动出现在所有相关接口上）。
