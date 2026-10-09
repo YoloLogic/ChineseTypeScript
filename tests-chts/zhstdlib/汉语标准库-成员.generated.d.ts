@@ -49,6 +49,10 @@ interface AnalyserOptions {
     最小分贝?: number;
 }
 
+interface AnimationEventInit {
+    伪元素?: string;
+}
+
 interface AudioBufferOptions {
     长度: number;
     声道数?: number;
@@ -204,6 +208,7 @@ interface ComputedEffectTiming {
 }
 
 interface ComputedKeyframe {
+    合成: CompositeOperationOrAuto;
     偏移: number | null;
 }
 
@@ -591,12 +596,18 @@ interface KeyboardEventInit {
 }
 
 interface Keyframe {
+    合成?: CompositeOperationOrAuto;
     偏移?: number | null;
 }
 
 interface KeyframeAnimationOptions {
     编号?: string;
     时间线?: AnimationTimeline | null;
+}
+
+interface KeyframeEffectOptions {
+    合成?: CompositeOperation;
+    伪元素?: string | null;
 }
 
 interface LockInfo {
@@ -906,6 +917,7 @@ interface PropertyDefinition {
 }
 
 interface PropertyIndexedKeyframes {
+    合成?: CompositeOperationOrAuto | CompositeOperationOrAuto[];
     偏移?: number | (number | null)[];
 }
 
@@ -1311,6 +1323,10 @@ interface Transformer<I = any, O = any> {
     变换?: TransformerTransformCallback<I, O>;
 }
 
+interface TransitionEventInit {
+    伪元素?: string;
+}
+
 interface UIEventInit {
     细节?: number;
     视图?: Window | null;
@@ -1544,6 +1560,15 @@ interface Animation {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof AnimationEventMap>(type: K, listener: (this: Animation, ev: AnimationEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface AnimationEffect {
+    取计算时序(): ComputedEffectTiming;
+    取时序(): EffectTiming;
+}
+
+interface AnimationEvent {
+    readonly 伪元素: string;
 }
 
 interface AnimationFrameProvider {
@@ -1973,6 +1998,7 @@ interface CSSStyleProperties {
     文本渲染: string;
     顶部: string;
     变换: string;
+    过渡属性: string;
     平移: string;
     宽度: string;
     词距: string;
@@ -2006,6 +2032,7 @@ interface CSSTransformValue {
 }
 
 interface CSSTransition {
+    readonly 过渡属性: string;
     加事件监听<K extends keyof AnimationEventMap>(type: K, listener: (this: CSSTransition, ev: AnimationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof AnimationEventMap>(type: K, listener: (this: CSSTransition, ev: AnimationEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2882,6 +2909,7 @@ interface GPUBuffer {
 
 interface GPUCanvasContext {
     readonly 画布: HTMLCanvasElement | OffscreenCanvas;
+    取配置(): GPUCanvasConfiguration | null;
 }
 
 interface GPUCommandEncoder {
@@ -4204,7 +4232,11 @@ interface KeyboardEvent {
 }
 
 interface KeyframeEffect {
+    合成: CompositeOperation;
+    伪元素: string | null;
     目标: Element | null;
+    取关键帧(): ComputedKeyframe[];
+    设关键帧(keyframes: Keyframe[] | PropertyIndexedKeyframes | null): void;
 }
 
 interface LargestContentfulPaint {
@@ -4306,6 +4338,7 @@ interface MathMLElement {
 
 interface MediaCapabilities {
     解码信息(configuration: MediaDecodingConfiguration): Promise<MediaCapabilitiesDecodingInfo>;
+    编码信息(configuration: MediaEncodingConfiguration): Promise<MediaCapabilitiesEncodingInfo>;
 }
 
 interface MediaDeviceInfo {
@@ -4338,6 +4371,7 @@ interface MediaKeyMessageEvent {
 }
 
 interface MediaKeySession {
+    readonly 密钥状态集: MediaKeyStatusMap;
     readonly 会话编号: string;
     关闭(): Promise<void>;
     生成请求(initDataType: string, initData: BufferSource): Promise<void>;
@@ -4360,10 +4394,12 @@ interface MediaKeyStatusMap {
 interface MediaKeySystemAccess {
     readonly 密钥系统: string;
     创建媒体密钥(): Promise<MediaKeys>;
+    取配置(): MediaKeySystemConfiguration;
 }
 
 interface MediaKeys {
     创建会话(sessionType?: MediaKeySessionType): MediaKeySession;
+    设服务器证书(serverCertificate: BufferSource): Promise<boolean>;
 }
 
 interface MediaList {
@@ -4784,6 +4820,10 @@ interface ParentNode {
     替换所有子(...nodes: (Node | string)[]): void;
 }
 
+interface Path2D {
+    加路径(path: Path2D, transform?: DOMMatrix2DInit): void;
+}
+
 interface PaymentAddress {
     readonly 地区: string;
     转数据(): any;
@@ -5105,6 +5145,7 @@ interface RTCPeerConnection {
     创建数据通道(label: string, dataChannelDict?: RTCDataChannelInit): RTCDataChannel;
     创建提议(options?: RTCOfferOptions): Promise<RTCSessionDescriptionInit>;
     创建提议(successCallback: RTCSessionDescriptionCallback, failureCallback: RTCPeerConnectionErrorCallback, options?: RTCOfferOptions): Promise<void>;
+    取配置(): RTCConfiguration;
     取统计(selector?: MediaStreamTrack | null): Promise<RTCStatsReport>;
     取收发器(): RTCRtpTransceiver[];
     删轨道(sender: RTCRtpSender): void;
@@ -6479,6 +6520,10 @@ interface TransformStreamDefaultController<O = any> {
     入队(chunk?: O): void;
     报错(reason?: any): void;
     终止(): void;
+}
+
+interface TransitionEvent {
+    readonly 伪元素: string;
 }
 
 interface TreeWalker {
