@@ -1312,6 +1312,7 @@ interface CSSStyleProperties {
     滤镜: string;
     字体: string;
     高度: string;
+    字距: string;
     偏移: string;
     旋转: string;
     缩放: string;
@@ -1320,6 +1321,7 @@ interface CSSStyleProperties {
     变换: string;
     平移: string;
     宽度: string;
+    词距: string;
     横坐标: string;
     纵坐标: string;
 }
@@ -1435,6 +1437,11 @@ interface CanvasImageData {
     放图像数据(imageData: ImageData, dx: number, dy: number, dirtyX: number, dirtyY: number, dirtyWidth: number, dirtyHeight: number): void;
 }
 
+interface CanvasImageSmoothing {
+    图像平滑: boolean;
+    平滑质量: ImageSmoothingQuality;
+}
+
 interface CanvasPath {
     画弧(x: number, y: number, radius: number, startAngle: number, endAngle: number, counterclockwise?: boolean): void;
     三次曲线到(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void;
@@ -1445,6 +1452,8 @@ interface CanvasPath {
 }
 
 interface CanvasPathDrawingStyles {
+    线端: CanvasLineCap;
+    线接: CanvasLineJoin;
     线宽: number;
     尖角限制: number;
     取虚线(): number[];
@@ -1461,6 +1470,13 @@ interface CanvasRect {
     描边矩形(x: number, y: number, w: number, h: number): void;
 }
 
+interface CanvasShadowStyles {
+    阴影模糊: number;
+    阴影颜色: string;
+    阴影横偏: number;
+    阴影纵偏: number;
+}
+
 interface CanvasState {
     重置(): void;
     恢复(): void;
@@ -1473,8 +1489,10 @@ interface CanvasText {
 
 interface CanvasTextDrawingStyles {
     字体: string;
+    字距: string;
     文本对齐: CanvasTextAlign;
     文本基线: CanvasTextBaseline;
+    词距: string;
 }
 
 interface CanvasTransform {
@@ -2353,7 +2371,9 @@ interface HTMLInputElement {
     最大: string;
     最小: string;
     名称: string;
+    占位提示: string;
     只读: boolean;
+    必填: boolean;
     大小: number;
     源址: string;
     种类: string;
@@ -2591,6 +2611,7 @@ interface HTMLSelectElement {
     已禁用: boolean;
     长度: number;
     名称: string;
+    必填: boolean;
     大小: number;
     readonly 种类: "select-one" | "select-multiple";
     值内容: string;
@@ -2719,7 +2740,9 @@ interface HTMLTemplateElement {
 interface HTMLTextAreaElement {
     已禁用: boolean;
     名称: string;
+    占位提示: string;
     只读: boolean;
+    必填: boolean;
     readonly 种类: string;
     值内容: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTextAreaElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
