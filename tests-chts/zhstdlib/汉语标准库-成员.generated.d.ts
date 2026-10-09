@@ -5305,23 +5305,33 @@ interface WebGLActiveInfo {
 
 interface WebGLRenderingContextBase {
     readonly 画布: HTMLCanvasElement | OffscreenCanvas;
+    激活纹理(texture: GLenum): void;
+    附加着色器(program: WebGLProgram, shader: WebGLShader): void;
     绑定缓冲(target: GLenum, buffer: WebGLBuffer | null): void;
+    绑定帧缓冲(target: GLenum, framebuffer: WebGLFramebuffer | null): void;
     绑定纹理(target: GLenum, texture: WebGLTexture | null): void;
     混合函数(sfactor: GLenum, dfactor: GLenum): void;
+    检查帧缓冲(target: GLenum): GLenum;
     清空(mask: GLbitfield): void;
     清颜色(red: GLclampf, green: GLclampf, blue: GLclampf, alpha: GLclampf): void;
+    清深度(depth: GLclampf): void;
+    编译着色器(shader: WebGLShader): void;
     创建缓冲(): WebGLBuffer;
     创建程序(): WebGLProgram;
     创建着色器(type: GLenum): WebGLShader | null;
     创建纹理(): WebGLTexture;
     剔除面(mode: GLenum): void;
+    删帧缓冲(framebuffer: WebGLFramebuffer | null): void;
     删着色器(shader: WebGLShader | null): void;
     深度函数(func: GLenum): void;
+    深度掩码(flag: GLboolean): void;
     禁用(cap: GLenum): void;
     绘制数组(mode: GLenum, first: GLint, count: GLsizei): void;
     绘制元素(mode: GLenum, count: GLsizei, type: GLenum, offset: GLintptr): void;
     启用(cap: GLenum): void;
+    启用顶点属性(index: GLuint): void;
     完成(): void;
+    生成多级贴图(target: GLenum): void;
     取属性位置(program: WebGLProgram, name: string): GLint;
     取上下文属性(): WebGLContextAttributes | null;
     取扩展名(name: string): any;
@@ -5364,7 +5374,9 @@ interface WebGLRenderingContextBase {
     上下文丢失(): boolean;
     线宽(width: GLfloat): void;
     链接程序(program: WebGLProgram): void;
+    着色器源码(shader: WebGLShader, source: string): void;
     使用程序(program: WebGLProgram | null): void;
+    顶点属性指针(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, offset: GLintptr): void;
     视口(x: GLint, y: GLint, width: GLsizei, height: GLsizei): void;
 }
 
