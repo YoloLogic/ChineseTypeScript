@@ -1025,6 +1025,8 @@ interface AudioBufferSourceNode {
 
 interface AudioContext {
     关闭(): Promise<void>;
+    继续(): Promise<void>;
+    挂起(): Promise<void>;
     加事件监听<K extends keyof BaseAudioContextEventMap>(type: K, listener: (this: AudioContext, ev: BaseAudioContextEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof BaseAudioContextEventMap>(type: K, listener: (this: AudioContext, ev: BaseAudioContextEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1071,6 +1073,7 @@ interface AudioNode {
 
 interface AudioParam {
     值内容: number;
+    设时值(value: number, startTime: number): AudioParam;
 }
 
 interface AudioParamMap {
@@ -1096,7 +1099,15 @@ interface AudioWorkletNode {
 interface BaseAudioContext {
     readonly 采样率: number;
     readonly 状态: AudioContextState;
+    创建分析器(): AnalyserNode;
+    创建滤波器(): BiquadFilterNode;
+    创建缓冲源(): AudioBufferSourceNode;
+    创建卷积器(): ConvolverNode;
+    创建延迟(maxDelayTime?: number): DelayNode;
+    创建压缩器(): DynamicsCompressorNode;
+    创建增益(): GainNode;
     创建振荡器(): OscillatorNode;
+    创建整形器(): WaveShaperNode;
     解码音频(audioData: ArrayBuffer, successCallback?: DecodeSuccessCallback | null, errorCallback?: DecodeErrorCallback | null): Promise<AudioBuffer>;
     加事件监听<K extends keyof BaseAudioContextEventMap>(type: K, listener: (this: BaseAudioContext, ev: BaseAudioContextEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -3007,6 +3018,7 @@ interface MediaQueryListEvent {
 interface MediaRecorder {
     出错时: ((this: MediaRecorder, ev: ErrorEvent) => any) | null;
     readonly 状态: RecordingState;
+    继续(): void;
     开始(timeslice?: number): void;
     加事件监听<K extends keyof MediaRecorderEventMap>(type: K, listener: (this: MediaRecorder, ev: MediaRecorderEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -3174,6 +3186,9 @@ interface Notification {
 
 interface OfflineAudioContext {
     readonly 长度: number;
+    继续(): Promise<void>;
+    开始渲染(): Promise<AudioBuffer>;
+    挂起(suspendTime: number): Promise<void>;
     加事件监听<K extends keyof OfflineAudioContextEventMap>(type: K, listener: (this: OfflineAudioContext, ev: OfflineAudioContextEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof OfflineAudioContextEventMap>(type: K, listener: (this: OfflineAudioContext, ev: OfflineAudioContextEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4229,6 +4244,7 @@ interface SpeechRecognitionResultList {
 }
 
 interface SpeechSynthesis {
+    继续(): void;
     加事件监听<K extends keyof SpeechSynthesisEventMap>(type: K, listener: (this: SpeechSynthesis, ev: SpeechSynthesisEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SpeechSynthesisEventMap>(type: K, listener: (this: SpeechSynthesis, ev: SpeechSynthesisEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
