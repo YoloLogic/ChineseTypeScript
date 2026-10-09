@@ -551,6 +551,10 @@ interface NavigateEventInit {
     信号: AbortSignal;
 }
 
+interface NavigationInterceptOptions {
+    滚动?: NavigationScrollBehavior;
+}
+
 interface NavigationNavigateOptions {
     状态?: any;
 }
@@ -1992,14 +1996,17 @@ interface Element {
     readonly 影子根: ShadowRoot | null;
     插槽: string;
     附加影子(init: ShadowRootInit): ShadowRoot;
+    检查可见(options?: CheckVisibilityOptions): boolean;
     最近祖先<K extends keyof HTMLElementTagNameMap>(selector: K): HTMLElementTagNameMap[K] | null;
     最近祖先<K extends keyof SVGElementTagNameMap>(selector: K): SVGElementTagNameMap[K] | null;
     最近祖先<K extends keyof MathMLElementTagNameMap>(selector: K): MathMLElementTagNameMap[K] | null;
     最近祖先<E extends Element = Element>(selectors: string): E | null;
+    计算样式表(): StylePropertyMapReadOnly;
     取属性(qualifiedName: string): string | null;
     取属性名(): string[];
     取属性节点(qualifiedName: string): Attr | null;
     取边界矩形(): DOMRect;
+    取客户端矩形(): DOMRectList;
     按类取元素组(classNames: string): HTMLCollectionOf<Element>;
     按标签取元素<K extends keyof HTMLElementTagNameMap>(qualifiedName: K): HTMLCollectionOf<HTMLElementTagNameMap[K]>;
     按标签取元素<K extends keyof SVGElementTagNameMap>(qualifiedName: K): HTMLCollectionOf<SVGElementTagNameMap[K]>;
@@ -2007,15 +2014,20 @@ interface Element {
     按标签取元素<K extends keyof HTMLElementDeprecatedTagNameMap>(qualifiedName: K): HTMLCollectionOf<HTMLElementDeprecatedTagNameMap[K]>;
     按标签取元素(qualifiedName: string): HTMLCollectionOf<Element>;
     有属性(qualifiedName: string): boolean;
+    邻近插入元素(where: InsertPosition, element: Element): Element | null;
     邻近插入标记(position: InsertPosition, string: string): void;
+    邻近插入文本(where: InsertPosition, data: string): void;
     匹配选择器<K extends keyof HTMLElementTagNameMap>(selectors: K): this is HTMLElementTagNameMap[K];
     匹配选择器<K extends keyof SVGElementTagNameMap>(selectors: K): this is SVGElementTagNameMap[K];
     匹配选择器<K extends keyof MathMLElementTagNameMap>(selectors: K): this is MathMLElementTagNameMap[K];
     匹配选择器(selectors: string): boolean;
     释放指针捕获(pointerId: number): void;
     删属性(qualifiedName: string): void;
+    删属性节点(attr: Attr): Attr;
     请求全屏(options?: FullscreenOptions): Promise<void>;
     请求指针锁定(options?: PointerLockOptions): Promise<void>;
+    滚动(options?: ScrollToOptions): void;
+    滚动(x: number, y: number): void;
     滚动偏移(options?: ScrollToOptions): void;
     滚动偏移(x: number, y: number): void;
     滚入视野(arg?: boolean | ScrollIntoViewOptions): void;
@@ -2034,6 +2046,7 @@ interface Element {
 }
 
 interface ElementCSSInlineStyle {
+    readonly 属性样式表: StylePropertyMap;
     get 样式(): CSSStyleDeclaration;
     set 样式(cssText: string);
 }
@@ -2927,6 +2940,7 @@ interface HTMLSelectElement {
 interface HTMLSlotElement {
     名称: string;
     合入(...nodes: (Element | Text)[]): void;
+    分配元素(options?: AssignedNodesOptions): Element[];
     分配节点(options?: AssignedNodesOptions): Node[];
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLSlotElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -3275,6 +3289,7 @@ interface InputEvent {
 interface IntersectionObserver {
     断开(): void;
     观察(target: Element): void;
+    取记录(): IntersectionObserverEntry[];
 }
 
 interface IntersectionObserverEntry {
@@ -3520,6 +3535,7 @@ interface MouseEvent {
 interface MutationObserver {
     断开(): void;
     观察(target: Node, options?: MutationObserverInit): void;
+    取记录(): MutationRecord[];
 }
 
 interface MutationRecord {
@@ -3540,6 +3556,7 @@ interface NamedNodeMap {
 interface NavigateEvent {
     readonly 表单数据: FormData | null;
     readonly 信号: AbortSignal;
+    滚动(): void;
 }
 
 interface Navigation {
@@ -3579,6 +3596,7 @@ interface Navigator {
 interface Node {
     readonly 子节点列: NodeListOf<ChildNode>;
     readonly 首子节点: ChildNode | null;
+    readonly 已连接: boolean;
     readonly 末子节点: ChildNode | null;
     readonly 后兄弟: ChildNode | null;
     readonly 节点名: string;
@@ -3680,6 +3698,7 @@ interface ParentNode {
     查全部选择器<K extends keyof MathMLElementTagNameMap>(selectors: K): NodeListOf<MathMLElementTagNameMap[K]>;
     查全部选择器<K extends keyof HTMLElementDeprecatedTagNameMap>(selectors: K): NodeListOf<HTMLElementDeprecatedTagNameMap[K]>;
     查全部选择器<E extends Element = Element>(selectors: string): NodeListOf<E>;
+    替换所有子(...nodes: (Node | string)[]): void;
 }
 
 interface PaymentAddress {
@@ -3737,6 +3756,7 @@ interface PerformanceNavigationTiming {
 interface PerformanceObserver {
     断开(): void;
     观察(options?: PerformanceObserverInit): void;
+    取记录(): PerformanceEntryList;
 }
 
 interface PerformancePaintTiming {
@@ -3930,6 +3950,7 @@ interface RadioNodeList {
 interface Range {
     提取内容(): DocumentFragment;
     取边界矩形(): DOMRect;
+    取客户端矩形(): DOMRectList;
     转字符串(): string;
 }
 
@@ -3973,6 +3994,7 @@ interface RemotePlayback {
 interface ReportingObserver {
     断开(): void;
     观察(): void;
+    取记录(): ReportList;
 }
 
 interface Request {
@@ -4991,6 +5013,7 @@ interface VTTCue {
 
 interface VTTRegion {
     编号: string;
+    滚动: ScrollSetting;
     宽度: number;
 }
 
@@ -5152,6 +5175,8 @@ interface Window {
     发消息(message: any, targetOrigin: string, transfer?: Transferable[]): void;
     发消息(message: any, options?: WindowPostMessageOptions): void;
     请求空闲(callback: IdleRequestCallback, options?: IdleRequestOptions): number;
+    滚动(options?: ScrollToOptions): void;
+    滚动(x: number, y: number): void;
     滚动偏移(options?: ScrollToOptions): void;
     滚动偏移(x: number, y: number): void;
     滚动到(options?: ScrollToOptions): void;
