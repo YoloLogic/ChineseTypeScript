@@ -1161,6 +1161,17 @@ member	intersectionRect	相交矩形
 member	isIntersecting	正在相交
 member	rootBounds	根边界
 member	contentRect	内容矩形
+member	borderBoxSize	边框盒尺寸
+member	contentBoxSize	内容盒尺寸
+member	getEntriesByType	按类型取条目
+member	getEntriesByName	按名取条目
+member	family	族名
+member	weight	字重
+member	stretch	拉伸度
+member	unicodeRange	字符范围
+member	featureSettings	特性设置
+member	display	显示方式
+member	check	检查
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

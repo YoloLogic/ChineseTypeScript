@@ -345,7 +345,12 @@ interface FocusEventInit {
 }
 
 interface FontFaceDescriptors {
+    显示方式?: FontDisplay;
+    特性设置?: string;
+    拉伸度?: string;
     样式?: string;
+    字符范围?: string;
+    字重?: string;
 }
 
 interface FormDataEventInit {
@@ -1874,6 +1879,7 @@ interface CSSStyleProperties {
     清空: string;
     裁剪: string;
     容器类型: string;
+    显示方式: string;
     填充: string;
     过滤: string;
     滤镜: string;
@@ -2739,15 +2745,22 @@ interface FocusEvent {
 }
 
 interface FontFace {
+    显示方式: FontDisplay;
+    族名: string;
+    特性设置: string;
     readonly 已加载: Promise<FontFace>;
     readonly 状态码: FontFaceLoadStatus;
+    拉伸度: string;
     样式: string;
+    字符范围: string;
+    字重: string;
     加载(): Promise<FontFace>;
 }
 
 interface FontFaceSet {
     readonly 就绪: Promise<FontFaceSet>;
     readonly 状态码: FontFaceSetLoadStatus;
+    检查(font: string, text?: string): boolean;
     加载(font: string, text?: string): Promise<FontFace[]>;
     逐个处理(callbackfn: (value: FontFace, key: FontFace, parent: FontFaceSet) => void, thisArg?: any): void;
     加事件监听<K extends keyof FontFaceSetEventMap>(type: K, listener: (this: FontFaceSet, ev: FontFaceSetEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4674,6 +4687,8 @@ interface PaymentResponse {
 interface Performance {
     清标记(markName?: string): void;
     取条目列(): PerformanceEntryList;
+    按名取条目(name: string, type?: string): PerformanceEntryList;
+    按类型取条目(type: string): PerformanceEntryList;
     标记(markName: string, markOptions?: PerformanceMarkOptions): PerformanceMark;
     度量(measureName: string, startOrMeasureOptions?: string | PerformanceMeasureOptions, endMark?: string): PerformanceMeasure;
     此刻(): DOMHighResTimeStamp;
@@ -4733,6 +4748,8 @@ interface PerformanceObserver {
 
 interface PerformanceObserverEntryList {
     取条目列(): PerformanceEntryList;
+    按名取条目(name: string, type?: string): PerformanceEntryList;
+    按类型取条目(type: string): PerformanceEntryList;
 }
 
 interface PerformancePaintTiming {
@@ -5103,6 +5120,8 @@ interface ResizeObserver {
 }
 
 interface ResizeObserverEntry {
+    readonly 边框盒尺寸: ReadonlyArray<ResizeObserverSize>;
+    readonly 内容盒尺寸: ReadonlyArray<ResizeObserverSize>;
     readonly 内容矩形: DOMRectReadOnly;
     readonly 目标: Element;
 }
