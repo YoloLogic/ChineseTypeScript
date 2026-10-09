@@ -205,6 +205,7 @@ interface CompositionEventInit {
 }
 
 interface ComputedEffectTiming {
+    活动时长?: CSSNumberish;
     结束时刻?: CSSNumberish;
     进度?: number | null;
     起始时刻?: CSSNumberish;
@@ -296,6 +297,7 @@ interface DeviceMotionEventRotationRateInit {
 }
 
 interface DeviceOrientationEventInit {
+    绝对?: boolean;
     透明度?: number | null;
 }
 
@@ -350,6 +352,10 @@ interface EventInit {
     会冒泡?: boolean;
     可取消?: boolean;
     可穿透?: boolean;
+}
+
+interface EventModifierInit {
+    替代键?: boolean;
 }
 
 interface FileSystemFlags {
@@ -880,6 +886,7 @@ interface PaymentDetailsUpdate {
 }
 
 interface PaymentItem {
+    数额: PaymentCurrencyAmount;
     标签: string;
     待处理?: boolean;
 }
@@ -889,6 +896,7 @@ interface PaymentMethodData {
 }
 
 interface PaymentShippingOption {
+    数额: PaymentCurrencyAmount;
     编号: string;
     标签: string;
     已选中?: boolean;
@@ -2009,6 +2017,7 @@ interface CSSPerspective {
 }
 
 interface CSSPositionTryDescriptors {
+    自身对齐: string;
     底部: string;
     高度: string;
     左侧: string;
@@ -2068,6 +2077,10 @@ interface CSSStyleDeclarationBase {
 }
 
 interface CSSStyleProperties {
+    强调色: string;
+    内容对齐: string;
+    项目对齐: string;
+    自身对齐: string;
     全部: string;
     动画名: string;
     底部: string;
@@ -2584,6 +2597,7 @@ interface DeviceMotionEventRotationRate {
 }
 
 interface DeviceOrientationEvent {
+    readonly 绝对: boolean;
     readonly 透明度: number | null;
 }
 
@@ -3401,6 +3415,7 @@ interface HTMLDocument {
 
 interface HTMLElement {
     访问键: string;
+    readonly 访问键标签: string;
     自动大写: string;
     书写方向: string;
     可拖动: boolean;
@@ -3465,6 +3480,7 @@ interface HTMLFontElement {
 }
 
 interface HTMLFormElement {
+    接受字符集: string;
     动作: string;
     自动完成: AutoFillBase;
     readonly 元素集合: HTMLFormControlsCollection;
@@ -4417,6 +4433,7 @@ interface IntersectionObserverEntry {
 }
 
 interface KeyboardEvent {
+    readonly 替代键: boolean;
     readonly 字符码: number;
     readonly 正在组字: boolean;
     readonly 键名: string;
@@ -4752,6 +4769,7 @@ interface MimeTypeArray {
 }
 
 interface MouseEvent {
+    readonly 替代键: boolean;
     readonly 按钮: number;
     readonly 按钮集: number;
     readonly 客户横坐标: number;
@@ -4850,6 +4868,7 @@ interface NavigationHistoryEntry {
 }
 
 interface NavigationPrecommitController {
+    加处理器(handler: NavigationInterceptHandler): void;
     重定向(url: string | URL, options?: NavigationNavigateOptions): void;
 }
 
@@ -6778,6 +6797,7 @@ interface Touch {
 }
 
 interface TouchEvent {
+    readonly 替代键: boolean;
     readonly 变化触控集: TouchList;
     readonly 目标触控集: TouchList;
     readonly 触控集: TouchList;
@@ -7173,6 +7193,7 @@ interface Window {
     readonly 屏幕纵坐标: number;
     状态码: string;
     readonly 顶部: WindowProxy | null;
+    告警(message?: any): void;
     失焦(): void;
     取消空闲(handle: number): void;
     关闭(): void;
