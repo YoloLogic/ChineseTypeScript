@@ -169,6 +169,10 @@ interface ClipboardEventInit {
     剪贴板数据?: DataTransfer | null;
 }
 
+interface CloseEventInit {
+    是干净?: boolean;
+}
+
 interface CommandEventInit {
     来源?: Element | null;
 }
@@ -295,6 +299,7 @@ interface EncodedVideoChunkInit {
 }
 
 interface ErrorEventInit {
+    列号?: number;
     报错?: any;
     文件名?: string;
     行号?: number;
@@ -470,6 +475,11 @@ interface GamepadEffectParameters {
 
 interface GetRootNodeOptions {
     可穿透?: boolean;
+}
+
+interface HashChangeEventInit {
+    新地址?: string;
+    旧地址?: string;
 }
 
 interface HkdfParams {
@@ -720,6 +730,10 @@ interface OscillatorOptions {
     种类?: OscillatorType;
 }
 
+interface PageTransitionEventInit {
+    已保持?: boolean;
+}
+
 interface PannerOptions {
     锥内角?: number;
     锥外角?: number;
@@ -742,14 +756,17 @@ interface PaymentCurrencyAmount {
 
 interface PaymentDetailsInit {
     编号?: string;
+    总量: PaymentItem;
 }
 
 interface PaymentDetailsModifier {
     数据?: any;
+    总量?: PaymentItem;
 }
 
 interface PaymentDetailsUpdate {
     报错?: string;
+    总量?: PaymentItem;
 }
 
 interface PaymentItem {
@@ -817,6 +834,7 @@ interface PopStateEventInit {
 interface ProgressEventInit {
     长度可算?: boolean;
     已加载?: number;
+    总量?: number;
 }
 
 interface PropertyDefinition {
@@ -1125,7 +1143,9 @@ interface StereoPannerOptions {
 
 interface StorageEventInit {
     键名?: string | null;
+    新值?: string | null;
     旧值?: string | null;
+    存储区?: Storage | null;
     地址?: string;
 }
 
@@ -1135,6 +1155,10 @@ interface StreamPipeOptions {
 
 interface StructuredSerializeOptions {
     转移?: Transferable[];
+}
+
+interface SubmitEventInit {
+    提交者?: HTMLElement | null;
 }
 
 interface TaskControllerInit {
@@ -1154,6 +1178,8 @@ interface TimelineRangeOffset {
 }
 
 interface ToggleEventInit {
+    新状态?: string;
+    旧状态?: string;
     来源?: Element | null;
 }
 
@@ -2031,6 +2057,10 @@ interface ClipboardEvent {
     readonly 剪贴板数据: DataTransfer | null;
 }
 
+interface CloseEvent {
+    readonly 是干净: boolean;
+}
+
 interface CommandEvent {
     readonly 来源: Element | null;
 }
@@ -2504,6 +2534,7 @@ interface EncodedVideoChunk {
 }
 
 interface ErrorEvent {
+    readonly 列号: number;
     readonly 报错: any;
     readonly 文件名: string;
     readonly 行号: number;
@@ -3728,6 +3759,11 @@ interface HTMLVideoElement {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface HashChangeEvent {
+    readonly 新地址: string;
+    readonly 旧地址: string;
+}
+
 interface Headers {
     后插(name: string, value: string): void;
     删除(name: string): void;
@@ -4414,6 +4450,10 @@ interface OscillatorNode {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface PageTransitionEvent {
+    readonly 已保持: boolean;
+}
+
 interface PannerNode {
     锥内角: number;
     锥外角: number;
@@ -4636,6 +4676,7 @@ interface ProgressEvent<T extends EventTarget = EventTarget> {
     readonly 长度可算: boolean;
     readonly 已加载: number;
     readonly 目标: T | null;
+    readonly 总量: number;
 }
 
 interface PublicKeyCredential {
@@ -4715,6 +4756,7 @@ interface RTCIceTransport {
 }
 
 interface RTCPeerConnection {
+    readonly 远端描述: RTCSessionDescription | null;
     加交互候选(candidate?: RTCIceCandidateInit | null): Promise<void>;
     加交互候选(candidate: RTCIceCandidateInit | null, successCallback: VoidFunction, failureCallback: RTCPeerConnectionErrorCallback): Promise<void>;
     加轨道(track: MediaStreamTrack, ...streams: MediaStream[]): RTCRtpSender;
@@ -5854,8 +5896,14 @@ interface Storage {
 
 interface StorageEvent {
     readonly 键名: string | null;
+    readonly 新值: string | null;
     readonly 旧值: string | null;
+    readonly 存储区: Storage | null;
     readonly 地址: string;
+}
+
+interface StorageManager {
+    已保持(): Promise<boolean>;
 }
 
 interface StylePropertyMap {
@@ -5887,6 +5935,10 @@ interface StyleSheet {
 interface StyleSheetList {
     readonly 长度: number;
     取项(index: number): CSSStyleSheet | null;
+}
+
+interface SubmitEvent {
+    readonly 提交者: HTMLElement | null;
 }
 
 interface SubtleCrypto {
@@ -6004,6 +6056,8 @@ interface TimeRanges {
 }
 
 interface ToggleEvent {
+    readonly 新状态: string;
+    readonly 旧状态: string;
     readonly 来源: Element | null;
 }
 
