@@ -50,6 +50,7 @@ interface AnalyserOptions {
 }
 
 interface AnimationEventInit {
+    动画名?: string;
     伪元素?: string;
 }
 
@@ -607,6 +608,7 @@ interface KeyframeAnimationOptions {
 
 interface KeyframeEffectOptions {
     合成?: CompositeOperation;
+    迭代合成?: IterationCompositeOperation;
     伪元素?: string | null;
 }
 
@@ -656,6 +658,7 @@ interface MediaImage {
 
 interface MediaKeyMessageEventInit {
     消息: ArrayBuffer;
+    消息类型: MediaKeyMessageType;
 }
 
 interface MediaKeySystemConfiguration {
@@ -1544,6 +1547,7 @@ interface Animatable {
 }
 
 interface Animation {
+    效果: AnimationEffect | null;
     编号: string;
     readonly 待处理: boolean;
     readonly 就绪: Promise<Animation>;
@@ -1565,9 +1569,11 @@ interface Animation {
 interface AnimationEffect {
     取计算时序(): ComputedEffectTiming;
     取时序(): EffectTiming;
+    更新时序(timing?: OptionalEffectTiming): void;
 }
 
 interface AnimationEvent {
+    readonly 动画名: string;
     readonly 伪元素: string;
 }
 
@@ -1795,6 +1801,7 @@ interface ByteLengthQueuingStrategy {
 }
 
 interface CSSAnimation {
+    readonly 动画名: string;
     加事件监听<K extends keyof AnimationEventMap>(type: K, listener: (this: CSSAnimation, ev: AnimationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof AnimationEventMap>(type: K, listener: (this: CSSAnimation, ev: AnimationEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1974,6 +1981,7 @@ interface CSSStyleDeclarationBase {
 
 interface CSSStyleProperties {
     全部: string;
+    动画名: string;
     底部: string;
     清空: string;
     裁剪: string;
@@ -4233,6 +4241,7 @@ interface KeyboardEvent {
 
 interface KeyframeEffect {
     合成: CompositeOperation;
+    迭代合成: IterationCompositeOperation;
     伪元素: string | null;
     目标: Element | null;
     取关键帧(): ComputedKeyframe[];
@@ -4368,6 +4377,7 @@ interface MediaError {
 
 interface MediaKeyMessageEvent {
     readonly 消息: ArrayBuffer;
+    readonly 消息类型: MediaKeyMessageType;
 }
 
 interface MediaKeySession {
@@ -6439,6 +6449,13 @@ interface TextEvent {
 
 interface TextMetrics {
     readonly 实际上界: number;
+    readonly 实际下界: number;
+    readonly 实际左界: number;
+    readonly 实际右界: number;
+    readonly 字母基线: number;
+    readonly 字体上界: number;
+    readonly 悬挂基线: number;
+    readonly 表意基线: number;
     readonly 宽度: number;
 }
 
