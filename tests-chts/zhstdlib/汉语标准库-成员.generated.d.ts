@@ -75,6 +75,7 @@ interface AudioDataInit {
     数据: BufferSource;
     格式化: AudioSampleFormat;
     声道数: number;
+    帧数: number;
     采样率: number;
     时间戳: number;
     转移?: ArrayBuffer[];
@@ -171,6 +172,7 @@ interface CSSStyleSheetInit {
 
 interface CanvasRenderingContext2DSettings {
     透明度?: boolean;
+    色彩空间?: PredefinedColorSpace;
 }
 
 interface ClientQueryOptions {
@@ -388,6 +390,7 @@ interface GPUBufferDescriptor {
 }
 
 interface GPUCanvasConfiguration {
+    色彩空间?: PredefinedColorSpace;
     格式化: GPUTextureFormat;
 }
 
@@ -397,6 +400,10 @@ interface GPUCanvasToneMapping {
 
 interface GPUColorTargetState {
     格式化: GPUTextureFormat;
+}
+
+interface GPUCopyExternalImageDestInfo {
+    色彩空间?: PredefinedColorSpace;
 }
 
 interface GPUCopyExternalImageSourceInfo {
@@ -415,6 +422,7 @@ interface GPUExtent3DDict {
 }
 
 interface GPUExternalTextureDescriptor {
+    色彩空间?: PredefinedColorSpace;
     来源: HTMLVideoElement | VideoFrame;
 }
 
@@ -533,6 +541,10 @@ interface IDBObjectStoreParameters {
 
 interface ImageBitmapRenderingContextSettings {
     透明度?: boolean;
+}
+
+interface ImageDataSettings {
+    色彩空间?: PredefinedColorSpace;
 }
 
 interface ImageDecoderInit {
@@ -1339,6 +1351,12 @@ interface VideoConfiguration {
     宽度: number;
 }
 
+interface VideoDecoderConfig {
+    编码高?: number;
+    编码宽?: number;
+    色彩空间?: VideoColorSpaceInit;
+}
+
 interface VideoDecoderInit {
     报错: WebCodecsErrorCallback;
 }
@@ -1346,6 +1364,8 @@ interface VideoDecoderInit {
 interface VideoEncoderConfig {
     透明度?: AlphaOption;
     内容提示?: string;
+    显示高?: number;
+    显示宽?: number;
     高度: number;
     宽度: number;
 }
@@ -1355,9 +1375,15 @@ interface VideoEncoderInit {
 }
 
 interface VideoFrameBufferInit {
+    编码高: number;
+    编码宽: number;
+    色彩空间?: VideoColorSpaceInit;
+    显示高?: number;
+    显示宽?: number;
     时长?: number;
     格式化: VideoPixelFormat;
     时间戳: number;
+    可见矩形?: DOMRectInit;
 }
 
 interface VideoFrameCallbackMetadata {
@@ -1366,14 +1392,18 @@ interface VideoFrameCallbackMetadata {
 }
 
 interface VideoFrameCopyToOptions {
+    色彩空间?: PredefinedColorSpace;
     格式化?: VideoPixelFormat;
     矩形?: DOMRectInit;
 }
 
 interface VideoFrameInit {
     透明度?: AlphaOption;
+    显示高?: number;
+    显示宽?: number;
     时长?: number;
     时间戳?: number;
+    可见矩形?: DOMRectInit;
 }
 
 interface WaveShaperOptions {
@@ -1543,10 +1573,13 @@ interface AudioData {
     readonly 时长: number;
     readonly 格式化: AudioSampleFormat | null;
     readonly 声道数: number;
+    readonly 帧数: number;
     readonly 采样率: number;
     readonly 时间戳: number;
+    分配大小(options: AudioDataCopyToOptions): number;
     复制(): AudioData;
     关闭(): void;
+    复制到(destination: AllowSharedBufferSource, options: AudioDataCopyToOptions): void;
 }
 
 interface AudioDecoder {
@@ -1634,6 +1667,8 @@ interface BaseAudioContext {
     创建滤波器(): BiquadFilterNode;
     创建缓冲(numberOfChannels: number, length: number, sampleRate: number): AudioBuffer;
     创建缓冲源(): AudioBufferSourceNode;
+    创建声道合并(numberOfInputs?: number): ChannelMergerNode;
+    创建声道分离(numberOfOutputs?: number): ChannelSplitterNode;
     创建常量源(): ConstantSourceNode;
     创建卷积器(): ConvolverNode;
     创建延迟(maxDelayTime?: number): DelayNode;
@@ -2625,6 +2660,7 @@ interface EncodedAudioChunk {
     readonly 时长: number | null;
     readonly 时间戳: number;
     readonly 种类: EncodedAudioChunkType;
+    复制到(destination: AllowSharedBufferSource): void;
 }
 
 interface EncodedVideoChunk {
@@ -2632,6 +2668,7 @@ interface EncodedVideoChunk {
     readonly 时长: number | null;
     readonly 时间戳: number;
     readonly 种类: EncodedVideoChunkType;
+    复制到(destination: AllowSharedBufferSource): void;
 }
 
 interface ErrorEvent {
@@ -4048,6 +4085,7 @@ interface ImageCapture {
 }
 
 interface ImageData {
+    readonly 色彩空间: PredefinedColorSpace;
     readonly 数据: ImageDataArray;
     readonly 高度: number;
     readonly 宽度: number;
@@ -6461,11 +6499,19 @@ interface VideoEncoder {
 }
 
 interface VideoFrame {
+    readonly 编码高: number;
+    readonly 编码宽: number;
+    readonly 色彩空间: VideoColorSpace;
+    readonly 显示高: number;
+    readonly 显示宽: number;
     readonly 时长: number | null;
     readonly 格式化: VideoPixelFormat | null;
     readonly 时间戳: number;
+    readonly 可见矩形: DOMRectReadOnly | null;
+    分配大小(options?: VideoFrameCopyToOptions): number;
     复制(): VideoFrame;
     关闭(): void;
+    复制到(destination: AllowSharedBufferSource, options?: VideoFrameCopyToOptions): Promise<PlaneLayout[]>;
 }
 
 interface ViewTimeline {
@@ -6485,6 +6531,7 @@ interface VisualViewport {
     readonly 偏移左: number;
     readonly 偏移顶: number;
     readonly 页面左: number;
+    readonly 页面顶: number;
     readonly 缩放: number;
     readonly 宽度: number;
     加事件监听<K extends keyof VisualViewportEventMap>(type: K, listener: (this: VisualViewport, ev: VisualViewportEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
