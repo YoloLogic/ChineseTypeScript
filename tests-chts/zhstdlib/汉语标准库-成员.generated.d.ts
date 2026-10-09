@@ -1981,6 +1981,7 @@ interface ChildNode {
 }
 
 interface Clipboard {
+    读取文本(): Promise<string>;
     写入(data: ClipboardItems): Promise<void>;
 }
 
@@ -2667,6 +2668,10 @@ interface GamepadHapticActuator {
 interface GenericTransformStream {
     readonly 可读: ReadableStream;
     readonly 可写: WritableStream;
+}
+
+interface Geolocation {
+    取当前位置(successCallback: PositionCallback, errorCallback?: PositionErrorCallback | null, options?: PositionOptions): void;
 }
 
 interface GeolocationCoordinates {
@@ -4202,9 +4207,15 @@ interface Navigator {
     readonly 剪贴板: Clipboard;
     readonly 凭据: CredentialsContainer;
     readonly 地理位置: Geolocation;
+    readonly 最大触控点: number;
     readonly 媒体设备: MediaDevices;
     readonly 权限集: Permissions;
     readonly 服务工作线程: ServiceWorkerContainer;
+    发送信标(url: string | URL, data?: BodyInit | null): boolean;
+}
+
+interface NavigatorConcurrentHardware {
+    readonly 硬件并发: number;
 }
 
 interface NavigatorID {
@@ -5562,7 +5573,11 @@ interface Sanitizer {
 }
 
 interface Screen {
+    readonly 可用高: number;
+    readonly 可用宽: number;
+    readonly 颜色深度: number;
     readonly 高度: number;
+    readonly 像素深度: number;
     readonly 宽度: number;
 }
 

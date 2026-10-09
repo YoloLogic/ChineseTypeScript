@@ -981,6 +981,15 @@ member	storage	存储管理
 member	userAgent	用户代理
 member	languages	语言列
 member	platform	平台
+member	availWidth	可用宽
+member	availHeight	可用高
+member	colorDepth	颜色深度
+member	pixelDepth	像素深度
+member	hardwareConcurrency	硬件并发
+member	maxTouchPoints	最大触控点
+member	sendBeacon	发送信标
+member	getCurrentPosition	取当前位置
+member	readText	读取文本
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
