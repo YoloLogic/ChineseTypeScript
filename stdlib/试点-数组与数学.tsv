@@ -1094,6 +1094,15 @@ member	metadata	元数据
 member	playbackState	播放状态
 member	artist	艺术家
 member	release	释放
+member	isSameEntry	是同条目
+member	createWritable	创建可写流
+member	getDirectoryHandle	取目录句柄
+member	getFileHandle	取文件句柄
+member	removeEntry	删记录
+member	resolve	解析路径
+member	seek	定位
+member	truncate	截短
+member	setActionHandler	设动作处理
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

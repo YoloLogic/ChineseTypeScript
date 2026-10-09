@@ -2669,7 +2669,11 @@ interface FileSystemDirectoryEntry {
 
 interface FileSystemDirectoryHandle {
     readonly 类别: "directory";
+    取目录句柄(name: string, options?: FileSystemGetDirectoryOptions): Promise<FileSystemDirectoryHandle>;
+    取文件句柄(name: string, options?: FileSystemGetFileOptions): Promise<FileSystemFileHandle>;
+    删记录(name: string, options?: FileSystemRemoveOptions): Promise<void>;
     解决(possibleDescendant: FileSystemHandle): Promise<string[] | null>;
+    解析路径(possibleDescendant: FileSystemHandle): Promise<string[] | null>;
 }
 
 interface FileSystemEntry {
@@ -2678,15 +2682,19 @@ interface FileSystemEntry {
 
 interface FileSystemFileHandle {
     readonly 类别: "file";
+    创建可写流(options?: FileSystemCreateWritableOptions): Promise<FileSystemWritableFileStream>;
     取文件(): Promise<File>;
 }
 
 interface FileSystemHandle {
     readonly 类别: FileSystemHandleKind;
     readonly 名称: string;
+    是同条目(other: FileSystemHandle): Promise<boolean>;
 }
 
 interface FileSystemWritableFileStream {
+    定位(position: number): Promise<void>;
+    截短(size: number): Promise<void>;
     写入(data: FileSystemWriteChunkType): Promise<void>;
 }
 
@@ -3984,6 +3992,7 @@ interface ImageTrackList {
 interface ImportMeta {
     地址: string;
     解决(specifier: string): string;
+    解析路径(specifier: string): string;
 }
 
 interface InputDeviceInfo {
@@ -4206,6 +4215,7 @@ interface MediaRecorder {
 interface MediaSession {
     元数据: MediaMetadata | null;
     播放状态: MediaSessionPlaybackState;
+    设动作处理(action: MediaSessionAction, handler: MediaSessionActionHandler | null): void;
 }
 
 interface MediaSource {
@@ -6991,8 +7001,11 @@ interface PromiseConstructor {
     竞速<T extends readonly unknown[] | []>(values: T): Promise<Awaited<T[number]>>;
     拒绝<T = never>(reason?: any): Promise<T>;
     解决(): Promise<void>;
+    解析路径(): Promise<void>;
     解决<T>(value: T): Promise<Awaited<T>>;
+    解析路径<T>(value: T): Promise<Awaited<T>>;
     解决<T>(value: T | PromiseLike<T>): Promise<Awaited<T>>;
+    解析路径<T>(value: T | PromiseLike<T>): Promise<Awaited<T>>;
 }
 
 interface ProxyHandler<T extends object> {
@@ -7473,6 +7486,7 @@ interface ArrayBuffer {
 
 interface PromiseWithResolvers<T> {
     解决: (value: T | PromiseLike<T>) => void;
+    解析路径: (value: T | PromiseLike<T>) => void;
     拒绝: (reason?: any) => void;
 }
 
