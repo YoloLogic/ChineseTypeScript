@@ -944,6 +944,10 @@ interface PaymentCurrencyAmount {
     值内容: string;
 }
 
+interface PaymentDetailsBase {
+    修饰键集?: PaymentDetailsModifier[];
+}
+
 interface PaymentDetailsInit {
     编号?: string;
     总量: PaymentItem;
@@ -1158,6 +1162,7 @@ interface RTCIceCandidateInit {
 }
 
 interface RTCIceCandidatePairStats {
+    已提名?: boolean;
     状态: RTCStatsIceCandidatePairState;
 }
 
@@ -1326,6 +1331,7 @@ interface RsaOaepParams {
 interface SVGBoundingBoxOptions {
     已裁剪?: boolean;
     填充?: boolean;
+    标记集?: boolean;
     描边?: boolean;
 }
 
@@ -1931,6 +1937,7 @@ interface AuthenticatorAttestationResponse {
 interface BaseAudioContext {
     readonly 音频工作线程: AudioWorklet;
     readonly 输出端: AudioDestinationNode;
+    readonly 监听器: AudioListener;
     readonly 采样率: number;
     readonly 状态: AudioContextState;
     创建分析器(): AnalyserNode;
@@ -2222,7 +2229,9 @@ interface CSSStyleProperties {
     连字: string;
     左侧: string;
     字距: string;
+    标记物: string;
     偏移: string;
+    不透明度: string;
     位置: string;
     调整大小: string;
     右侧: string;
@@ -2758,6 +2767,7 @@ interface Document {
     readonly 头部: HTMLHeadElement;
     readonly 隐藏: boolean;
     readonly 实现对象: DOMImplementation;
+    readonly 链接集: HTMLCollectionOf<HTMLAnchorElement | HTMLAreaElement>;
     readonly 属主文档: null;
     readonly 插件集: HTMLCollectionOf<HTMLEmbedElement>;
     readonly 就绪态: DocumentReadyState;
@@ -3181,6 +3191,7 @@ interface FormDataEvent {
 
 interface GPUAdapter {
     readonly 附加信息: GPUAdapterInfo;
+    readonly 限制集: GPUSupportedLimits;
 }
 
 interface GPUAdapterInfo {
@@ -3209,6 +3220,7 @@ interface GPUCompilationMessage {
 }
 
 interface GPUDevice {
+    readonly 限制集: GPUSupportedLimits;
     创建缓冲(descriptor: GPUBufferDescriptor): GPUBuffer;
     创建采样器(descriptor?: GPUSamplerDescriptor): GPUSampler;
     创建纹理(descriptor: GPUTextureDescriptor): GPUTexture;
@@ -3755,6 +3767,7 @@ interface HTMLImageElement {
     获取优先级: "high" | "low" | "auto";
     高度: number;
     加载方式: "eager" | "lazy";
+    低清源: string;
     名称: string;
     readonly 自然高: number;
     readonly 自然宽: number;
@@ -3953,6 +3966,7 @@ interface HTMLMeterElement {
     最大限制: number;
     最小: number;
     最小限制: number;
+    最佳值: number;
     值内容: number;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLMeterElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -5073,6 +5087,10 @@ interface NavigatorID {
 interface NavigatorLanguage {
     readonly 语种: string;
     readonly 语言列: ReadonlyArray<string>;
+}
+
+interface NavigatorLocks {
+    readonly 锁集: LockManager;
 }
 
 interface NavigatorPlugins {
@@ -7101,6 +7119,7 @@ interface VTTCue {
 
 interface VTTRegion {
     编号: string;
+    行集: number;
     滚动: ScrollSetting;
     宽度: number;
 }
