@@ -219,6 +219,10 @@ interface ConstantSourceOptions {
     偏移?: number;
 }
 
+interface ContentVisibilityAutoStateChangeEventInit {
+    已跳过?: boolean;
+}
+
 interface ConvolverOptions {
     缓冲?: AudioBuffer | null;
 }
@@ -1296,7 +1300,9 @@ interface StartViewTransitionOptions {
 interface StaticRangeInit {
     终点容器: Node;
     终点偏移: number;
+    结束偏移: number;
     起点容器: Node;
+    起始偏移: number;
 }
 
 interface StereoPannerOptions {
@@ -1522,6 +1528,7 @@ interface VideoFrameInit {
 
 interface ViewTimelineOptions {
     轴向?: ScrollAxis;
+    主体元素?: Element;
 }
 
 interface WaveShaperOptions {
@@ -1588,7 +1595,9 @@ interface AbstractRange {
     readonly 折叠态: boolean;
     readonly 终点容器: Node;
     readonly 终点偏移: number;
+    readonly 结束偏移: number;
     readonly 起点容器: Node;
+    readonly 起始偏移: number;
 }
 
 interface AbstractWorker {
@@ -1970,10 +1979,15 @@ interface CSSNumericArray {
 
 interface CSSNumericValue {
     添加(...values: CSSNumberish[]): CSSNumericValue;
+    除以(...values: CSSNumberish[]): CSSNumericValue;
+    等于(...value: CSSNumberish[]): boolean;
     最大(...values: CSSNumberish[]): CSSNumericValue;
     最大限制(...values: CSSNumberish[]): CSSNumericValue;
     最小(...values: CSSNumberish[]): CSSNumericValue;
     最小限制(...values: CSSNumberish[]): CSSNumericValue;
+    乘以(...values: CSSNumberish[]): CSSNumericValue;
+    相减(...values: CSSNumberish[]): CSSNumericValue;
+    转换为(unit: string): CSSUnitValue;
     种类(): CSSNumericType;
 }
 
@@ -2076,6 +2090,7 @@ interface CSSStyleProperties {
     文本渲染: string;
     顶部: string;
     变换: string;
+    过渡: string;
     过渡属性: string;
     平移: string;
     宽度: string;
@@ -2124,6 +2139,7 @@ interface CSSTranslate {
 }
 
 interface CSSUnitValue {
+    readonly 单位: string;
     值内容: number;
 }
 
@@ -2360,6 +2376,10 @@ interface ConstantSourceNode {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof AudioScheduledSourceNodeEventMap>(type: K, listener: (this: ConstantSourceNode, ev: AudioScheduledSourceNodeEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface ContentVisibilityAutoStateChangeEvent {
+    readonly 已跳过: boolean;
 }
 
 interface ConvolverNode {
@@ -4710,7 +4730,9 @@ interface NavigateEvent {
 
 interface Navigation {
     readonly 可后退: boolean;
+    readonly 可前进: boolean;
     readonly 当前条目: NavigationHistoryEntry | null;
+    readonly 过渡: NavigationTransition | null;
     后退(options?: NavigationOptions): NavigationResult;
     条目(): NavigationHistoryEntry[];
     前进(options?: NavigationOptions): NavigationResult;
@@ -6164,6 +6186,7 @@ interface SVGTextElement {
 
 interface SVGTextPathElement {
     readonly 提交方法: SVGAnimatedEnumeration;
+    readonly 起始偏移: SVGAnimatedLength;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGTextPathElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGTextPathElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -6825,6 +6848,9 @@ interface VideoFrame {
 
 interface ViewTimeline {
     readonly 终点偏移: CSSNumericValue;
+    readonly 结束偏移: CSSNumericValue;
+    readonly 起始偏移: CSSNumericValue;
+    readonly 主体元素: Element;
 }
 
 interface ViewTransition {
@@ -7412,6 +7438,7 @@ interface String {
     规范化(form?: string): string;
     重复(count: number): string;
     以开头(searchString: string, position?: number): boolean;
+    相减(): string;
 }
 
 interface Int8Array<TArrayBuffer extends ArrayBufferLike> {
@@ -7651,6 +7678,7 @@ interface Atomics {
     无锁(size: number): boolean;
     加载(typedArray: Int8Array<ArrayBufferLike> | Uint8Array<ArrayBufferLike> | Int16Array<ArrayBufferLike> | Uint16Array<ArrayBufferLike> | Int32Array<ArrayBufferLike> | Uint32Array<ArrayBufferLike>, index: number): number;
     存储(typedArray: Int8Array<ArrayBufferLike> | Uint8Array<ArrayBufferLike> | Int16Array<ArrayBufferLike> | Uint16Array<ArrayBufferLike> | Int32Array<ArrayBufferLike> | Uint32Array<ArrayBufferLike>, index: number, value: number): number;
+    相减(typedArray: Int8Array<ArrayBufferLike> | Uint8Array<ArrayBufferLike> | Int16Array<ArrayBufferLike> | Uint16Array<ArrayBufferLike> | Int32Array<ArrayBufferLike> | Uint32Array<ArrayBufferLike>, index: number, value: number): number;
     等待(typedArray: Int32Array<ArrayBufferLike>, index: number, value: number, timeout?: number): "ok" | "not-equal" | "timed-out";
     通知(typedArray: Int32Array<ArrayBufferLike>, index: number, count?: number): number;
 }
@@ -7717,6 +7745,7 @@ interface String {
 interface BigIntToLocaleStringOptions {
     样式?: string;
     数字系统?: string;
+    单位?: string;
     货币?: string;
 }
 
@@ -7833,6 +7862,7 @@ interface Atomics {
     交换(typedArray: BigInt64Array<ArrayBufferLike> | BigUint64Array<ArrayBufferLike>, index: number, value: bigint): bigint;
     加载(typedArray: BigInt64Array<ArrayBufferLike> | BigUint64Array<ArrayBufferLike>, index: number): bigint;
     存储(typedArray: BigInt64Array<ArrayBufferLike> | BigUint64Array<ArrayBufferLike>, index: number, value: bigint): bigint;
+    相减(typedArray: BigInt64Array<ArrayBufferLike> | BigUint64Array<ArrayBufferLike>, index: number, value: bigint): bigint;
     等待(typedArray: BigInt64Array<ArrayBufferLike>, index: number, value: bigint, timeout?: number): "ok" | "not-equal" | "timed-out";
     通知(typedArray: BigInt64Array<ArrayBufferLike>, index: number, count?: number): number;
 }
