@@ -1313,6 +1313,10 @@ member	equals	等于
 member	to	转换为
 member	unit	单位
 member	skipped	已跳过
+member	allowElement	允许元素
+member	allowAttribute	允许属性
+member	removeUnsafe	移除不安全
+member	parseFromString	从串解析
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

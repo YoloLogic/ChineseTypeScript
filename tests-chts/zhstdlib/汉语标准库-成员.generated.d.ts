@@ -2468,6 +2468,10 @@ interface DOMMatrixReadOnly {
     转字符串(): string;
 }
 
+interface DOMParser {
+    从串解析(string: string, type: DOMParserSupportedType): Document;
+}
+
 interface DOMPoint {
     横坐标: number;
     纵坐标: number;
@@ -6254,8 +6258,11 @@ interface SVGViewElement {
 }
 
 interface Sanitizer {
+    允许属性(attribute: SanitizerAttribute): boolean;
+    允许元素(element: SanitizerElementWithAttributes): boolean;
     获取(): SanitizerConfig;
     删属性(attribute: SanitizerAttribute): boolean;
+    移除不安全(): boolean;
 }
 
 interface Scheduler {
