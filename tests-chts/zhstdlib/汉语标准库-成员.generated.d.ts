@@ -2139,6 +2139,7 @@ interface Element {
     readonly 属性集: NamedNodeMap;
     get 类列表(): DOMTokenList;
     set 类列表(value: string);
+    类名: string;
     readonly 客户高: number;
     readonly 客户宽: number;
     编号: string;
@@ -4419,6 +4420,8 @@ interface SVGDescElement {
 }
 
 interface SVGElement {
+    readonly 类名: any;
+    readonly 视口元素: SVGElement | null;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4542,6 +4545,7 @@ interface SVGFEGaussianBlurElement {
 }
 
 interface SVGFEImageElement {
+    readonly 保持纵横比: SVGAnimatedPreserveAspectRatio;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEImageElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEImageElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4634,6 +4638,11 @@ interface SVGFilterPrimitiveStandardAttributes {
     readonly 纵坐标: SVGAnimatedLength;
 }
 
+interface SVGFitToViewBox {
+    readonly 保持纵横比: SVGAnimatedPreserveAspectRatio;
+    readonly 视图框: SVGAnimatedRect;
+}
+
 interface SVGForeignObjectElement {
     readonly 高度: SVGAnimatedLength;
     readonly 宽度: SVGAnimatedLength;
@@ -4653,6 +4662,9 @@ interface SVGGElement {
 }
 
 interface SVGGeometryElement {
+    按长度取点(distance: number): DOMPoint;
+    取总长度(): number;
+    点在填充内(point?: DOMPointInit): boolean;
     点在描边内(point?: DOMPointInit): boolean;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGGeometryElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -4680,6 +4692,7 @@ interface SVGGraphicsElement {
 
 interface SVGImageElement {
     readonly 高度: SVGAnimatedLength;
+    readonly 保持纵横比: SVGAnimatedPreserveAspectRatio;
     readonly 宽度: SVGAnimatedLength;
     readonly 横坐标: SVGAnimatedLength;
     readonly 纵坐标: SVGAnimatedLength;
@@ -4768,6 +4781,8 @@ interface SVGNumberList {
 }
 
 interface SVGPathElement {
+    按长度取点(distance: number): DOMPoint;
+    取总长度(): number;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGPathElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGPathElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4918,6 +4933,10 @@ interface SVGTSpanElement {
 }
 
 interface SVGTextContentElement {
+    取计算文本长(): number;
+    取字符数(): number;
+    取子串长(charnum: number, nchars: number): number;
+    选子串(charnum: number, nchars: number): void;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGTextContentElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGTextContentElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;

@@ -715,6 +715,17 @@ member	currentTranslate	当前平移
 member	getBBox	取包围盒
 member	getCTM	取变换矩阵
 member	getScreenCTM	取屏幕矩阵
+member	getNumberOfChars	取字符数
+member	getComputedTextLength	取计算文本长
+member	getSubStringLength	取子串长
+member	selectSubString	选子串
+member	isPointInFill	点在填充内
+member	getTotalLength	取总长度
+member	getPointAtLength	按长度取点
+member	viewportElement	视口元素
+member	className	类名
+member	preserveAspectRatio	保持纵横比
+member	viewBox	视图框
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
