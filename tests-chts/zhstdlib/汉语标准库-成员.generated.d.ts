@@ -1230,7 +1230,9 @@ interface AnimationTimeline {
 }
 
 interface Attr {
+    readonly 本地名: string;
     readonly 名称: string;
+    readonly 属主文档: Document;
     值内容: string;
     get 文本内容(): string;
     set 文本内容(value: string | null);
@@ -1828,6 +1830,7 @@ interface CaretPosition {
 interface CharacterData {
     数据: string;
     readonly 长度: number;
+    readonly 属主文档: Document;
     get 文本内容(): string;
     set 文本内容(value: string | null);
 }
@@ -2047,6 +2050,7 @@ interface Document {
     readonly 文档元素: HTMLElement;
     readonly 头部: HTMLHeadElement;
     readonly 隐藏: boolean;
+    readonly 属主文档: null;
     readonly 就绪态: DocumentReadyState;
     readonly 来源页: string;
     标题: string;
@@ -2162,6 +2166,7 @@ interface Document {
 }
 
 interface DocumentFragment {
+    readonly 属主文档: Document;
     按编号取元素(elementId: string): HTMLElement | null;
     get 文本内容(): string;
     set 文本内容(value: string | null);
@@ -2174,6 +2179,7 @@ interface DocumentOrShadowRoot {
 
 interface DocumentType {
     readonly 名称: string;
+    readonly 属主文档: Document;
     get 文本内容(): null;
 }
 
@@ -2186,12 +2192,15 @@ interface Element {
     readonly 客户宽: number;
     编号: string;
     内部标记: string;
+    readonly 本地名: string;
+    readonly 属主文档: Document;
     readonly 滚动高: number;
     滚动左: number;
     滚动顶: number;
     readonly 滚动宽: number;
     readonly 影子根: ShadowRoot | null;
     插槽: string;
+    readonly 标签名: string;
     附加影子(init: ShadowRootInit): ShadowRoot;
     检查可见(options?: CheckVisibilityOptions): boolean;
     最近祖先<K extends keyof HTMLElementTagNameMap>(selector: K): HTMLElementTagNameMap[K] | null;
@@ -3902,6 +3911,7 @@ interface NavigatorLanguage {
 }
 
 interface Node {
+    readonly 基地址: string;
     readonly 子节点列: NodeListOf<ChildNode>;
     readonly 首子节点: ChildNode | null;
     readonly 已连接: boolean;
@@ -3909,6 +3919,9 @@ interface Node {
     readonly 后兄弟: ChildNode | null;
     readonly 节点名: string;
     readonly 节点种类: number;
+    节点值: string | null;
+    readonly 属主文档: Document | null;
+    readonly 父元素: HTMLElement | null;
     readonly 父节点: ParentNode | null;
     readonly 前兄弟: ChildNode | null;
     文本内容: string | null;
@@ -3940,6 +3953,11 @@ interface NodeList {
 interface NodeListOf<TNode extends Node> {
     取项(index: number): TNode;
     逐个处理(callbackfn: (value: TNode, key: number, parent: NodeListOf<TNode>) => void, thisArg?: any): void;
+}
+
+interface NonDocumentTypeChildNode {
+    readonly 后兄弟元素: Element | null;
+    readonly 前兄弟元素: Element | null;
 }
 
 interface NonElementParentNode {
@@ -4002,6 +4020,10 @@ interface OscillatorNode {
 }
 
 interface ParentNode {
+    readonly 子元素数: number;
+    readonly 子元素列: HTMLCollection;
+    readonly 首子元素: Element | null;
+    readonly 末子元素: Element | null;
     后插(...nodes: (Node | string)[]): void;
     前插(...nodes: (Node | string)[]): void;
     查询选择器<K extends keyof HTMLElementTagNameMap>(selectors: K): HTMLElementTagNameMap[K] | null;
