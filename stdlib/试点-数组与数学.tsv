@@ -124,6 +124,16 @@ member	getContext	取上下文
 member	requestAnimationFrame	请求动画帧
 member	title	标题
 member	value	值内容
+member	parentNode	父节点
+member	childNodes	子节点列
+member	firstChild	首子节点
+member	lastChild	末子节点
+member	nextSibling	后兄弟
+member	previousSibling	前兄弟
+member	nodeName	节点名
+member	nodeType	节点种类
+member	textContent	文本内容
+member	innerHTML	内部标记
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

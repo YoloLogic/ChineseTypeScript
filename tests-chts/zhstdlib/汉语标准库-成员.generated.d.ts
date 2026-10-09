@@ -226,6 +226,8 @@ interface AnimationFrameProvider {
 
 interface Attr {
     值内容: string;
+    get 文本内容(): string;
+    set 文本内容(value: string | null);
 }
 
 interface AudioBuffer {
@@ -430,6 +432,8 @@ interface CanvasFilters {
 
 interface CharacterData {
     readonly 长度: number;
+    get 文本内容(): string;
+    set 文本内容(value: string | null);
 }
 
 interface ChildNode {
@@ -516,6 +520,7 @@ interface Document {
     创建元素<K extends keyof HTMLElementDeprecatedTagNameMap>(tagName: K, options?: ElementCreationOptions): HTMLElementDeprecatedTagNameMap[K];
     创建元素(tagName: string, options?: ElementCreationOptions): HTMLElement;
     按编号取元素(elementId: string): HTMLElement | null;
+    get 文本内容(): null;
     加事件监听<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -524,9 +529,16 @@ interface Document {
 
 interface DocumentFragment {
     按编号取元素(elementId: string): HTMLElement | null;
+    get 文本内容(): string;
+    set 文本内容(value: string | null);
+}
+
+interface DocumentType {
+    get 文本内容(): null;
 }
 
 interface Element {
+    内部标记: string;
     最近祖先<K extends keyof HTMLElementTagNameMap>(selector: K): HTMLElementTagNameMap[K] | null;
     最近祖先<K extends keyof SVGElementTagNameMap>(selector: K): SVGElementTagNameMap[K] | null;
     最近祖先<K extends keyof MathMLElementTagNameMap>(selector: K): MathMLElementTagNameMap[K] | null;
@@ -537,6 +549,8 @@ interface Element {
     匹配选择器<K extends keyof MathMLElementTagNameMap>(selectors: K): this is MathMLElementTagNameMap[K];
     匹配选择器(selectors: string): boolean;
     设置属性(qualifiedName: string, value: string): void;
+    get 文本内容(): string;
+    set 文本内容(value: string | null);
     加事件监听<K extends keyof ElementEventMap>(type: K, listener: (this: Element, ev: ElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof ElementEventMap>(type: K, listener: (this: Element, ev: ElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1446,6 +1460,11 @@ interface MimeTypeArray {
     readonly 长度: number;
 }
 
+interface MutationRecord {
+    readonly 后兄弟: Node | null;
+    readonly 前兄弟: Node | null;
+}
+
 interface NamedNodeMap {
     readonly 长度: number;
 }
@@ -1465,6 +1484,15 @@ interface NavigationHistoryEntry {
 }
 
 interface Node {
+    readonly 子节点列: NodeListOf<ChildNode>;
+    readonly 首子节点: ChildNode | null;
+    readonly 末子节点: ChildNode | null;
+    readonly 后兄弟: ChildNode | null;
+    readonly 节点名: string;
+    readonly 节点种类: number;
+    readonly 父节点: ParentNode | null;
+    readonly 前兄弟: ChildNode | null;
+    文本内容: string | null;
     追加子节点<T extends Node>(node: T): T;
     复制节点(subtree?: boolean): Node;
     含节点(other: Node | null): boolean;
@@ -2233,6 +2261,7 @@ interface ServiceWorkerRegistration {
 }
 
 interface ShadowRoot {
+    内部标记: string;
     加事件监听<K extends keyof ShadowRootEventMap>(type: K, listener: (this: ShadowRoot, ev: ShadowRootEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof ShadowRootEventMap>(type: K, listener: (this: ShadowRoot, ev: ShadowRootEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2370,6 +2399,11 @@ interface TransformStreamDefaultController<O = any> {
 
 interface TreeWalker {
     readonly 过滤: NodeFilter | null;
+    首子节点(): Node | null;
+    末子节点(): Node | null;
+    后兄弟(): Node | null;
+    父节点(): Node | null;
+    前兄弟(): Node | null;
 }
 
 interface URL {
