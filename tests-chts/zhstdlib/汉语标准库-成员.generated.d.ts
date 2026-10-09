@@ -681,6 +681,7 @@ interface PerformanceMeasureOptions {
 }
 
 interface PerformanceObserverInit {
+    缓冲区间?: boolean;
     种类?: string;
 }
 
@@ -865,6 +866,10 @@ interface Report {
     主体?: ReportBody | null;
     种类?: string;
     地址?: string;
+}
+
+interface ReportingObserverOptions {
+    缓冲区间?: boolean;
 }
 
 interface RequestInit {
@@ -2552,6 +2557,7 @@ interface HTMLButtonElement {
 interface HTMLCanvasElement {
     高度: number;
     宽度: number;
+    捕获流(frameRequestRate?: number): MediaStream;
     取上下文(contextId: "2d", options?: CanvasRenderingContext2DSettings): CanvasRenderingContext2D | null;
     取上下文(contextId: "bitmaprenderer", options?: ImageBitmapRenderingContextSettings): ImageBitmapRenderingContext | null;
     取上下文(contextId: "webgl", options?: WebGLContextAttributes): WebGLRenderingContext | null;
@@ -2913,6 +2919,9 @@ interface HTMLMarqueeElement {
 }
 
 interface HTMLMediaElement {
+    自动播放: boolean;
+    readonly 缓冲区间: TimeRanges;
+    控件: boolean;
     跨源: string | null;
     readonly 当前源: string;
     默认速率: number;
@@ -2922,11 +2931,15 @@ interface HTMLMediaElement {
     循环: boolean;
     readonly 网络状态: number;
     readonly 已暂停: boolean;
+    readonly 已播放区间: TimeRanges;
     预加载: "none" | "metadata" | "auto" | "";
     readonly 就绪态: number;
     readonly 可定位: TimeRanges;
     readonly 正在定位: boolean;
     源址: string;
+    源对象: MediaProvider | null;
+    音量: number;
+    加文本轨(kind: TextTrackKind, label?: string, language?: string): TextTrack;
     可播放类型(type: string): CanPlayTypeResult;
     加载(): void;
     暂停(): void;
@@ -3328,11 +3341,13 @@ interface HTMLUnknownElement {
 
 interface HTMLVideoElement {
     高度: number;
+    内联播放: boolean;
     海报: string;
     readonly 视频高: number;
     readonly 视频宽: number;
     宽度: number;
     请求画中画(): Promise<PictureInPictureWindow>;
+    请求视频帧(callback: VideoFrameRequestCallback): number;
     加事件监听<K extends keyof HTMLVideoElementEventMap>(type: K, listener: (this: HTMLVideoElement, ev: HTMLVideoElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLVideoElementEventMap>(type: K, listener: (this: HTMLVideoElement, ev: HTMLVideoElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3826,6 +3841,10 @@ interface NavigationPreloadManager {
 
 interface Navigator {
     readonly 凭据: CredentialsContainer;
+}
+
+interface NavigatorLanguage {
+    readonly 语种: string;
 }
 
 interface Node {
@@ -5154,6 +5173,7 @@ interface Slottable {
 }
 
 interface SourceBuffer {
+    readonly 缓冲区间: TimeRanges;
     模式: AppendMode;
     出错时: ((this: SourceBuffer, ev: Event) => any) | null;
     中止(): void;
@@ -5210,6 +5230,7 @@ interface SpeechSynthesisUtterance {
     语言: string;
     出错时: ((this: SpeechSynthesisUtterance, ev: SpeechSynthesisErrorEvent) => any) | null;
     转文本: string;
+    音量: number;
     加事件监听<K extends keyof SpeechSynthesisUtteranceEventMap>(type: K, listener: (this: SpeechSynthesisUtterance, ev: SpeechSynthesisUtteranceEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SpeechSynthesisUtteranceEventMap>(type: K, listener: (this: SpeechSynthesisUtterance, ev: SpeechSynthesisUtteranceEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -5326,6 +5347,7 @@ interface TextTrack {
     readonly 编号: string;
     readonly 类别: TextTrackKind;
     readonly 标签: string;
+    readonly 语种: string;
     模式: TextTrackMode;
     加事件监听<K extends keyof TextTrackEventMap>(type: K, listener: (this: TextTrack, ev: TextTrackEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -5433,6 +5455,7 @@ interface URLSearchParams {
 interface VTTCue {
     对齐: AlignSetting;
     大小: number;
+    对齐行: boolean;
     转文本: string;
     加事件监听<K extends keyof TextTrackCueEventMap>(type: K, listener: (this: VTTCue, ev: TextTrackCueEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
