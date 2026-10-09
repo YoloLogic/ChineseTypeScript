@@ -4070,6 +4070,11 @@ interface IntersectionObserver {
 }
 
 interface IntersectionObserverEntry {
+    readonly 边界矩形: DOMRectReadOnly;
+    readonly 相交比: number;
+    readonly 相交矩形: DOMRectReadOnly;
+    readonly 正在相交: boolean;
+    readonly 根边界: DOMRectReadOnly | null;
     readonly 目标: Element;
 }
 
@@ -4396,9 +4401,12 @@ interface MutationObserver {
 
 interface MutationRecord {
     readonly 新增节点列: NodeList;
+    readonly 属性名: string | null;
+    readonly 属性命名空间: string | null;
     readonly 后兄弟: Node | null;
     readonly 旧值: string | null;
     readonly 前兄弟: Node | null;
+    readonly 移除节点列: NodeList;
     readonly 目标: Node;
     readonly 种类: MutationRecordType;
 }
@@ -4520,9 +4528,11 @@ interface Node {
 interface NodeIterator {
     readonly 过滤: NodeFilter | null;
     readonly 滤镜: NodeFilter | null;
+    readonly 参考节点之前: boolean;
     readonly 参考节点: Node;
     readonly 根元素: Node;
     readonly 显示过滤: number;
+    分离(): void;
     上一个节点(): Node | null;
 }
 
@@ -5010,6 +5020,7 @@ interface Range {
     复制范围(): Range;
     折叠(toStart?: boolean): void;
     删内容(): void;
+    分离(): void;
     提取内容(): DocumentFragment;
     取边界矩形(): DOMRect;
     取客户端矩形(): DOMRectList;
@@ -5092,6 +5103,7 @@ interface ResizeObserver {
 }
 
 interface ResizeObserverEntry {
+    readonly 内容矩形: DOMRectReadOnly;
     readonly 目标: Element;
 }
 

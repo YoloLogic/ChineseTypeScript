@@ -1150,6 +1150,17 @@ member	whatToShow	显示过滤
 member	previousNode	上一个节点
 member	currentNode	当前节点
 member	addedNodes	新增节点列
+member	pointerBeforeReferenceNode	参考节点之前
+member	detach	分离
+member	removedNodes	移除节点列
+member	attributeName	属性名
+member	attributeNamespace	属性命名空间
+member	boundingClientRect	边界矩形
+member	intersectionRatio	相交比
+member	intersectionRect	相交矩形
+member	isIntersecting	正在相交
+member	rootBounds	根边界
+member	contentRect	内容矩形
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
