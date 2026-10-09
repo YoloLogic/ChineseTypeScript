@@ -355,7 +355,7 @@ run_all.ps1       八项：judge_chts / judge_proj / judge_oss / judge_tutorial 
 10. **标准库汉化：只做了试点（2026-10-08）** —— 这条线是**长期目标**，现状是：
     * **试点**：「数组 + 数学」42 个名字**端到端跑通** —— `甲.追加(4)` 编译成 `甲.push(4)`、
       `数学.向下取整(3.7)` 编译成 `Math.floor(3.7)`，**产物是标准 JS**、node 真跑正确；
-      判定 `tests-chts/judge_zhstdlib.ps1` **7/7**。
+      判定 `tests-chts/judge_zhstdlib.ps1` **11/11**（含「夹具同名守卫」：防译名撞上用户自己的成员名）。
     * **规模**：标准库共 **7687 个名字**（全局 2445 + 成员 5242），译名进度 **100 / 7687**
       （已覆盖 `Array`/`Math`/`String`/`Map`/`Set`/`Promise`/`Date`/`RegExp`/`JSON`/`console` 核心
       + 6 个构造器别名；同步/异步/`new`/正则四种形态都有端到端判据）。

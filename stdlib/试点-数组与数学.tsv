@@ -1454,6 +1454,14 @@ member	durability	持久性
 member	easing	缓动
 member	elevation	仰角
 member	email	邮箱
+member	encodings	编码集
+member	encrypted	已加密
+member	enctype	编码类型
+member	errors	错误集
+member	exact	精确
+member	exclusive	独占
+member	expires	过期时间
+member	external	外部
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

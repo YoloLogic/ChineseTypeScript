@@ -232,6 +232,26 @@ interface ConstantSourceOptions {
     偏移?: number;
 }
 
+interface ConstrainBooleanOrDOMStringParameters {
+    精确?: boolean | string;
+}
+
+interface ConstrainBooleanParameters {
+    精确?: boolean;
+}
+
+interface ConstrainDOMStringParameters {
+    精确?: string | string[];
+}
+
+interface ConstrainDoubleRange {
+    精确?: number;
+}
+
+interface ConstrainULongRange {
+    精确?: number;
+}
+
 interface ContentVisibilityAutoStateChangeEventInit {
     已跳过?: boolean;
 }
@@ -247,6 +267,7 @@ interface CookieChangeEventInit {
 
 interface CookieInit {
     网域?: string | null;
+    过期时间?: DOMHighResTimeStamp | null;
     名称: string;
     值内容: string;
 }
@@ -385,6 +406,7 @@ interface EventModifierInit {
 
 interface FileSystemFlags {
     创建?: boolean;
+    独占?: boolean;
 }
 
 interface FileSystemGetDirectoryOptions {
@@ -1083,6 +1105,10 @@ interface QueuingStrategyInit {
     高水位: number;
 }
 
+interface RTCCertificateExpiration {
+    过期时间?: number;
+}
+
 interface RTCDataChannelEventInit {
     通道: RTCDataChannel;
 }
@@ -1163,7 +1189,12 @@ interface RTCRtpEncodingParameters {
 }
 
 interface RTCRtpHeaderExtensionParameters {
+    已加密?: boolean;
     编号: number;
+}
+
+interface RTCRtpSendParameters {
+    编码集: RTCRtpEncodingParameters[];
 }
 
 interface RTCRtpStreamStats {
@@ -3587,6 +3618,7 @@ interface HTMLFormElement {
     自动完成: AutoFillBase;
     readonly 元素集合: HTMLFormControlsCollection;
     编码方式: string;
+    编码类型: string;
     readonly 长度: number;
     提交方法: string;
     名称: string;
@@ -5425,6 +5457,10 @@ interface PushSubscription {
 
 interface PushSubscriptionOptions {
     readonly 仅用户可见: boolean;
+}
+
+interface RTCCertificate {
+    readonly 过期时间: EpochTimeStamp;
 }
 
 interface RTCDTMFSender {
@@ -7318,6 +7354,7 @@ interface WheelEvent {
 interface Window {
     readonly 已关闭: boolean;
     readonly 文档: Document;
+    readonly 外部: External;
     readonly 长度: number;
     名称: string;
     readonly 朝向: number;
@@ -8147,6 +8184,10 @@ interface String {
 
 interface SymbolConstructor {
     readonly 全匹配: unique symbol;
+}
+
+interface AggregateError {
+    错误集: any[];
 }
 
 interface String {
