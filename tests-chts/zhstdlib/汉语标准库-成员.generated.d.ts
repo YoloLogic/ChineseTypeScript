@@ -1650,6 +1650,7 @@ interface Document {
     关闭(): void;
     创建属性(localName: string): Attr;
     创建注释(data: string): Comment;
+    创建文档片段(): DocumentFragment;
     创建元素<K extends keyof HTMLElementTagNameMap>(tagName: K, options?: ElementCreationOptions): HTMLElementTagNameMap[K];
     创建元素<K extends keyof HTMLElementDeprecatedTagNameMap>(tagName: K, options?: ElementCreationOptions): HTMLElementDeprecatedTagNameMap[K];
     创建元素(tagName: string, options?: ElementCreationOptions): HTMLElement;
@@ -1726,7 +1727,9 @@ interface Document {
     创建事件(eventInterface: "WebGLContextEvent"): WebGLContextEvent;
     创建事件(eventInterface: "WheelEvent"): WheelEvent;
     创建事件(eventInterface: string): Event;
+    创建范围(): Range;
     创建文本节点(data: string): Text;
+    创建树遍历器(root: Node, whatToShow?: number, filter?: NodeFilter | null): TreeWalker;
     按编号取元素(elementId: string): HTMLElement | null;
     按类取元素组(classNames: string): HTMLCollectionOf<Element>;
     按名取元素(elementName: string): NodeListOf<HTMLElement>;
@@ -3102,7 +3105,10 @@ interface MutationRecord {
 
 interface NamedNodeMap {
     readonly 长度: number;
+    取具名项(qualifiedName: string): Attr | null;
     取项(index: number): Attr | null;
+    删具名项(qualifiedName: string): Attr;
+    设具名项(attr: Attr): Attr | null;
 }
 
 interface NavigateEvent {
@@ -3147,8 +3153,11 @@ interface Node {
     文本内容: string | null;
     追加子节点<T extends Node>(node: T): T;
     复制节点(subtree?: boolean): Node;
+    比较文档位置(other: Node): number;
     含节点(other: Node | null): boolean;
     前插节点<T extends Node>(node: T, child: Node | null): T;
+    查命名空间(prefix: string | null): string | null;
+    查前缀(namespace: string | null): string | null;
     规范化(): void;
     移除子节点<T extends Node>(child: T): T;
     替换子节点<T extends Node>(node: Node, child: T): T;
@@ -4647,6 +4656,19 @@ interface XMLHttpRequestUpload {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof XMLHttpRequestEventTargetEventMap>(type: K, listener: (this: XMLHttpRequestUpload, ev: XMLHttpRequestEventTargetEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface XPathEvaluatorBase {
+    求值(expression: string, contextNode: Node, resolver?: XPathNSResolver | null, type?: number, result?: XPathResult | null): XPathResult;
+}
+
+interface XPathExpression {
+    求值(contextNode: Node, type?: number, result?: XPathResult | null): XPathResult;
+}
+
+interface XPathResult {
+    下一个节点(): Node | null;
+    快照项(index: number): Node | null;
 }
 
 interface XSLTProcessor {
