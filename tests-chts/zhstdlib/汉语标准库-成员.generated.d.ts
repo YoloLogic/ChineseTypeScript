@@ -907,6 +907,7 @@ interface QueuingStrategyInit {
 
 interface RTCDataChannelInit {
     编号?: number;
+    最大包时长?: number;
     有序?: boolean;
     协议?: string;
 }
@@ -925,6 +926,11 @@ interface RTCErrorEventInit {
     报错: RTCError;
 }
 
+interface RTCIceCandidateInit {
+    候选?: string;
+    用户名片段?: string | null;
+}
+
 interface RTCIceCandidatePairStats {
     状态: RTCStatsIceCandidatePairState;
 }
@@ -934,6 +940,7 @@ interface RTCIceServer {
 }
 
 interface RTCLocalSessionDescriptionInit {
+    会话描述?: string;
     种类?: RTCSdpType;
 }
 
@@ -944,6 +951,10 @@ interface RTCOutboundRtpStreamStats {
 interface RTCPeerConnectionIceErrorEventInit {
     端口?: number | null;
     地址?: string;
+}
+
+interface RTCPeerConnectionIceEventInit {
+    候选?: RTCIceCandidate | null;
 }
 
 interface RTCRtpContributingSource {
@@ -965,6 +976,7 @@ interface RTCRtpStreamStats {
 }
 
 interface RTCSessionDescriptionInit {
+    会话描述?: string;
     种类: RTCSdpType;
 }
 
@@ -4698,8 +4710,10 @@ interface RTCDTMFSender {
 interface RTCDataChannel {
     二进制类型: BinaryType;
     readonly 缓冲量: number;
+    缓冲阈值: number;
     readonly 编号: number | null;
     readonly 标签: string;
+    readonly 最大包时长: number | null;
     出错时: ((this: RTCDataChannel, ev: RTCErrorEvent) => any) | null;
     readonly 有序: boolean;
     readonly 协议: string;
@@ -4740,10 +4754,12 @@ interface RTCErrorEvent {
 }
 
 interface RTCIceCandidate {
+    readonly 候选: string;
     readonly 端口: number | null;
     readonly 优先级: number | null;
     readonly 协议: RTCIceProtocol | null;
     readonly 种类: RTCIceCandidateType | null;
+    readonly 用户名片段: string | null;
     转数据(): RTCIceCandidateInit;
 }
 
@@ -4756,7 +4772,14 @@ interface RTCIceTransport {
 }
 
 interface RTCPeerConnection {
+    readonly 连接状态: RTCPeerConnectionState;
+    readonly 当前本地描述: RTCSessionDescription | null;
+    readonly 交互连接状态: RTCIceConnectionState;
+    readonly 收集状态: RTCIceGatheringState;
+    readonly 本地描述: RTCSessionDescription | null;
+    readonly 待定本地描述: RTCSessionDescription | null;
     readonly 远端描述: RTCSessionDescription | null;
+    readonly 信令状态: RTCSignalingState;
     加交互候选(candidate?: RTCIceCandidateInit | null): Promise<void>;
     加交互候选(candidate: RTCIceCandidateInit | null, successCallback: VoidFunction, failureCallback: RTCPeerConnectionErrorCallback): Promise<void>;
     加轨道(track: MediaStreamTrack, ...streams: MediaStream[]): RTCRtpSender;
@@ -4785,6 +4808,10 @@ interface RTCPeerConnectionIceErrorEvent {
     readonly 地址: string;
 }
 
+interface RTCPeerConnectionIceEvent {
+    readonly 候选: RTCIceCandidate | null;
+}
+
 interface RTCRtpReceiver {
     变换: RTCRtpReceiverTransform | null;
     取参数(): RTCRtpReceiveParameters;
@@ -4811,6 +4838,7 @@ interface RTCSctpTransport {
 }
 
 interface RTCSessionDescription {
+    readonly 会话描述: string;
     readonly 种类: RTCSdpType;
     转数据(): RTCSessionDescriptionInit;
 }
