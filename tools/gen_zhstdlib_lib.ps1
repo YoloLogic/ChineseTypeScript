@@ -57,6 +57,17 @@ foreach ($lib in $libs) {
     $cur = $null; $depth = 0; $isNs = $false
     $members = New-Object System.Collections.Generic.List[string]
     foreach ($line in (Get-Content $lib.FullName -Encoding UTF8)) {
+        if ($pending -ne $null) {
+            $pending.Cont.Add($line)
+            $pending.Text = $pending.Text + [string][char]10 + $line
+            $tail = $line.TrimEnd()
+            if (($tail -match ';\s*$') -and (([regex]::Matches($pending.Text, '\(')).Count -eq ([regex]::Matches($pending.Text, '\)')).Count)) {
+                foreach ($zhName in $en2zh[$pending.Name]) { $members.Add($pending.Prefix + $zhName + $pending.FirstRest) }
+                foreach ($c in $pending.Cont) { $members.Add($c) }
+                $pending = $null
+            }
+            continue
+        }
         if ($cur -eq $null) {
             # 接口头可能带 extends（DOM 里几乎都带，如 interface Node extends EventTarget {），必须允许。
             $m = [regex]::Match($line, '^interface\s+([A-Za-z_$][\w$]*(?:<[^>]*>)?)(?:\s+extends[^{]*)?\s*\{')
@@ -88,9 +99,13 @@ foreach ($lib in $libs) {
         $name = $m.Groups[3].Value
         if (-not $en2zh.ContainsKey($name)) { continue }
         $rest = $m.Groups[4].Value
-        # 多行/重载成员暂时跳过（登记为待办）；把名字记下来，便于后续补。
-        if ($rest -notmatch ';\s*$') { $skipped.Add($name); continue }
-        if (([regex]::Matches($rest, '\(')).Count -ne ([regex]::Matches($rest, '\)')).Count) { $skipped.Add($name); continue }
+        # 【多行成员】声明跨行（如 flat 的 FlatArray、Reflect.apply 的重载）时，
+        # 先把它攒起来，等括号配平且以 ; 收尾再发射（2026-10-08 实现；此前一律跳过）。
+        $isComplete = ($rest -match ';\s*$') -and (([regex]::Matches($rest, '\(')).Count -eq ([regex]::Matches($rest, '\)')).Count)
+        if (-not $isComplete) {
+            $pending = @{ Name = $name; Prefix = ($m.Groups[1].Value + $m.Groups[2].Value); FirstRest = $rest; Cont = (New-Object System.Collections.Generic.List[string]); Text = $rest }
+            continue
+        }
         # 每个汉语别名都生成一条（保证不会漏掉任何已发布的译名）。
         foreach ($zhName in $en2zh[$name]) {
             $members.Add($m.Groups[1].Value + $m.Groups[2].Value + $zhName + $rest)

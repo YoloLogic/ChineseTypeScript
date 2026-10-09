@@ -155,6 +155,8 @@ member	toLocaleDateString	本地日期串
 member	getTimezoneOffset	取时区偏移
 member	setFullYear	设年
 member	copyWithin	内部复制
+member	flat	展平
+member	flatMap	展平映射
 member	entries	条目
 member	keys	键列
 member	values	值列
@@ -483,6 +485,14 @@ member	arcTo	弧到
 member	isContextLost	上下文丢失
 member	getSupportedExtensions	取支持扩展
 member	instantiate	实例化
+member	ownKeys	自有键
+member	apply	应用
+member	construct	构造
+member	locale	区域
+member	timeZone	时区
+member	currency	货币
+member	numberingSystem	数字系统
+member	getCanonicalLocales	取规范区域
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

@@ -579,6 +579,7 @@ interface PayerErrors {
 }
 
 interface PaymentCurrencyAmount {
+    货币: string;
     值内容: string;
 }
 
@@ -5404,23 +5405,54 @@ interface PromiseConstructor {
 }
 
 interface ProxyHandler<T extends object> {
+    应用?(target: T, thisArg: any, argArray: any[]): any;
+    构造?(target: T, argArray: any[], newTarget: Function): object;
     定义属性?(target: T, property: string | symbol, attributes: PropertyDescriptor): boolean;
     获取?(target: T, p: string | symbol, receiver: any): any;
     取自有描述?(target: T, p: string | symbol): PropertyDescriptor | undefined;
     取原型?(target: T): object | null;
     含有?(target: T, p: string | symbol): boolean;
     是可扩展?(target: T): boolean;
+    自有键?(target: T): ArrayLike<string | symbol>;
     止扩展?(target: T): boolean;
     设置?(target: T, p: string | symbol, newValue: any, receiver: any): boolean;
     设原型?(target: T, v: object | null): boolean;
 }
 
 declare namespace Reflect {
+    function 应用<T, A extends readonly any[], R>(
+        target: (this: T, ...args: A) => R,
+        thisArgument: T,
+        argumentsList: Readonly<A>,
+    ): R;
+    function 应用(target: Function, thisArgument: any, argumentsList: ArrayLike<any>): any;
+    function 构造<A extends readonly any[], R>(
+        target: new (...args: A) => R,
+        argumentsList: Readonly<A>,
+        newTarget?: new (...args: any) => any,
+    ): R;
+    function 构造(target: Function, argumentsList: ArrayLike<any>, newTarget?: Function): any;
     function 定义属性(target: object, propertyKey: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): boolean;
+    function 获取<T extends object, P extends PropertyKey>(
+        target: T,
+        propertyKey: P,
+        receiver?: unknown,
+    ): P extends keyof T ? T[P] : any;
+    function 取自有描述<T extends object, P extends PropertyKey>(
+        target: T,
+        propertyKey: P,
+    ): TypedPropertyDescriptor<P extends keyof T ? T[P] : any> | undefined;
     function 取原型(target: object): object | null;
     function 含有(target: object, propertyKey: PropertyKey): boolean;
     function 是可扩展(target: object): boolean;
+    function 自有键(target: object): (string | symbol)[];
     function 止扩展(target: object): boolean;
+    function 设置<T extends object, P extends PropertyKey>(
+        target: T,
+        propertyKey: P,
+        value: P extends keyof T ? T[P] : any,
+        receiver?: any,
+    ): boolean;
     function 设置(target: object, propertyKey: PropertyKey, value: any, receiver?: any): boolean;
     function 设原型(target: object, proto: object | null): boolean;
 }
@@ -5484,6 +5516,10 @@ interface Float64Array<TArrayBuffer extends ArrayBufferLike> {
     包含(searchElement: number, fromIndex?: number): boolean;
 }
 
+declare namespace Intl {
+    function 取规范区域(locale?: string | readonly string[]): string[];
+}
+
 interface ObjectConstructor {
     值列<T>(o: { [s: string]: T; } | ArrayLike<T>): T[];
     值列(o: {}): any[];
@@ -5527,6 +5563,28 @@ interface Promise<T> {
     最终(onfinally?: (() => void) | undefined | null): Promise<T>;
 }
 
+interface ReadonlyArray<T> {
+    展平映射<U, This = undefined>(
+        callback: (this: This, value: T, index: number, array: T[]) => U | ReadonlyArray<U>,
+        thisArg?: This,
+    ): U[];
+    展平<A, D extends number = 1>(
+        this: A,
+        depth?: D,
+    ): FlatArray<A, D>[];
+}
+
+interface Array<T> {
+    展平映射<U, This = undefined>(
+        callback: (this: This, value: T, index: number, array: T[]) => U | ReadonlyArray<U>,
+        thisArg?: This,
+    ): U[];
+    展平<A, D extends number = 1>(
+        this: A,
+        depth?: D,
+    ): FlatArray<A, D>[];
+}
+
 interface ObjectConstructor {
     由条目<T = any>(entries: Iterable<readonly [PropertyKey, T]>): { [k: string]: T; };
     由条目(entries: Iterable<readonly any[]>): any;
@@ -5539,6 +5597,8 @@ interface String {
 
 interface BigIntToLocaleStringOptions {
     样式?: string;
+    数字系统?: string;
+    货币?: string;
 }
 
 interface BigInt {
@@ -5888,8 +5948,19 @@ interface ObjectConstructor {
 }
 
 interface Function {
+    应用(this: Function, thisArg: any, argArray?: any): any;
     转字符串(): string;
     readonly 长度: number;
+}
+
+interface CallableFunction {
+    应用<T, R>(this: (this: T) => R, thisArg: T): R;
+    应用<T, A extends any[], R>(this: (this: T, ...args: A) => R, thisArg: T, args: A): R;
+}
+
+interface NewableFunction {
+    应用<T>(this: new () => T, thisArg: T): void;
+    应用<T, A extends any[]>(this: new (...args: A) => T, thisArg: T, args: A): void;
 }
 
 interface IArguments {
