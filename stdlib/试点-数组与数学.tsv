@@ -797,6 +797,17 @@ member	endOfStream	流结束
 member	sourceBuffers	源缓冲集
 member	activeSourceBuffers	活动源缓冲
 member	getOutputTimestamp	取输出时刻
+member	sinkId	输出设备
+member	outputLatency	输出延迟
+member	baseLatency	基础延迟
+member	getAudioTracks	取音频轨道
+member	getVideoTracks	取视频轨道
+member	active	活动
+member	stop	停止
+member	enabled	已启用
+member	muted	已静音
+member	contentHint	内容提示
+member	ordered	有序
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

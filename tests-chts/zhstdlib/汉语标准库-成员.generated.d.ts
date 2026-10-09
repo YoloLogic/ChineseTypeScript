@@ -104,6 +104,14 @@ interface AuthenticationExtensionsLargeBlobOutputsJSON {
     转二进制块?: Base64URLString;
 }
 
+interface AuthenticationExtensionsPRFOutputs {
+    已启用?: boolean;
+}
+
+interface AuthenticationExtensionsPRFOutputsJSON {
+    已启用?: boolean;
+}
+
 interface AuthenticationResponseJSON {
     编号: string;
     种类: string;
@@ -602,6 +610,10 @@ interface NavigationNavigateOptions {
     状态?: any;
 }
 
+interface NavigationPreloadState {
+    已启用?: boolean;
+}
+
 interface NavigationReloadOptions {
     状态?: any;
 }
@@ -783,6 +795,7 @@ interface QueuingStrategyInit {
 
 interface RTCDataChannelInit {
     编号?: number;
+    有序?: boolean;
     协议?: string;
 }
 
@@ -808,6 +821,10 @@ interface RTCLocalSessionDescriptionInit {
     种类?: RTCSdpType;
 }
 
+interface RTCOutboundRtpStreamStats {
+    活动?: boolean;
+}
+
 interface RTCPeerConnectionIceErrorEventInit {
     端口?: number | null;
     地址?: string;
@@ -819,6 +836,7 @@ interface RTCRtpContributingSource {
 }
 
 interface RTCRtpEncodingParameters {
+    活动?: boolean;
     优先级?: RTCPriorityType;
 }
 
@@ -1095,6 +1113,7 @@ interface VideoDecoderInit {
 
 interface VideoEncoderConfig {
     透明度?: AlphaOption;
+    内容提示?: string;
     高度: number;
     宽度: number;
 }
@@ -1237,6 +1256,8 @@ interface AudioBufferSourceNode {
 }
 
 interface AudioContext {
+    readonly 基础延迟: number;
+    readonly 输出延迟: number;
     关闭(): Promise<void>;
     取输出时刻(): AudioTimestamp;
     继续(): Promise<void>;
@@ -1304,6 +1325,7 @@ interface AudioParamMap {
 
 interface AudioScheduledSourceNode {
     开始(when?: number): void;
+    停止(when?: number): void;
     加事件监听<K extends keyof AudioScheduledSourceNodeEventMap>(type: K, listener: (this: AudioScheduledSourceNode, ev: AudioScheduledSourceNodeEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof AudioScheduledSourceNodeEventMap>(type: K, listener: (this: AudioScheduledSourceNode, ev: AudioScheduledSourceNodeEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2927,6 +2949,7 @@ interface HTMLMarqueeElement {
     循环: number;
     宽度: string;
     开始(): void;
+    停止(): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLMarqueeElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLMarqueeElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2944,6 +2967,7 @@ interface HTMLMediaElement {
     readonly 已结束: boolean;
     readonly 报错: MediaError | null;
     循环: boolean;
+    已静音: boolean;
     readonly 网络状态: number;
     readonly 已暂停: boolean;
     readonly 已播放区间: TimeRanges;
@@ -2951,6 +2975,7 @@ interface HTMLMediaElement {
     readonly 就绪态: number;
     readonly 可定位: TimeRanges;
     readonly 正在定位: boolean;
+    readonly 输出设备: string;
     源址: string;
     源对象: MediaProvider | null;
     音量: number;
@@ -3711,6 +3736,7 @@ interface MediaRecorder {
     暂停(): void;
     继续(): void;
     开始(timeslice?: number): void;
+    停止(): void;
     加事件监听<K extends keyof MediaRecorderEventMap>(type: K, listener: (this: MediaRecorder, ev: MediaRecorderEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MediaRecorderEventMap>(type: K, listener: (this: MediaRecorder, ev: MediaRecorderEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3732,9 +3758,12 @@ interface MediaSource {
 }
 
 interface MediaStream {
+    readonly 活动: boolean;
     readonly 编号: string;
     加轨道(track: MediaStreamTrack): void;
     复制(): MediaStream;
+    取音频轨道(): MediaStreamTrack[];
+    取视频轨道(): MediaStreamTrack[];
     删轨道(track: MediaStreamTrack): void;
     加事件监听<K extends keyof MediaStreamEventMap>(type: K, listener: (this: MediaStream, ev: MediaStreamEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -3743,15 +3772,19 @@ interface MediaStream {
 }
 
 interface MediaStreamTrack {
+    内容提示: string;
+    已启用: boolean;
     readonly 编号: string;
     readonly 类别: string;
     readonly 标签: string;
+    readonly 已静音: boolean;
     readonly 就绪态: MediaStreamTrackState;
     应用约束(constraints?: MediaTrackConstraints): Promise<void>;
     复制(): MediaStreamTrack;
     取能力(): MediaTrackCapabilities;
     取约束(): MediaTrackConstraints;
     取设置(): MediaTrackSettings;
+    停止(): void;
     加事件监听<K extends keyof MediaStreamTrackEventMap>(type: K, listener: (this: MediaStreamTrack, ev: MediaStreamTrackEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MediaStreamTrackEventMap>(type: K, listener: (this: MediaStreamTrack, ev: MediaStreamTrackEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4148,6 +4181,7 @@ interface RTCDataChannel {
     readonly 编号: number | null;
     readonly 标签: string;
     出错时: ((this: RTCDataChannel, ev: RTCErrorEvent) => any) | null;
+    readonly 有序: boolean;
     readonly 协议: string;
     readonly 就绪态: RTCDataChannelState;
     关闭(): void;
@@ -4241,6 +4275,10 @@ interface RTCRtpSender {
     取参数(): RTCRtpSendParameters;
     取统计(): Promise<RTCStatsReport>;
     设参数(parameters: RTCRtpSendParameters, setParameterOptions?: RTCSetParameterOptions): Promise<void>;
+}
+
+interface RTCRtpTransceiver {
+    停止(): void;
 }
 
 interface RTCSctpTransport {
@@ -5167,6 +5205,7 @@ interface ServiceWorkerContainer {
 }
 
 interface ServiceWorkerRegistration {
+    readonly 活动: ServiceWorker | null;
     注销(): Promise<boolean>;
     加事件监听<K extends keyof ServiceWorkerRegistrationEventMap>(type: K, listener: (this: ServiceWorkerRegistration, ev: ServiceWorkerRegistrationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -5756,6 +5795,7 @@ interface Window {
     滚动偏移(x: number, y: number): void;
     滚动到(options?: ScrollToOptions): void;
     滚动到(x: number, y: number): void;
+    停止(): void;
     加事件监听<K extends keyof WindowEventMap>(type: K, listener: (this: Window, ev: WindowEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof WindowEventMap>(type: K, listener: (this: Window, ev: WindowEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
