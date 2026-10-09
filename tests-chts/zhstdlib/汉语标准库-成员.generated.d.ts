@@ -1306,13 +1306,17 @@ interface CSSStyleDeclarationBase {
 interface CSSStyleProperties {
     全部: string;
     清空: string;
+    裁剪: string;
     填充: string;
     过滤: string;
+    滤镜: string;
+    字体: string;
     高度: string;
     偏移: string;
     旋转: string;
     缩放: string;
     描边: string;
+    文本对齐: string;
     变换: string;
     平移: string;
     宽度: string;
@@ -1386,6 +1390,10 @@ interface CanvasCaptureMediaStreamTrack {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface CanvasCompositing {
+    全局透明: number;
+}
+
 interface CanvasDrawImage {
     绘制图像(image: CanvasImageSource, dx: number, dy: number): void;
     绘制图像(image: CanvasImageSource, dx: number, dy: number, dw: number, dh: number): void;
@@ -1394,6 +1402,8 @@ interface CanvasDrawImage {
 
 interface CanvasDrawPath {
     开始路径(): void;
+    裁剪(fillRule?: CanvasFillRule): void;
+    裁剪(path: Path2D, fillRule?: CanvasFillRule): void;
     填充(fillRule?: CanvasFillRule): void;
     填充(path: Path2D, fillRule?: CanvasFillRule): void;
     点在路径内(x: number, y: number, fillRule?: CanvasFillRule): boolean;
@@ -1410,6 +1420,11 @@ interface CanvasFillStrokeStyles {
 
 interface CanvasFilters {
     过滤: string;
+    滤镜: string;
+}
+
+interface CanvasGradient {
+    加色标(offset: number, color: string): void;
 }
 
 interface CanvasImageData {
@@ -1430,6 +1445,8 @@ interface CanvasPath {
 }
 
 interface CanvasPathDrawingStyles {
+    线宽: number;
+    尖角限制: number;
     取虚线(): number[];
     设虚线(segments: number[]): void;
 }
@@ -1454,7 +1471,14 @@ interface CanvasText {
     测量文本(text: string): TextMetrics;
 }
 
+interface CanvasTextDrawingStyles {
+    字体: string;
+    文本对齐: CanvasTextAlign;
+    文本基线: CanvasTextBaseline;
+}
+
 interface CanvasTransform {
+    取变换(): DOMMatrix;
     重置变换(): void;
     旋转(angle: number): void;
     缩放(x: number, y: number): void;
@@ -2842,6 +2866,7 @@ interface IDBTransaction {
     readonly 模式: IDBTransactionMode;
     出错时: ((this: IDBTransaction, ev: Event) => any) | null;
     中止(): void;
+    落实(): void;
     加事件监听<K extends keyof IDBTransactionEventMap>(type: K, listener: (this: IDBTransaction, ev: IDBTransactionEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof IDBTransactionEventMap>(type: K, listener: (this: IDBTransaction, ev: IDBTransactionEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2852,6 +2877,10 @@ interface ImageBitmap {
     readonly 高度: number;
     readonly 宽度: number;
     关闭(): void;
+}
+
+interface ImageBitmapRenderingContext {
+    从位图传输(bitmap: ImageBitmap | null): void;
 }
 
 interface ImageData {
@@ -3197,6 +3226,7 @@ interface Node {
 
 interface NodeIterator {
     readonly 过滤: NodeFilter | null;
+    readonly 滤镜: NodeFilter | null;
 }
 
 interface NodeList {
@@ -4384,6 +4414,7 @@ interface SubtleCrypto {
     生成密钥(algorithm: AlgorithmIdentifier, extractable: boolean, keyUsages: KeyUsage[]): Promise<CryptoKeyPair | CryptoKey>;
     导入密钥(format: "jwk", keyData: JsonWebKey, algorithm: AlgorithmIdentifier | RsaHashedImportParams | EcKeyImportParams | HmacImportParams | AesKeyAlgorithm, extractable: boolean, keyUsages: ReadonlyArray<KeyUsage>): Promise<CryptoKey>;
     导入密钥(format: Exclude<KeyFormat, "jwk">, keyData: BufferSource, algorithm: AlgorithmIdentifier | RsaHashedImportParams | EcKeyImportParams | HmacImportParams | AesKeyAlgorithm, extractable: boolean, keyUsages: KeyUsage[]): Promise<CryptoKey>;
+    符号(algorithm: AlgorithmIdentifier | RsaPssParams | EcdsaParams, key: CryptoKey, data: BufferSource): Promise<ArrayBuffer>;
     签名(algorithm: AlgorithmIdentifier | RsaPssParams | EcdsaParams, key: CryptoKey, data: BufferSource): Promise<ArrayBuffer>;
     解开密钥(format: KeyFormat, wrappedKey: BufferSource, unwrappingKey: CryptoKey, unwrapAlgorithm: AlgorithmIdentifier | RsaOaepParams | AesCtrParams | AesCbcParams | AesGcmParams, unwrappedKeyAlgorithm: AlgorithmIdentifier | RsaHashedImportParams | EcKeyImportParams | HmacImportParams | AesKeyAlgorithm, extractable: boolean, keyUsages: KeyUsage[]): Promise<CryptoKey>;
     验证(algorithm: AlgorithmIdentifier | RsaPssParams | EcdsaParams, key: CryptoKey, signature: BufferSource, data: BufferSource): Promise<boolean>;
@@ -4460,6 +4491,7 @@ interface TransformStreamDefaultController<O = any> {
 
 interface TreeWalker {
     readonly 过滤: NodeFilter | null;
+    readonly 滤镜: NodeFilter | null;
     首子节点(): Node | null;
     末子节点(): Node | null;
     后兄弟(): Node | null;
@@ -4611,6 +4643,7 @@ interface WebGLRenderingContextBase {
     取扩展名(extensionName: "WEBGL_draw_buffers"): WEBGL_draw_buffers | null;
     取扩展名(extensionName: "WEBGL_lose_context"): WEBGL_lose_context | null;
     取扩展名(extensionName: "WEBGL_multi_draw"): WEBGL_multi_draw | null;
+    线宽(width: GLfloat): void;
 }
 
 interface WebSocket {
@@ -4756,6 +4789,7 @@ interface XSLTProcessor {
 interface Console {
     清空(): void;
     报错(...data: any[]): void;
+    对数(...data: any[]): void;
     日志(...data: any[]): void;
     警告(...data: any[]): void;
 }
@@ -4921,6 +4955,7 @@ interface Function {
 interface Math {
     前导零位数(x: number): number;
     整数乘(x: number, y: number): number;
+    符号(x: number): number;
     签名(x: number): number;
     对数十(x: number): number;
     对数二(x: number): number;
@@ -5201,6 +5236,7 @@ interface BigInt64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> 
     全部满足(predicate: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => boolean, thisArg?: any): boolean;
     填充(value: bigint, start?: number, end?: number): this;
     过滤(predicate: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => any, thisArg?: any): BigInt64Array<ArrayBuffer>;
+    滤镜(predicate: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => any, thisArg?: any): BigInt64Array<ArrayBuffer>;
     找出(predicate: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => boolean, thisArg?: any): bigint | undefined;
     找出序号(predicate: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => boolean, thisArg?: any): number;
     逐个处理(callbackfn: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => void, thisArg?: any): void;
@@ -5241,6 +5277,7 @@ interface BigUint64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike>
     全部满足(predicate: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => boolean, thisArg?: any): boolean;
     填充(value: bigint, start?: number, end?: number): this;
     过滤(predicate: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => any, thisArg?: any): BigUint64Array<ArrayBuffer>;
+    滤镜(predicate: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => any, thisArg?: any): BigUint64Array<ArrayBuffer>;
     找出(predicate: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => boolean, thisArg?: any): bigint | undefined;
     找出序号(predicate: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => boolean, thisArg?: any): number;
     逐个处理(callbackfn: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => void, thisArg?: any): void;
@@ -5450,6 +5487,7 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
     全部满足(predicate: (value: number, index: number, array: this) => unknown, thisArg?: any): boolean;
     填充(value: number, start?: number, end?: number): this;
     过滤(predicate: (value: number, index: number, array: this) => any, thisArg?: any): Float16Array<ArrayBuffer>;
+    滤镜(predicate: (value: number, index: number, array: this) => any, thisArg?: any): Float16Array<ArrayBuffer>;
     找出(predicate: (value: number, index: number, obj: this) => boolean, thisArg?: any): number | undefined;
     找出序号(predicate: (value: number, index: number, obj: this) => boolean, thisArg?: any): number;
     逐个处理(callbackfn: (value: number, index: number, array: this) => void, thisArg?: any): void;
@@ -5576,6 +5614,7 @@ interface Math {
     余弦(x: number): number;
     指数(x: number): number;
     向下取整(x: number): number;
+    对数(x: number): number;
     日志(x: number): number;
     最大(...values: number[]): number;
     最小(...values: number[]): number;
@@ -5664,7 +5703,9 @@ interface ReadonlyArray<T> {
     逐个处理(callbackfn: (value: T, index: number, array: readonly T[]) => void, thisArg?: any): void;
     映射<U>(callbackfn: (value: T, index: number, array: readonly T[]) => U, thisArg?: any): U[];
     过滤<S extends T>(predicate: (value: T, index: number, array: readonly T[]) => value is S, thisArg?: any): S[];
+    滤镜<S extends T>(predicate: (value: T, index: number, array: readonly T[]) => value is S, thisArg?: any): S[];
     过滤(predicate: (value: T, index: number, array: readonly T[]) => unknown, thisArg?: any): T[];
+    滤镜(predicate: (value: T, index: number, array: readonly T[]) => unknown, thisArg?: any): T[];
     归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: readonly T[]) => T): T;
     归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: readonly T[]) => T, initialValue: T): T;
     归纳<U>(callbackfn: (previousValue: U, currentValue: T, currentIndex: number, array: readonly T[]) => U, initialValue: U): U;
@@ -5703,7 +5744,9 @@ interface Array<T> {
     逐个处理(callbackfn: (value: T, index: number, array: T[]) => void, thisArg?: any): void;
     映射<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any): U[];
     过滤<S extends T>(predicate: (value: T, index: number, array: T[]) => value is S, thisArg?: any): S[];
+    滤镜<S extends T>(predicate: (value: T, index: number, array: T[]) => value is S, thisArg?: any): S[];
     过滤(predicate: (value: T, index: number, array: T[]) => unknown, thisArg?: any): T[];
+    滤镜(predicate: (value: T, index: number, array: T[]) => unknown, thisArg?: any): T[];
     归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T): T;
     归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T, initialValue: T): T;
     归纳<U>(callbackfn: (previousValue: U, currentValue: T, currentIndex: number, array: T[]) => U, initialValue: U): U;

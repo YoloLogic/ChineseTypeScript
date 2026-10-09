@@ -32,12 +32,16 @@ $CRLF = [string][char]13 + [string][char]10
 
 # 必须【区分大小写】：英文标识符大小写敏感（readOnly 与 readonly 不是同一个名字）。
 # 否则 `readonly [index: number]: string;` 这类索引签名的 `readonly` 会被误当成员名改名。
-$en2zh = New-Object 'System.Collections.Generic.Dictionary[string,string]'
+# 英文名 -> 汉语名【列表】：允许一英多汉（如 log→对数/日志，两者都改写回 log，运行时都对）。
+# 若只存一个，后写的会覆盖先写的，导致先前的译名丢掉声明（2026-10-08 真踩过：filter 的「过滤」被「滤镜」覆盖）。
+$en2zh = New-Object 'System.Collections.Generic.Dictionary[string,System.Collections.Generic.List[string]]'
 foreach ($line in (Get-Content $Table -Encoding UTF8)) {
     if ($line -notmatch '\S') { continue }
     $p = $line -split $TAB
     if ($p.Count -lt 3 -or $p[0].Trim() -ne 'member') { continue }
-    $en2zh[$p[1].Trim()] = $p[2].Trim()
+    $en = $p[1].Trim(); $zh = $p[2].Trim()
+    if (-not $en2zh.ContainsKey($en)) { $en2zh[$en] = New-Object 'System.Collections.Generic.List[string]' }
+    if (-not $en2zh[$en].Contains($zh)) { $en2zh[$en].Add($zh) }
 }
 
 # 扫全部 lib（含 DOM —— 用户 2026-10-08 裁定「含 DOM」）。
@@ -78,7 +82,10 @@ foreach ($lib in $libs) {
         # 多行/重载成员暂时跳过（登记为待办）；把名字记下来，便于后续补。
         if ($rest -notmatch ';\s*$') { $skipped.Add($name); continue }
         if (([regex]::Matches($rest, '\(')).Count -ne ([regex]::Matches($rest, '\)')).Count) { $skipped.Add($name); continue }
-        $members.Add($m.Groups[1].Value + $m.Groups[2].Value + $en2zh[$name] + $rest)
+        # 每个汉语别名都生成一条（保证不会漏掉任何已发布的译名）。
+        foreach ($zhName in $en2zh[$name]) {
+            $members.Add($m.Groups[1].Value + $m.Groups[2].Value + $zhName + $rest)
+        }
     }
 }
 $text = ($blocks -join $CRLF) + $CRLF
