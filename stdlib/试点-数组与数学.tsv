@@ -865,6 +865,14 @@ member	loadEventStart	加载事件开始
 member	loadEventEnd	加载事件结束
 member	redirectCount	重定向次数
 member	renderTime	渲染时刻
+member	containerType	容器类型
+member	loadTime	加载时刻
+member	processingStart	处理开始
+member	processingEnd	处理结束
+member	mediaText	媒体文本
+member	identifier	标识
+member	screenX	屏幕横坐标
+member	clientX	客户横坐标
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

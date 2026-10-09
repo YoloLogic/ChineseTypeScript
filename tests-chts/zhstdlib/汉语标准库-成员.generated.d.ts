@@ -594,6 +594,11 @@ interface MessageEventInit<T = any> {
     来源?: MessageEventSource | null;
 }
 
+interface MouseEventInit {
+    客户横坐标?: number;
+    屏幕横坐标?: number;
+}
+
 interface MutationObserverInit {
     属性集?: boolean;
 }
@@ -1040,6 +1045,9 @@ interface ToggleEventInit {
 }
 
 interface TouchInit {
+    客户横坐标?: number;
+    标识: number;
+    屏幕横坐标?: number;
     目标: EventTarget;
 }
 
@@ -1599,6 +1607,7 @@ interface CSSStyleProperties {
     底部: string;
     清空: string;
     裁剪: string;
+    容器类型: string;
     填充: string;
     过滤: string;
     滤镜: string;
@@ -3611,6 +3620,7 @@ interface KeyframeEffect {
 
 interface LargestContentfulPaint {
     readonly 编号: string;
+    readonly 加载时刻: DOMHighResTimeStamp;
     readonly 渲染时刻: DOMHighResTimeStamp;
     readonly 大小: number;
     readonly 地址: string;
@@ -3741,6 +3751,7 @@ interface MediaKeyStatusMap {
 
 interface MediaList {
     readonly 长度: number;
+    媒体文本: string;
     转字符串(): string;
     取项(index: number): string | null;
 }
@@ -3860,6 +3871,8 @@ interface MimeTypeArray {
 }
 
 interface MouseEvent {
+    readonly 客户横坐标: number;
+    readonly 屏幕横坐标: number;
     readonly 横坐标: number;
     readonly 纵坐标: number;
 }
@@ -4113,6 +4126,8 @@ interface PerformanceEntry {
 }
 
 interface PerformanceEventTiming {
+    readonly 处理结束: DOMHighResTimeStamp;
+    readonly 处理开始: DOMHighResTimeStamp;
     readonly 目标: Node | null;
     转数据(): any;
 }
@@ -5558,6 +5573,9 @@ interface ToggleEvent {
 }
 
 interface Touch {
+    readonly 客户横坐标: number;
+    readonly 标识: number;
+    readonly 屏幕横坐标: number;
     readonly 目标: EventTarget;
 }
 
@@ -5878,6 +5896,7 @@ interface WebTransportError {
 interface Window {
     readonly 长度: number;
     名称: string;
+    readonly 屏幕横坐标: number;
     状态码: string;
     readonly 顶部: WindowProxy | null;
     失焦(): void;
