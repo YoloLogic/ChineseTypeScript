@@ -1730,6 +1730,7 @@ interface Document {
     创建范围(): Range;
     创建文本节点(data: string): Text;
     创建树遍历器(root: Node, whatToShow?: number, filter?: NodeFilter | null): TreeWalker;
+    退出指针锁定(): void;
     按编号取元素(elementId: string): HTMLElement | null;
     按类取元素组(classNames: string): HTMLCollectionOf<Element>;
     按名取元素(elementName: string): NodeListOf<HTMLElement>;
@@ -1738,6 +1739,7 @@ interface Document {
     按标签取元素<K extends keyof MathMLElementTagNameMap>(qualifiedName: K): HTMLCollectionOf<MathMLElementTagNameMap[K]>;
     按标签取元素<K extends keyof HTMLElementDeprecatedTagNameMap>(qualifiedName: K): HTMLCollectionOf<HTMLElementDeprecatedTagNameMap[K]>;
     按标签取元素(qualifiedName: string): HTMLCollectionOf<Element>;
+    取选区(): Selection | null;
     导入节点<T extends Node>(node: T, options?: boolean | ImportNodeOptions): T;
     打开(unused1?: string, unused2?: string): Document;
     打开(url: string | URL, name: string, features: string): WindowProxy | null;
@@ -1772,6 +1774,7 @@ interface Element {
     最近祖先<E extends Element = Element>(selectors: string): E | null;
     取属性(qualifiedName: string): string | null;
     取属性名(): string[];
+    取属性节点(qualifiedName: string): Attr | null;
     取边界矩形(): DOMRect;
     按类取元素组(classNames: string): HTMLCollectionOf<Element>;
     按标签取元素<K extends keyof HTMLElementTagNameMap>(qualifiedName: K): HTMLCollectionOf<HTMLElementTagNameMap[K]>;
@@ -1780,13 +1783,22 @@ interface Element {
     按标签取元素<K extends keyof HTMLElementDeprecatedTagNameMap>(qualifiedName: K): HTMLCollectionOf<HTMLElementDeprecatedTagNameMap[K]>;
     按标签取元素(qualifiedName: string): HTMLCollectionOf<Element>;
     有属性(qualifiedName: string): boolean;
+    邻近插入标记(position: InsertPosition, string: string): void;
     匹配选择器<K extends keyof HTMLElementTagNameMap>(selectors: K): this is HTMLElementTagNameMap[K];
     匹配选择器<K extends keyof SVGElementTagNameMap>(selectors: K): this is SVGElementTagNameMap[K];
     匹配选择器<K extends keyof MathMLElementTagNameMap>(selectors: K): this is MathMLElementTagNameMap[K];
     匹配选择器(selectors: string): boolean;
+    释放指针捕获(pointerId: number): void;
     删属性(qualifiedName: string): void;
+    请求指针锁定(options?: PointerLockOptions): Promise<void>;
+    滚动偏移(options?: ScrollToOptions): void;
+    滚动偏移(x: number, y: number): void;
     滚入视野(arg?: boolean | ScrollIntoViewOptions): void;
+    滚动到(options?: ScrollToOptions): void;
+    滚动到(x: number, y: number): void;
     设置属性(qualifiedName: string, value: string): void;
+    设属性节点(attr: Attr): Attr | null;
+    设指针捕获(pointerId: number): void;
     切换属性(qualifiedName: string, force?: boolean): boolean;
     get 文本内容(): string;
     set 文本内容(value: string | null);
@@ -3474,6 +3486,7 @@ interface RadioNodeList {
 }
 
 interface Range {
+    提取内容(): DocumentFragment;
     取边界矩形(): DOMRect;
     转字符串(): string;
 }
@@ -4577,8 +4590,14 @@ interface Window {
     失焦(): void;
     关闭(): void;
     聚焦(): void;
+    取计算样式(elt: Element, pseudoElt?: string | null): CSSStyleDeclaration;
+    取选区(): Selection | null;
     移到(x: number, y: number): void;
     打开(url?: string | URL, target?: string, features?: string): WindowProxy | null;
+    滚动偏移(options?: ScrollToOptions): void;
+    滚动偏移(x: number, y: number): void;
+    滚动到(options?: ScrollToOptions): void;
+    滚动到(x: number, y: number): void;
     加事件监听<K extends keyof WindowEventMap>(type: K, listener: (this: Window, ev: WindowEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof WindowEventMap>(type: K, listener: (this: Window, ev: WindowEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
