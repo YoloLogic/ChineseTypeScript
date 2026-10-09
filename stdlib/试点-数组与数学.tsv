@@ -1215,6 +1215,16 @@ member	scope	作用域
 member	icon	图标
 member	badge	徽标
 member	endpoint	端点
+member	showNotification	显示通知
+member	getNotifications	取通知
+member	updateViaCache	更新缓存方式
+member	expirationTime	过期时刻
+member	getKey	取键
+member	requireInteraction	需交互
+member	silent	静默
+member	userVisibleOnly	仅用户可见
+member	query	查询
+member	image	图像
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

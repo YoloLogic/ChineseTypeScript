@@ -547,6 +547,10 @@ interface ImageDataSettings {
     色彩空间?: PredefinedColorSpace;
 }
 
+interface ImageDecodeResult {
+    图像: VideoFrame;
+}
+
 interface ImageDecoderInit {
     数据: ImageBufferSource;
     转移?: ArrayBuffer[];
@@ -757,6 +761,8 @@ interface NotificationOptions {
     书写方向?: NotificationDirection;
     图标?: string;
     语言?: string;
+    需交互?: boolean;
+    静默?: boolean | null;
 }
 
 interface OfflineAudioContextOptions {
@@ -946,7 +952,12 @@ interface PublicKeyCredentialUserEntityJSON {
 
 interface PushSubscriptionJSON {
     端点?: string;
+    过期时刻?: EpochTimeStamp | null;
     键列?: Record<string, string>;
+}
+
+interface PushSubscriptionOptionsInit {
+    仅用户可见?: boolean;
 }
 
 interface QueuingStrategy<T = any> {
@@ -1081,6 +1092,7 @@ interface ReadableWritablePair<R = any, W = any> {
 interface RegistrationOptions {
     作用域?: string;
     种类?: WorkerType;
+    更新缓存方式?: ServiceWorkerUpdateViaCache;
 }
 
 interface RegistrationResponseJSON {
@@ -4015,6 +4027,7 @@ interface IDBIndex {
     获取(query: IDBValidKey | IDBKeyRange): IDBRequest<any>;
     取全部(queryOrOptions?: IDBValidKey | IDBKeyRange | null, count?: number): IDBRequest<any[]>;
     取全部键(queryOrOptions?: IDBValidKey | IDBKeyRange | null, count?: number): IDBRequest<IDBValidKey[]>;
+    取键(query: IDBValidKey | IDBKeyRange): IDBRequest<IDBValidKey | undefined>;
     打开游标(query?: IDBValidKey | IDBKeyRange | null, direction?: IDBCursorDirection): IDBRequest<IDBCursorWithValue | null>;
 }
 
@@ -4035,6 +4048,7 @@ interface IDBObjectStore {
     获取(query: IDBValidKey | IDBKeyRange): IDBRequest<any>;
     取全部(queryOrOptions?: IDBValidKey | IDBKeyRange | null, count?: number): IDBRequest<any[]>;
     取全部键(queryOrOptions?: IDBValidKey | IDBKeyRange | null, count?: number): IDBRequest<IDBValidKey[]>;
+    取键(query: IDBValidKey | IDBKeyRange): IDBRequest<IDBValidKey | undefined>;
     序号(name: string): IDBIndex;
     打开游标(query?: IDBValidKey | IDBKeyRange | null, direction?: IDBCursorDirection): IDBRequest<IDBCursorWithValue | null>;
     存入(value: any, key?: IDBValidKey): IDBRequest<IDBValidKey>;
@@ -4202,6 +4216,10 @@ interface Location {
 interface Lock {
     readonly 模式: LockMode;
     readonly 名称: string;
+}
+
+interface LockManager {
+    查询(): Promise<LockManagerSnapshot>;
 }
 
 interface MIDIAccess {
@@ -4643,6 +4661,8 @@ interface Notification {
     readonly 图标: string;
     readonly 语言: string;
     出错时: ((this: Notification, ev: Event) => any) | null;
+    readonly 需交互: boolean;
+    readonly 静默: boolean | null;
     readonly 标题: string;
     关闭(): void;
     加事件监听<K extends keyof NotificationEventMap>(type: K, listener: (this: Notification, ev: NotificationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4886,6 +4906,10 @@ interface PermissionStatus {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface Permissions {
+    查询(permissionDesc: PermissionDescriptor): Promise<PermissionStatus>;
+}
+
 interface PictureInPictureWindow {
     readonly 高度: number;
     readonly 宽度: number;
@@ -4945,8 +4969,14 @@ interface PushManagerAttribute {
 
 interface PushSubscription {
     readonly 端点: string;
+    readonly 过期时刻: EpochTimeStamp | null;
     readonly 选项列: PushSubscriptionOptions;
+    取键(name: PushEncryptionKeyName): ArrayBuffer | null;
     转数据(): PushSubscriptionJSON;
+}
+
+interface PushSubscriptionOptions {
+    readonly 仅用户可见: boolean;
 }
 
 interface RTCDTMFSender {
@@ -6071,7 +6101,10 @@ interface ServiceWorkerRegistration {
     readonly 正在安装: ServiceWorker | null;
     readonly 导航预加载: NavigationPreloadManager;
     readonly 作用域: string;
+    readonly 更新缓存方式: ServiceWorkerUpdateViaCache;
     readonly 等待中: ServiceWorker | null;
+    取通知(filter?: GetNotificationOptions): Promise<Notification[]>;
+    显示通知(title: string, options?: NotificationOptions): Promise<void>;
     注销(): Promise<boolean>;
     更新(): Promise<ServiceWorkerRegistration>;
     加事件监听<K extends keyof ServiceWorkerRegistrationEventMap>(type: K, listener: (this: ServiceWorkerRegistration, ev: ServiceWorkerRegistrationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
