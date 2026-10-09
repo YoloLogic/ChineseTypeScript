@@ -1,4 +1,4 @@
-﻿# ============================================================================
+# ============================================================================
 #  judge_package.ps1 -- the distributable package is judged, not assumed.
 #
 #  Every step produces evidence:
@@ -73,9 +73,20 @@ if ($pkgOk) {
     $verifyOut = (& pwsh -NoProfile -ExecutionPolicy Bypass -File (Join-Path $pkgDir 'verify.ps1') 2>&1 | Out-String)
     $code = $LASTEXITCODE
     if (-not $Quiet) { $verifyOut.Trim() -split '\r?\n' | Select-Object -Last 4 | ForEach-Object { Write-Host ('    ' + $_) } }
-    $verifyOk = ($code -eq 0) -and ($verifyOut -match '16 passed, 0 failed')
+    $verifyOk = ($code -eq 0) -and ($verifyOut -match '21 passed, 0 failed')
 }
-Check '④ 包内自测 16/16' $verifyOk '真编译真跑 + 一个必须失败的用例'
+Check '④ 包内自测 21/21' $verifyOk '真编译真跑 + 5 份许可/披露文件点名 + 一个必须失败的用例'
+
+# ⑤ 文档数字守卫：文档里写的自检项数必须等于 packaging/verify.ps1 里的 $expectedChecks。
+# （与 judge_zhstdlib 的「文档数字一致」同一思路：数字不能靠人记。）
+$vfText = [System.IO.File]::ReadAllText((Join-Path (Split-Path -Parent $PSScriptRoot) 'packaging\verify.ps1'))
+$em = [regex]::Match($vfText, '\$expectedChecks\s*=\s*(\d+)')
+$expected = if ($em.Success) { $em.Groups[1].Value } else { '' }
+$repoRoot = Split-Path -Parent $PSScriptRoot
+# 注意：PowerShell 字符串不认 \uXXXX 转义，这里必须写真正的汉字（源码是 UTF-8）。
+$docText = [System.IO.File]::ReadAllText((Join-Path $repoRoot 'README-我们的说明.md')) + [System.IO.File]::ReadAllText((Join-Path $repoRoot 'packaging\README-使用说明.md'))
+$docOk = ($expected -ne '') -and ($docText -match ([regex]::Escape($expected) + '\s*项'))
+Check '⑤ 文档里的自检项数与 verify.ps1 一致' $docOk ('verify.ps1 声明=' + $expected)
 
 # ---------------------------------------------------------------------------
 Write-Host ''
@@ -97,7 +108,7 @@ if ($pkgOk) {
         $restored = (Test-Path $exe)
     }
 }
-Check '⑤ 破坏后必被抓（判据自测）' ($caught -and $restored) ('改坏后被抓=' + $caught + '，恢复后存在=' + $restored)
+Check '⑥ 破坏后必被抓（判据自测）' ($caught -and $restored) ('改坏后被抓=' + $caught + '，恢复后存在=' + $restored)
 
 # ---------------------------------------------------------------------------
 Write-Host ''

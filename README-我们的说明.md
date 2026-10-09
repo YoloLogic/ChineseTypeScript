@@ -16,7 +16,34 @@
   `git clone https://gitee.com/mirrors/TypeScript.git`
 * 本副本基线 HEAD：`e26b8d24bee09bf66d59941912166c5aa7975d20`（= 上游 `e26b8d24`）
 * 上游原样副本另存于：`E:\TypeScript源代码`（**不要改它**，它是比对的基准）
-* 许可：**Apache-2.0**（可修改、可再发行；需保留声明）
+* 上游许可：**Apache-2.0**（上游那部分不因我们的条款而改变；见下）
+
+## 一·五、许可（用户 2026-10-09 裁定：改用自定义条款）
+
+**本项目原创部分**（汉化层、工具、判据、文档、打包脚本、汉语标准库声明）**不再用任何标准开源许可**，
+改用一份**自定义条款**：**源码可见（source-available）**、允许自用与修改、允许用它开发并销售你自己的程序，
+但**禁止重新打包再发布**（唯一例外：非营利、原封不动地整体转发）。
+
+| 文件 | 作用 |
+|---|---|
+| `LICENSE` | 自定义条款全文（中文为主 + English summary + 通俗版） |
+| `LICENSE-SCOPE.md` | 范围说明：哪些受「禁止再发布」约束、哪些不受；**机器可查的判定规则** |
+| `TRADEMARK.md` | 名称与图标条款（独立于著作权；未注册商标也同样有效） |
+| `LICENSE.txt` | 上游 **Apache-2.0** 正文（与上游**逐字节相同**，**不许改写**） |
+| `NOTICE.txt` | 上游第三方披露（照录）+ 本项目披露（改了哪些上游文件、带了哪些第三方） |
+
+**为什么不用 AGPL**：AGPL 明确允许**商业再分发**，与本项目「不许别人包装再发布」的诉求直接冲突。
+（中文 C++ 项目曾短暂用过 AGPL-3.0，后来也换掉了。）
+
+**法律上搬不动的边界（已写进文件，否则会与上游许可冲突）**：本项目派生自 microsoft/typescript-go
+（Apache-2.0），因此从上游派生的**源码与二进制**（含 `bin\chtsc.exe`）**仍按 Apache-2.0**，
+我们的条款**不改变、也不得对它们附加限制** —— 「禁止再发布」只约束**我们原创的那一部分**。
+判定规则：文件头带 `SPDX-License-Identifier:` 或上游版权行的，按原有许可，不受本条款约束。
+
+**判据**：`python tests-chts\verify_licenses.py`（也随 `run_all.ps1` 一起跑）——
+断言 5 份文件齐备、`LICENSE` 逐字节等于我们声明的那一份（SHA256 钉住）、
+`LICENSE.txt` 与上游逐字节相同、`NOTICE.txt` 含全部法定声明；**自带自测**（改坏许可证 / 空洞 NOTICE
+必须判失败）；反向验证过（把口径换回标准开源许可 → 判据退出码 1）。
 
 ## 二、为什么底本选 TS 7（Go 版）而不是经典 TS 5.x/6.x
 
@@ -125,9 +152,9 @@
 | **全集回归** | `tests-chts/judge_gotest.ps1`（4 项，跑上游 Go 测试全集并与基线对照；**允许清单**里含 `internal/fourslash/tests` —— 「汉语补全对所有 `.ts` 生效」带来的**有意**差异） |
 | **教学教程**（生成物） | `教程/ChineseTypeScript-教学教程.md`（9 课：关键字用法 + 符号用法 + 内建用法）+ **Word 版 `教程/ChineseTypeScript-教学教程.docx`**；守卫 `tests-chts/judge_tutorial.ps1` 真编译真跑每个例子、核 docx 同步、并守例子目录构成 |
 | **打包器** | `tools/make_package_chts.ps1` → `dist\ChineseTypeScript-<ver>-win64.zip`（自带 `chtsc` + 便携 node + 生成物文档 + 例子） |
-| **包内自测** | `packaging/verify.ps1`（16 项，`$expectedChecks` 自证；含一个**必须失败**的用例） |
+| **包内自测** | `packaging/verify.ps1`（**21 项**，`$expectedChecks` 自证；含 5 份许可/披露文件点名 + 一个**必须失败**的用例） |
 | **一键安装/还原** | `packaging/install.ps1` + `一键安装.cmd` / `uninstall.ps1` + `一键还原.cmd`（只写会话级 `env.cmd`；`-AddToUserPath` 才动用户 PATH） |
-| **打包判定** | `tests-chts/judge_package.ps1`（5 项：真打包 → 解压到中文路径 → 安装 → 包内 16/16 → 破坏必被抓） |
+| **打包判定** | `tests-chts/judge_package.ps1`（6 项：真打包 → 解压到中文路径 → 安装 → 包内 21/21 → 文档数字对拍 → 破坏必被抓） |
 | **汉语关键字只读 API** | `tsc/internal/scanner/zh_keywords_api.go`（`ChineseKeywordAliases` / `ChineseKeywordSpellings` / `StringToTokenIncludingChinese`，**升序确定性**；`StringToToken` 保持只认英文） |
 | **语言服务判定** | `tests-chts/judge_langservice.ps1`（9 项：三组 Go 守卫 + CLI 真编译三条汉语建议 + 两条负对照） |
 | **中文诊断判定** | `tests-chts/judge_zhdiag.ps1`（7 项：默认中文 / `--locale en` 回英文 / 默认==显式 zh-CN / 抽样多码中文 / 正确程序无诊断 / 上游缺译条目也出中文 / **`--help` 首行中文 `chtsc:` 而英文仍 `tsc:`**） |
@@ -144,18 +171,19 @@
 
 * **产物**：`dist\ChineseTypeScript-0.1-win64.zip`（51.6 MB；未压缩 125.7 MB / 25 个文件）。
   内含 `bin\chtsc.exe`（38 MB）、`node\node.exe`（87 MB，官方 **v24.15.0**，SHA256 与官方 win-x64 发行包**逐字节一致**）、
-  生成物文档（`docs\中文对照表.md`、教程 md + docx）、`例子\`（9 个）、`LICENSE.txt`/`NOTICE.txt`、`node\LICENSE`、
+  生成物文档（`docs\中文对照表.md`、教程 md + docx）、`例子\`（9 个）、
+  **5 份许可/披露文件**（`LICENSE`/`LICENSE.txt`/`NOTICE.txt`/`LICENSE-SCOPE.md`/`TRADEMARK.md`）、`node\LICENSE`、
   安装/还原/自测脚本与 `MANIFEST.tsv`。
 * **打包**：`pwsh -File tools\make_package_chts.ps1`（`-Version` / `-OutDir` / `-Rebuild` / `-NoNode`）。
   默认输出 `dist\`（`.gitignore` 已忽略，**不进库**）。
-* **包内自测**（`packaging\verify.ps1`，**纯 ASCII**，汉语从码点构造）：16 项，项数由
+* **包内自测**（`packaging\verify.ps1`，**纯 ASCII**，汉语从码点构造）：**21 项**，项数由
   `$expectedChecks` **自证**（跑不到这个数就判失败）；第 5 项**故意编一个错程序**，确认它真的被拒 ——
   「判据不是橡皮图章」的自证。
 * **一键安装**只写**会话级** `env.cmd`（`PATH` 只在该窗口生效）；`-AddToUserPath` 才动用户 PATH；
   `一键还原.cmd` / `uninstall.ps1` 精确复原（实测 `PATH restored exactly = True`）。
 * **机器守卫**：`tests-chts\judge_package.ps1`（5 项）**真打包**、解压到**含中文**的外来目录、
   跑安装与包内自测，并证明「把包内编译器改名后自测**必失败**」。
-* 实测：包内自测 **16/16**、打包判定 **5/5**。
+* 实测：包内自测 **21/21**、打包判定 **6/6**。
 
 ## 六·六、语言服务与建议（item①，2026-10-07）
 
@@ -252,7 +280,7 @@ judge_gotest.ps1  4/4 通过（上游自带 Go 测试全集，跑两遍：基线
 judge_tutorial.ps1  5 步全过（9 个例子真编译真跑逐行比对、教程与模板/例子/对照表一致、
                     Word 版 .docx 与正文同步、例子目录构成守卫、改坏期望输出必须被抓的自测）
 judge_package.ps1   5/5（真打包 51.6 MB → 解压到含中文的外来目录 → install 写 env.cmd →
-                    包内 verify 16/16 → 把包内 chtsc 改名后 verify 必失败）
+                    包内 verify 21/21 → 把包内 chtsc 改名后 verify 必失败）
 judge_langservice.ps1  9/9（scanner 5 + parser 4 + ls 6 条 Go 守卫；CLI 三条汉语建议：
                        函树→函数、局部变两→局部变量、如果甲→如果；两条负对照无建议）
 judge_zhdiag.ps1    7/7（默认出中文 → --locale en 回英文 → 默认==显式 zh-CN 逐字节相同 →
@@ -300,7 +328,7 @@ run_all.ps1       八项：judge_chts / judge_proj / judge_oss / judge_tutorial 
    + 我们补的 86 条（`zh_extra.go`）；中文 `--help` 首行是 `chtsc:`（英文仍是上游的 `tsc:`）。
    译文与 Chinese++ 的 7344 条**不保证同词同译**。
 5. ~~**未打包、未发布**~~ —— **已出独立发行包**（2026-10-07，见「六·五」节）：
-   `dist\ChineseTypeScript-0.1-win64.zip`（自带便携 node），包内自测 16/16、打包判定 5/5。
+   `dist\ChineseTypeScript-0.1-win64.zip`（自带便携 node），包内自测 21/21、打包判定 6/6。
    **但仍未发布到网上**（无上传 / 下载页 / CI）。
 6. ~~**`未定义`（undefined）不能当【值】用**~~ —— **已修**（2026-10-07，写教程时真编译撞出来的）。
    症状：`常量 甲 = 未定义;` 报 `TS2304 找不到名字`，而 `: 未定义`（当类型）正常。

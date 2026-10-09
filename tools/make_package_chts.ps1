@@ -104,8 +104,13 @@ if (-not $NoNode) {
     Copy-Item $nodeLic (Join-Path $pkg 'node\LICENSE') -Force
 }
 
-Copy-Item (Join-Path $root 'LICENSE.txt') $pkg -Force
-Copy-Item (Join-Path $root 'NOTICE.txt')  $pkg -Force
+# 许可与披露：5 份文件缺任何一份直接失败（不要静默跳过）。
+# 这是 Apache-2.0 §4(a)/(d) 与本书面条款（禁止再发布）的前提：包内必须齐备。
+foreach ($lic in @('LICENSE', 'LICENSE.txt', 'NOTICE.txt', 'LICENSE-SCOPE.md', 'TRADEMARK.md')) {
+    $licSrc = Join-Path $root $lic
+    if (-not (Test-Path $licSrc)) { throw ('发行包缺少 ' + $lic + ' —— 许可/披露文件必须齐备，打包中止') }
+    Copy-Item $licSrc $pkg -Force
+}
 
 Copy-Item (Join-Path $root 'docs\中文对照表.md')                          (Join-Path $pkg 'docs') -Force
 Copy-Item (Join-Path $root '教程\ChineseTypeScript-教学教程.md')          (Join-Path $pkg 'docs') -Force

@@ -2,7 +2,7 @@
 #
 #   pwsh -File tests-chts\run_all.ps1
 #
-# 八项判定按顺序跑，最后给汇总：
+# 十项判定按顺序跑，最后给汇总：
 #   —— 核心 ——
 #   1) judge_chts.ps1      关键字与端到端（生成器幂等、守卫、英文逐字节一致、
 #                          汉语源编译、产物无汉语关键字、node 真跑、非关键字汉语标识符）
@@ -15,6 +15,8 @@
 #   7) judge_zhdiag.ps1       诊断默认中文
 #   8) judge_kwscope.ps1      汉语关键字在普通 .ts 里全局生效（本项目的用法）
 #   9) judge_zhstdlib.ps1     标准库汉化【试点：数组+数学】端到端（类型检查 → 标准 JS → node 真跑）
+#  10) judge_licenses.ps1    许可与披露（LICENSE 正文哈希、上游 LICENSE.txt 逐字节、NOTICE 法定声明、
+#                          5 份文件齐备；判据自带自测，含反向验证）
 #
 # 用 -SkipGoTest 可跳过第 4 项（它要把全集测试跑两遍，最慢）。
 
@@ -36,7 +38,9 @@ $runs = @(
     @{ 名称 = 'judge_langservice.ps1'; 参数 = @('-NoBuild') },
     @{ 名称 = 'judge_zhdiag.ps1'; 参数 = @('-NoBuild') },
     @{ 名称 = 'judge_kwscope.ps1'; 参数 = @('-NoBuild') },
-    @{ 名称 = 'judge_zhstdlib.ps1'; 参数 = @('-NoBuild') }
+    @{ 名称 = 'judge_zhstdlib.ps1'; 参数 = @('-NoBuild') },
+    # 许可与披露判定与构建无关（纯文本断言），单独一项。
+    @{ 名称 = 'judge_licenses.ps1'; 参数 = @() }
 )
 if (-not $SkipGoTest) { $runs += @{ 名称 = 'judge_gotest.ps1'; 参数 = @() } }
 

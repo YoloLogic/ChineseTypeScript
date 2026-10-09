@@ -33,7 +33,7 @@ $chtsc = Join-Path $bin 'chtsc.exe'
 $node  = Join-Path $here 'node\node.exe'
 
 # --- how many checks this script performs when everything passes ------------
-$expectedChecks = 16
+$expectedChecks = 21
 
 $script:pass = 0
 $script:fail = 0
@@ -200,6 +200,19 @@ $exDir = Join-Path $here $nameEx
 $exFiles = @(Get-ChildItem $exDir -Filter '*.ts' -File -ErrorAction SilentlyContinue)
 if ($exFiles.Count -ge 9) { Ok ('examples shipped (' + $exFiles.Count + ' .ts files)') }
 else { Bad ('examples missing or incomplete in ' + $nameEx + ' (' + $exFiles.Count + ' files)') }
+
+# ---------------------------------------------------------------------------
+Write-Host ''
+Write-Host '--- 7) license & disclosure files'
+# ---------------------------------------------------------------------------
+# 5 份文件逐份点名：LICENSE（本项目自定义条款）、LICENSE.txt（上游 Apache-2.0，与上游逐字节相同）、
+# NOTICE.txt（上游正文 + 本项目披露）、LICENSE-SCOPE.md（范围说明）、TRADEMARK.md（名称条款）。
+# 文件名全为 ASCII，故这里直接写字符串（本脚本其余处的中文用码点构造）。
+foreach ($lic in @('LICENSE', 'LICENSE.txt', 'NOTICE.txt', 'LICENSE-SCOPE.md', 'TRADEMARK.md')) {
+    $licPath = Join-Path $here $lic
+    if ((Test-Path $licPath) -and ((Get-Item $licPath).Length -gt 0)) { Ok ($lic + ' present') }
+    else { Bad ($lic + ' missing or empty') }
+}
 
 # ---------------------------------------------------------------------------
 if (-not $KeepTemp) { Remove-Item -Recurse -Force $tmp -ErrorAction SilentlyContinue }

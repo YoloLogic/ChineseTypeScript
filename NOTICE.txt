@@ -1,3 +1,72 @@
+ChineseTypeScript —— 第三方与许可披露（本项目补充部分，2026-10-09）
+=================================================================
+
+【本文件结构】下面这一段是**本项目**的补充披露；其后是上游 Microsoft 的
+NOTICE 正文，**原样保留、未作任何改动**（Apache-2.0 §4(d) 要求保留上游 NOTICE）。
+
+0. 联系方式
+   项目：ChineseTypeScript · 汉语 TypeScript
+   著作权人：ChineseTypeScript 项目作者
+   联系方式：QQ 1396257961
+
+1. 这是什么：**修改过的** microsoft/typescript-go（Apache-2.0 §4(b) 要求声明改动）
+   本项目是 microsoft/typescript-go（基线提交 e26b8d24）的**派生作品**，并对其做了**修改**：
+   加入了中文关键字、中文诊断、汉语标准库与相关工具。改动过的上游文件共 **7 个**：
+
+     tsc/cmd/tsc/main.go                  （命令行默认中文）
+     tsc/internal/core/core.go            （汉语关键字登记）
+     tsc/internal/diagnostics/diagnostics.go
+     tsc/internal/ls/completions.go       （汉语补全）
+     tsc/internal/parser/parser.go
+     tsc/internal/printer/printer.go      （emit 改写：汉语名打回英文）
+     tsc/internal/scanner/scanner.go      （识别汉语关键字）
+
+   本项目**新增**（非上游改动）的文件：tsc/cmd/genzhkeywords/、tsc/internal/scanner/zh_keywords*.go、
+   tsc/internal/scanner/zh_stdlib*.go、tsc/internal/diagnostics/zh_extra*.go、stdlib/、tools/、
+   packaging/、tests-chts/、docs/、教程/ 等（逐项见 LICENSE-SCOPE.md 第一节）。
+
+2. 上游许可（不因本许可而改变）
+   * 从 microsoft/typescript-go 派生的**全部源码与二进制**（含 bin\chtsc.exe）仍按
+     **Apache License 2.0** 分发，正文见同目录 **LICENSE.txt**（与上游**逐字节相同**）。
+   * 派生自 microsoft/TypeScript 的部分（packages\typescript、packages\vscode-typescript*、
+     编译时内嵌的 TypeScript 标准库声明 lib.*.d.ts）按 microsoft/TypeScript 自身许可。
+   ⇒ 本项目**不改变、也不对这些部分附加任何限制**；谁拿到这些部件，就按那些许可享有权利
+     （包括再分发）。逐项判定规则见 **LICENSE-SCOPE.md（许可范围说明）**。
+
+3. 本项目原创部分：**自定义**许可（源码可见，**不是** OSI 意义上的开源）
+   本项目自己写的那部分（汉化层、工具、文档、判据、汉语标准库声明、打包脚本）采用
+   **自定义条款**，正文见同目录 **LICENSE**。要点：
+   * 允许：阅读 / 学习 / 修改（仅自用）；用它开发、编译、发布、销售**你自己的程序**
+     （个人或公司、开源或闭源都行）。**编译产物完全归写它的人，本许可不附加任何条件。**
+   * **唯一例外**：**未经修改**的官方发行包，可为**非营利**目的**整体原样转发**
+     （四个条件见 LICENSE 第四节：一字节不改 / 不收费不带广告或付费墙 / 不暗示是自己的产品 /
+     保留官方来源链接）。
+   * **禁止再发布**：重新打包、改名换标上架、随产品/硬件捆绑、当付费服务提供、
+     发布修改版、拆开只取其中一部分用于你自己的发行物 —— 除事先取得作者书面许可。
+   * 名称与图标另立条款：见 **TRADEMARK.md（名称条款）** —— 不得用本项目名称与图标
+     发布衍生版本；**即使尚未注册商标，该条作为许可条款同样有效**。
+   * 作者保留随时把后续版本改为更宽松许可的权利（见 LICENSE 第五节）。
+   * 性质：**source-available（源码可见）**，**不是** OSI 意义上的开源 ——
+     OSI 要求允许再分发，而本许可恰恰不允许再发布（唯一例外见上）。
+
+4. 随包携带的第三方（如实披露：包里**确实带了可再分发**的第三方运行时）
+   | 在包里 | 是什么 | 许可 / 来源 |
+   |---|---|---|
+   | node\node.exe、node\LICENSE | Node.js 运行时 | Node.js（MIT），随包附其许可证正文 |
+   | LICENSE.txt | 上游 Apache-2.0 正文 | microsoft/typescript-go，与上游逐字节相同 |
+   | NOTICE.txt（本文件） | 上游第三方披露 + 本项目补充披露 | 上游正文照录；补充部分由本项目撰写 |
+
+   因此**不能**说「本包没有再分发任何第三方的东西」：包里带了 Node.js 运行时
+   （其许可允许再分发），以及上游 Apache-2.0 的代码与二进制。
+
+5. 本文件在发行包中的位置与自检
+   发行包内必须同时含：LICENSE、LICENSE.txt、NOTICE.txt（本文件）、LICENSE-SCOPE.md、TRADEMARK.md。
+   packaging/verify.ps1 会**逐份点名检查**这 5 份文件；缺任何一份即判失败、不允许发布。
+
+=================================================================
+【以下为上游 Microsoft NOTICE 正文，原样保留，未作任何改动】
+=================================================================
+
 NOTICES AND INFORMATION
 Do Not Translate or Localize
 
