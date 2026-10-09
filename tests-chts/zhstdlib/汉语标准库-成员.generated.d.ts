@@ -238,6 +238,7 @@ interface ReadableStreamReadValueResult<T> {
 
 interface SVGBoundingBoxOptions {
     填充?: boolean;
+    描边?: boolean;
 }
 
 interface ShareData {
@@ -541,6 +542,7 @@ interface CSSStyleProperties {
     填充: string;
     过滤: string;
     高度: string;
+    描边: string;
     宽度: string;
 }
 
@@ -605,17 +607,41 @@ interface CanvasCaptureMediaStreamTrack {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface CanvasDrawImage {
+    绘制图像(image: CanvasImageSource, dx: number, dy: number): void;
+    绘制图像(image: CanvasImageSource, dx: number, dy: number, dw: number, dh: number): void;
+    绘制图像(image: CanvasImageSource, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number): void;
+}
+
 interface CanvasDrawPath {
+    开始路径(): void;
     填充(fillRule?: CanvasFillRule): void;
     填充(path: Path2D, fillRule?: CanvasFillRule): void;
+    描边(): void;
+    描边(path: Path2D): void;
 }
 
 interface CanvasFilters {
     过滤: string;
 }
 
+interface CanvasPath {
+    画弧(x: number, y: number, radius: number, startAngle: number, endAngle: number, counterclockwise?: boolean): void;
+    闭合路径(): void;
+    连线到(x: number, y: number): void;
+    移到(x: number, y: number): void;
+}
+
+interface CanvasRect {
+    清矩形(x: number, y: number, w: number, h: number): void;
+    填充矩形(x: number, y: number, w: number, h: number): void;
+    描边矩形(x: number, y: number, w: number, h: number): void;
+}
+
 interface CanvasState {
     重置(): void;
+    恢复(): void;
+    保存(): void;
 }
 
 interface CharacterData {
@@ -3135,6 +3161,7 @@ interface Window {
     失焦(): void;
     关闭(): void;
     聚焦(): void;
+    移到(x: number, y: number): void;
     打开(url?: string | URL, target?: string, features?: string): WindowProxy | null;
     加事件监听<K extends keyof WindowEventMap>(type: K, listener: (this: Window, ev: WindowEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
