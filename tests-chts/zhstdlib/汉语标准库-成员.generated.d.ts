@@ -366,6 +366,7 @@ interface DragEventInit {
 
 interface DynamicsCompressorOptions {
     释放?: number;
+    阈值?: number;
 }
 
 interface EcdsaParams {
@@ -457,6 +458,7 @@ interface GPUBindGroupLayoutDescriptor {
 interface GPUBindGroupLayoutEntry {
     缓冲?: GPUBufferBindingLayout;
     采样器?: GPUSamplerBindingLayout;
+    纹理?: GPUTextureBindingLayout;
 }
 
 interface GPUBlendState {
@@ -475,6 +477,7 @@ interface GPUBufferBindingLayout {
 
 interface GPUBufferDescriptor {
     大小: GPUSize64;
+    用量: GPUBufferUsageFlags;
 }
 
 interface GPUCanvasConfiguration {
@@ -482,6 +485,7 @@ interface GPUCanvasConfiguration {
     色彩空间?: PredefinedColorSpace;
     设备: GPUDevice;
     格式化: GPUTextureFormat;
+    用量?: GPUTextureUsageFlags;
 }
 
 interface GPUCanvasToneMapping {
@@ -532,6 +536,10 @@ interface GPUOrigin3DDict {
     深度坐标?: GPUIntegerCoordinate;
 }
 
+interface GPUPrimitiveState {
+    拓扑?: GPUPrimitiveTopology;
+}
+
 interface GPUQuerySetDescriptor {
     种类: GPUQueryType;
 }
@@ -566,15 +574,18 @@ interface GPUTexelCopyBufferLayout {
 
 interface GPUTexelCopyTextureInfo {
     源点?: GPUOrigin3D;
+    纹理: GPUTexture;
 }
 
 interface GPUTextureDescriptor {
     格式化: GPUTextureFormat;
     大小: GPUExtent3D;
+    用量: GPUTextureUsageFlags;
 }
 
 interface GPUTextureViewDescriptor {
     格式化?: GPUTextureFormat;
+    用量?: GPUTextureUsageFlags;
 }
 
 interface GPUUncapturedErrorEventInit {
@@ -681,6 +692,7 @@ interface InputEventInit {
 interface IntersectionObserverInit {
     根元素?: Element | Document | null;
     根边距?: string;
+    阈值?: number | number[];
 }
 
 interface JsonWebKey {
@@ -741,6 +753,10 @@ interface MIDIConnectionEventInit {
 
 interface MIDIMessageEventInit {
     数据?: Uint8Array<ArrayBuffer>;
+}
+
+interface MIDIOptions {
+    系统专用?: boolean;
 }
 
 interface MediaCapabilitiesKeySystemConfiguration {
@@ -834,6 +850,7 @@ interface MediaTrackConstraints {
 interface MediaTrackSettings {
     高度?: number;
     采样率?: number;
+    手电筒?: boolean;
     宽度?: number;
 }
 
@@ -1188,6 +1205,7 @@ interface RTCIceCandidatePairStats {
 }
 
 interface RTCIceServer {
+    地址集: string | string[];
     用户名?: string;
 }
 
@@ -1448,6 +1466,10 @@ interface StaticRangeInit {
 
 interface StereoPannerOptions {
     声像?: number;
+}
+
+interface StorageEstimate {
+    用量?: number;
 }
 
 interface StorageEventInit {
@@ -2590,6 +2612,10 @@ interface CookieStore {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface CookieStoreManager {
+    退订(subscriptions: CookieStoreGetOptions[]): Promise<void>;
+}
+
 interface CountQueuingStrategy {
     readonly 高水位: number;
     readonly 大小: QueuingStrategySize;
@@ -2945,6 +2971,7 @@ interface DragEvent {
 
 interface DynamicsCompressorNode {
     readonly 释放: AudioParam;
+    readonly 阈值: AudioParam;
 }
 
 interface Element {
@@ -3229,12 +3256,14 @@ interface GPUAdapterInfo {
 
 interface GPUBuffer {
     readonly 大小: GPUSize64Out;
+    readonly 用量: GPUFlagsConstant;
     销毁(): void;
 }
 
 interface GPUCanvasContext {
     readonly 画布: HTMLCanvasElement | OffscreenCanvas;
     取配置(): GPUCanvasConfiguration | null;
+    取消配置(): void;
 }
 
 interface GPUCommandEncoder {
@@ -3296,6 +3325,7 @@ interface GPUSupportedFeatures {
 interface GPUTexture {
     readonly 格式化: GPUTextureFormat;
     readonly 高度: GPUIntegerCoordinateOut;
+    readonly 用量: GPUFlagsConstant;
     readonly 宽度: GPUIntegerCoordinateOut;
     销毁(): void;
 }
@@ -5527,6 +5557,7 @@ interface PushSubscription {
     readonly 选项列: PushSubscriptionOptions;
     取键(name: PushEncryptionKeyName): ArrayBuffer | null;
     转数据(): PushSubscriptionJSON;
+    退订(): Promise<boolean>;
 }
 
 interface PushSubscriptionOptions {
@@ -6767,6 +6798,10 @@ interface SourceBufferList {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface SpeechRecognitionAlternative {
+    readonly 笔录: string;
+}
+
 interface SpeechRecognitionErrorEvent {
     readonly 报错: SpeechRecognitionErrorCode;
     readonly 消息: string;
@@ -7444,6 +7479,7 @@ interface Window {
     readonly 屏幕纵坐标: number;
     readonly 滚动条: BarProp;
     状态码: string;
+    readonly 工具栏: BarProp;
     readonly 顶部: WindowProxy | null;
     告警(message?: any): void;
     失焦(): void;
@@ -7642,6 +7678,10 @@ interface CanvasPath {
 
 interface CanvasPathDrawingStyles {
     设虚线(segments: Iterable<number>): void;
+}
+
+interface CookieStoreManager {
+    退订(subscriptions: Iterable<CookieStoreGetOptions>): Promise<void>;
 }
 
 interface DOMTokenList {
@@ -7997,6 +8037,7 @@ interface SymbolConstructor {
     readonly 替换: unique symbol;
     readonly 查找: unique symbol;
     readonly 拆分: unique symbol;
+    readonly 不可作用域: unique symbol;
 }
 
 interface String {
