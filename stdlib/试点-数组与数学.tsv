@@ -1546,6 +1546,17 @@ member	credential	凭据项
 member	crypto	加密模块
 member	datagrams	数据报集
 member	desynchronized	已失同步
+member	fonts	字体集
+member	fontsize	字号
+member	frames	帧集
+member	hspace	水平间距
+member	images	图像集
+member	iterator	迭代器
+member	iterations	迭代次数
+member	jitter	抖动
+member	knee	拐点
+member	locationbar	地址栏
+member	manufacturer	厂商
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

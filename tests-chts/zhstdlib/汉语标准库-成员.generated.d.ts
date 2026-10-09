@@ -383,6 +383,7 @@ interface DragEventInit {
 }
 
 interface DynamicsCompressorOptions {
+    拐点?: number;
     释放?: number;
     阈值?: number;
 }
@@ -396,6 +397,7 @@ interface EffectTiming {
     时长?: number | CSSNumericValue | string;
     缓动?: string;
     填充?: FillMode;
+    迭代次数?: number;
 }
 
 interface EncodedAudioChunkInit {
@@ -964,6 +966,7 @@ interface OptionalEffectTiming {
     时长?: number | string;
     缓动?: string;
     填充?: FillMode;
+    迭代次数?: number;
 }
 
 interface OpusEncoderConfig {
@@ -1046,6 +1049,7 @@ interface PaymentValidationErrors {
 
 interface Pbkdf2Params {
     散列: HashAlgorithmIdentifier;
+    迭代次数: number;
     盐值: BufferSource;
 }
 
@@ -1249,6 +1253,10 @@ interface RTCPeerConnectionIceErrorEventInit {
 
 interface RTCPeerConnectionIceEventInit {
     候选?: RTCIceCandidate | null;
+}
+
+interface RTCReceivedRtpStreamStats {
+    抖动?: number;
 }
 
 interface RTCRtpCodec {
@@ -2856,6 +2864,7 @@ interface Document {
     readonly 全屏: boolean;
     readonly 头部: HTMLHeadElement;
     readonly 隐藏: boolean;
+    readonly 图像集: HTMLCollectionOf<HTMLImageElement>;
     readonly 实现对象: DOMImplementation;
     readonly 链接集: HTMLCollectionOf<HTMLAnchorElement | HTMLAreaElement>;
     readonly 属主文档: null;
@@ -3005,6 +3014,7 @@ interface DragEvent {
 }
 
 interface DynamicsCompressorNode {
+    readonly 拐点: AudioParam;
     readonly 释放: AudioParam;
     readonly 阈值: AudioParam;
 }
@@ -3260,6 +3270,10 @@ interface FontFaceSet {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof FontFaceSetEventMap>(type: K, listener: (this: FontFaceSet, ev: FontFaceSetEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface FontFaceSource {
+    readonly 字体集: FontFaceSet;
 }
 
 interface FormData {
@@ -3863,6 +3877,7 @@ interface HTMLImageElement {
     解码方式: "async" | "sync" | "auto";
     获取优先级: "high" | "low" | "auto";
     高度: number;
+    水平间距: number;
     加载方式: "eager" | "lazy";
     低清源: string;
     名称: string;
@@ -3997,6 +4012,7 @@ interface HTMLMapElement {
 interface HTMLMarqueeElement {
     方向: string;
     高度: string;
+    水平间距: number;
     循环: number;
     宽度: string;
     开始(): void;
@@ -4096,6 +4112,7 @@ interface HTMLObjectElement {
     数据: string;
     readonly 表单: HTMLFormElement | null;
     高度: string;
+    水平间距: number;
     名称: string;
     种类: string;
     readonly 校验消息: string;
@@ -4813,6 +4830,7 @@ interface MIDIOutputMap {
 
 interface MIDIPort {
     readonly 编号: string;
+    readonly 厂商: string | null;
     readonly 名称: string | null;
     readonly 状态: MIDIPortDeviceState;
     readonly 种类: MIDIPortType;
@@ -7515,7 +7533,9 @@ interface Window {
     readonly 已关闭: boolean;
     readonly 文档: Document;
     readonly 外部: External;
+    readonly 帧集: WindowProxy;
     readonly 长度: number;
+    readonly 地址栏: BarProp;
     名称: string;
     readonly 朝向: number;
     readonly 个人栏: BarProp;
@@ -7923,6 +7943,8 @@ interface String {
     以开头(searchString: string, position?: number): boolean;
     锚点(name: string): string;
     粗体(): string;
+    字号(size: number): string;
+    字号(size: string): string;
     相减(): string;
 }
 
@@ -7974,6 +7996,10 @@ interface GeneratorFunction {
 interface GeneratorFunctionConstructor {
     readonly 长度: number;
     readonly 名称: string;
+}
+
+interface SymbolConstructor {
+    readonly 迭代器: unique symbol;
 }
 
 interface IteratorYieldResult<TYield> {
