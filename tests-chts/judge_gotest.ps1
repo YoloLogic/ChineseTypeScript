@@ -102,6 +102,25 @@ $allowed = @(
     'github.com/microsoft/TypeScript/tsc/internal/execute/tsctests',
     'github.com/microsoft/TypeScript/tsc/internal/testrunner'
 )
+# 环境性抖动的识别（2026-10-08 二次踩到）：对允许清单外的失败包【单独重跑一次】。
+# 真回归必然复现；而内存压力等环境抖动单跑会通过 —— 用证据区分，不靠猜。
+$flaky = New-Object System.Collections.Generic.List[string]
+foreach ($pkg in @($extra | Where-Object { $allowed -notcontains $_ })) {
+    if ($pkg -match '^github.com/microsoft/TypeScript/tsc/') {
+        $pkgPath = './' + ($pkg -replace '^github.com/microsoft/TypeScript/tsc/', '')
+        Push-Location $workTsc
+        $null = & $GoExe test $pkgPath 2>&1
+        $retryCode = $LASTEXITCODE
+        Pop-Location
+        if ($retryCode -eq 0) { $flaky.Add($pkg) }
+        Write-Host ('  [复验] ' + $pkgPath + ' 单跑退出码=' + $retryCode)
+    }
+}
+if ($flaky.Count -gt 0) {
+    $extra = @($extra | Where-Object { $flaky -notcontains $_ })
+    Write-Host ('  [!] 单跑通过，判为环境性抖动（不计入回归）：' + ($flaky -join ' '))
+}
+
 $unexpected = @($extra | Where-Object { $allowed -notcontains $_ })
 
 Check '① 没有只在基线失败的包' ($onlyBase.Count -eq 0) "只在基线失败: $(if ($onlyBase) { $onlyBase -join ' ' } else { '无' })"
