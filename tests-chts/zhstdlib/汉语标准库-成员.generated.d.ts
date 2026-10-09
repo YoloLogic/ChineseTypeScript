@@ -211,7 +211,9 @@ interface DeviceOrientationEventInit {
 
 interface DoubleRange {
     最大?: number;
+    最大限制?: number;
     最小?: number;
+    最小限制?: number;
 }
 
 interface EcdsaParams {
@@ -489,7 +491,10 @@ interface MediaQueryListEventInit {
 
 interface MediaSettingsRange {
     最大?: number;
+    最大限制?: number;
     最小?: number;
+    最小限制?: number;
+    步长?: number;
 }
 
 interface MediaTrackCapabilities {
@@ -590,6 +595,7 @@ interface PaymentMethodData {
 interface PaymentShippingOption {
     编号: string;
     标签: string;
+    已选中?: boolean;
 }
 
 interface PaymentValidationErrors {
@@ -729,6 +735,7 @@ interface RTCStats {
 
 interface ReadableStreamBYOBReaderReadOptions {
     最小?: number;
+    最小限制?: number;
 }
 
 interface ReadableStreamGetReaderOptions {
@@ -813,6 +820,7 @@ interface ShadowRootInit {
 }
 
 interface ShareData {
+    文件列?: File[];
     转文本?: string;
     标题?: string;
     地址?: string;
@@ -863,7 +871,9 @@ interface Transformer<I = any, O = any> {
 
 interface ULongRange {
     最大?: number;
+    最大限制?: number;
     最小?: number;
+    最小限制?: number;
 }
 
 interface URLPatternInit {
@@ -1073,6 +1083,7 @@ interface AudioNode {
 }
 
 interface AudioParam {
+    readonly 默认值: number;
     值内容: number;
     设时值(value: number, startTime: number): AudioParam;
 }
@@ -1243,7 +1254,9 @@ interface CSSNumericArray {
 interface CSSNumericValue {
     添加(...values: CSSNumberish[]): CSSNumericValue;
     最大(...values: CSSNumberish[]): CSSNumericValue;
+    最大限制(...values: CSSNumberish[]): CSSNumericValue;
     最小(...values: CSSNumberish[]): CSSNumericValue;
+    最小限制(...values: CSSNumberish[]): CSSNumericValue;
     种类(): CSSNumericType;
 }
 
@@ -1658,6 +1671,10 @@ interface DOMTokenList {
     移除(...tokens: string[]): void;
     替换(token: string, newToken: string): boolean;
     逐个处理(callbackfn: (value: string, key: number, parent: DOMTokenList) => void, thisArg?: any): void;
+}
+
+interface DataTransfer {
+    readonly 文件列: FileList;
 }
 
 interface DataTransferItem {
@@ -2269,6 +2286,7 @@ interface HTMLFontElement {
 }
 
 interface HTMLFormElement {
+    自动完成: AutoFillBase;
     readonly 长度: number;
     名称: string;
     目标: string;
@@ -2364,18 +2382,28 @@ interface HTMLImageElement {
 }
 
 interface HTMLInputElement {
+    接受类型: string;
     对齐: string;
     替代文本: string;
+    自动完成: AutoFill;
+    已勾选: boolean;
+    默认勾选: boolean;
+    默认值: string;
     已禁用: boolean;
+    文件列: FileList | null;
     高度: number;
     最大: string;
+    最大限制: string;
     最小: string;
+    最小限制: string;
+    多选: boolean;
     名称: string;
     占位提示: string;
     只读: boolean;
     必填: boolean;
     大小: number;
     源址: string;
+    步长: string;
     种类: string;
     值内容: string;
     宽度: number;
@@ -2468,7 +2496,9 @@ interface HTMLMetaElement {
 
 interface HTMLMeterElement {
     最大: number;
+    最大限制: number;
     最小: number;
+    最小限制: number;
     值内容: number;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLMeterElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -2518,6 +2548,7 @@ interface HTMLOptionElement {
     已禁用: boolean;
     readonly 序号: number;
     标签: string;
+    已选中: boolean;
     转文本: string;
     值内容: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLOptionElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2533,12 +2564,14 @@ interface HTMLOptionsCollection {
 }
 
 interface HTMLOrSVGElement {
+    自动聚焦: boolean;
     readonly 数据集: DOMStringMap;
     失焦(): void;
     聚焦(options?: FocusOptions): void;
 }
 
 interface HTMLOutputElement {
+    默认值: string;
     名称: string;
     readonly 种类: string;
     值内容: string;
@@ -2583,6 +2616,7 @@ interface HTMLPreElement {
 
 interface HTMLProgressElement {
     最大: number;
+    最大限制: number;
     值内容: number;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLProgressElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -2608,8 +2642,10 @@ interface HTMLScriptElement {
 }
 
 interface HTMLSelectElement {
+    自动完成: AutoFill;
     已禁用: boolean;
     长度: number;
+    多选: boolean;
     名称: string;
     必填: boolean;
     大小: number;
@@ -2738,6 +2774,8 @@ interface HTMLTemplateElement {
 }
 
 interface HTMLTextAreaElement {
+    自动完成: AutoFill;
+    默认值: string;
     已禁用: boolean;
     名称: string;
     占位提示: string;
@@ -2916,6 +2954,10 @@ interface ImageDecoder {
     readonly 种类: string;
     关闭(): void;
     重置(): void;
+}
+
+interface ImageTrack {
+    已选中: boolean;
 }
 
 interface ImageTrackList {
@@ -5640,7 +5682,9 @@ interface Math {
     对数(x: number): number;
     日志(x: number): number;
     最大(...values: number[]): number;
+    最大限制(...values: number[]): number;
     最小(...values: number[]): number;
+    最小限制(...values: number[]): number;
     乘方(x: number, y: number): number;
     随机(): number;
     四舍五入(x: number): number;
