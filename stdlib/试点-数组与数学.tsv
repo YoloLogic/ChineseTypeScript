@@ -144,6 +144,16 @@ member	src	源址
 member	alt	替代文本
 member	width	宽度
 member	height	高度
+member	setTime	设时刻
+member	getDay	取星期
+member	getHours	取时
+member	getMinutes	取分
+member	getSeconds	取秒
+member	toDateString	转日期串
+member	toTimeString	转时刻串
+member	toLocaleDateString	本地日期串
+member	getTimezoneOffset	取时区偏移
+member	setFullYear	设年
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

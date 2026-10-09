@@ -3109,6 +3109,7 @@ interface BigUint64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike>
 
 interface Date {
     本地转字符串(locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
+    本地日期串(locales?: Intl.LocalesArgument, options?: Intl.DateTimeFormatOptions): string;
 }
 
 interface Number {
@@ -3318,12 +3319,22 @@ interface Math {
 
 interface Date {
     转字符串(): string;
+    转日期串(): string;
+    转时刻串(): string;
     本地转字符串(): string;
+    本地日期串(): string;
     取值(): number;
     取时刻(): number;
     取年(): number;
     取月(): number;
     取日(): number;
+    取星期(): number;
+    取时(): number;
+    取分(): number;
+    取秒(): number;
+    取时区偏移(): number;
+    设时刻(time: number): number;
+    设年(year: number, month?: number, date?: number): number;
 }
 
 interface DateConstructor {
