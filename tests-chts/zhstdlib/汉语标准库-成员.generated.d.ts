@@ -418,6 +418,7 @@ interface GPUBufferDescriptor {
 }
 
 interface GPUCanvasConfiguration {
+    透明度模式?: GPUCanvasAlphaMode;
     色彩空间?: PredefinedColorSpace;
     格式化: GPUTextureFormat;
 }
@@ -742,6 +743,10 @@ interface MediaTrackConstraintSet {
     宽度?: ConstrainULong;
 }
 
+interface MediaTrackConstraints {
+    高级?: MediaTrackConstraintSet[];
+}
+
 interface MediaTrackSettings {
     高度?: number;
     采样率?: number;
@@ -935,6 +940,7 @@ interface PlaneLayout {
 }
 
 interface PointerEventInit {
+    高度角?: number;
     高度?: number;
     主指针?: boolean;
     指针编号?: number;
@@ -992,10 +998,12 @@ interface PublicKeyCredentialParameters {
 }
 
 interface PublicKeyCredentialRequestOptions {
+    允许凭据?: PublicKeyCredentialDescriptor[];
     扩展?: AuthenticationExtensionsClientInputs;
 }
 
 interface PublicKeyCredentialRequestOptionsJSON {
+    允许凭据?: PublicKeyCredentialDescriptorJSON[];
     扩展?: AuthenticationExtensionsClientInputsJSON;
 }
 
@@ -1379,6 +1387,7 @@ interface TouchEventInit {
 }
 
 interface TouchInit {
+    高度角?: number;
     客户横坐标?: number;
     客户纵坐标?: number;
     触控力度?: number;
@@ -1555,6 +1564,10 @@ interface WebTransportErrorOptions {
 interface WebTransportHash {
     算法: string;
     值内容: BufferSource;
+}
+
+interface WebTransportOptions {
+    允许池化?: boolean;
 }
 
 interface WheelEventInit {
@@ -2081,6 +2094,7 @@ interface CSSStyleProperties {
     内容对齐: string;
     项目对齐: string;
     自身对齐: string;
+    对齐基线: string;
     全部: string;
     动画名: string;
     底部: string;
@@ -2608,6 +2622,7 @@ interface DigitalCredential {
 }
 
 interface Document {
+    链接颜色: string;
     readonly 全部: HTMLAllCollection;
     主体: HTMLElement;
     readonly 字符集: string;
@@ -2747,6 +2762,7 @@ interface DocumentFragment {
 
 interface DocumentOrShadowRoot {
     readonly 活动元素: Element | null;
+    采用的样式表: CSSStyleSheet[];
     readonly 指针锁定元素: Element | null;
     readonly 样式表集: StyleSheetList;
     按点取元素(x: number, y: number): Element | null;
@@ -4049,6 +4065,7 @@ interface HTMLTableCaptionElement {
 }
 
 interface HTMLTableCellElement {
+    缩写: string;
     对齐: string;
     轴向: string;
     头集合: string;
@@ -4246,6 +4263,7 @@ interface History {
 interface IDBCursor {
     readonly 键名: IDBValidKey;
     readonly 来源: IDBObjectStore | IDBIndex;
+    推进(count: number): void;
     续取(key?: IDBValidKey): void;
     删除(): IDBRequest<undefined>;
     更新(value: any): IDBRequest<IDBValidKey>;
@@ -4894,6 +4912,7 @@ interface NavigatorConcurrentHardware {
 }
 
 interface NavigatorID {
+    readonly 应用代号: string;
     readonly 平台: string;
     readonly 用户代理: string;
 }
@@ -5257,6 +5276,7 @@ interface PluginArray {
 }
 
 interface PointerEvent {
+    readonly 高度角: number;
     readonly 高度: number;
     readonly 主指针: boolean;
     readonly 指针编号: number;
@@ -8505,10 +8525,12 @@ interface SuppressedError {
 }
 
 interface DisposableStack {
+    收养<T>(value: T, onDispose: (value: T) => void): T;
     延迟(onDispose: () => void): void;
 }
 
 interface AsyncDisposableStack {
+    收养<T>(value: T, onDisposeAsync: (value: T) => PromiseLike<void> | void): T;
     延迟(onDisposeAsync: () => PromiseLike<void> | void): void;
 }
 
