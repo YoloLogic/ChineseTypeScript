@@ -86,6 +86,9 @@ member	replaceAll	全替换
 member	trimStart	去头空白
 member	trimEnd	去尾空白
 member	matchAll	全匹配
+member	sinh	双曲正弦
+member	cosh	双曲余弦
+member	tanh	双曲正切
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

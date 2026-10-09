@@ -177,3 +177,10 @@ interface String {
     去尾空白(): string;
     全匹配(正则: RegExp): IterableIterator<RegExpMatchArray>;
 }
+
+// Math 的双曲函数。
+interface Math {
+    双曲正弦(数: number): number;
+    双曲余弦(数: number): number;
+    双曲正切(数: number): number;
+}
