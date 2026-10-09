@@ -2846,17 +2846,24 @@ interface GainNode {
 }
 
 interface Gamepad {
+    readonly 轴值: ReadonlyArray<number>;
     readonly 按钮集: ReadonlyArray<GamepadButton>;
+    readonly 已连通: boolean;
     readonly 编号: string;
     readonly 序号: number;
+    readonly 映射方式: GamepadMappingType;
     readonly 时间戳: DOMHighResTimeStamp;
+    readonly 振动驱动器: GamepadHapticActuator;
 }
 
 interface GamepadButton {
+    readonly 已按下: boolean;
+    readonly 已触碰: boolean;
     readonly 值内容: number;
 }
 
 interface GamepadHapticActuator {
+    播放效果(type: GamepadHapticEffectType, params?: GamepadEffectParameters): Promise<GamepadHapticsResult>;
     重置(): Promise<GamepadHapticsResult>;
 }
 
@@ -2871,6 +2878,11 @@ interface Geolocation {
 }
 
 interface GeolocationCoordinates {
+    readonly 海拔: number | null;
+    readonly 航向: number | null;
+    readonly 纬度: number;
+    readonly 经度: number;
+    readonly 速度: number | null;
     转数据(): any;
 }
 
