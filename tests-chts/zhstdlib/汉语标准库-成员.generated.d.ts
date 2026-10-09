@@ -19,6 +19,10 @@ interface AddEventListenerOptions {
     信号?: AbortSignal;
 }
 
+interface AddressErrors {
+    地区?: string;
+}
+
 interface AesCtrParams {
     长度: number;
 }
@@ -149,6 +153,11 @@ interface CommandEventInit {
 
 interface CompositionEventInit {
     数据?: string;
+}
+
+interface ComputedEffectTiming {
+    结束时刻?: CSSNumberish;
+    起始时刻?: CSSNumberish;
 }
 
 interface ComputedKeyframe {
@@ -528,6 +537,7 @@ interface MediaMetadataInit {
 
 interface MediaPositionState {
     时长?: number;
+    位置?: number;
 }
 
 interface MediaQueryListEventInit {
@@ -672,6 +682,7 @@ interface Pbkdf2Params {
 
 interface PerformanceMarkOptions {
     细节?: any;
+    起始时刻?: DOMHighResTimeStamp;
 }
 
 interface PerformanceMeasureOptions {
@@ -1138,6 +1149,7 @@ interface WorkletOptions {
 
 interface WriteParams {
     数据?: BufferSource | Blob | string | null;
+    位置?: number | null;
     大小?: number | null;
     种类: WriteCommandType;
 }
@@ -1177,6 +1189,7 @@ interface Animatable {
 
 interface Animation {
     编号: string;
+    起始时刻: CSSNumberish | null;
     取消(): void;
     完成(): void;
     暂停(): void;
@@ -1562,6 +1575,7 @@ interface CSSStyleProperties {
     左侧: string;
     字距: string;
     偏移: string;
+    位置: string;
     调整大小: string;
     右侧: string;
     旋转: string;
@@ -3105,6 +3119,7 @@ interface HTMLPreElement {
 interface HTMLProgressElement {
     最大: number;
     最大限制: number;
+    readonly 位置: number;
     值内容: number;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLProgressElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -3964,6 +3979,7 @@ interface ParentNode {
 }
 
 interface PaymentAddress {
+    readonly 地区: string;
     转数据(): any;
 }
 
@@ -4002,6 +4018,7 @@ interface Performance {
 interface PerformanceEntry {
     readonly 时长: DOMHighResTimeStamp;
     readonly 名称: string;
+    readonly 起始时刻: DOMHighResTimeStamp;
     转数据(): any;
 }
 
@@ -5177,6 +5194,7 @@ interface SourceBuffer {
     模式: AppendMode;
     出错时: ((this: SourceBuffer, ev: Event) => any) | null;
     中止(): void;
+    追加缓冲(data: BufferSource): void;
     移除(start: number, end: number): void;
     加事件监听<K extends keyof SourceBufferEventMap>(type: K, listener: (this: SourceBuffer, ev: SourceBufferEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -5344,11 +5362,15 @@ interface TextMetrics {
 }
 
 interface TextTrack {
+    readonly 活动提示集: TextTrackCueList | null;
+    readonly 提示集: TextTrackCueList | null;
     readonly 编号: string;
     readonly 类别: TextTrackKind;
     readonly 标签: string;
     readonly 语种: string;
     模式: TextTrackMode;
+    加提示(cue: TextTrackCue): void;
+    删提示(cue: TextTrackCue): void;
     加事件监听<K extends keyof TextTrackEventMap>(type: K, listener: (this: TextTrack, ev: TextTrackEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof TextTrackEventMap>(type: K, listener: (this: TextTrack, ev: TextTrackEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -5356,7 +5378,10 @@ interface TextTrack {
 }
 
 interface TextTrackCue {
+    结束时刻: number;
     编号: string;
+    退出暂停: boolean;
+    起始时刻: number;
     加事件监听<K extends keyof TextTrackCueEventMap>(type: K, listener: (this: TextTrackCue, ev: TextTrackCueEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof TextTrackCueEventMap>(type: K, listener: (this: TextTrackCue, ev: TextTrackCueEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -5454,9 +5479,13 @@ interface URLSearchParams {
 
 interface VTTCue {
     对齐: AlignSetting;
+    行位置: LineAndPositionSetting;
+    位置: LineAndPositionSetting;
+    地区: VTTRegion | null;
     大小: number;
     对齐行: boolean;
     转文本: string;
+    取提示标记(): DocumentFragment;
     加事件监听<K extends keyof TextTrackCueEventMap>(type: K, listener: (this: VTTCue, ev: TextTrackCueEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof TextTrackCueEventMap>(type: K, listener: (this: VTTCue, ev: TextTrackCueEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
