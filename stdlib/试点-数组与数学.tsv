@@ -471,6 +471,17 @@ member	readable	可读
 member	writable	可写
 member	grow	增长
 member	getFile	取文件
+member	transferToImageBitmap	转到位图
+member	getContextAttributes	取上下文属性
+member	drawFocusIfNeeded	按需绘焦点
+member	createRadialGradient	创建径向渐变
+member	createConicGradient	创建圆锥渐变
+member	roundRect	圆角矩形
+member	ellipse	椭圆
+member	rect	矩形
+member	arcTo	弧到
+member	isContextLost	上下文丢失
+member	getSupportedExtensions	取支持扩展
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

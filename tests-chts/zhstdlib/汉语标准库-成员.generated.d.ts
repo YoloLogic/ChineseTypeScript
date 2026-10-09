@@ -967,6 +967,7 @@ interface VideoFrameCallbackMetadata {
 
 interface VideoFrameCopyToOptions {
     格式化?: VideoPixelFormat;
+    矩形?: DOMRectInit;
 }
 
 interface VideoFrameInit {
@@ -1467,7 +1468,9 @@ interface CanvasDrawPath {
 }
 
 interface CanvasFillStrokeStyles {
+    创建圆锥渐变(startAngle: number, x: number, y: number): CanvasGradient;
     创建图案(image: CanvasImageSource, repetition: string | null): CanvasPattern | null;
+    创建径向渐变(x0: number, y0: number, r0: number, x1: number, y1: number, r1: number): CanvasGradient;
 }
 
 interface CanvasFilters {
@@ -1494,11 +1497,15 @@ interface CanvasImageSmoothing {
 
 interface CanvasPath {
     画弧(x: number, y: number, radius: number, startAngle: number, endAngle: number, counterclockwise?: boolean): void;
+    弧到(x1: number, y1: number, x2: number, y2: number, radius: number): void;
     三次曲线到(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void;
     闭合路径(): void;
+    椭圆(x: number, y: number, radiusX: number, radiusY: number, rotation: number, startAngle: number, endAngle: number, counterclockwise?: boolean): void;
     连线到(x: number, y: number): void;
     移到(x: number, y: number): void;
     二次曲线到(cpx: number, cpy: number, x: number, y: number): void;
+    矩形(x: number, y: number, w: number, h: number): void;
+    圆角矩形(x: number, y: number, w: number, h: number, radii?: number | DOMPointInit | (number | DOMPointInit)[]): void;
 }
 
 interface CanvasPathDrawingStyles {
@@ -1520,6 +1527,10 @@ interface CanvasRect {
     描边矩形(x: number, y: number, w: number, h: number): void;
 }
 
+interface CanvasSettings {
+    取上下文属性(): CanvasRenderingContext2DSettings;
+}
+
 interface CanvasShadowStyles {
     阴影模糊: number;
     阴影颜色: string;
@@ -1528,6 +1539,7 @@ interface CanvasShadowStyles {
 }
 
 interface CanvasState {
+    上下文丢失(): boolean;
     重置(): void;
     恢复(): void;
     保存(): void;
@@ -1554,6 +1566,11 @@ interface CanvasTransform {
     设变换(transform?: DOMMatrix2DInit): void;
     变换(a: number, b: number, c: number, d: number, e: number, f: number): void;
     平移(x: number, y: number): void;
+}
+
+interface CanvasUserInterface {
+    按需绘焦点(element: Element): void;
+    按需绘焦点(path: Path2D, element: Element): void;
 }
 
 interface CaretPosition {
@@ -3516,6 +3533,7 @@ interface OffscreenCanvas {
     取上下文(contextId: "webgl", options?: any): WebGLRenderingContext | null;
     取上下文(contextId: "webgl2", options?: any): WebGL2RenderingContext | null;
     取上下文(contextId: OffscreenRenderingContextId, options?: any): OffscreenRenderingContext | null;
+    转到位图(): ImageBitmap;
     加事件监听<K extends keyof OffscreenCanvasEventMap>(type: K, listener: (this: OffscreenCanvas, ev: OffscreenCanvasEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof OffscreenCanvasEventMap>(type: K, listener: (this: OffscreenCanvas, ev: OffscreenCanvasEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4874,6 +4892,7 @@ interface WebGLActiveInfo {
 
 interface WebGLRenderingContextBase {
     清空(mask: GLbitfield): void;
+    取上下文属性(): WebGLContextAttributes | null;
     取扩展名(name: string): any;
     取扩展名(extensionName: "ANGLE_instanced_arrays"): ANGLE_instanced_arrays | null;
     取扩展名(extensionName: "EXT_blend_minmax"): EXT_blend_minmax | null;
@@ -4909,6 +4928,8 @@ interface WebGLRenderingContextBase {
     取扩展名(extensionName: "WEBGL_draw_buffers"): WEBGL_draw_buffers | null;
     取扩展名(extensionName: "WEBGL_lose_context"): WEBGL_lose_context | null;
     取扩展名(extensionName: "WEBGL_multi_draw"): WEBGL_multi_draw | null;
+    取支持扩展(): string[] | null;
+    上下文丢失(): boolean;
     线宽(width: GLfloat): void;
 }
 
@@ -5091,6 +5112,10 @@ interface CSSUnparsedValue {
     条目(): ArrayIterator<[number, CSSUnparsedSegment]>;
     键列(): ArrayIterator<number>;
     值列(): ArrayIterator<CSSUnparsedSegment>;
+}
+
+interface CanvasPath {
+    圆角矩形(x: number, y: number, w: number, h: number, radii?: number | DOMPointInit | Iterable<number | DOMPointInit>): void;
 }
 
 interface CanvasPathDrawingStyles {
