@@ -571,6 +571,7 @@ interface MediaEncodingConfiguration {
 }
 
 interface MediaImage {
+    尺寸表?: string;
     源址: string;
     种类?: string;
 }
@@ -986,6 +987,7 @@ interface RequestInit {
     优先级?: RequestPriority;
     重定向?: RequestRedirect;
     来源页?: string;
+    来源页策略?: ReferrerPolicy;
     信号?: AbortSignal | null;
 }
 
@@ -2678,6 +2680,7 @@ interface HTMLAllCollection {
 interface HTMLAnchorElement {
     下载: string;
     名称: string;
+    来源页策略: string;
     关系: string;
     目标: string;
     转文本: string;
@@ -2691,6 +2694,7 @@ interface HTMLAnchorElement {
 interface HTMLAreaElement {
     替代文本: string;
     下载: string;
+    来源页策略: string;
     关系: string;
     目标: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLAreaElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2988,7 +2992,11 @@ interface HTMLIFrameElement {
     对齐: string;
     高度: string;
     名称: string;
+    来源页策略: ReferrerPolicy;
+    get 沙箱(): DOMTokenList;
+    set 沙箱(value: string);
     源址: string;
+    源文档: string;
     宽度: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLIFrameElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -3001,9 +3009,15 @@ interface HTMLImageElement {
     替代文本: string;
     跨源: string | null;
     readonly 当前源: string;
+    解码方式: "async" | "sync" | "auto";
     高度: number;
     名称: string;
+    readonly 自然高: number;
+    readonly 自然宽: number;
+    来源页策略: string;
+    尺寸表: string;
     源址: string;
+    源集: string;
     宽度: number;
     readonly 横坐标: number;
     readonly 纵坐标: number;
@@ -3031,8 +3045,10 @@ interface HTMLInputElement {
     readonly 候选列表: HTMLDataListElement | null;
     最大: string;
     最大限制: string;
+    最大长度: number;
     最小: string;
     最小限制: string;
+    最小长度: number;
     多选: boolean;
     名称: string;
     占位提示: string;
@@ -3096,7 +3112,10 @@ interface HTMLLinkElement {
     链接: string;
     完整性: string;
     媒体: string;
+    来源页策略: string;
     关系: string;
+    get 尺寸表(): DOMTokenList;
+    set 尺寸表(value: string);
     目标: string;
     种类: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLLinkElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3335,6 +3354,7 @@ interface HTMLQuoteElement {
 interface HTMLScriptElement {
     跨源: string | null;
     完整性: string;
+    来源页策略: string;
     源址: string;
     转文本: string;
     种类: string;
@@ -3388,7 +3408,9 @@ interface HTMLSlotElement {
 interface HTMLSourceElement {
     高度: number;
     媒体: string;
+    尺寸表: string;
     源址: string;
+    源集: string;
     种类: string;
     宽度: number;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLSourceElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3497,6 +3519,8 @@ interface HTMLTextAreaElement {
     已禁用: boolean;
     readonly 表单: HTMLFormElement | null;
     readonly 标签列: NodeListOf<HTMLLabelElement>;
+    最大长度: number;
+    最小长度: number;
     名称: string;
     占位提示: string;
     只读: boolean;
@@ -3504,10 +3528,12 @@ interface HTMLTextAreaElement {
     行数: number;
     选区终点: number;
     选区起点: number;
+    readonly 文本长度: number;
     readonly 种类: string;
     readonly 校验消息: string;
     readonly 有效性: ValidityState;
     值内容: string;
+    换行方式: string;
     检查校验(): boolean;
     报告校验(): boolean;
     全选(): void;
@@ -4652,6 +4678,7 @@ interface Request {
     readonly 模式: RequestMode;
     readonly 重定向: RequestRedirect;
     readonly 来源页: string;
+    readonly 来源页策略: ReferrerPolicy;
     readonly 信号: AbortSignal;
     readonly 地址: string;
     复制(): Request;
@@ -4679,6 +4706,7 @@ interface Response {
 
 interface SVGAElement {
     下载: string;
+    来源页策略: string;
     关系: string;
     readonly 目标: SVGAnimatedString;
     种类: string;
@@ -5354,6 +5382,7 @@ interface SVGTSpanElement {
 }
 
 interface SVGTextContentElement {
+    readonly 文本长度: SVGAnimatedLength;
     取计算文本长(): number;
     取字符数(): number;
     取子串长(charnum: number, nchars: number): number;
