@@ -127,6 +127,16 @@ interface AuthenticationResponseJSON {
     种类: string;
 }
 
+interface AuthenticatorAssertionResponseJSON {
+    认证器数据: Base64URLString;
+    签名数据: Base64URLString;
+    用户句柄?: Base64URLString;
+}
+
+interface AuthenticatorAttestationResponseJSON {
+    认证器数据: Base64URLString;
+}
+
 interface AvcEncoderConfig {
     格式化?: AvcBitstreamFormat;
 }
@@ -613,7 +623,9 @@ interface MediaKeySystemConfiguration {
 }
 
 interface MediaMetadataInit {
+    专辑?: string;
     艺术家?: string;
+    插图?: MediaImage[];
     标题?: string;
 }
 
@@ -1587,6 +1599,12 @@ interface AudioWorkletNode {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof AudioWorkletNodeEventMap>(type: K, listener: (this: AudioWorkletNode, ev: AudioWorkletNodeEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface AuthenticatorAssertionResponse {
+    readonly 认证器数据: ArrayBuffer;
+    readonly 签名数据: ArrayBuffer;
+    readonly 用户句柄: ArrayBuffer | null;
 }
 
 interface BaseAudioContext {
@@ -4123,6 +4141,10 @@ interface MathMLElement {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface MediaCapabilities {
+    解码信息(configuration: MediaDecodingConfiguration): Promise<MediaCapabilitiesDecodingInfo>;
+}
+
 interface MediaDeviceInfo {
     readonly 类别: MediaDeviceKind;
     readonly 标签: string;
@@ -4178,7 +4200,9 @@ interface MediaList {
 }
 
 interface MediaMetadata {
+    专辑: string;
     艺术家: string;
+    插图: ReadonlyArray<MediaImage>;
     标题: string;
 }
 
@@ -4216,6 +4240,9 @@ interface MediaSession {
     元数据: MediaMetadata | null;
     播放状态: MediaSessionPlaybackState;
     设动作处理(action: MediaSessionAction, handler: MediaSessionActionHandler | null): void;
+    设摄像头启用(active: boolean): Promise<void>;
+    设麦克风启用(active: boolean): Promise<void>;
+    设位置状态(state?: MediaPositionState): void;
 }
 
 interface MediaSource {
@@ -5817,6 +5844,8 @@ interface Screen {
 interface ScreenOrientation {
     readonly 角度: number;
     readonly 种类: OrientationType;
+    锁定(orientation: OrientationLockType): Promise<void>;
+    解锁(): void;
     加事件监听<K extends keyof ScreenOrientationEventMap>(type: K, listener: (this: ScreenOrientation, ev: ScreenOrientationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof ScreenOrientationEventMap>(type: K, listener: (this: ScreenOrientation, ev: ScreenOrientationEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -6019,6 +6048,7 @@ interface StorageEvent {
 }
 
 interface StorageManager {
+    估算(): Promise<StorageEstimate>;
     已保持(): Promise<boolean>;
 }
 
