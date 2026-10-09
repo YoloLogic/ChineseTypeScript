@@ -125,6 +125,7 @@ interface BlobPropertyBag {
 }
 
 interface CSSNumericType {
+    角度?: number;
     频率?: number;
     长度?: number;
 }
@@ -323,6 +324,7 @@ interface GPUColorTargetState {
 }
 
 interface GPUCopyExternalImageSourceInfo {
+    垂直翻转?: boolean;
     源点?: GPUOrigin2D;
     来源: GPUCopyExternalImageSource;
 }
@@ -1505,6 +1507,7 @@ interface CSSPropertyRule {
 }
 
 interface CSSRotate {
+    角度: CSSNumericValue;
     横坐标: CSSNumberish;
     纵坐标: CSSNumberish;
 }
@@ -1881,6 +1884,10 @@ interface DOMException {
 }
 
 interface DOMMatrixReadOnly {
+    水平翻转(): DOMMatrix;
+    垂直翻转(): DOMMatrix;
+    求逆(): DOMMatrix;
+    相乘(other?: DOMMatrixInit): DOMMatrix;
     旋转(rotX?: number, rotY?: number, rotZ?: number): DOMMatrix;
     缩放(scaleX?: number, scaleY?: number, scaleZ?: number, originX?: number, originY?: number, originZ?: number): DOMMatrix;
     转数据(): any;
@@ -4304,7 +4311,68 @@ interface SVGAnimateTransformElement {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface SVGAnimatedAngle {
+    readonly 动画值: SVGAngle;
+    readonly 基值: SVGAngle;
+}
+
+interface SVGAnimatedBoolean {
+    readonly 动画值: boolean;
+    基值: boolean;
+}
+
+interface SVGAnimatedEnumeration {
+    readonly 动画值: number;
+    基值: number;
+}
+
+interface SVGAnimatedInteger {
+    readonly 动画值: number;
+    基值: number;
+}
+
+interface SVGAnimatedLength {
+    readonly 动画值: SVGLength;
+    readonly 基值: SVGLength;
+}
+
+interface SVGAnimatedLengthList {
+    readonly 动画值: SVGLengthList;
+    readonly 基值: SVGLengthList;
+}
+
+interface SVGAnimatedNumber {
+    readonly 动画值: number;
+    基值: number;
+}
+
+interface SVGAnimatedNumberList {
+    readonly 动画值: SVGNumberList;
+    readonly 基值: SVGNumberList;
+}
+
+interface SVGAnimatedPreserveAspectRatio {
+    readonly 动画值: SVGPreserveAspectRatio;
+    readonly 基值: SVGPreserveAspectRatio;
+}
+
+interface SVGAnimatedRect {
+    readonly 动画值: DOMRectReadOnly;
+    readonly 基值: DOMRect;
+}
+
+interface SVGAnimatedString {
+    readonly 动画值: string;
+    基值: string;
+}
+
+interface SVGAnimatedTransformList {
+    readonly 动画值: SVGTransformList;
+    readonly 基值: SVGTransformList;
+}
+
 interface SVGAnimationElement {
+    取当前时刻(): number;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGAnimationElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGAnimationElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4751,6 +4819,7 @@ interface SVGSVGElement {
     readonly 宽度: SVGAnimatedLength;
     readonly 横坐标: SVGAnimatedLength;
     readonly 纵坐标: SVGAnimatedLength;
+    取当前时刻(): number;
     按编号取元素(elementId: string): Element | null;
     加事件监听<K extends keyof SVGSVGElementEventMap>(type: K, listener: (this: SVGSVGElement, ev: SVGSVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -4859,7 +4928,12 @@ interface SVGTitleElement {
 }
 
 interface SVGTransform {
+    readonly 角度: number;
     readonly 种类: number;
+    设矩阵(matrix?: DOMMatrix2DInit): void;
+    设旋转(angle: number, cx: number, cy: number): void;
+    设缩放(sx: number, sy: number): void;
+    设平移(tx: number, ty: number): void;
 }
 
 interface SVGTransformList {
@@ -4902,6 +4976,7 @@ interface Screen {
 }
 
 interface ScreenOrientation {
+    readonly 角度: number;
     readonly 种类: OrientationType;
     加事件监听<K extends keyof ScreenOrientationEventMap>(type: K, listener: (this: ScreenOrientation, ev: ScreenOrientationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
