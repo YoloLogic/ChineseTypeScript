@@ -495,6 +495,7 @@ var zhStdlibMembers = map[string]string{
 	"弧到": "arcTo",
 	"上下文丢失": "isContextLost",
 	"取支持扩展": "getSupportedExtensions",
+	"实例化": "instantiate",
 	"取字符": "charAt",
 	"取字符码": "charCodeAt",
 	"取码点": "codePointAt",

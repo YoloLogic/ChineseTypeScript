@@ -482,6 +482,7 @@ member	rect	矩形
 member	arcTo	弧到
 member	isContextLost	上下文丢失
 member	getSupportedExtensions	取支持扩展
+member	instantiate	实例化
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

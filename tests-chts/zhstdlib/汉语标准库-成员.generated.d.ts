@@ -5087,6 +5087,11 @@ interface XSLTProcessor {
     重置(): void;
 }
 
+declare namespace WebAssembly {
+    function 实例化(bytes: BufferSource, importObject?: Imports, options?: WebAssemblyCompileOptions): Promise<WebAssemblyInstantiatedSource>;
+    function 实例化(moduleObject: Module, importObject?: Imports): Promise<Instance>;
+}
+
 interface Console {
     清空(): void;
     书写方向(item?: any, options?: any): void;
@@ -5408,6 +5413,16 @@ interface ProxyHandler<T extends object> {
     止扩展?(target: T): boolean;
     设置?(target: T, p: string | symbol, newValue: any, receiver: any): boolean;
     设原型?(target: T, v: object | null): boolean;
+}
+
+declare namespace Reflect {
+    function 定义属性(target: object, propertyKey: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): boolean;
+    function 取原型(target: object): object | null;
+    function 含有(target: object, propertyKey: PropertyKey): boolean;
+    function 是可扩展(target: object): boolean;
+    function 止扩展(target: object): boolean;
+    function 设置(target: object, propertyKey: PropertyKey, value: any, receiver?: any): boolean;
+    function 设原型(target: object, proto: object | null): boolean;
 }
 
 interface SymbolConstructor {

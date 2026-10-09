@@ -54,27 +54,36 @@ $blocks.Add('// 只做「成员改名」的增补：接口名与类型原样保�
 $blocks.Add('')
 $ifaceCount = 0; $skipped = New-Object System.Collections.Generic.List[string]
 foreach ($lib in $libs) {
-    $cur = $null; $depth = 0
+    $cur = $null; $depth = 0; $isNs = $false
     $members = New-Object System.Collections.Generic.List[string]
     foreach ($line in (Get-Content $lib.FullName -Encoding UTF8)) {
         if ($cur -eq $null) {
             # 接口头可能带 extends（DOM 里几乎都带，如 interface Node extends EventTarget {），必须允许。
             $m = [regex]::Match($line, '^interface\s+([A-Za-z_$][\w$]*(?:<[^>]*>)?)(?:\s+extends[^{]*)?\s*\{')
-            if ($m.Success) { $cur = $m.Groups[1].Value; $depth = 1; $members.Clear() }
+            if ($m.Success) { $cur = $m.Groups[1].Value; $depth = 1; $isNs = $false; $members.Clear(); continue }
+            # 命名空间（如 declare namespace WebAssembly { function instantiate(...) }）：
+            # 里头的 function/var 成员也要能出汉语别名（六·八 的第三类盲区）。
+            $nm = [regex]::Match($line, '^declare namespace ([A-Za-z_$][\w$]*)\s*\{')
+            if ($nm.Success) { $cur = $nm.Groups[1].Value; $depth = 1; $isNs = $true; $members.Clear() }
             continue
         }
         $depth += ([regex]::Matches($line, '\{')).Count - ([regex]::Matches($line, '\}')).Count
         if ($depth -le 0) {
             if ($members.Count -gt 0) {
                 $ifaceCount++
-                $blocks.Add('interface ' + $cur + ' {')
+                $blocks.Add(($(if ($isNs) { 'declare namespace ' } else { 'interface ' })) + $cur + ' {')
                 foreach ($mm in $members) { $blocks.Add($mm) }
                 $blocks.Add('}'); $blocks.Add('')
             }
             $cur = $null; $depth = 0; continue
         }
         # 前缀含访问器 get/set（须有后随空格，否则名为 get 的方法 Map.get() 会被误当访问器）。
-        $m = [regex]::Match($line, '^(\s{4})(readonly\s+|static\s+|get\s+|set\s+)?([A-Za-z_$][\w$]*)(.*)$')
+        # 命名空间里的 type/class/interface/enum/export 声明是【类型名】不是成员，
+        # 绝不能改名（否则 `type X = ...` 会变成 `种类 X = ...` 这种非法声明 —— 2026-10-08 踩过）。
+        if ($isNs -and $line -match '^\s{4}(type|class|interface|enum|export|const\s+enum)\b') { continue }
+        # 命名空间里常见 `function 名(...)` / `var 名: T`，前缀要一起吃掉。
+        $memberRe = if ($isNs) { '^(\s{4})(function\s+|var\s+|let\s+|const\s+)?([A-Za-z_$][\w$]*)(.*)$' } else { '^(\s{4})(readonly\s+|static\s+|get\s+|set\s+)?([A-Za-z_$][\w$]*)(.*)$' }
+        $m = [regex]::Match($line, $memberRe)
         if (-not $m.Success) { continue }
         $name = $m.Groups[3].Value
         if (-not $en2zh.ContainsKey($name)) { continue }
