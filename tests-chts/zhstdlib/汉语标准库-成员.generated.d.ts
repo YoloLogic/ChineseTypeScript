@@ -751,9 +751,11 @@ interface NavigationUpdateCurrentEntryOptions {
 }
 
 interface NotificationOptions {
+    徽标?: string;
     主体?: string;
     数据?: any;
     书写方向?: NotificationDirection;
+    图标?: string;
     语言?: string;
 }
 
@@ -943,6 +945,7 @@ interface PublicKeyCredentialUserEntityJSON {
 }
 
 interface PushSubscriptionJSON {
+    端点?: string;
     键列?: Record<string, string>;
 }
 
@@ -1076,6 +1079,7 @@ interface ReadableWritablePair<R = any, W = any> {
 }
 
 interface RegistrationOptions {
+    作用域?: string;
     种类?: WorkerType;
 }
 
@@ -1249,6 +1253,11 @@ interface TaskSignalAnyInit {
 
 interface TextDecodeOptions {
     数据流?: boolean;
+}
+
+interface TextDecoderOptions {
+    遇错即止?: boolean;
+    忽略序标记?: boolean;
 }
 
 interface TimelineRangeOffset {
@@ -1583,6 +1592,7 @@ interface AudioData {
 }
 
 interface AudioDecoder {
+    readonly 解码队列长度: number;
     readonly 状态: CodecState;
     关闭(): void;
     解码(chunk: EncodedAudioChunk): void;
@@ -1595,6 +1605,7 @@ interface AudioDecoder {
 }
 
 interface AudioEncoder {
+    readonly 编码队列长度: number;
     readonly 状态: CodecState;
     关闭(): void;
     编码(data: AudioData): void;
@@ -3778,6 +3789,7 @@ interface HTMLTableCellElement {
     对齐: string;
     头集合: string;
     高度: string;
+    作用域: string;
     宽度: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTableCellElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -4092,6 +4104,8 @@ interface ImageData {
 }
 
 interface ImageDecoder {
+    readonly 解码完成: Promise<void>;
+    readonly 轨道集: ImageTrackList;
     readonly 种类: string;
     关闭(): void;
     解码(options?: ImageDecodeOptions): Promise<ImageDecodeResult>;
@@ -4626,6 +4640,7 @@ interface Notification {
     readonly 主体: string;
     readonly 数据: any;
     readonly 书写方向: NotificationDirection;
+    readonly 图标: string;
     readonly 语言: string;
     出错时: ((this: Notification, ev: Event) => any) | null;
     readonly 标题: string;
@@ -4924,7 +4939,12 @@ interface PublicKeyCredential {
     转数据(): RegistrationResponseJSON | AuthenticationResponseJSON;
 }
 
+interface PushManagerAttribute {
+    readonly 推送管理: PushManager;
+}
+
 interface PushSubscription {
+    readonly 端点: string;
     readonly 选项列: PushSubscriptionOptions;
     转数据(): PushSubscriptionJSON;
 }
@@ -6049,6 +6069,8 @@ interface ServiceWorkerContainer {
 interface ServiceWorkerRegistration {
     readonly 活动: ServiceWorker | null;
     readonly 正在安装: ServiceWorker | null;
+    readonly 导航预加载: NavigationPreloadManager;
+    readonly 作用域: string;
     readonly 等待中: ServiceWorker | null;
     注销(): Promise<boolean>;
     更新(): Promise<ServiceWorkerRegistration>;
@@ -6272,6 +6294,8 @@ interface TextDecoder {
 
 interface TextDecoderCommon {
     readonly 编码方式: string;
+    readonly 遇错即止: boolean;
+    readonly 忽略序标记: boolean;
 }
 
 interface TextDecoderStream {
@@ -6475,6 +6499,7 @@ interface VideoColorSpace {
 }
 
 interface VideoDecoder {
+    readonly 解码队列长度: number;
     readonly 状态: CodecState;
     关闭(): void;
     解码(chunk: EncodedVideoChunk): void;
@@ -6487,6 +6512,7 @@ interface VideoDecoder {
 }
 
 interface VideoEncoder {
+    readonly 编码队列长度: number;
     readonly 状态: CodecState;
     关闭(): void;
     编码(frame: VideoFrame, options?: VideoEncoderEncodeOptions): void;
