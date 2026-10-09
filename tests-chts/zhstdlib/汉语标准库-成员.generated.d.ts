@@ -21,10 +21,12 @@ interface AddEventListenerOptions {
 
 interface AddressErrors {
     城市?: string;
+    国家?: string;
     地区?: string;
 }
 
 interface AesCtrParams {
+    计数器: BufferSource;
     长度: number;
 }
 
@@ -95,6 +97,7 @@ interface AudioDataInit {
 
 interface AudioDecoderConfig {
     编解码器: string;
+    描述?: AllowSharedBufferSource;
     声道数: number;
     采样率: number;
 }
@@ -239,6 +242,7 @@ interface ConvolverOptions {
 
 interface CookieChangeEventInit {
     已变更?: CookieList;
+    已删除?: CookieList;
 }
 
 interface CookieInit {
@@ -437,6 +441,7 @@ interface GPUBufferDescriptor {
 interface GPUCanvasConfiguration {
     透明度模式?: GPUCanvasAlphaMode;
     色彩空间?: PredefinedColorSpace;
+    设备: GPUDevice;
     格式化: GPUTextureFormat;
 }
 
@@ -1088,6 +1093,7 @@ interface RTCEncodedFrameMetadata {
 }
 
 interface RTCEncodedVideoFrameMetadata {
+    依赖集?: number[];
     高度?: number;
     时间戳?: number;
     宽度?: number;
@@ -1530,6 +1536,7 @@ interface VideoDecoderConfig {
     编码高?: number;
     编码宽?: number;
     色彩空间?: VideoColorSpaceInit;
+    描述?: AllowSharedBufferSource;
 }
 
 interface VideoDecoderInit {
@@ -1595,6 +1602,7 @@ interface WaveShaperOptions {
 
 interface WebGLContextAttributes {
     透明度?: boolean;
+    深度?: boolean;
 }
 
 interface WebTransportErrorOptions {
@@ -2143,6 +2151,7 @@ interface CSSStyleProperties {
     裁剪: string;
     容器名: string;
     容器类型: string;
+    光标: string;
     显示方式: string;
     填充: string;
     过滤: string;
@@ -2461,6 +2470,7 @@ interface ConvolverNode {
 
 interface CookieChangeEvent {
     readonly 已变更: ReadonlyArray<CookieListItem>;
+    readonly 已删除: ReadonlyArray<CookieListItem>;
 }
 
 interface CookieStore {
@@ -3106,8 +3116,14 @@ interface GPUAdapter {
     readonly 附加信息: GPUAdapterInfo;
 }
 
+interface GPUAdapterInfo {
+    readonly 描述: string;
+    readonly 设备: string;
+}
+
 interface GPUBuffer {
     readonly 大小: GPUSize64Out;
+    销毁(): void;
 }
 
 interface GPUCanvasContext {
@@ -3130,6 +3146,7 @@ interface GPUDevice {
     创建缓冲(descriptor: GPUBufferDescriptor): GPUBuffer;
     创建采样器(descriptor?: GPUSamplerDescriptor): GPUSampler;
     创建纹理(descriptor: GPUTextureDescriptor): GPUTexture;
+    销毁(): void;
     加事件监听<K extends keyof GPUDeviceEventMap>(type: K, listener: (this: GPUDevice, ev: GPUDeviceEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof GPUDeviceEventMap>(type: K, listener: (this: GPUDevice, ev: GPUDeviceEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3150,6 +3167,7 @@ interface GPUObjectBase {
 
 interface GPUQuerySet {
     readonly 种类: GPUQueryType;
+    销毁(): void;
 }
 
 interface GPUQueue {
@@ -3168,6 +3186,7 @@ interface GPUTexture {
     readonly 格式化: GPUTextureFormat;
     readonly 高度: GPUIntegerCoordinateOut;
     readonly 宽度: GPUIntegerCoordinateOut;
+    销毁(): void;
 }
 
 interface GPUUncapturedErrorEvent {
@@ -4836,6 +4855,7 @@ interface MessagePort {
 }
 
 interface MimeType {
+    readonly 描述: string;
     readonly 种类: string;
 }
 
@@ -5151,6 +5171,7 @@ interface Path2D {
 
 interface PaymentAddress {
     readonly 城市: string;
+    readonly 国家: string;
     readonly 地区: string;
     转数据(): any;
 }
@@ -5166,6 +5187,7 @@ interface PaymentRequest {
 }
 
 interface PaymentResponse {
+    readonly 详情: any;
     转数据(): any;
     加事件监听<K extends keyof PaymentResponseEventMap>(type: K, listener: (this: PaymentResponse, ev: PaymentResponseEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -5272,6 +5294,7 @@ interface PerformanceResourceTiming {
 }
 
 interface PerformanceServerTiming {
+    readonly 描述: string;
     readonly 时长: DOMHighResTimeStamp;
     readonly 名称: string;
     转数据(): any;
@@ -5323,6 +5346,7 @@ interface PictureInPictureWindow {
 }
 
 interface Plugin {
+    readonly 描述: string;
     readonly 文件名: string;
     readonly 长度: number;
     readonly 名称: string;
@@ -7432,6 +7456,7 @@ declare namespace WebAssembly {
 
 interface Console {
     清空(): void;
+    调试(...data: any[]): void;
     书写方向(item?: any, options?: any): void;
     报错(...data: any[]): void;
     附加信息(...data: any[]): void;
@@ -7964,6 +7989,10 @@ interface String {
     去头空白(): string;
 }
 
+interface Symbol {
+    readonly 描述: string | undefined;
+}
+
 interface BigIntToLocaleStringOptions {
     样式?: string;
     数字系统?: string;
@@ -8271,6 +8300,14 @@ interface ReadonlySetLike<T> {
     键列(): Iterator<T>;
     含有(value: T): boolean;
     readonly 大小: number;
+}
+
+interface Set<T> {
+    差值<U>(other: ReadonlySetLike<U>): Set<T>;
+}
+
+interface ReadonlySet<T> {
+    差值<U>(other: ReadonlySetLike<U>): Set<T>;
 }
 
 interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
