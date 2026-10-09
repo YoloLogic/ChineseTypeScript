@@ -4105,6 +4105,7 @@ interface Performance {
 
 interface PerformanceEntry {
     readonly 时长: DOMHighResTimeStamp;
+    readonly 条目类型: string;
     readonly 名称: string;
     readonly 起始时刻: DOMHighResTimeStamp;
     转数据(): any;
@@ -4148,6 +4149,17 @@ interface PerformancePaintTiming {
 }
 
 interface PerformanceResourceTiming {
+    readonly 连接结束: DOMHighResTimeStamp;
+    readonly 连接开始: DOMHighResTimeStamp;
+    readonly 获取开始: DOMHighResTimeStamp;
+    readonly 发起类型: string;
+    readonly 重定向结束: DOMHighResTimeStamp;
+    readonly 重定向开始: DOMHighResTimeStamp;
+    readonly 请求开始: DOMHighResTimeStamp;
+    readonly 响应结束: DOMHighResTimeStamp;
+    readonly 响应开始: DOMHighResTimeStamp;
+    readonly 传输大小: number;
+    readonly 工作线程开始: DOMHighResTimeStamp;
     转数据(): any;
 }
 
@@ -4158,6 +4170,14 @@ interface PerformanceServerTiming {
 }
 
 interface PerformanceTiming {
+    readonly 连接结束: number;
+    readonly 连接开始: number;
+    readonly 获取开始: number;
+    readonly 重定向结束: number;
+    readonly 重定向开始: number;
+    readonly 请求开始: number;
+    readonly 响应结束: number;
+    readonly 响应开始: number;
     转数据(): any;
 }
 
