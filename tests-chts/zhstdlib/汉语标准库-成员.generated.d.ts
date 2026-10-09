@@ -225,6 +225,7 @@ interface ComputedEffectTiming {
 
 interface ComputedKeyframe {
     合成: CompositeOperationOrAuto;
+    缓动: string;
     偏移: number | null;
 }
 
@@ -246,6 +247,7 @@ interface CookieChangeEventInit {
 }
 
 interface CookieInit {
+    网域?: string | null;
     名称: string;
     值内容: string;
 }
@@ -256,6 +258,7 @@ interface CookieListItem {
 }
 
 interface CookieStoreDeleteOptions {
+    网域?: string | null;
     名称: string;
 }
 
@@ -338,7 +341,9 @@ interface EcdsaParams {
 }
 
 interface EffectTiming {
+    方向?: PlaybackDirection;
     时长?: number | CSSNumericValue | string;
+    缓动?: string;
     填充?: FillMode;
 }
 
@@ -601,6 +606,10 @@ interface IDBObjectStoreParameters {
     键路径?: string | string[] | null;
 }
 
+interface IDBTransactionOptions {
+    持久性?: IDBTransactionDurability;
+}
+
 interface ImageBitmapRenderingContextSettings {
     透明度?: boolean;
 }
@@ -654,6 +663,7 @@ interface KeyboardEventInit {
 
 interface Keyframe {
     合成?: CompositeOperationOrAuto;
+    缓动?: string;
     偏移?: number | null;
 }
 
@@ -863,7 +873,9 @@ interface OfflineAudioContextOptions {
 }
 
 interface OptionalEffectTiming {
+    方向?: PlaybackDirection;
     时长?: number | string;
+    缓动?: string;
     填充?: FillMode;
 }
 
@@ -894,6 +906,7 @@ interface PannerOptions {
 }
 
 interface PayerErrors {
+    邮箱?: string;
     名称?: string;
 }
 
@@ -995,6 +1008,7 @@ interface PropertyDefinition {
 
 interface PropertyIndexedKeyframes {
     合成?: CompositeOperationOrAuto | CompositeOperationOrAuto[];
+    缓动?: string | string[];
     偏移?: number | (number | null)[];
 }
 
@@ -1158,6 +1172,7 @@ interface RTCRtpStreamStats {
 }
 
 interface RTCRtpTransceiverInit {
+    方向?: RTCRtpTransceiverDirection;
     流列?: MediaStream[];
 }
 
@@ -1311,6 +1326,7 @@ interface ScrollToOptions {
 }
 
 interface SecurityPolicyViolationEventInit {
+    处置方式?: SecurityPolicyViolationEventDisposition;
     来源页?: string;
 }
 
@@ -2152,6 +2168,7 @@ interface CSSStyleProperties {
     容器名: string;
     容器类型: string;
     光标: string;
+    方向: string;
     显示方式: string;
     填充: string;
     过滤: string;
@@ -2370,6 +2387,7 @@ interface CanvasText {
 }
 
 interface CanvasTextDrawingStyles {
+    方向: CanvasDirection;
     字体: string;
     字距: string;
     文本对齐: CanvasTextAlign;
@@ -2688,6 +2706,7 @@ interface Document {
     书写方向: string;
     readonly 文档类型: DocumentType | null;
     readonly 文档元素: HTMLElement;
+    网域: string;
     readonly 头部: HTMLHeadElement;
     readonly 隐藏: boolean;
     readonly 实现对象: DOMImplementation;
@@ -3176,6 +3195,10 @@ interface GPUQueue {
 
 interface GPURenderBundleEncoder {
     完成(descriptor?: GPURenderBundleDescriptor): GPURenderBundle;
+}
+
+interface GPURenderCommandsMixin {
+    绘制(vertexCount: GPUSize32, instanceCount?: GPUSize32, firstVertex?: GPUSize32, firstInstance?: GPUSize32): void;
 }
 
 interface GPUSupportedFeatures {
@@ -3812,6 +3835,7 @@ interface HTMLMapElement {
 }
 
 interface HTMLMarqueeElement {
+    方向: string;
     高度: string;
     循环: number;
     宽度: string;
@@ -4337,6 +4361,7 @@ interface History {
 }
 
 interface IDBCursor {
+    readonly 方向: IDBCursorDirection;
     readonly 键名: IDBValidKey;
     readonly 来源: IDBObjectStore | IDBIndex;
     推进(count: number): void;
@@ -4426,6 +4451,7 @@ interface IDBRequest<T = any> {
 }
 
 interface IDBTransaction {
+    readonly 持久性: IDBTransactionDurability;
     readonly 报错: DOMException | null;
     readonly 模式: IDBTransactionMode;
     中止时: ((this: IDBTransaction, ev: Event) => any) | null;
@@ -5548,6 +5574,7 @@ interface RTCRtpSender {
 }
 
 interface RTCRtpTransceiver {
+    方向: RTCRtpTransceiverDirection;
     readonly 接收器: RTCRtpReceiver;
     停止(): void;
 }
@@ -5896,6 +5923,7 @@ interface SVGFECompositeElement {
 }
 
 interface SVGFEConvolveMatrixElement {
+    readonly 除数: SVGAnimatedNumber;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEConvolveMatrixElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEConvolveMatrixElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -5918,6 +5946,7 @@ interface SVGFEDisplacementMapElement {
 }
 
 interface SVGFEDistantLightElement {
+    readonly 仰角: SVGAnimatedNumber;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEDistantLightElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEDistantLightElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -6513,12 +6542,14 @@ interface ScrollTimeline {
 }
 
 interface SecurityPolicyViolationEvent {
+    readonly 处置方式: SecurityPolicyViolationEventDisposition;
     readonly 来源页: string;
 }
 
 interface Selection {
     readonly 锚节点: Node | null;
     readonly 锚偏移: number;
+    readonly 方向: string;
     readonly 焦点节点: Node | null;
     readonly 焦点偏移: number;
     readonly 已折叠: boolean;
@@ -7292,6 +7323,7 @@ interface WheelEvent {
 
 interface Window {
     readonly 已关闭: boolean;
+    readonly 文档: Document;
     readonly 长度: number;
     名称: string;
     readonly 朝向: number;
@@ -8634,16 +8666,23 @@ interface SymbolConstructor {
     readonly 元数据: unique symbol;
 }
 
+interface SymbolConstructor {
+    readonly 弃置: unique symbol;
+}
+
 interface SuppressedError {
     报错: any;
 }
 
 interface DisposableStack {
+    readonly 已弃置: boolean;
+    弃置(): void;
     收养<T>(value: T, onDispose: (value: T) => void): T;
     延迟(onDispose: () => void): void;
 }
 
 interface AsyncDisposableStack {
+    readonly 已弃置: boolean;
     收养<T>(value: T, onDisposeAsync: (value: T) => PromiseLike<void> | void): T;
     延迟(onDisposeAsync: () => PromiseLike<void> | void): void;
 }
