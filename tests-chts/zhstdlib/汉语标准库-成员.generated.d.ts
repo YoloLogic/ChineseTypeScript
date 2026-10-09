@@ -1096,6 +1096,8 @@ interface AudioWorkletNode {
 interface BaseAudioContext {
     readonly 采样率: number;
     readonly 状态: AudioContextState;
+    创建振荡器(): OscillatorNode;
+    解码音频(audioData: ArrayBuffer, successCallback?: DecodeSuccessCallback | null, errorCallback?: DecodeErrorCallback | null): Promise<AudioBuffer>;
     加事件监听<K extends keyof BaseAudioContextEventMap>(type: K, listener: (this: BaseAudioContext, ev: BaseAudioContextEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof BaseAudioContextEventMap>(type: K, listener: (this: BaseAudioContext, ev: BaseAudioContextEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1381,8 +1383,16 @@ interface CanvasDrawPath {
     开始路径(): void;
     填充(fillRule?: CanvasFillRule): void;
     填充(path: Path2D, fillRule?: CanvasFillRule): void;
+    点在路径内(x: number, y: number, fillRule?: CanvasFillRule): boolean;
+    点在路径内(path: Path2D, x: number, y: number, fillRule?: CanvasFillRule): boolean;
+    点在描边内(x: number, y: number): boolean;
+    点在描边内(path: Path2D, x: number, y: number): boolean;
     描边(): void;
     描边(path: Path2D): void;
+}
+
+interface CanvasFillStrokeStyles {
+    创建图案(image: CanvasImageSource, repetition: string | null): CanvasPattern | null;
 }
 
 interface CanvasFilters {
@@ -1399,9 +1409,16 @@ interface CanvasImageData {
 
 interface CanvasPath {
     画弧(x: number, y: number, radius: number, startAngle: number, endAngle: number, counterclockwise?: boolean): void;
+    三次曲线到(cp1x: number, cp1y: number, cp2x: number, cp2y: number, x: number, y: number): void;
     闭合路径(): void;
     连线到(x: number, y: number): void;
     移到(x: number, y: number): void;
+    二次曲线到(cpx: number, cpy: number, x: number, y: number): void;
+}
+
+interface CanvasPathDrawingStyles {
+    取虚线(): number[];
+    设虚线(segments: number[]): void;
 }
 
 interface CanvasPattern {
@@ -2932,6 +2949,7 @@ interface MediaDeviceInfo {
 }
 
 interface MediaDevices {
+    取用户媒体(constraints?: MediaStreamConstraints): Promise<MediaStream>;
     加事件监听<K extends keyof MediaDevicesEventMap>(type: K, listener: (this: MediaDevices, ev: MediaDevicesEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MediaDevicesEventMap>(type: K, listener: (this: MediaDevices, ev: MediaDevicesEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3389,6 +3407,8 @@ interface RTCIceTransport {
 
 interface RTCPeerConnection {
     关闭(): void;
+    创建提议(options?: RTCOfferOptions): Promise<RTCSessionDescriptionInit>;
+    创建提议(successCallback: RTCSessionDescriptionCallback, failureCallback: RTCPeerConnectionErrorCallback, options?: RTCOfferOptions): Promise<void>;
     加事件监听<K extends keyof RTCPeerConnectionEventMap>(type: K, listener: (this: RTCPeerConnection, ev: RTCPeerConnectionEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof RTCPeerConnectionEventMap>(type: K, listener: (this: RTCPeerConnection, ev: RTCPeerConnectionEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3794,6 +3814,7 @@ interface SVGGElement {
 }
 
 interface SVGGeometryElement {
+    点在描边内(point?: DOMPointInit): boolean;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGGeometryElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGGeometryElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4546,6 +4567,11 @@ interface WindowEventHandlers {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface WindowOrWorkerGlobalScope {
+    创建位图(image: ImageBitmapSource, options?: ImageBitmapOptions): Promise<ImageBitmap>;
+    创建位图(image: ImageBitmapSource, sx: number, sy: number, sw: number, sh: number, options?: ImageBitmapOptions): Promise<ImageBitmap>;
+}
+
 interface Worker {
     加事件监听<K extends keyof WorkerEventMap>(type: K, listener: (this: Worker, ev: WorkerEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -4634,6 +4660,10 @@ interface CSSUnparsedValue {
     条目(): ArrayIterator<[number, CSSUnparsedSegment]>;
     键列(): ArrayIterator<number>;
     值列(): ArrayIterator<CSSUnparsedSegment>;
+}
+
+interface CanvasPathDrawingStyles {
+    设虚线(segments: Iterable<number>): void;
 }
 
 interface DOMTokenList {
