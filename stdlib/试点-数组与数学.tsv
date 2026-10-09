@@ -460,6 +460,17 @@ member	requestFullscreen	请求全屏
 member	exitFullscreen	退出全屏
 member	showPopover	显示浮层
 member	hidePopover	隐藏浮层
+member	requestPictureInPicture	请求画中画
+member	exitPictureInPicture	退出画中画
+member	showModal	显示模态
+member	returnValue	返回值
+member	requestClose	请求关闭
+member	show	显示
+member	addModule	加模块
+member	readable	可读
+member	writable	可写
+member	grow	增长
+member	getFile	取文件
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

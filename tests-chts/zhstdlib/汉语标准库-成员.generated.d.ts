@@ -762,6 +762,11 @@ interface ReadableStreamReadValueResult<T> {
     值内容: T;
 }
 
+interface ReadableWritablePair<R = any, W = any> {
+    可读: ReadableStream<R>;
+    可写: WritableStream<W>;
+}
+
 interface RegistrationOptions {
     种类?: WorkerType;
 }
@@ -1153,6 +1158,10 @@ interface BaseAudioContext {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof BaseAudioContextEventMap>(type: K, listener: (this: BaseAudioContext, ev: BaseAudioContextEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface BeforeUnloadEvent {
+    返回值: any;
 }
 
 interface BiquadFilterNode {
@@ -1577,6 +1586,11 @@ interface CompositionEvent {
     readonly 数据: string;
 }
 
+interface CompressionStream {
+    readonly 可读: ReadableStream<Uint8Array<ArrayBuffer>>;
+    readonly 可写: WritableStream<BufferSource>;
+}
+
 interface ConstantSourceNode {
     readonly 偏移: AudioParam;
     加事件监听<K extends keyof AudioScheduledSourceNodeEventMap>(type: K, listener: (this: ConstantSourceNode, ev: AudioScheduledSourceNodeEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1718,6 +1732,11 @@ interface DataTransferItemList {
     移除(index: number): void;
 }
 
+interface DecompressionStream {
+    readonly 可读: ReadableStream<Uint8Array<ArrayBuffer>>;
+    readonly 可写: WritableStream<BufferSource>;
+}
+
 interface DeviceMotionEventAcceleration {
     readonly 横坐标: number | null;
     readonly 纵坐标: number | null;
@@ -1828,6 +1847,7 @@ interface Document {
     创建文本节点(data: string): Text;
     创建树遍历器(root: Node, whatToShow?: number, filter?: NodeFilter | null): TreeWalker;
     退出全屏(): Promise<void>;
+    退出画中画(): Promise<void>;
     退出指针锁定(): void;
     按编号取元素(elementId: string): HTMLElement | null;
     按类取元素组(classNames: string): HTMLCollectionOf<Element>;
@@ -1961,6 +1981,7 @@ interface ErrorEvent {
 }
 
 interface Event {
+    返回值: boolean;
     readonly 目标: EventTarget | null;
     readonly 种类: string;
     阻止默认(): void;
@@ -2014,6 +2035,10 @@ interface FileSystem {
     readonly 名称: string;
 }
 
+interface FileSystemDirectoryEntry {
+    取文件(path?: string | null, options?: FileSystemFlags, successCallback?: FileSystemEntryCallback, errorCallback?: ErrorCallback): void;
+}
+
 interface FileSystemDirectoryHandle {
     readonly 类别: "directory";
     解决(possibleDescendant: FileSystemHandle): Promise<string[] | null>;
@@ -2025,6 +2050,7 @@ interface FileSystemEntry {
 
 interface FileSystemFileHandle {
     readonly 类别: "file";
+    取文件(): Promise<File>;
 }
 
 interface FileSystemHandle {
@@ -2127,6 +2153,11 @@ interface GamepadButton {
 
 interface GamepadHapticActuator {
     重置(): Promise<GamepadHapticsResult>;
+}
+
+interface GenericTransformStream {
+    readonly 可读: ReadableStream;
+    readonly 可写: WritableStream;
 }
 
 interface GeolocationCoordinates {
@@ -2283,7 +2314,11 @@ interface HTMLDetailsElement {
 
 interface HTMLDialogElement {
     打开: boolean;
+    返回值: string;
     关闭(returnValue?: string): void;
+    请求关闭(returnValue?: string): void;
+    显示(): void;
+    显示模态(): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDialogElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDialogElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2969,6 +3004,7 @@ interface HTMLUnknownElement {
 interface HTMLVideoElement {
     高度: number;
     宽度: number;
+    请求画中画(): Promise<PictureInPictureWindow>;
     加事件监听<K extends keyof HTMLVideoElementEventMap>(type: K, listener: (this: HTMLVideoElement, ev: HTMLVideoElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLVideoElementEventMap>(type: K, listener: (this: HTMLVideoElement, ev: HTMLVideoElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3516,6 +3552,7 @@ interface PaymentAddress {
 interface PaymentRequest {
     readonly 编号: string;
     中止(): Promise<void>;
+    显示(detailsPromise?: PaymentDetailsUpdate | PromiseLike<PaymentDetailsUpdate>): Promise<PaymentResponse>;
     加事件监听<K extends keyof PaymentRequestEventMap>(type: K, listener: (this: PaymentRequest, ev: PaymentRequestEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof PaymentRequestEventMap>(type: K, listener: (this: PaymentRequest, ev: PaymentRequestEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4640,6 +4677,16 @@ interface TaskSignal {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface TextDecoderStream {
+    readonly 可读: ReadableStream<string>;
+    readonly 可写: WritableStream<BufferSource>;
+}
+
+interface TextEncoderStream {
+    readonly 可读: ReadableStream<Uint8Array<ArrayBuffer>>;
+    readonly 可写: WritableStream<string>;
+}
+
 interface TextEvent {
     readonly 数据: string;
 }
@@ -4695,6 +4742,11 @@ interface Touch {
 interface TouchList {
     readonly 长度: number;
     取项(index: number): Touch | null;
+}
+
+interface TransformStream<I = any, O = any> {
+    readonly 可读: ReadableStream<O>;
+    readonly 可写: WritableStream<I>;
 }
 
 interface TransformStreamDefaultController<O = any> {
@@ -4876,6 +4928,16 @@ interface WebTransport {
     关闭(closeInfo?: WebTransportCloseInfo): void;
 }
 
+interface WebTransportBidirectionalStream {
+    readonly 可读: ReadableStream;
+    readonly 可写: WritableStream;
+}
+
+interface WebTransportDatagramDuplexStream {
+    readonly 可读: ReadableStream;
+    readonly 可写: WritableStream;
+}
+
 interface WebTransportError {
     readonly 来源: WebTransportErrorSource;
 }
@@ -4927,6 +4989,10 @@ interface Worker {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof WorkerEventMap>(type: K, listener: (this: Worker, ev: WorkerEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface Worklet {
+    加模块(moduleURL: string | URL, options?: WorkletOptions): Promise<void>;
 }
 
 interface WritableStream<W = any> {
@@ -5686,6 +5752,10 @@ interface PromiseWithResolvers<T> {
     拒绝: (reason?: any) => void;
 }
 
+interface SharedArrayBuffer {
+    增长(newByteLength?: number): void;
+}
+
 interface ReadonlySetLike<T> {
     键列(): Iterator<T>;
     含有(value: T): boolean;
@@ -5745,6 +5815,7 @@ interface Symbol {
 
 interface PropertyDescriptor {
     值内容?: any;
+    可写?: boolean;
     获取?(): any;
     设置?(v: any): void;
 }
@@ -5973,6 +6044,7 @@ interface Array<T> {
 }
 
 interface TypedPropertyDescriptor<T> {
+    可写?: boolean;
     值内容?: T;
     获取?: () => T;
     设置?: (value: T) => void;
