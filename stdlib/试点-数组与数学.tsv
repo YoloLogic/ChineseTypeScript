@@ -115,6 +115,15 @@ member	cloneNode	复制节点
 member	focus	聚焦
 member	blur	失焦
 member	contains	含节点
+member	append	后插
+member	prepend	前插
+member	remove	移除
+member	matches	匹配选择器
+member	closest	最近祖先
+member	getContext	取上下文
+member	requestAnimationFrame	请求动画帧
+member	title	标题
+member	value	值内容
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
