@@ -155,6 +155,10 @@ interface ClientQueryOptions {
     种类?: ClientTypes;
 }
 
+interface ClipboardEventInit {
+    剪贴板数据?: DataTransfer | null;
+}
+
 interface CommandEventInit {
     来源?: Element | null;
 }
@@ -245,6 +249,10 @@ interface DoubleRange {
     最大限制?: number;
     最小?: number;
     最小限制?: number;
+}
+
+interface DragEventInit {
+    数据传送?: DataTransfer | null;
 }
 
 interface EcdsaParams {
@@ -483,6 +491,8 @@ interface ImageEncodeOptions {
 
 interface InputEventInit {
     数据?: string | null;
+    数据传送?: DataTransfer | null;
+    输入类型?: string;
 }
 
 interface IntersectionObserverInit {
@@ -743,7 +753,13 @@ interface PlaneLayout {
 
 interface PointerEventInit {
     高度?: number;
+    主指针?: boolean;
     指针编号?: number;
+    指针类型?: string;
+    压力?: number;
+    倾斜横角?: number;
+    倾斜纵角?: number;
+    扭转角?: number;
     宽度?: number;
 }
 
@@ -1192,7 +1208,10 @@ interface WebTransportHash {
 }
 
 interface WheelEventInit {
+    滚动模式?: number;
     滚动横量?: number;
+    滚动纵量?: number;
+    滚动纵深?: number;
 }
 
 interface WorkerOptions {
@@ -1889,6 +1908,10 @@ interface Clipboard {
     写入(data: ClipboardItems): Promise<void>;
 }
 
+interface ClipboardEvent {
+    readonly 剪贴板数据: DataTransfer | null;
+}
+
 interface CommandEvent {
     readonly 来源: Element | null;
 }
@@ -2235,6 +2258,10 @@ interface DocumentType {
     readonly 名称: string;
     readonly 属主文档: Document;
     get 文本内容(): null;
+}
+
+interface DragEvent {
+    readonly 数据传送: DataTransfer | null;
 }
 
 interface Element {
@@ -3624,6 +3651,8 @@ interface InputDeviceInfo {
 
 interface InputEvent {
     readonly 数据: string | null;
+    readonly 数据传送: DataTransfer | null;
+    readonly 输入类型: string;
 }
 
 interface IntersectionObserver {
@@ -4288,7 +4317,13 @@ interface PluginArray {
 
 interface PointerEvent {
     readonly 高度: number;
+    readonly 主指针: boolean;
     readonly 指针编号: number;
+    readonly 指针类型: string;
+    readonly 压力: number;
+    readonly 倾斜横角: number;
+    readonly 倾斜纵角: number;
+    readonly 扭转角: number;
     readonly 宽度: number;
 }
 
@@ -5941,7 +5976,10 @@ interface WebTransportError {
 }
 
 interface WheelEvent {
+    readonly 滚动模式: number;
     readonly 滚动横量: number;
+    readonly 滚动纵量: number;
+    readonly 滚动纵深: number;
 }
 
 interface Window {
