@@ -1335,6 +1335,7 @@ interface Animatable {
 interface Animation {
     编号: string;
     readonly 就绪: Promise<Animation>;
+    readonly 替换状态: AnimationReplaceState;
     起始时刻: CSSNumberish | null;
     时间线: AnimationTimeline | null;
     取消(): void;
@@ -3678,9 +3679,13 @@ interface HighlightRegistry {
 
 interface History {
     readonly 长度: number;
+    滚动恢复: ScrollRestoration;
     readonly 状态: any;
     后退(): void;
     前进(): void;
+    跳转(delta?: number): void;
+    压入状态(data: any, unused: string, url?: string | URL | null): void;
+    替换状态(data: any, unused: string, url?: string | URL | null): void;
 }
 
 interface IDBCursor {
@@ -4196,14 +4201,28 @@ interface NavigationPreloadManager {
 interface Navigator {
     readonly 剪贴板: Clipboard;
     readonly 凭据: CredentialsContainer;
+    readonly 地理位置: Geolocation;
+    readonly 媒体设备: MediaDevices;
+    readonly 权限集: Permissions;
+    readonly 服务工作线程: ServiceWorkerContainer;
+}
+
+interface NavigatorID {
+    readonly 平台: string;
+    readonly 用户代理: string;
 }
 
 interface NavigatorLanguage {
     readonly 语种: string;
+    readonly 语言列: ReadonlyArray<string>;
 }
 
 interface NavigatorPlugins {
     readonly 插件集: PluginArray;
+}
+
+interface NavigatorStorage {
+    readonly 存储管理: StorageManager;
 }
 
 interface Node {
