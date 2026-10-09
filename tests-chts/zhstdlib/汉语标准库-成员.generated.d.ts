@@ -1584,6 +1584,7 @@ interface AbortController {
 
 interface AbortSignal {
     readonly 已中止: boolean;
+    中止时: ((this: AbortSignal, ev: Event) => any) | null;
     已中止则抛(): void;
     加事件监听<K extends keyof AbortSignalEventMap>(type: K, listener: (this: AbortSignal, ev: AbortSignalEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1864,6 +1865,7 @@ interface Body {
 
 interface BroadcastChannel {
     readonly 名称: string;
+    收消息时: ((this: BroadcastChannel, ev: MessageEvent) => any) | null;
     关闭(): void;
     发消息(message: any): void;
     加事件监听<K extends keyof BroadcastChannelEventMap>(type: K, listener: (this: BroadcastChannel, ev: BroadcastChannelEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2388,6 +2390,7 @@ interface ConvolverNode {
 }
 
 interface CookieStore {
+    变化时: ((this: CookieStore, ev: CookieChangeEvent) => any) | null;
     删除(name: string): Promise<void>;
     删除(options: CookieStoreDeleteOptions): Promise<void>;
     获取(name: string): Promise<CookieListItem | null>;
@@ -2888,6 +2891,8 @@ interface EventCounts {
 
 interface EventSource {
     出错时: ((this: EventSource, ev: Event) => any) | null;
+    收消息时: ((this: EventSource, ev: MessageEvent) => any) | null;
+    打开时: ((this: EventSource, ev: Event) => any) | null;
     readonly 就绪态: number;
     readonly 地址: string;
     关闭(): void;
@@ -2916,7 +2921,9 @@ interface FileList {
 
 interface FileReader {
     readonly 报错: DOMException | null;
+    中止时: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
     出错时: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
+    加载时: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
     readonly 就绪态: 0 | 1 | 2;
     中止(): void;
     读为缓冲(blob: Blob): void;
@@ -3149,7 +3156,17 @@ interface GeolocationPositionError {
 }
 
 interface GlobalEventHandlers {
+    中止时: ((this: GlobalEventHandlers, ev: UIEvent) => any) | null;
+    失焦时: ((this: GlobalEventHandlers, ev: FocusEvent) => any) | null;
+    变化时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
+    点击时: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null;
+    关闭时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     出错时: OnErrorEventHandler;
+    聚焦时: ((this: GlobalEventHandlers, ev: FocusEvent) => any) | null;
+    输入时: ((this: GlobalEventHandlers, ev: InputEvent) => any) | null;
+    加载时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
+    滚动时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
+    提交时: ((this: GlobalEventHandlers, ev: SubmitEvent) => any) | null;
     加事件监听<K extends keyof GlobalEventHandlersEventMap>(type: K, listener: (this: GlobalEventHandlers, ev: GlobalEventHandlersEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof GlobalEventHandlersEventMap>(type: K, listener: (this: GlobalEventHandlers, ev: GlobalEventHandlersEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4178,6 +4195,8 @@ interface IDBCursorWithValue {
 
 interface IDBDatabase {
     readonly 名称: string;
+    中止时: ((this: IDBDatabase, ev: Event) => any) | null;
+    关闭时: ((this: IDBDatabase, ev: Event) => any) | null;
     出错时: ((this: IDBDatabase, ev: Event) => any) | null;
     关闭(): void;
     创建对象存储(name: string, options?: IDBObjectStoreParameters): IDBObjectStore;
@@ -4249,6 +4268,7 @@ interface IDBRequest<T = any> {
 interface IDBTransaction {
     readonly 报错: DOMException | null;
     readonly 模式: IDBTransactionMode;
+    中止时: ((this: IDBTransaction, ev: Event) => any) | null;
     出错时: ((this: IDBTransaction, ev: Event) => any) | null;
     中止(): void;
     落实(): void;
@@ -4497,6 +4517,7 @@ interface MediaKeyMessageEvent {
 
 interface MediaKeySession {
     readonly 密钥状态集: MediaKeyStatusMap;
+    收消息时: ((this: MediaKeySession, ev: MediaKeyMessageEvent) => any) | null;
     readonly 会话编号: string;
     关闭(): Promise<void>;
     生成请求(initDataType: string, initData: BufferSource): Promise<void>;
@@ -4544,6 +4565,7 @@ interface MediaMetadata {
 interface MediaQueryList {
     readonly 匹配选择器: boolean;
     readonly 媒体: string;
+    变化时: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null;
     加监听(callback: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null): void;
     删监听(callback: ((this: MediaQueryList, ev: MediaQueryListEvent) => any) | null): void;
     加事件监听<K extends keyof MediaQueryListEventMap>(type: K, listener: (this: MediaQueryList, ev: MediaQueryListEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4648,6 +4670,7 @@ interface MessageEvent<T = any> {
 }
 
 interface MessageEventTarget<T> {
+    收消息时: ((this: T, ev: MessageEvent) => any) | null;
     加事件监听<K extends keyof MessageEventTargetEventMap>(type: K, listener: (this: T, ev: MessageEventTargetEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MessageEventTargetEventMap>(type: K, listener: (this: T, ev: MessageEventTargetEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4880,6 +4903,8 @@ interface Notification {
     readonly 书写方向: NotificationDirection;
     readonly 图标: string;
     readonly 语言: string;
+    点击时: ((this: Notification, ev: Event) => any) | null;
+    关闭时: ((this: Notification, ev: Event) => any) | null;
     出错时: ((this: Notification, ev: Event) => any) | null;
     readonly 需交互: boolean;
     readonly 静默: boolean | null;
@@ -5123,6 +5148,7 @@ interface PerformanceTiming {
 
 interface PermissionStatus {
     readonly 名称: string;
+    变化时: ((this: PermissionStatus, ev: Event) => any) | null;
     readonly 状态: PermissionState;
     加事件监听<K extends keyof PermissionStatusEventMap>(type: K, listener: (this: PermissionStatus, ev: PermissionStatusEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -5219,7 +5245,10 @@ interface RTCDataChannel {
     readonly 最大包时长: number | null;
     readonly 最大重传: number | null;
     readonly 已协商: boolean;
+    关闭时: ((this: RTCDataChannel, ev: Event) => any) | null;
     出错时: ((this: RTCDataChannel, ev: RTCErrorEvent) => any) | null;
+    收消息时: ((this: RTCDataChannel, ev: MessageEvent) => any) | null;
+    打开时: ((this: RTCDataChannel, ev: Event) => any) | null;
     readonly 有序: boolean;
     readonly 协议: string;
     readonly 就绪态: RTCDataChannelState;
@@ -6281,6 +6310,7 @@ interface Screen {
 
 interface ScreenOrientation {
     readonly 角度: number;
+    变化时: ((this: ScreenOrientation, ev: Event) => any) | null;
     readonly 种类: OrientationType;
     锁定(orientation: OrientationLockType): Promise<void>;
     解锁(): void;
@@ -6334,6 +6364,7 @@ interface ServiceWorker {
 
 interface ServiceWorkerContainer {
     readonly 控制器: ServiceWorker | null;
+    收消息时: ((this: ServiceWorkerContainer, ev: MessageEvent) => any) | null;
     readonly 就绪: Promise<ServiceWorkerRegistration>;
     取注册(clientURL?: string | URL): Promise<ServiceWorkerRegistration | undefined>;
     取全部注册(): Promise<ReadonlyArray<ServiceWorkerRegistration>>;
@@ -6393,6 +6424,7 @@ interface SourceBuffer {
     追加窗起点: number;
     readonly 缓冲区间: TimeRanges;
     模式: AppendMode;
+    中止时: ((this: SourceBuffer, ev: Event) => any) | null;
     出错时: ((this: SourceBuffer, ev: Event) => any) | null;
     时刻偏移: number;
     readonly 正在更新: boolean;
@@ -6654,6 +6686,7 @@ interface TextTrackCueList {
 
 interface TextTrackList {
     readonly 长度: number;
+    变化时: ((this: TextTrackList, ev: Event) => any) | null;
     按编号取轨道(id: string): TextTrack | null;
     加事件监听<K extends keyof TextTrackListEventMap>(type: K, listener: (this: TextTrackList, ev: TextTrackListEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -6873,6 +6906,7 @@ interface VisualViewport {
     readonly 高度: number;
     readonly 偏移左: number;
     readonly 偏移顶: number;
+    滚动时: ((this: VisualViewport, ev: Event) => any) | null;
     readonly 页面左: number;
     readonly 页面顶: number;
     readonly 缩放: number;
@@ -7030,7 +7064,10 @@ interface WebSocket {
     二进制类型: BinaryType;
     readonly 缓冲量: number;
     readonly 扩展: string;
+    关闭时: ((this: WebSocket, ev: CloseEvent) => any) | null;
     出错时: ((this: WebSocket, ev: Event) => any) | null;
+    收消息时: ((this: WebSocket, ev: MessageEvent) => any) | null;
+    打开时: ((this: WebSocket, ev: Event) => any) | null;
     readonly 协议: string;
     readonly 就绪态: 0 | 1 | 2 | 3;
     readonly 地址: string;
@@ -7102,6 +7139,7 @@ interface Window {
 }
 
 interface WindowEventHandlers {
+    收消息时: ((this: WindowEventHandlers, ev: MessageEvent) => any) | null;
     加事件监听<K extends keyof WindowEventHandlersEventMap>(type: K, listener: (this: WindowEventHandlers, ev: WindowEventHandlersEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof WindowEventHandlersEventMap>(type: K, listener: (this: WindowEventHandlers, ev: WindowEventHandlersEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -7173,7 +7211,9 @@ interface XMLHttpRequest {
 }
 
 interface XMLHttpRequestEventTarget {
+    中止时: ((this: XMLHttpRequest, ev: ProgressEvent) => any) | null;
     出错时: ((this: XMLHttpRequest, ev: ProgressEvent) => any) | null;
+    加载时: ((this: XMLHttpRequest, ev: ProgressEvent) => any) | null;
     加事件监听<K extends keyof XMLHttpRequestEventTargetEventMap>(type: K, listener: (this: XMLHttpRequestEventTarget, ev: XMLHttpRequestEventTargetEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof XMLHttpRequestEventTargetEventMap>(type: K, listener: (this: XMLHttpRequestEventTarget, ev: XMLHttpRequestEventTargetEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
