@@ -2372,6 +2372,7 @@ interface GPUCompilationMessage {
 
 interface GPUDevice {
     创建缓冲(descriptor: GPUBufferDescriptor): GPUBuffer;
+    创建采样器(descriptor?: GPUSamplerDescriptor): GPUSampler;
     创建纹理(descriptor: GPUTextureDescriptor): GPUTexture;
     加事件监听<K extends keyof GPUDeviceEventMap>(type: K, listener: (this: GPUDevice, ev: GPUDeviceEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -5332,6 +5333,20 @@ interface WakeLockSentinel {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface WebGL2RenderingContextBase {
+    开始查询(target: GLenum, query: WebGLQuery): void;
+    绑定采样器(unit: GLuint, sampler: WebGLSampler | null): void;
+    绑定顶点数组(array: WebGLVertexArrayObject | null): void;
+    创建查询(): WebGLQuery;
+    创建采样器(): WebGLSampler;
+    创建顶点数组(): WebGLVertexArrayObject;
+    删查询(query: WebGLQuery | null): void;
+    删采样器(sampler: WebGLSampler | null): void;
+    删顶点数组(vertexArray: WebGLVertexArrayObject | null): void;
+    绘制缓冲(buffers: GLenum[]): void;
+    结束查询(target: GLenum): void;
+}
+
 interface WebGL2RenderingContextOverloads {
     缓冲数据(target: GLenum, size: GLsizeiptr, usage: GLenum): void;
     缓冲数据(target: GLenum, srcData: AllowSharedBufferSource | null, usage: GLenum): void;
@@ -5353,6 +5368,7 @@ interface WebGLRenderingContextBase {
     附加着色器(program: WebGLProgram, shader: WebGLShader): void;
     绑定缓冲(target: GLenum, buffer: WebGLBuffer | null): void;
     绑定帧缓冲(target: GLenum, framebuffer: WebGLFramebuffer | null): void;
+    绑定渲染缓冲(target: GLenum, renderbuffer: WebGLRenderbuffer | null): void;
     绑定纹理(target: GLenum, texture: WebGLTexture | null): void;
     混合函数(sfactor: GLenum, dfactor: GLenum): void;
     检查帧缓冲(target: GLenum): GLenum;
@@ -5726,6 +5742,10 @@ interface URLSearchParams {
     条目(): URLSearchParamsIterator<[string, string]>;
     键列(): URLSearchParamsIterator<string>;
     值列(): URLSearchParamsIterator<string>;
+}
+
+interface WebGL2RenderingContextBase {
+    绘制缓冲(buffers: Iterable<GLenum>): void;
 }
 
 interface FileSystemDirectoryHandle {
