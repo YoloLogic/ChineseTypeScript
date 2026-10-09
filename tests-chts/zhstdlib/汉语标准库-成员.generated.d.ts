@@ -46,6 +46,10 @@ interface AudioBufferOptions {
 
 interface AudioBufferSourceOptions {
     缓冲?: AudioBuffer | null;
+    失谐?: number;
+    循环?: boolean;
+    循环终点?: number;
+    循环起点?: number;
 }
 
 interface AudioContextOptions {
@@ -106,6 +110,9 @@ interface AvcEncoderConfig {
 }
 
 interface BiquadFilterOptions {
+    失谐?: number;
+    频率?: number;
+    增益值?: number;
     种类?: BiquadFilterType;
 }
 
@@ -118,6 +125,7 @@ interface BlobPropertyBag {
 }
 
 interface CSSNumericType {
+    频率?: number;
     长度?: number;
 }
 
@@ -392,6 +400,10 @@ interface GPUVertexBufferLayout {
     属性集: GPUVertexAttribute[];
 }
 
+interface GainOptions {
+    增益值?: number;
+}
+
 interface GamepadEffectParameters {
     时长?: number;
 }
@@ -608,6 +620,8 @@ interface OpusEncoderConfig {
 }
 
 interface OscillatorOptions {
+    失谐?: number;
+    频率?: number;
     种类?: OscillatorType;
 }
 
@@ -1144,6 +1158,10 @@ interface AbstractWorker {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface AnalyserNode {
+    取字节频谱(array: Uint8Array<ArrayBuffer>): void;
+}
+
 interface Animatable {
     播放动画(keyframes: Keyframe[] | PropertyIndexedKeyframes | null, options?: number | KeyframeAnimationOptions): Animation;
     取动画列(options?: GetAnimationsOptions): Animation[];
@@ -1186,6 +1204,10 @@ interface AudioBuffer {
 
 interface AudioBufferSourceNode {
     缓冲: AudioBuffer | null;
+    readonly 失谐: AudioParam;
+    循环: boolean;
+    循环终点: number;
+    循环起点: number;
     开始(when?: number, offset?: number, duration?: number): void;
     加事件监听<K extends keyof AudioScheduledSourceNodeEventMap>(type: K, listener: (this: AudioBufferSourceNode, ev: AudioScheduledSourceNodeEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1235,6 +1257,8 @@ interface AudioEncoder {
 }
 
 interface AudioNode {
+    连接(destinationNode: AudioNode, output?: number, input?: number): AudioNode;
+    连接(destinationParam: AudioParam, output?: number): void;
     断开(): void;
     断开(output: number): void;
     断开(destinationNode: AudioNode): void;
@@ -1277,11 +1301,13 @@ interface BaseAudioContext {
     创建滤波器(): BiquadFilterNode;
     创建缓冲(numberOfChannels: number, length: number, sampleRate: number): AudioBuffer;
     创建缓冲源(): AudioBufferSourceNode;
+    创建常量源(): ConstantSourceNode;
     创建卷积器(): ConvolverNode;
     创建延迟(maxDelayTime?: number): DelayNode;
     创建压缩器(): DynamicsCompressorNode;
     创建增益(): GainNode;
     创建振荡器(): OscillatorNode;
+    创建声像器(): PannerNode;
     创建整形器(): WaveShaperNode;
     解码音频(audioData: ArrayBuffer, successCallback?: DecodeSuccessCallback | null, errorCallback?: DecodeErrorCallback | null): Promise<AudioBuffer>;
     加事件监听<K extends keyof BaseAudioContextEventMap>(type: K, listener: (this: BaseAudioContext, ev: BaseAudioContextEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1295,6 +1321,9 @@ interface BeforeUnloadEvent {
 }
 
 interface BiquadFilterNode {
+    readonly 失谐: AudioParam;
+    readonly 频率: AudioParam;
+    readonly 增益值: AudioParam;
     种类: BiquadFilterType;
 }
 
@@ -2246,6 +2275,8 @@ interface FileReader {
     出错时: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
     readonly 就绪态: 0 | 1 | 2;
     中止(): void;
+    读为缓冲(blob: Blob): void;
+    读为文本(blob: Blob, encoding?: string): void;
     加事件监听<K extends keyof FileReaderEventMap>(type: K, listener: (this: FileReader, ev: FileReaderEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof FileReaderEventMap>(type: K, listener: (this: FileReader, ev: FileReaderEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2381,6 +2412,10 @@ interface GPUTexture {
 
 interface GPUUncapturedErrorEvent {
     readonly 报错: GPUError;
+}
+
+interface GainNode {
+    readonly 增益值: AudioParam;
 }
 
 interface Gamepad {
@@ -2846,6 +2881,7 @@ interface HTMLMapElement {
 
 interface HTMLMarqueeElement {
     高度: string;
+    循环: number;
     宽度: string;
     开始(): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLMarqueeElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2857,6 +2893,7 @@ interface HTMLMarqueeElement {
 interface HTMLMediaElement {
     readonly 时长: number;
     readonly 报错: MediaError | null;
+    循环: boolean;
     readonly 就绪态: number;
     源址: string;
     加载(): void;
@@ -3842,6 +3879,8 @@ interface OffscreenCanvasRenderingContext2D {
 }
 
 interface OscillatorNode {
+    readonly 失谐: AudioParam;
+    readonly 频率: AudioParam;
     种类: OscillatorType;
     加事件监听<K extends keyof AudioScheduledSourceNodeEventMap>(type: K, listener: (this: OscillatorNode, ev: AudioScheduledSourceNodeEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
