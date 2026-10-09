@@ -2477,7 +2477,9 @@ interface HTMLAllCollection {
 }
 
 interface HTMLAnchorElement {
+    下载: string;
     名称: string;
+    关系: string;
     目标: string;
     转文本: string;
     种类: string;
@@ -2489,6 +2491,8 @@ interface HTMLAnchorElement {
 
 interface HTMLAreaElement {
     替代文本: string;
+    下载: string;
+    关系: string;
     目标: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLAreaElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -2707,6 +2711,7 @@ interface HTMLFormElement {
     readonly 元素集合: HTMLFormControlsCollection;
     readonly 长度: number;
     名称: string;
+    关系: string;
     目标: string;
     检查校验(): boolean;
     报告校验(): boolean;
@@ -2791,6 +2796,7 @@ interface HTMLIFrameElement {
 interface HTMLImageElement {
     对齐: string;
     替代文本: string;
+    跨源: string | null;
     高度: number;
     名称: string;
     源址: string;
@@ -2872,10 +2878,12 @@ interface HTMLLegendElement {
 }
 
 interface HTMLLinkElement {
+    跨源: string | null;
     已禁用: boolean;
     链接: string;
     完整性: string;
     媒体: string;
+    关系: string;
     目标: string;
     种类: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLLinkElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2904,6 +2912,7 @@ interface HTMLMarqueeElement {
 }
 
 interface HTMLMediaElement {
+    跨源: string | null;
     readonly 时长: number;
     readonly 报错: MediaError | null;
     循环: boolean;
@@ -3088,6 +3097,7 @@ interface HTMLQuoteElement {
 }
 
 interface HTMLScriptElement {
+    跨源: string | null;
     完整性: string;
     源址: string;
     转文本: string;
@@ -3504,6 +3514,10 @@ interface LargestContentfulPaint {
     readonly 大小: number;
     readonly 地址: string;
     转数据(): any;
+}
+
+interface LinkStyle {
+    readonly 样式表: CSSStyleSheet | null;
 }
 
 interface Location {
@@ -4280,6 +4294,8 @@ interface Response {
 }
 
 interface SVGAElement {
+    下载: string;
+    关系: string;
     readonly 目标: SVGAnimatedString;
     种类: string;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGAElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4375,6 +4391,9 @@ interface SVGAnimatedTransformList {
 
 interface SVGAnimationElement {
     readonly 目标元素: SVGElement | null;
+    开始元素(): void;
+    定时开始(offset: number): void;
+    结束元素(): void;
     取当前时刻(): number;
     取简单时长(): number;
     取开始时刻(): number;
@@ -4624,7 +4643,9 @@ interface SVGFETurbulenceElement {
 }
 
 interface SVGFilterElement {
+    readonly 滤镜单位: SVGAnimatedEnumeration;
     readonly 高度: SVGAnimatedLength;
+    readonly 基元单位: SVGAnimatedEnumeration;
     readonly 宽度: SVGAnimatedLength;
     readonly 横坐标: SVGAnimatedLength;
     readonly 纵坐标: SVGAnimatedLength;
@@ -4697,6 +4718,7 @@ interface SVGGraphicsElement {
 }
 
 interface SVGImageElement {
+    跨源: string | null;
     readonly 高度: SVGAnimatedLength;
     readonly 保持纵横比: SVGAnimatedPreserveAspectRatio;
     readonly 宽度: SVGAnimatedLength;
@@ -4803,6 +4825,9 @@ interface SVGPathElement {
 
 interface SVGPatternElement {
     readonly 高度: SVGAnimatedLength;
+    readonly 图案内容单位: SVGAnimatedEnumeration;
+    readonly 图案变换: SVGAnimatedTransformList;
+    readonly 图案单位: SVGAnimatedEnumeration;
     readonly 宽度: SVGAnimatedLength;
     readonly 横坐标: SVGAnimatedLength;
     readonly 纵坐标: SVGAnimatedLength;
