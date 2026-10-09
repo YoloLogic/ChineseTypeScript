@@ -22,6 +22,7 @@ interface AddEventListenerOptions {
 interface AddressErrors {
     城市?: string;
     国家?: string;
+    接收方?: string;
     地区?: string;
 }
 
@@ -188,6 +189,7 @@ interface CSSNumericType {
     弹性?: number;
     频率?: number;
     长度?: number;
+    百分比?: number;
 }
 
 interface CSSStyleSheetInit {
@@ -274,6 +276,7 @@ interface CookieInit {
     网域?: string | null;
     过期时间?: DOMHighResTimeStamp | null;
     名称: string;
+    已分区?: boolean;
     值内容: string;
 }
 
@@ -285,6 +288,7 @@ interface CookieListItem {
 interface CookieStoreDeleteOptions {
     网域?: string | null;
     名称: string;
+    已分区?: boolean;
 }
 
 interface CookieStoreGetOptions {
@@ -536,6 +540,10 @@ interface GPURenderPassColorAttachment {
 
 interface GPURenderPassDepthStencilAttachment {
     视图: GPUTexture | GPUTextureView;
+}
+
+interface GPURenderPipelineDescriptor {
+    图元?: GPUPrimitiveState;
 }
 
 interface GPUSamplerBindingLayout {
@@ -982,6 +990,7 @@ interface PaymentShippingOption {
 
 interface PaymentValidationErrors {
     报错?: string;
+    付款方?: PayerErrors;
 }
 
 interface Pbkdf2Params {
@@ -1584,6 +1593,7 @@ interface UnderlyingSource<R = any> {
 }
 
 interface VideoColorSpaceInit {
+    原色集?: VideoColorPrimaries | null;
     转移?: VideoTransferCharacteristics | null;
 }
 
@@ -1615,6 +1625,10 @@ interface VideoEncoderConfig {
     帧率?: number;
     高度: number;
     宽度: number;
+}
+
+interface VideoEncoderEncodeOptionsForAvc {
+    量化器?: number | null;
 }
 
 interface VideoEncoderInit {
@@ -2232,6 +2246,7 @@ interface CSSStyleProperties {
     标记物: string;
     偏移: string;
     不透明度: string;
+    透视: string;
     位置: string;
     调整大小: string;
     右侧: string;
@@ -3407,6 +3422,7 @@ interface HTMLAnchorElement {
     下载: string;
     链接语言: string;
     名称: string;
+    往返探测: string;
     来源页策略: string;
     关系: string;
     get 关系列表(): DOMTokenList;
@@ -3424,6 +3440,7 @@ interface HTMLAreaElement {
     替代文本: string;
     坐标: string;
     下载: string;
+    往返探测: string;
     来源页策略: string;
     关系: string;
     get 关系列表(): DOMTokenList;
@@ -3593,6 +3610,7 @@ interface HTMLElement {
     readonly 偏移顶: number;
     readonly 偏移宽: number;
     外部文本: string;
+    浮层: string | null;
     拼写检查: boolean;
     标题: string;
     平移: boolean;
@@ -5265,6 +5283,7 @@ interface Path2D {
 interface PaymentAddress {
     readonly 城市: string;
     readonly 国家: string;
+    readonly 接收方: string;
     readonly 地区: string;
     转数据(): any;
 }
@@ -5740,6 +5759,7 @@ interface ReadableStreamGenericReader {
 interface RemotePlayback {
     连接时: ((this: RemotePlayback, ev: Event) => any) | null;
     readonly 状态: RemotePlaybackState;
+    提示符(): Promise<void>;
     加事件监听<K extends keyof RemotePlaybackEventMap>(type: K, listener: (this: RemotePlayback, ev: RemotePlaybackEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof RemotePlaybackEventMap>(type: K, listener: (this: RemotePlayback, ev: RemotePlaybackEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -5795,6 +5815,7 @@ interface Response {
 interface SVGAElement {
     下载: string;
     链接语言: string;
+    往返探测: string;
     来源页策略: string;
     关系: string;
     get 关系列表(): DOMTokenList;
@@ -7125,6 +7146,7 @@ interface VTTRegion {
 }
 
 interface VideoColorSpace {
+    readonly 原色集: VideoColorPrimaries | null;
     readonly 转移: VideoTransferCharacteristics | null;
     转数据(): VideoColorSpaceInit;
 }
@@ -7399,6 +7421,7 @@ interface Window {
     readonly 长度: number;
     名称: string;
     readonly 朝向: number;
+    readonly 个人栏: BarProp;
     readonly 屏幕横坐标: number;
     readonly 屏幕纵坐标: number;
     状态码: string;
@@ -7415,6 +7438,7 @@ interface Window {
     打开(url?: string | URL, target?: string, features?: string): WindowProxy | null;
     发消息(message: any, targetOrigin: string, transfer?: Transferable[]): void;
     发消息(message: any, options?: WindowPostMessageOptions): void;
+    提示符(message?: string, _default?: string): string | null;
     请求空闲(callback: IdleRequestCallback, options?: IdleRequestOptions): number;
     滚动(options?: ScrollToOptions): void;
     滚动(x: number, y: number): void;
@@ -7548,6 +7572,7 @@ interface XSLTProcessor {
 
 declare namespace CSS {
     function 转义(ident: string): string;
+    function 百分比(value: number): CSSUnitValue;
     function 注册属性(definition: PropertyDefinition): void;
     function 支持(property: string, value: string): boolean;
     function 支持(conditionText: string): boolean;
