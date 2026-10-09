@@ -133,6 +133,15 @@ if (Test-Path $genGo) {
     Check '⑨ 二进制不比译名表旧（防 -NoBuild 用旧表）' $false '找不到生成的译名表'
 }
 
+# ⑩ 文档数字守卫：stdlib/README.md 里写的译名条数必须与译名表一致（防文档漂移）。
+$tablePath = Join-Path (Split-Path -Parent $PSScriptRoot) 'stdlib\试点-数组与数学.tsv'
+$rows = @(Get-Content $tablePath -Encoding UTF8 | Where-Object { $_ -match '^(member|global)\t' })
+$rdPath = Join-Path (Split-Path -Parent $PSScriptRoot) 'stdlib\README.md'
+$rdText = [System.IO.File]::ReadAllText($rdPath)
+$m = [regex]::Match($rdText, '译名：\*\*(\d+) / 7687')
+$docNum = if ($m.Success) { [int]$m.Groups[1].Value } else { -1 }
+Check '⑩ 文档数字与译名表一致（防文档漂移）' ($docNum -eq $rows.Count) ('README 写=' + $docNum + ' 表里=' + $rows.Count)
+
 Write-Host '=== 判定汇总 ==='
 $results | ForEach-Object { '  [' + $_.结果 + '] ' + $_.判定 + ' —— ' + $_.说明 }
 $fail = @($results | Where-Object { $_.结果 -ne '通过' }).Count
