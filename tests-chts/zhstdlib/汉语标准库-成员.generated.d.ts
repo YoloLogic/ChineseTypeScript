@@ -3611,6 +3611,7 @@ interface KeyframeEffect {
 
 interface LargestContentfulPaint {
     readonly 编号: string;
+    readonly 渲染时刻: DOMHighResTimeStamp;
     readonly 大小: number;
     readonly 地址: string;
     转数据(): any;
@@ -4125,11 +4126,17 @@ interface PerformanceMeasure {
 }
 
 interface PerformanceNavigation {
+    readonly 重定向次数: number;
     readonly 种类: number;
     转数据(): any;
 }
 
 interface PerformanceNavigationTiming {
+    readonly 文档完成: DOMHighResTimeStamp;
+    readonly 文档可交互: DOMHighResTimeStamp;
+    readonly 加载事件结束: DOMHighResTimeStamp;
+    readonly 加载事件开始: DOMHighResTimeStamp;
+    readonly 重定向次数: number;
     readonly 种类: NavigationTimingType;
     转数据(): any;
 }
@@ -4151,6 +4158,10 @@ interface PerformancePaintTiming {
 interface PerformanceResourceTiming {
     readonly 连接结束: DOMHighResTimeStamp;
     readonly 连接开始: DOMHighResTimeStamp;
+    readonly 解码体大小: number;
+    readonly 域名查询结束: DOMHighResTimeStamp;
+    readonly 域名查询开始: DOMHighResTimeStamp;
+    readonly 编码体大小: number;
     readonly 获取开始: DOMHighResTimeStamp;
     readonly 发起类型: string;
     readonly 重定向结束: DOMHighResTimeStamp;
@@ -4158,6 +4169,8 @@ interface PerformanceResourceTiming {
     readonly 请求开始: DOMHighResTimeStamp;
     readonly 响应结束: DOMHighResTimeStamp;
     readonly 响应开始: DOMHighResTimeStamp;
+    readonly 安全连接开始: DOMHighResTimeStamp;
+    readonly 服务器计时: ReadonlyArray<PerformanceServerTiming>;
     readonly 传输大小: number;
     readonly 工作线程开始: DOMHighResTimeStamp;
     转数据(): any;
@@ -4172,12 +4185,19 @@ interface PerformanceServerTiming {
 interface PerformanceTiming {
     readonly 连接结束: number;
     readonly 连接开始: number;
+    readonly 文档完成: number;
+    readonly 文档可交互: number;
+    readonly 域名查询结束: number;
+    readonly 域名查询开始: number;
     readonly 获取开始: number;
+    readonly 加载事件结束: number;
+    readonly 加载事件开始: number;
     readonly 重定向结束: number;
     readonly 重定向开始: number;
     readonly 请求开始: number;
     readonly 响应结束: number;
     readonly 响应开始: number;
+    readonly 安全连接开始: number;
     转数据(): any;
 }
 
