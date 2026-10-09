@@ -514,6 +514,17 @@ member	unregister	注销
 member	deref	解引用
 member	encode	编码
 member	decode	解码
+member	pipeThrough	管道通过
+member	pipeTo	管道到
+member	tee	分叉
+member	cancel	取消
+member	pull	拉取
+member	enqueue	入队
+member	desiredSize	期望大小
+member	highWaterMark	高水位
+member	locked	已锁定
+member	getReader	取读取器
+member	credentials	凭据
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

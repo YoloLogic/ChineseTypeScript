@@ -690,7 +690,12 @@ interface PushSubscriptionJSON {
 }
 
 interface QueuingStrategy<T = any> {
+    高水位?: number;
     大小?: QueuingStrategySize<T>;
+}
+
+interface QueuingStrategyInit {
+    高水位: number;
 }
 
 interface RTCDataChannelInit {
@@ -786,6 +791,7 @@ interface Report {
 }
 
 interface RequestInit {
+    凭据?: RequestCredentials;
     头集合?: HeadersInit;
     模式?: RequestMode;
     信号?: AbortSignal | null;
@@ -921,11 +927,15 @@ interface URLPatternResult {
 }
 
 interface UnderlyingByteSource {
+    取消?: UnderlyingSourceCancelCallback;
+    拉取?: (controller: ReadableByteStreamController) => void | PromiseLike<void>;
     开始?: (controller: ReadableByteStreamController) => any;
     种类: "bytes";
 }
 
 interface UnderlyingDefaultSource<R = any> {
+    取消?: UnderlyingSourceCancelCallback;
+    拉取?: (controller: ReadableStreamDefaultController<R>) => void | PromiseLike<void>;
     开始?: (controller: ReadableStreamDefaultController<R>) => any;
     种类?: undefined;
 }
@@ -939,6 +949,8 @@ interface UnderlyingSink<W = any> {
 }
 
 interface UnderlyingSource<R = any> {
+    取消?: UnderlyingSourceCancelCallback;
+    拉取?: UnderlyingSourcePullCallback<R>;
     开始?: UnderlyingSourceStartCallback<R>;
     种类?: ReadableStreamType;
 }
@@ -1001,8 +1013,13 @@ interface WebTransportHash {
 }
 
 interface WorkerOptions {
+    凭据?: RequestCredentials;
     名称?: string;
     种类?: WorkerType;
+}
+
+interface WorkletOptions {
+    凭据?: RequestCredentials;
 }
 
 interface WriteParams {
@@ -1042,6 +1059,7 @@ interface Animatable {
 
 interface Animation {
     编号: string;
+    取消(): void;
     反转(): void;
     加事件监听<K extends keyof AnimationEventMap>(type: K, listener: (this: Animation, ev: AnimationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1213,6 +1231,7 @@ interface BroadcastChannel {
 }
 
 interface ByteLengthQueuingStrategy {
+    readonly 高水位: number;
     readonly 大小: QueuingStrategySize<ArrayBufferView>;
 }
 
@@ -1650,6 +1669,7 @@ interface CookieStore {
 }
 
 interface CountQueuingStrategy {
+    readonly 高水位: number;
     readonly 大小: QueuingStrategySize;
 }
 
@@ -3479,6 +3499,10 @@ interface NavigationHistoryEntry {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface Navigator {
+    readonly 凭据: CredentialsContainer;
+}
+
 interface Node {
     readonly 子节点列: NodeListOf<ChildNode>;
     readonly 首子节点: ChildNode | null;
@@ -3835,13 +3859,32 @@ interface Range {
 }
 
 interface ReadableByteStreamController {
+    readonly 期望大小: number | null;
     关闭(): void;
+    入队(chunk: ArrayBufferView<ArrayBuffer>): void;
     报错(e?: any): void;
 }
 
+interface ReadableStream<R = any> {
+    readonly 已锁定: boolean;
+    取消(reason?: any): Promise<void>;
+    取读取器(options: { mode: "byob" }): ReadableStreamBYOBReader;
+    取读取器(): ReadableStreamDefaultReader<R>;
+    取读取器(options?: ReadableStreamGetReaderOptions): ReadableStreamReader<R>;
+    管道通过<T>(transform: ReadableWritablePair<T, R>, options?: StreamPipeOptions): ReadableStream<T>;
+    管道到(destination: WritableStream<R>, options?: StreamPipeOptions): Promise<void>;
+    分叉(): [ReadableStream<R>, ReadableStream<R>];
+}
+
 interface ReadableStreamDefaultController<R = any> {
+    readonly 期望大小: number | null;
     关闭(): void;
+    入队(chunk: R): void;
     报错(e?: any): void;
+}
+
+interface ReadableStreamGenericReader {
+    取消(reason?: any): Promise<void>;
 }
 
 interface RemotePlayback {
@@ -3857,6 +3900,7 @@ interface ReportingObserver {
 }
 
 interface Request {
+    readonly 凭据: RequestCredentials;
     readonly 头集合: Headers;
     readonly 模式: RequestMode;
     readonly 信号: AbortSignal;
@@ -4617,6 +4661,7 @@ interface SpeechRecognitionResultList {
 }
 
 interface SpeechSynthesis {
+    取消(): void;
     继续(): void;
     加事件监听<K extends keyof SpeechSynthesisEventMap>(type: K, listener: (this: SpeechSynthesis, ev: SpeechSynthesisEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -4800,6 +4845,8 @@ interface TransformStream<I = any, O = any> {
 }
 
 interface TransformStreamDefaultController<O = any> {
+    readonly 期望大小: number | null;
+    入队(chunk?: O): void;
     报错(reason?: any): void;
 }
 
@@ -5052,6 +5099,7 @@ interface Worklet {
 }
 
 interface WritableStream<W = any> {
+    readonly 已锁定: boolean;
     中止(reason?: any): Promise<void>;
     关闭(): Promise<void>;
 }
@@ -5062,6 +5110,7 @@ interface WritableStreamDefaultController {
 }
 
 interface WritableStreamDefaultWriter<W = any> {
+    readonly 期望大小: number | null;
     中止(reason?: any): Promise<void>;
     关闭(): Promise<void>;
     写入(chunk?: W): Promise<void>;
