@@ -43,8 +43,15 @@ interface Algorithm {
     名称: string;
 }
 
+interface AnalyserOptions {
+    变换长度?: number;
+    最大分贝?: number;
+    最小分贝?: number;
+}
+
 interface AudioBufferOptions {
     长度: number;
+    声道数?: number;
     采样率: number;
 }
 
@@ -67,12 +74,14 @@ interface AudioDataCopyToOptions {
 interface AudioDataInit {
     数据: BufferSource;
     格式化: AudioSampleFormat;
+    声道数: number;
     采样率: number;
     时间戳: number;
     转移?: ArrayBuffer[];
 }
 
 interface AudioDecoderConfig {
+    声道数: number;
     采样率: number;
 }
 
@@ -81,6 +90,7 @@ interface AudioDecoderInit {
 }
 
 interface AudioEncoderConfig {
+    声道数: number;
     采样率: number;
 }
 
@@ -547,6 +557,10 @@ interface MediaDecodingConfiguration {
     种类: MediaDecodingType;
 }
 
+interface MediaElementAudioSourceOptions {
+    媒体元素: HTMLMediaElement;
+}
+
 interface MediaEncodingConfiguration {
     种类: MediaEncodingType;
 }
@@ -666,6 +680,7 @@ interface NotificationOptions {
 
 interface OfflineAudioContextOptions {
     长度: number;
+    声道数?: number;
     采样率: number;
 }
 
@@ -1051,6 +1066,10 @@ interface StartViewTransitionOptions {
     更新?: ViewTransitionUpdateCallback | null;
 }
 
+interface StereoPannerOptions {
+    声像?: number;
+}
+
 interface StorageEventInit {
     键名?: string | null;
     地址?: string;
@@ -1070,6 +1089,10 @@ interface TaskControllerInit {
 
 interface TaskSignalAnyInit {
     优先级?: TaskPriority | TaskSignal;
+}
+
+interface TextDecodeOptions {
+    数据流?: boolean;
 }
 
 interface TimelineRangeOffset {
@@ -1195,6 +1218,10 @@ interface VideoFrameInit {
     时间戳?: number;
 }
 
+interface WaveShaperOptions {
+    曲线?: number[] | Float32Array;
+}
+
 interface WebGLContextAttributes {
     透明度?: boolean;
 }
@@ -1256,6 +1283,10 @@ interface AbstractWorker {
 }
 
 interface AnalyserNode {
+    变换长度: number;
+    readonly 频段数: number;
+    最大分贝: number;
+    最小分贝: number;
     取字节频谱(array: Uint8Array<ArrayBuffer>): void;
 }
 
@@ -1301,7 +1332,11 @@ interface Attr {
 interface AudioBuffer {
     readonly 时长: number;
     readonly 长度: number;
+    readonly 声道数: number;
     readonly 采样率: number;
+    从声道复制(destination: Float32Array<ArrayBuffer>, channelNumber: number, bufferOffset?: number): void;
+    复制到声道(source: Float32Array<ArrayBuffer>, channelNumber: number, bufferOffset?: number): void;
+    取声道数据(channel: number): Float32Array<ArrayBuffer>;
 }
 
 interface AudioBufferSourceNode {
@@ -1333,6 +1368,7 @@ interface AudioContext {
 interface AudioData {
     readonly 时长: number;
     readonly 格式化: AudioSampleFormat | null;
+    readonly 声道数: number;
     readonly 采样率: number;
     readonly 时间戳: number;
     复制(): AudioData;
@@ -1441,6 +1477,7 @@ interface Blob {
     转缓冲(): Promise<ArrayBuffer>;
     字节(): Promise<Uint8Array<ArrayBuffer>>;
     截取(start?: number, end?: number, contentType?: string): Blob;
+    数据流(): ReadableStream<Uint8Array<ArrayBuffer>>;
     转文本(): Promise<string>;
 }
 
@@ -3786,6 +3823,10 @@ interface MediaDevices {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface MediaElementAudioSourceNode {
+    readonly 媒体元素: HTMLMediaElement;
+}
+
 interface MediaError {
     readonly 消息: string;
 }
@@ -3840,6 +3881,7 @@ interface MediaQueryListEvent {
 interface MediaRecorder {
     出错时: ((this: MediaRecorder, ev: ErrorEvent) => any) | null;
     readonly 状态: RecordingState;
+    readonly 数据流: MediaStream;
     暂停(): void;
     继续(): void;
     开始(timeslice?: number): void;
@@ -3876,6 +3918,10 @@ interface MediaStream {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MediaStreamEventMap>(type: K, listener: (this: MediaStream, ev: MediaStreamEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface MediaStreamAudioDestinationNode {
+    readonly 数据流: MediaStream;
 }
 
 interface MediaStreamTrack {
@@ -5503,6 +5549,10 @@ interface SpeechSynthesisVoice {
     readonly 名称: string;
 }
 
+interface StereoPannerNode {
+    readonly 声像: AudioParam;
+}
+
 interface Storage {
     readonly 长度: number;
     清空(): void;
@@ -5813,6 +5863,10 @@ interface WakeLockSentinel {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof WakeLockSentinelEventMap>(type: K, listener: (this: WakeLockSentinel, ev: WakeLockSentinelEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface WaveShaperNode {
+    曲线: Float32Array<ArrayBuffer> | null;
 }
 
 interface WebGL2RenderingContextBase {
