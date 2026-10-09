@@ -1607,6 +1607,10 @@ interface ULongRange {
     最小限制?: number;
 }
 
+interface URLPatternComponentResult {
+    分组集: Record<string, string | undefined>;
+}
+
 interface URLPatternInit {
     散列?: string;
     主机名?: string;

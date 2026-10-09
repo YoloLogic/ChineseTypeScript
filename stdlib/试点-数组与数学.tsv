@@ -1547,6 +1547,7 @@ member	crypto	加密模块
 member	datagrams	数据报集
 member	desynchronized	已失同步
 member	fonts	字体集
+member	groups	分组集
 member	fontsize	字号
 member	frames	帧集
 member	hspace	水平间距

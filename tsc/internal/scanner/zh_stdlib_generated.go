@@ -1560,6 +1560,7 @@ var zhStdlibMembers = map[string]string{
 	"数据报集": "datagrams",
 	"已失同步": "desynchronized",
 	"字体集": "fonts",
+	"分组集": "groups",
 	"字号": "fontsize",
 	"帧集": "frames",
 	"水平间距": "hspace",

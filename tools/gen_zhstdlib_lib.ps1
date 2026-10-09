@@ -61,7 +61,12 @@ foreach ($lib in $libs) {
             $pending.Cont.Add($line)
             $pending.Text = $pending.Text + [string][char]10 + $line
             $tail = $line.TrimEnd()
-            if (($tail -match ';\s*$') -and (([regex]::Matches($pending.Text, '\(')).Count -eq ([regex]::Matches($pending.Text, '\)')).Count)) {
+            # 完成条件：行尾分号 + 圆括号平衡 + 【花括号平衡】。
+            # 花括号那一项是必须的：对象字面量类型的成员（如 RegExp 的 groups?: { ... };）
+            # 第一行以 { 结尾、第二行以 ; 结尾，只查分号会把它【提前截断】→ TS1131（六·十）。
+            if (($tail -match ';\s*$') -and
+                (([regex]::Matches($pending.Text, '\(')).Count -eq ([regex]::Matches($pending.Text, '\)')).Count) -and
+                (([regex]::Matches($pending.Text, '\{')).Count -eq ([regex]::Matches($pending.Text, '\}')).Count)) {
                 foreach ($zhName in $en2zh[$pending.Name]) { $members.Add($pending.Prefix + $zhName + $pending.FirstRest) }
                 foreach ($c in $pending.Cont) { $members.Add($c) }
                 $pending = $null
