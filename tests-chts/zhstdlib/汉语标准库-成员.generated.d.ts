@@ -4374,7 +4374,10 @@ interface SVGAnimatedTransformList {
 }
 
 interface SVGAnimationElement {
+    readonly 目标元素: SVGElement | null;
     取当前时刻(): number;
+    取简单时长(): number;
+    取开始时刻(): number;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGAnimationElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGAnimationElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4673,6 +4676,9 @@ interface SVGGeometryElement {
 }
 
 interface SVGGradientElement {
+    readonly 渐变变换: SVGAnimatedTransformList;
+    readonly 渐变单位: SVGAnimatedEnumeration;
+    readonly 扩展方式: SVGAnimatedEnumeration;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGGradientElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGGradientElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4740,6 +4746,12 @@ interface SVGMPathElement {
 }
 
 interface SVGMarkerElement {
+    readonly 标记高: SVGAnimatedLength;
+    readonly 标记单位: SVGAnimatedEnumeration;
+    readonly 标记宽: SVGAnimatedLength;
+    readonly 朝向角: SVGAnimatedAngle;
+    readonly 朝向种类: SVGAnimatedEnumeration;
+    设朝向角(angle: SVGAngle): void;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGMarkerElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGMarkerElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
