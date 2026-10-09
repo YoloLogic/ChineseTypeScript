@@ -408,6 +408,11 @@ interface IDBDatabaseInfo {
     名称?: string;
 }
 
+interface IDBObjectStoreParameters {
+    自动递增?: boolean;
+    键路径?: string | string[] | null;
+}
+
 interface ImageBitmapRenderingContextSettings {
     透明度?: boolean;
 }
@@ -1492,6 +1497,7 @@ interface Cache {
     键列(request?: RequestInfo | URL, options?: CacheQueryOptions): Promise<ReadonlyArray<Request>>;
     匹配(request: RequestInfo | URL, options?: CacheQueryOptions): Promise<Response | undefined>;
     全匹配(request?: RequestInfo | URL, options?: CacheQueryOptions): Promise<ReadonlyArray<Response>>;
+    存入(request: RequestInfo | URL, response: Response): Promise<void>;
 }
 
 interface CacheStorage {
@@ -3134,6 +3140,7 @@ interface History {
 interface IDBCursor {
     readonly 键名: IDBValidKey;
     readonly 来源: IDBObjectStore | IDBIndex;
+    续取(key?: IDBValidKey): void;
     删除(): IDBRequest<undefined>;
 }
 
@@ -3145,6 +3152,9 @@ interface IDBDatabase {
     readonly 名称: string;
     出错时: ((this: IDBDatabase, ev: Event) => any) | null;
     关闭(): void;
+    创建对象存储(name: string, options?: IDBObjectStoreParameters): IDBObjectStore;
+    删除对象存储(name: string): void;
+    事务(storeNames: string | string[], mode?: IDBTransactionMode, options?: IDBTransactionOptions): IDBTransaction;
     加事件监听<K extends keyof IDBDatabaseEventMap>(type: K, listener: (this: IDBDatabase, ev: IDBDatabaseEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof IDBDatabaseEventMap>(type: K, listener: (this: IDBDatabase, ev: IDBDatabaseEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3156,8 +3166,12 @@ interface IDBFactory {
 }
 
 interface IDBIndex {
+    readonly 键路径: string | string[];
     名称: string;
+    readonly 对象存储: IDBObjectStore;
     获取(query: IDBValidKey | IDBKeyRange): IDBRequest<any>;
+    取全部键(queryOrOptions?: IDBValidKey | IDBKeyRange | null, count?: number): IDBRequest<IDBValidKey[]>;
+    打开游标(query?: IDBValidKey | IDBKeyRange | null, direction?: IDBCursorDirection): IDBRequest<IDBCursorWithValue | null>;
 }
 
 interface IDBKeyRange {
@@ -3165,12 +3179,20 @@ interface IDBKeyRange {
 }
 
 interface IDBObjectStore {
+    readonly 自动递增: boolean;
+    readonly 键路径: string | string[] | null;
     名称: string;
+    readonly 事务: IDBTransaction;
     添加(value: any, key?: IDBValidKey): IDBRequest<IDBValidKey>;
     清空(): IDBRequest<undefined>;
+    创建索引(name: string, keyPath: string | string[], options?: IDBIndexParameters): IDBIndex;
     删除(query: IDBValidKey | IDBKeyRange): IDBRequest<undefined>;
+    删除索引(name: string): void;
     获取(query: IDBValidKey | IDBKeyRange): IDBRequest<any>;
+    取全部键(queryOrOptions?: IDBValidKey | IDBKeyRange | null, count?: number): IDBRequest<IDBValidKey[]>;
     序号(name: string): IDBIndex;
+    打开游标(query?: IDBValidKey | IDBKeyRange | null, direction?: IDBCursorDirection): IDBRequest<IDBCursorWithValue | null>;
+    存入(value: any, key?: IDBValidKey): IDBRequest<IDBValidKey>;
 }
 
 interface IDBOpenDBRequest {
@@ -3185,6 +3207,7 @@ interface IDBRequest<T = any> {
     出错时: ((this: IDBRequest<T>, ev: Event) => any) | null;
     readonly 就绪态: IDBRequestReadyState;
     readonly 来源: IDBObjectStore | IDBIndex | IDBCursor;
+    readonly 事务: IDBTransaction | null;
     加事件监听<K extends keyof IDBRequestEventMap>(type: K, listener: (this: IDBRequest<T>, ev: IDBRequestEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof IDBRequestEventMap>(type: K, listener: (this: IDBRequest<T>, ev: IDBRequestEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3197,6 +3220,7 @@ interface IDBTransaction {
     出错时: ((this: IDBTransaction, ev: Event) => any) | null;
     中止(): void;
     落实(): void;
+    对象存储(name: string): IDBObjectStore;
     加事件监听<K extends keyof IDBTransactionEventMap>(type: K, listener: (this: IDBTransaction, ev: IDBTransactionEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof IDBTransactionEventMap>(type: K, listener: (this: IDBTransaction, ev: IDBTransactionEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -5299,6 +5323,14 @@ interface Headers {
     条目(): HeadersIterator<[string, string]>;
     键列(): HeadersIterator<string>;
     值列(): HeadersIterator<string>;
+}
+
+interface IDBDatabase {
+    事务(storeNames: string | Iterable<string>, mode?: IDBTransactionMode, options?: IDBTransactionOptions): IDBTransaction;
+}
+
+interface IDBObjectStore {
+    创建索引(name: string, keyPath: string | Iterable<string>, options?: IDBIndexParameters): IDBIndex;
 }
 
 interface MIDIOutput {
