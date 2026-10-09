@@ -241,6 +241,10 @@ interface DOMRectInit {
     纵坐标?: number;
 }
 
+interface DelayOptions {
+    延迟时长?: number;
+}
+
 interface DeviceMotionEventAccelerationInit {
     横坐标?: number | null;
     纵坐标?: number | null;
@@ -647,6 +651,7 @@ interface MutationObserverInit {
 }
 
 interface NavigateEventInit {
+    输出端: NavigationDestination;
     表单数据?: FormData | null;
     信号: AbortSignal;
 }
@@ -697,6 +702,17 @@ interface OscillatorOptions {
     失谐?: number;
     频率?: number;
     种类?: OscillatorType;
+}
+
+interface PannerOptions {
+    锥内角?: number;
+    锥外角?: number;
+    锥外增益?: number;
+    距离模型?: DistanceModelType;
+    最大距离?: number;
+    声像模型?: PanningModelType;
+    参考距离?: number;
+    衰减因子?: number;
 }
 
 interface PayerErrors {
@@ -1220,6 +1236,7 @@ interface VideoFrameInit {
 
 interface WaveShaperOptions {
     曲线?: number[] | Float32Array;
+    过采样?: OverSampleType;
 }
 
 interface WebGLContextAttributes {
@@ -1439,6 +1456,7 @@ interface AudioWorkletNode {
 }
 
 interface BaseAudioContext {
+    readonly 输出端: AudioDestinationNode;
     readonly 采样率: number;
     readonly 状态: AudioContextState;
     创建分析器(): AnalyserNode;
@@ -2125,6 +2143,10 @@ interface DataTransferItemList {
 interface DecompressionStream {
     readonly 可读: ReadableStream<Uint8Array<ArrayBuffer>>;
     readonly 可写: WritableStream<BufferSource>;
+}
+
+interface DelayNode {
+    readonly 延迟时长: AudioParam;
 }
 
 interface DeviceMotionEventAcceleration {
@@ -4014,6 +4036,7 @@ interface NamedNodeMap {
 }
 
 interface NavigateEvent {
+    readonly 输出端: NavigationDestination;
     readonly 表单数据: FormData | null;
     readonly 信号: AbortSignal;
     滚动(): void;
@@ -4169,10 +4192,22 @@ interface OscillatorNode {
     readonly 失谐: AudioParam;
     readonly 频率: AudioParam;
     种类: OscillatorType;
+    设周期波(periodicWave: PeriodicWave): void;
     加事件监听<K extends keyof AudioScheduledSourceNodeEventMap>(type: K, listener: (this: OscillatorNode, ev: AudioScheduledSourceNodeEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof AudioScheduledSourceNodeEventMap>(type: K, listener: (this: OscillatorNode, ev: AudioScheduledSourceNodeEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface PannerNode {
+    锥内角: number;
+    锥外角: number;
+    锥外增益: number;
+    距离模型: DistanceModelType;
+    最大距离: number;
+    声像模型: PanningModelType;
+    参考距离: number;
+    衰减因子: number;
 }
 
 interface ParentNode {
@@ -4585,6 +4620,7 @@ interface ReportingObserver {
 interface Request {
     readonly 缓存: RequestCache;
     readonly 凭据: RequestCredentials;
+    readonly 输出端: RequestDestination;
     readonly 头集合: Headers;
     readonly 完整性: string;
     readonly 保持活动: boolean;
@@ -5867,6 +5903,7 @@ interface WakeLockSentinel {
 
 interface WaveShaperNode {
     曲线: Float32Array<ArrayBuffer> | null;
+    过采样: OverSampleType;
 }
 
 interface WebGL2RenderingContextBase {
