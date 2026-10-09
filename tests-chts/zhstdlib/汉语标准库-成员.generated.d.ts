@@ -161,6 +161,7 @@ interface BiquadFilterOptions {
 
 interface BlobEventInit {
     数据: Blob;
+    时间码?: DOMHighResTimeStamp;
 }
 
 interface BlobPropertyBag {
@@ -578,6 +579,7 @@ interface InputEventInit {
     数据?: string | null;
     数据传送?: DataTransfer | null;
     输入类型?: string;
+    正在组字?: boolean;
 }
 
 interface IntersectionObserverInit {
@@ -596,6 +598,7 @@ interface KeyAlgorithm {
 
 interface KeyboardEventInit {
     字符码?: number;
+    正在组字?: boolean;
     键名?: string;
     键码?: number;
     重复?: boolean;
@@ -743,6 +746,7 @@ interface MouseEventInit {
     按钮?: number;
     按钮集?: number;
     客户横坐标?: number;
+    客户纵坐标?: number;
     移动横量?: number;
     移动纵量?: number;
     相关目标?: EventTarget | null;
@@ -996,6 +1000,10 @@ interface QueuingStrategyInit {
     高水位: number;
 }
 
+interface RTCDataChannelEventInit {
+    通道: RTCDataChannel;
+}
+
 interface RTCDataChannelInit {
     编号?: number;
     最大包时长?: number;
@@ -1077,6 +1085,10 @@ interface RTCRtpStreamStats {
     类别: string;
 }
 
+interface RTCRtpTransceiverInit {
+    流列?: MediaStream[];
+}
+
 interface RTCSessionDescriptionInit {
     会话描述?: string;
     种类: RTCSdpType;
@@ -1089,7 +1101,10 @@ interface RTCStats {
 }
 
 interface RTCTrackEventInit {
+    接收器: RTCRtpReceiver;
+    流列?: MediaStream[];
     轨道: MediaStreamTrack;
+    收发器: RTCRtpTransceiver;
 }
 
 interface ReadableStreamBYOBReaderReadOptions {
@@ -1319,6 +1334,10 @@ interface ToggleEventInit {
     来源?: Element | null;
 }
 
+interface TogglePopoverOptions {
+    触控力度?: boolean;
+}
+
 interface TouchEventInit {
     变化触控集?: Touch[];
     目标触控集?: Touch[];
@@ -1327,7 +1346,12 @@ interface TouchEventInit {
 
 interface TouchInit {
     客户横坐标?: number;
+    客户纵坐标?: number;
+    触控力度?: number;
     标识: number;
+    页面横坐标?: number;
+    页面纵坐标?: number;
+    旋转角?: number;
     屏幕横坐标?: number;
     屏幕纵坐标?: number;
     目标: EventTarget;
@@ -1792,6 +1816,7 @@ interface Blob {
 
 interface BlobEvent {
     readonly 数据: Blob;
+    readonly 时间码: DOMHighResTimeStamp;
 }
 
 interface Body {
@@ -4233,6 +4258,7 @@ interface InputEvent {
     readonly 数据: string | null;
     readonly 数据传送: DataTransfer | null;
     readonly 输入类型: string;
+    readonly 正在组字: boolean;
 }
 
 interface IntersectionObserver {
@@ -4256,6 +4282,7 @@ interface IntersectionObserverEntry {
 
 interface KeyboardEvent {
     readonly 字符码: number;
+    readonly 正在组字: boolean;
     readonly 键名: string;
     readonly 键码: number;
     readonly 重复: boolean;
@@ -4586,9 +4613,13 @@ interface MouseEvent {
     readonly 按钮: number;
     readonly 按钮集: number;
     readonly 客户横坐标: number;
+    readonly 客户纵坐标: number;
     readonly 移动横量: number;
     readonly 移动纵量: number;
     readonly 偏移横坐标: number;
+    readonly 偏移纵坐标: number;
+    readonly 页面横坐标: number;
+    readonly 页面纵坐标: number;
     readonly 相关目标: EventTarget | null;
     readonly 屏幕横坐标: number;
     readonly 屏幕纵坐标: number;
@@ -5120,6 +5151,10 @@ interface RTCDataChannel {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface RTCDataChannelEvent {
+    readonly 通道: RTCDataChannel;
+}
+
 interface RTCDtlsTransport {
     出错时: ((this: RTCDtlsTransport, ev: RTCErrorEvent) => any) | null;
     readonly 状态: RTCDtlsTransportState;
@@ -5223,6 +5258,7 @@ interface RTCRtpSender {
 }
 
 interface RTCRtpTransceiver {
+    readonly 接收器: RTCRtpReceiver;
     停止(): void;
 }
 
@@ -5245,7 +5281,10 @@ interface RTCStatsReport {
 }
 
 interface RTCTrackEvent {
+    readonly 接收器: RTCRtpReceiver;
+    readonly 流列: ReadonlyArray<MediaStream>;
     readonly 轨道: MediaStreamTrack;
+    readonly 收发器: RTCRtpTransceiver;
 }
 
 interface RadioNodeList {
@@ -6544,7 +6583,12 @@ interface ToggleEvent {
 
 interface Touch {
     readonly 客户横坐标: number;
+    readonly 客户纵坐标: number;
+    readonly 触控力度: number;
     readonly 标识: number;
+    readonly 页面横坐标: number;
+    readonly 页面纵坐标: number;
+    readonly 旋转角: number;
     readonly 屏幕横坐标: number;
     readonly 屏幕纵坐标: number;
     readonly 目标: EventTarget;
