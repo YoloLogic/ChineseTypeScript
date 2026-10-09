@@ -69,6 +69,10 @@ interface AudioBufferSourceOptions {
     循环起点?: number;
 }
 
+interface AudioConfiguration {
+    比特率?: number;
+}
+
 interface AudioContextOptions {
     采样率?: number;
 }
@@ -97,6 +101,7 @@ interface AudioDecoderInit {
 }
 
 interface AudioEncoderConfig {
+    比特率?: number;
     声道数: number;
     采样率: number;
 }
@@ -428,6 +433,7 @@ interface GPUCanvasToneMapping {
 }
 
 interface GPUColorTargetState {
+    混合?: GPUBlendState;
     格式化: GPUTextureFormat;
 }
 
@@ -522,6 +528,10 @@ interface GPUVertexAttribute {
 
 interface GPUVertexBufferLayout {
     属性集: GPUVertexAttribute[];
+}
+
+interface GPUVertexState {
+    缓冲集?: (GPUVertexBufferLayout | null)[];
 }
 
 interface GainOptions {
@@ -1209,6 +1219,10 @@ interface RequestInit {
     信号?: AbortSignal | null;
 }
 
+interface ResizeObserverOptions {
+    盒模型?: ResizeObserverBoxOptions;
+}
+
 interface ResponseInit {
     头集合?: HeadersInit;
     状态码?: number;
@@ -1256,6 +1270,10 @@ interface SanitizerElementNamespaceWithAttributes {
 interface SchedulerPostTaskOptions {
     优先级?: TaskPriority;
     信号?: AbortSignal;
+}
+
+interface ScrollIntoViewOptions {
+    块区?: ScrollLogicalPosition;
 }
 
 interface ScrollTimelineOptions {
@@ -1484,6 +1502,7 @@ interface VideoColorSpaceInit {
 }
 
 interface VideoConfiguration {
+    比特率: number;
     高度: number;
     宽度: number;
 }
@@ -1500,6 +1519,7 @@ interface VideoDecoderInit {
 
 interface VideoEncoderConfig {
     透明度?: AlphaOption;
+    比特率?: number;
     内容提示?: string;
     显示高?: number;
     显示宽?: number;
@@ -2097,6 +2117,7 @@ interface CSSStyleProperties {
     对齐基线: string;
     全部: string;
     动画名: string;
+    边框: string;
     底部: string;
     清空: string;
     裁剪: string;
@@ -3610,6 +3631,7 @@ interface HTMLIFrameElement {
 interface HTMLImageElement {
     对齐: string;
     替代文本: string;
+    边框: string;
     跨源: string | null;
     readonly 当前源: string;
     解码方式: "async" | "sync" | "auto";
@@ -3835,6 +3857,7 @@ interface HTMLOListElement {
 
 interface HTMLObjectElement {
     对齐: string;
+    边框: string;
     readonly 内容文档: Document | null;
     readonly 内容窗口: WindowProxy | null;
     数据: string;
@@ -4096,6 +4119,8 @@ interface HTMLTableDataCellElement {
 
 interface HTMLTableElement {
     对齐: string;
+    边框: string;
+    字幕: HTMLTableCaptionElement | null;
     readonly 行数: HTMLCollectionOf<HTMLTableRowElement>;
     宽度: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTableElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -7255,6 +7280,7 @@ interface WindowEventHandlers {
 }
 
 interface WindowOrWorkerGlobalScope {
+    readonly 缓存集: CacheStorage;
     readonly 源点: string;
     创建位图(image: ImageBitmapSource, options?: ImageBitmapOptions): Promise<ImageBitmap>;
     创建位图(image: ImageBitmapSource, sx: number, sy: number, sw: number, sh: number, options?: ImageBitmapOptions): Promise<ImageBitmap>;
@@ -7595,6 +7621,7 @@ interface String {
     规范化(form?: string): string;
     重复(count: number): string;
     以开头(searchString: string, position?: number): boolean;
+    粗体(): string;
     相减(): string;
 }
 
@@ -8291,18 +8318,22 @@ interface ObjectConstructor {
 
 interface Function {
     应用(this: Function, thisArg: any, argArray?: any): any;
+    调用(this: Function, thisArg: any, ...argArray: any[]): any;
     转字符串(): string;
     readonly 长度: number;
+    调用者: Function;
 }
 
 interface CallableFunction {
     应用<T, R>(this: (this: T) => R, thisArg: T): R;
     应用<T, A extends any[], R>(this: (this: T, ...args: A) => R, thisArg: T, args: A): R;
+    调用<T, A extends any[], R>(this: (this: T, ...args: A) => R, thisArg: T, ...args: A): R;
 }
 
 interface NewableFunction {
     应用<T>(this: new () => T, thisArg: T): void;
     应用<T, A extends any[]>(this: new (...args: A) => T, thisArg: T, args: A): void;
+    调用<T, A extends any[]>(this: new (...args: A) => T, thisArg: T, ...args: A): void;
 }
 
 interface IArguments {

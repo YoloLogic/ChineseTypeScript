@@ -1408,6 +1408,17 @@ member	allowPooling	允许池化
 member	alphaMode	透明度模式
 member	altitudeAngle	高度角
 member	appCodeName	应用代号
+member	bitrate	比特率
+member	blend	混合
+member	block	块区
+member	bold	粗体
+member	border	边框
+member	box	盒模型
+member	buffers	缓冲集
+member	caches	缓存集
+member	call	调用
+member	caller	调用者
+member	caption	字幕
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
