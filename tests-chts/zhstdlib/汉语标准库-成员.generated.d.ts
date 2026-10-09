@@ -410,12 +410,14 @@ interface DOMRectList {
 
 interface DOMStringList {
     readonly 长度: number;
+    含节点(string: string): boolean;
 }
 
 interface DOMTokenList {
     readonly 长度: number;
     转字符串(): string;
     添加(...tokens: string[]): void;
+    含节点(token: string): boolean;
     替换(token: string, newToken: string): boolean;
     逐个处理(callbackfn: (value: string, key: number, parent: DOMTokenList) => void, thisArg?: any): void;
 }
@@ -430,6 +432,9 @@ interface DataTransferItemList {
 interface Document {
     readonly 全部: HTMLAllCollection;
     清空(): void;
+    创建元素<K extends keyof HTMLElementTagNameMap>(tagName: K, options?: ElementCreationOptions): HTMLElementTagNameMap[K];
+    创建元素<K extends keyof HTMLElementDeprecatedTagNameMap>(tagName: K, options?: ElementCreationOptions): HTMLElementDeprecatedTagNameMap[K];
+    创建元素(tagName: string, options?: ElementCreationOptions): HTMLElement;
     按编号取元素(elementId: string): HTMLElement | null;
     加事件监听<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -454,6 +459,11 @@ interface ErrorEvent {
     readonly 报错: any;
 }
 
+interface Event {
+    阻止默认(): void;
+    停止传播(): void;
+}
+
 interface EventCounts {
     逐个处理(callbackfn: (value: number, key: string, parent: EventCounts) => void, thisArg?: any): void;
 }
@@ -469,6 +479,7 @@ interface EventSource {
 
 interface EventTarget {
     加事件监听(type: string, callback: EventListenerOrEventListenerObject | null, options?: AddEventListenerOptions | boolean): void;
+    派发事件(event: Event): boolean;
     去事件监听(type: string, callback: EventListenerOrEventListenerObject | null, options?: EventListenerOptions | boolean): void;
 }
 
@@ -877,6 +888,11 @@ interface HTMLOptionElement {
 interface HTMLOptionsCollection {
     长度: number;
     添加(element: HTMLOptionElement | HTMLOptGroupElement, before?: HTMLElement | number | null): void;
+}
+
+interface HTMLOrSVGElement {
+    失焦(): void;
+    聚焦(options?: FocusOptions): void;
 }
 
 interface HTMLOutputElement {
@@ -1320,8 +1336,12 @@ interface NavigationHistoryEntry {
 
 interface Node {
     追加子节点<T extends Node>(node: T): T;
+    复制节点(subtree?: boolean): Node;
+    含节点(other: Node | null): boolean;
+    前插节点<T extends Node>(node: T, child: Node | null): T;
     规范化(): void;
     移除子节点<T extends Node>(child: T): T;
+    替换子节点<T extends Node>(node: Node, child: T): T;
 }
 
 interface NodeIterator {
@@ -2281,6 +2301,8 @@ interface WebSocket {
 
 interface Window {
     readonly 长度: number;
+    失焦(): void;
+    聚焦(): void;
     加事件监听<K extends keyof WindowEventMap>(type: K, listener: (this: Window, ev: WindowEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof WindowEventMap>(type: K, listener: (this: Window, ev: WindowEventMap[K]) => any, options?: boolean | EventListenerOptions): void;

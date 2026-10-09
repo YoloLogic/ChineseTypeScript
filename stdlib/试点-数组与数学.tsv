@@ -105,6 +105,16 @@ member	removeChild	移除子节点
 member	setAttribute	设置属性
 member	getAttribute	取属性
 member	getElementById	按编号取元素
+member	dispatchEvent	派发事件
+member	preventDefault	阻止默认
+member	stopPropagation	停止传播
+member	createElement	创建元素
+member	insertBefore	前插节点
+member	replaceChild	替换子节点
+member	cloneNode	复制节点
+member	focus	聚焦
+member	blur	失焦
+member	contains	含节点
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
