@@ -80,6 +80,7 @@ interface AudioBufferSourceOptions {
 interface AudioConfiguration {
     比特率?: number;
     声道集?: string;
+    采样频率?: number;
 }
 
 interface AudioContextOptions {
@@ -455,6 +456,7 @@ interface GPUBindGroupLayoutDescriptor {
 
 interface GPUBindGroupLayoutEntry {
     缓冲?: GPUBufferBindingLayout;
+    采样器?: GPUSamplerBindingLayout;
 }
 
 interface GPUBlendState {
@@ -616,6 +618,7 @@ interface HashChangeEventInit {
 interface HkdfParams {
     散列: HashAlgorithmIdentifier;
     附加信息: BufferSource;
+    盐值: BufferSource;
 }
 
 interface HmacImportParams {
@@ -687,6 +690,10 @@ interface JsonWebKey {
 
 interface KeyAlgorithm {
     名称: string;
+}
+
+interface KeySystemTrackConfiguration {
+    健壮性?: string;
 }
 
 interface KeyboardEventInit {
@@ -765,6 +772,10 @@ interface MediaKeyMessageEventInit {
 
 interface MediaKeySystemConfiguration {
     标签?: string;
+}
+
+interface MediaKeySystemMediaCapability {
+    健壮性?: string;
 }
 
 interface MediaMetadataInit {
@@ -995,6 +1006,7 @@ interface PaymentValidationErrors {
 
 interface Pbkdf2Params {
     散列: HashAlgorithmIdentifier;
+    盐值: BufferSource;
 }
 
 interface PerformanceMarkOptions {
@@ -1680,6 +1692,7 @@ interface WaveShaperOptions {
 interface WebGLContextAttributes {
     透明度?: boolean;
     深度?: boolean;
+    模板缓冲?: boolean;
 }
 
 interface WebTransportErrorOptions {
@@ -2273,6 +2286,7 @@ interface CSSStyleRule {
 
 interface CSSStyleSheet {
     readonly 规则集: CSSRuleList;
+    readonly 规则表: CSSRuleList;
     删除规则(index: number): void;
     插入规则(rule: string, index?: number): number;
     替换(text: string): Promise<CSSStyleSheet>;
@@ -4278,6 +4292,7 @@ interface HTMLTableElement {
     边框: string;
     字幕: HTMLTableCaptionElement | null;
     readonly 行数: HTMLCollectionOf<HTMLTableRowElement>;
+    规则表: string;
     宽度: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTableElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -4370,6 +4385,7 @@ interface HTMLTrackElement {
     标签: string;
     readonly 就绪态: number;
     源址: string;
+    源语言: string;
     readonly 轨道: TextTrack;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTrackElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -5664,6 +5680,7 @@ interface RTCRtpSender {
 interface RTCRtpTransceiver {
     方向: RTCRtpTransceiverDirection;
     readonly 接收器: RTCRtpReceiver;
+    readonly 发送方: RTCRtpSender;
     停止(): void;
 }
 
@@ -6164,6 +6181,7 @@ interface SVGFETileElement {
 }
 
 interface SVGFETurbulenceElement {
+    readonly 随机种子: SVGAnimatedNumber;
     readonly 种类: SVGAnimatedEnumeration;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFETurbulenceElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -7424,6 +7442,7 @@ interface Window {
     readonly 个人栏: BarProp;
     readonly 屏幕横坐标: number;
     readonly 屏幕纵坐标: number;
+    readonly 滚动条: BarProp;
     状态码: string;
     readonly 顶部: WindowProxy | null;
     告警(message?: any): void;
@@ -7471,6 +7490,7 @@ interface WindowEventHandlers {
 interface WindowOrWorkerGlobalScope {
     readonly 缓存集: CacheStorage;
     readonly 源点: string;
+    readonly 调度器: Scheduler;
     创建位图(image: ImageBitmapSource, options?: ImageBitmapOptions): Promise<ImageBitmap>;
     创建位图(image: ImageBitmapSource, sx: number, sy: number, sw: number, sh: number, options?: ImageBitmapOptions): Promise<ImageBitmap>;
     排队微任务(callback: VoidFunction): void;
@@ -8672,6 +8692,7 @@ interface RegExp {
 interface Error {
     名称: string;
     消息: string;
+    调用栈?: string;
 }
 
 interface JSON {
