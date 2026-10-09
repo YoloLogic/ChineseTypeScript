@@ -786,6 +786,17 @@ member	startTime	起始时刻
 member	endTime	结束时刻
 member	pauseOnExit	退出暂停
 member	appendBuffer	追加缓冲
+member	changeType	改类型
+member	timestampOffset	时刻偏移
+member	appendWindowStart	追加窗起点
+member	appendWindowEnd	追加窗终点
+member	updating	正在更新
+member	addSourceBuffer	加源缓冲
+member	removeSourceBuffer	删源缓冲
+member	endOfStream	流结束
+member	sourceBuffers	源缓冲集
+member	activeSourceBuffers	活动源缓冲
+member	getOutputTimestamp	取输出时刻
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

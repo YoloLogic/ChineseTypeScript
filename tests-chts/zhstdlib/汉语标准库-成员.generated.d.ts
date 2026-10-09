@@ -1238,6 +1238,7 @@ interface AudioBufferSourceNode {
 
 interface AudioContext {
     关闭(): Promise<void>;
+    取输出时刻(): AudioTimestamp;
     继续(): Promise<void>;
     挂起(): Promise<void>;
     加事件监听<K extends keyof BaseAudioContextEventMap>(type: K, listener: (this: AudioContext, ev: BaseAudioContextEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3717,8 +3718,13 @@ interface MediaRecorder {
 }
 
 interface MediaSource {
+    readonly 活动源缓冲: SourceBufferList;
     时长: number;
     readonly 就绪态: ReadyState;
+    readonly 源缓冲集: SourceBufferList;
+    加源缓冲(type: string): SourceBuffer;
+    流结束(error?: EndOfStreamError): void;
+    删源缓冲(sourceBuffer: SourceBuffer): void;
     加事件监听<K extends keyof MediaSourceEventMap>(type: K, listener: (this: MediaSource, ev: MediaSourceEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MediaSourceEventMap>(type: K, listener: (this: MediaSource, ev: MediaSourceEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -5190,11 +5196,16 @@ interface Slottable {
 }
 
 interface SourceBuffer {
+    追加窗终点: number;
+    追加窗起点: number;
     readonly 缓冲区间: TimeRanges;
     模式: AppendMode;
     出错时: ((this: SourceBuffer, ev: Event) => any) | null;
+    时刻偏移: number;
+    readonly 正在更新: boolean;
     中止(): void;
     追加缓冲(data: BufferSource): void;
+    改类型(type: string): void;
     移除(start: number, end: number): void;
     加事件监听<K extends keyof SourceBufferEventMap>(type: K, listener: (this: SourceBuffer, ev: SourceBufferEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
