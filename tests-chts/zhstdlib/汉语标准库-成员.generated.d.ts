@@ -3742,6 +3742,11 @@ interface NavigationPrecommitController {
     重定向(url: string | URL, options?: NavigationNavigateOptions): void;
 }
 
+interface NavigationPreloadManager {
+    禁用(): Promise<void>;
+    启用(): Promise<void>;
+}
+
 interface Navigator {
     readonly 凭据: CredentialsContainer;
 }
@@ -5287,6 +5292,9 @@ interface WebGL2RenderingContextOverloads {
     缓冲数据(target: GLenum, size: GLsizeiptr, usage: GLenum): void;
     缓冲数据(target: GLenum, srcData: AllowSharedBufferSource | null, usage: GLenum): void;
     缓冲数据(target: GLenum, srcData: ArrayBufferView<ArrayBufferLike>, usage: GLenum, srcOffset: number, length?: GLuint): void;
+    读像素(x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type: GLenum, dstData: ArrayBufferView<ArrayBufferLike> | null): void;
+    读像素(x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type: GLenum, offset: GLintptr): void;
+    读像素(x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type: GLenum, dstData: ArrayBufferView<ArrayBufferLike>, dstOffset: number): void;
 }
 
 interface WebGLActiveInfo {
@@ -5299,13 +5307,22 @@ interface WebGLRenderingContextBase {
     readonly 画布: HTMLCanvasElement | OffscreenCanvas;
     绑定缓冲(target: GLenum, buffer: WebGLBuffer | null): void;
     绑定纹理(target: GLenum, texture: WebGLTexture | null): void;
+    混合函数(sfactor: GLenum, dfactor: GLenum): void;
     清空(mask: GLbitfield): void;
+    清颜色(red: GLclampf, green: GLclampf, blue: GLclampf, alpha: GLclampf): void;
     创建缓冲(): WebGLBuffer;
     创建程序(): WebGLProgram;
     创建着色器(type: GLenum): WebGLShader | null;
     创建纹理(): WebGLTexture;
+    剔除面(mode: GLenum): void;
     删着色器(shader: WebGLShader | null): void;
+    深度函数(func: GLenum): void;
+    禁用(cap: GLenum): void;
+    绘制数组(mode: GLenum, first: GLint, count: GLsizei): void;
+    绘制元素(mode: GLenum, count: GLsizei, type: GLenum, offset: GLintptr): void;
+    启用(cap: GLenum): void;
     完成(): void;
+    取属性位置(program: WebGLProgram, name: string): GLint;
     取上下文属性(): WebGLContextAttributes | null;
     取扩展名(name: string): any;
     取扩展名(extensionName: "ANGLE_instanced_arrays"): ANGLE_instanced_arrays | null;
@@ -5343,15 +5360,18 @@ interface WebGLRenderingContextBase {
     取扩展名(extensionName: "WEBGL_lose_context"): WEBGL_lose_context | null;
     取扩展名(extensionName: "WEBGL_multi_draw"): WEBGL_multi_draw | null;
     取支持扩展(): string[] | null;
+    取一致位置(program: WebGLProgram, name: string): WebGLUniformLocation | null;
     上下文丢失(): boolean;
     线宽(width: GLfloat): void;
     链接程序(program: WebGLProgram): void;
     使用程序(program: WebGLProgram | null): void;
+    视口(x: GLint, y: GLint, width: GLsizei, height: GLsizei): void;
 }
 
 interface WebGLRenderingContextOverloads {
     缓冲数据(target: GLenum, size: GLsizeiptr, usage: GLenum): void;
     缓冲数据(target: GLenum, data: AllowSharedBufferSource | null, usage: GLenum): void;
+    读像素(x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type: GLenum, pixels: ArrayBufferView<ArrayBufferLike> | null): void;
 }
 
 interface WebSocket {
