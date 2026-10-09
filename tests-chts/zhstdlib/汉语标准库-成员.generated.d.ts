@@ -1003,6 +1003,7 @@ interface TouchInit {
 }
 
 interface Transformer<I = any, O = any> {
+    冲刷?: TransformerFlushCallback<O>;
     开始?: TransformerStartCallback<O>;
     变换?: TransformerTransformCallback<I, O>;
 }
@@ -1238,6 +1239,7 @@ interface AudioDecoder {
     readonly 状态: CodecState;
     关闭(): void;
     解码(chunk: EncodedAudioChunk): void;
+    冲刷(): Promise<void>;
     重置(): void;
     加事件监听<K extends keyof AudioDecoderEventMap>(type: K, listener: (this: AudioDecoder, ev: AudioDecoderEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1249,6 +1251,7 @@ interface AudioEncoder {
     readonly 状态: CodecState;
     关闭(): void;
     编码(data: AudioData): void;
+    冲刷(): Promise<void>;
     重置(): void;
     加事件监听<K extends keyof AudioEncoderEventMap>(type: K, listener: (this: AudioEncoder, ev: AudioEncoderEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -5273,6 +5276,7 @@ interface VideoDecoder {
     readonly 状态: CodecState;
     关闭(): void;
     解码(chunk: EncodedVideoChunk): void;
+    冲刷(): Promise<void>;
     重置(): void;
     加事件监听<K extends keyof VideoDecoderEventMap>(type: K, listener: (this: VideoDecoder, ev: VideoDecoderEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -5284,6 +5288,7 @@ interface VideoEncoder {
     readonly 状态: CodecState;
     关闭(): void;
     编码(frame: VideoFrame, options?: VideoEncoderEncodeOptions): void;
+    冲刷(): Promise<void>;
     重置(): void;
     加事件监听<K extends keyof VideoEncoderEventMap>(type: K, listener: (this: VideoEncoder, ev: VideoEncoderEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -5354,6 +5359,8 @@ interface WebGLRenderingContextBase {
     清空(mask: GLbitfield): void;
     清颜色(red: GLclampf, green: GLclampf, blue: GLclampf, alpha: GLclampf): void;
     清深度(depth: GLclampf): void;
+    清模板(s: GLint): void;
+    颜色掩码(red: GLboolean, green: GLboolean, blue: GLboolean, alpha: GLboolean): void;
     编译着色器(shader: WebGLShader): void;
     创建缓冲(): WebGLBuffer;
     创建程序(): WebGLProgram;
@@ -5364,15 +5371,18 @@ interface WebGLRenderingContextBase {
     删着色器(shader: WebGLShader | null): void;
     深度函数(func: GLenum): void;
     深度掩码(flag: GLboolean): void;
+    深度范围(zNear: GLclampf, zFar: GLclampf): void;
     禁用(cap: GLenum): void;
     绘制数组(mode: GLenum, first: GLint, count: GLsizei): void;
     绘制元素(mode: GLenum, count: GLsizei, type: GLenum, offset: GLintptr): void;
     启用(cap: GLenum): void;
     启用顶点属性(index: GLuint): void;
     完成(): void;
+    冲刷(): void;
     生成多级贴图(target: GLenum): void;
     取属性位置(program: WebGLProgram, name: string): GLint;
     取上下文属性(): WebGLContextAttributes | null;
+    取错误(): GLenum;
     取扩展名(name: string): any;
     取扩展名(extensionName: "ANGLE_instanced_arrays"): ANGLE_instanced_arrays | null;
     取扩展名(extensionName: "EXT_blend_minmax"): EXT_blend_minmax | null;
@@ -5408,12 +5418,19 @@ interface WebGLRenderingContextBase {
     取扩展名(extensionName: "WEBGL_draw_buffers"): WEBGL_draw_buffers | null;
     取扩展名(extensionName: "WEBGL_lose_context"): WEBGL_lose_context | null;
     取扩展名(extensionName: "WEBGL_multi_draw"): WEBGL_multi_draw | null;
+    取程序日志(program: WebGLProgram): string | null;
+    取程序参数(program: WebGLProgram, pname: GLenum): any;
+    取着色器日志(shader: WebGLShader): string | null;
+    取着色器参数(shader: WebGLShader, pname: GLenum): any;
     取支持扩展(): string[] | null;
     取一致位置(program: WebGLProgram, name: string): WebGLUniformLocation | null;
     上下文丢失(): boolean;
+    是启用(cap: GLenum): GLboolean;
     线宽(width: GLfloat): void;
     链接程序(program: WebGLProgram): void;
+    裁剪框(x: GLint, y: GLint, width: GLsizei, height: GLsizei): void;
     着色器源码(shader: WebGLShader, source: string): void;
+    模板函数(func: GLenum, ref: GLint, mask: GLuint): void;
     使用程序(program: WebGLProgram | null): void;
     顶点属性指针(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, offset: GLintptr): void;
     视口(x: GLint, y: GLint, width: GLsizei, height: GLsizei): void;
