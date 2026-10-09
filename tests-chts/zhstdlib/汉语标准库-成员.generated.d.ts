@@ -1144,6 +1144,9 @@ interface Animatable {
 interface Animation {
     编号: string;
     取消(): void;
+    完成(): void;
+    暂停(): void;
+    播放(): void;
     反转(): void;
     加事件监听<K extends keyof AnimationEventMap>(type: K, listener: (this: Animation, ev: AnimationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1343,6 +1346,12 @@ interface CSSFontPaletteValuesRule {
     readonly 名称: string;
 }
 
+interface CSSGroupingRule {
+    readonly 规则集: CSSRuleList;
+    删除规则(index: number): void;
+    插入规则(rule: string, index?: number): number;
+}
+
 interface CSSImportRule {
     readonly 链接: string;
     get 媒体(): MediaList;
@@ -1355,8 +1364,10 @@ interface CSSKeyframeRule {
 }
 
 interface CSSKeyframesRule {
+    readonly 规则集: CSSRuleList;
     readonly 长度: number;
     名称: string;
+    删除规则(select: string): void;
 }
 
 interface CSSKeywordValue {
@@ -1457,6 +1468,7 @@ interface CSSRotate {
 }
 
 interface CSSRule {
+    readonly 父样式表: CSSStyleSheet | null;
     readonly 种类: number;
 }
 
@@ -1476,7 +1488,11 @@ interface CSSScopeRule {
 
 interface CSSStyleDeclarationBase {
     readonly 长度: number;
+    取属性优先级(property: string): string;
+    取属性值(property: string): string;
     取项(index: number): string;
+    删属性值(property: string): string;
+    设属性值(property: string, value: string | null, priority?: string): void;
 }
 
 interface CSSStyleProperties {
@@ -1513,6 +1529,9 @@ interface CSSStyleRule {
 }
 
 interface CSSStyleSheet {
+    readonly 规则集: CSSRuleList;
+    删除规则(index: number): void;
+    插入规则(rule: string, index?: number): number;
     替换(text: string): Promise<CSSStyleSheet>;
 }
 
@@ -2272,6 +2291,10 @@ interface GPUBuffer {
     readonly 大小: GPUSize64Out;
 }
 
+interface GPUCommandEncoder {
+    完成(descriptor?: GPUCommandBufferDescriptor): GPUCommandBuffer;
+}
+
 interface GPUCompilationMessage {
     readonly 长度: number;
     readonly 消息: string;
@@ -2304,6 +2327,10 @@ interface GPUQuerySet {
 
 interface GPUQueue {
     提交(commandBuffers: GPUCommandBuffer[]): void;
+}
+
+interface GPURenderBundleEncoder {
+    完成(descriptor?: GPURenderBundleDescriptor): GPURenderBundle;
 }
 
 interface GPUSupportedFeatures {
@@ -2793,6 +2820,8 @@ interface HTMLMediaElement {
     readonly 就绪态: number;
     源址: string;
     加载(): void;
+    暂停(): void;
+    播放(): Promise<void>;
     加事件监听<K extends keyof HTMLMediaElementEventMap>(type: K, listener: (this: HTMLMediaElement, ev: HTMLMediaElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLMediaElementEventMap>(type: K, listener: (this: HTMLMediaElement, ev: HTMLMediaElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3526,6 +3555,7 @@ interface MediaQueryListEvent {
 interface MediaRecorder {
     出错时: ((this: MediaRecorder, ev: ErrorEvent) => any) | null;
     readonly 状态: RecordingState;
+    暂停(): void;
     继续(): void;
     开始(timeslice?: number): void;
     加事件监听<K extends keyof MediaRecorderEventMap>(type: K, listener: (this: MediaRecorder, ev: MediaRecorderEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4873,6 +4903,7 @@ interface SpeechRecognitionResultList {
 
 interface SpeechSynthesis {
     取消(): void;
+    暂停(): void;
     继续(): void;
     加事件监听<K extends keyof SpeechSynthesisEventMap>(type: K, listener: (this: SpeechSynthesis, ev: SpeechSynthesisEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -4936,6 +4967,8 @@ interface StyleSheet {
     readonly 链接: string | null;
     get 媒体(): MediaList;
     set 媒体(mediaText: string);
+    readonly 属主节点: Element | ProcessingInstruction | null;
+    readonly 父样式表: CSSStyleSheet | null;
     readonly 标题: string | null;
     readonly 种类: string;
 }
@@ -5196,6 +5229,7 @@ interface WebGLActiveInfo {
 
 interface WebGLRenderingContextBase {
     清空(mask: GLbitfield): void;
+    完成(): void;
     取上下文属性(): WebGLContextAttributes | null;
     取扩展名(name: string): any;
     取扩展名(extensionName: "ANGLE_instanced_arrays"): ANGLE_instanced_arrays | null;
@@ -6537,5 +6571,9 @@ interface ArrayLike<T> {
 
 interface SuppressedError {
     报错: any;
+}
+
+interface Atomics {
+    暂停(n?: number): void;
 }
 
