@@ -502,10 +502,12 @@ interface CSSPositionTryRule {
 
 interface CSSRuleList {
     readonly 长度: number;
+    取项(index: number): CSSRule | null;
 }
 
 interface CSSStyleDeclarationBase {
     readonly 长度: number;
+    取项(index: number): string;
 }
 
 interface CSSStyleProperties {
@@ -597,7 +599,10 @@ interface CharacterData {
 }
 
 interface ChildNode {
+    之后(...nodes: (Node | string)[]): void;
+    之前(...nodes: (Node | string)[]): void;
     移除(): void;
+    替换为(...nodes: (Node | string)[]): void;
 }
 
 interface ConstantSourceNode {
@@ -652,6 +657,7 @@ interface DOMRect {
 
 interface DOMRectList {
     readonly 长度: number;
+    取项(index: number): DOMRect | null;
 }
 
 interface DOMRectReadOnly {
@@ -662,6 +668,7 @@ interface DOMRectReadOnly {
 interface DOMStringList {
     readonly 长度: number;
     含节点(string: string): boolean;
+    取项(index: number): string | null;
 }
 
 interface DOMTokenList {
@@ -670,6 +677,7 @@ interface DOMTokenList {
     转字符串(): string;
     添加(...tokens: string[]): void;
     含节点(token: string): boolean;
+    取项(index: number): string | null;
     移除(...tokens: string[]): void;
     替换(token: string, newToken: string): boolean;
     逐个处理(callbackfn: (value: string, key: number, parent: DOMTokenList) => void, thisArg?: any): void;
@@ -692,6 +700,7 @@ interface Document {
     创建元素(tagName: string, options?: ElementCreationOptions): HTMLElement;
     按编号取元素(elementId: string): HTMLElement | null;
     按类取元素组(classNames: string): HTMLCollectionOf<Element>;
+    按名取元素(elementName: string): NodeListOf<HTMLElement>;
     按标签取元素<K extends keyof HTMLElementTagNameMap>(qualifiedName: K): HTMLCollectionOf<HTMLElementTagNameMap[K]>;
     按标签取元素<K extends keyof SVGElementTagNameMap>(qualifiedName: K): HTMLCollectionOf<SVGElementTagNameMap[K]>;
     按标签取元素<K extends keyof MathMLElementTagNameMap>(qualifiedName: K): HTMLCollectionOf<MathMLElementTagNameMap[K]>;
@@ -723,6 +732,7 @@ interface Element {
     最近祖先<K extends keyof MathMLElementTagNameMap>(selector: K): MathMLElementTagNameMap[K] | null;
     最近祖先<E extends Element = Element>(selectors: string): E | null;
     取属性(qualifiedName: string): string | null;
+    取属性名(): string[];
     取边界矩形(): DOMRect;
     按类取元素组(classNames: string): HTMLCollectionOf<Element>;
     按标签取元素<K extends keyof HTMLElementTagNameMap>(qualifiedName: K): HTMLCollectionOf<HTMLElementTagNameMap[K]>;
@@ -730,12 +740,15 @@ interface Element {
     按标签取元素<K extends keyof MathMLElementTagNameMap>(qualifiedName: K): HTMLCollectionOf<MathMLElementTagNameMap[K]>;
     按标签取元素<K extends keyof HTMLElementDeprecatedTagNameMap>(qualifiedName: K): HTMLCollectionOf<HTMLElementDeprecatedTagNameMap[K]>;
     按标签取元素(qualifiedName: string): HTMLCollectionOf<Element>;
+    有属性(qualifiedName: string): boolean;
     匹配选择器<K extends keyof HTMLElementTagNameMap>(selectors: K): this is HTMLElementTagNameMap[K];
     匹配选择器<K extends keyof SVGElementTagNameMap>(selectors: K): this is SVGElementTagNameMap[K];
     匹配选择器<K extends keyof MathMLElementTagNameMap>(selectors: K): this is MathMLElementTagNameMap[K];
     匹配选择器(selectors: string): boolean;
+    删属性(qualifiedName: string): void;
     滚入视野(arg?: boolean | ScrollIntoViewOptions): void;
     设置属性(qualifiedName: string, value: string): void;
+    切换属性(qualifiedName: string, force?: boolean): boolean;
     get 文本内容(): string;
     set 文本内容(value: string | null);
     加事件监听<K extends keyof ElementEventMap>(type: K, listener: (this: Element, ev: ElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -779,6 +792,7 @@ interface EventTarget {
 
 interface FileList {
     readonly 长度: number;
+    取项(index: number): File | null;
 }
 
 interface FileReader {
@@ -868,6 +882,7 @@ interface GlobalEventHandlers {
 
 interface HTMLAllCollection {
     readonly 长度: number;
+    取项(nameOrIndex?: string): HTMLCollection | Element | null;
 }
 
 interface HTMLAnchorElement {
@@ -939,6 +954,11 @@ interface HTMLCanvasElement {
 
 interface HTMLCollectionBase {
     readonly 长度: number;
+    取项(index: number): Element | null;
+}
+
+interface HTMLCollectionOf<T extends Element> {
+    取项(index: number): T | null;
 }
 
 interface HTMLDListElement {
@@ -1325,6 +1345,7 @@ interface HTMLSelectElement {
     大小: number;
     值内容: string;
     添加(element: HTMLOptionElement | HTMLOptGroupElement, before?: HTMLElement | number | null): void;
+    取项(index: number): HTMLOptionElement | null;
     移除(): void;
     移除(index: number): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLSelectElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1668,6 +1689,7 @@ interface MediaKeyStatusMap {
 interface MediaList {
     readonly 长度: number;
     转字符串(): string;
+    取项(index: number): string | null;
 }
 
 interface MediaMetadata {
@@ -1730,6 +1752,7 @@ interface MessagePort {
 
 interface MimeTypeArray {
     readonly 长度: number;
+    取项(index: number): MimeType | null;
 }
 
 interface MutationRecord {
@@ -1739,6 +1762,7 @@ interface MutationRecord {
 
 interface NamedNodeMap {
     readonly 长度: number;
+    取项(index: number): Attr | null;
 }
 
 interface Navigation {
@@ -1781,10 +1805,12 @@ interface NodeIterator {
 
 interface NodeList {
     readonly 长度: number;
+    取项(index: number): Node | null;
     逐个处理(callbackfn: (value: Node, key: number, parent: NodeList) => void, thisArg?: any): void;
 }
 
 interface NodeListOf<TNode extends Node> {
+    取项(index: number): TNode;
     逐个处理(callbackfn: (value: TNode, key: number, parent: NodeListOf<TNode>) => void, thisArg?: any): void;
 }
 
@@ -1837,6 +1863,11 @@ interface ParentNode {
     查询选择器<K extends keyof MathMLElementTagNameMap>(selectors: K): MathMLElementTagNameMap[K] | null;
     查询选择器<K extends keyof HTMLElementDeprecatedTagNameMap>(selectors: K): HTMLElementDeprecatedTagNameMap[K] | null;
     查询选择器<E extends Element = Element>(selectors: string): E | null;
+    查全部选择器<K extends keyof HTMLElementTagNameMap>(selectors: K): NodeListOf<HTMLElementTagNameMap[K]>;
+    查全部选择器<K extends keyof SVGElementTagNameMap>(selectors: K): NodeListOf<SVGElementTagNameMap[K]>;
+    查全部选择器<K extends keyof MathMLElementTagNameMap>(selectors: K): NodeListOf<MathMLElementTagNameMap[K]>;
+    查全部选择器<K extends keyof HTMLElementDeprecatedTagNameMap>(selectors: K): NodeListOf<HTMLElementDeprecatedTagNameMap[K]>;
+    查全部选择器<E extends Element = Element>(selectors: string): NodeListOf<E>;
 }
 
 interface PaymentRequest {
@@ -1880,10 +1911,12 @@ interface PictureInPictureWindow {
 
 interface Plugin {
     readonly 长度: number;
+    取项(index: number): MimeType | null;
 }
 
 interface PluginArray {
     readonly 长度: number;
+    取项(index: number): Plugin | null;
 }
 
 interface PointerEvent {
@@ -2300,6 +2333,7 @@ interface SVGLength {
 interface SVGLengthList {
     readonly 长度: number;
     清空(): void;
+    取条目(index: number): SVGLength;
 }
 
 interface SVGLineElement {
@@ -2353,6 +2387,7 @@ interface SVGNumber {
 interface SVGNumberList {
     readonly 长度: number;
     清空(): void;
+    取条目(index: number): SVGNumber;
 }
 
 interface SVGPathElement {
@@ -2374,6 +2409,7 @@ interface SVGPatternElement {
 interface SVGPointList {
     readonly 长度: number;
     清空(): void;
+    取条目(index: number): DOMPoint;
 }
 
 interface SVGPolygonElement {
@@ -2440,6 +2476,7 @@ interface SVGStopElement {
 interface SVGStringList {
     readonly 长度: number;
     清空(): void;
+    取条目(index: number): string;
 }
 
 interface SVGStyleElement {
@@ -2509,6 +2546,7 @@ interface SVGTitleElement {
 interface SVGTransformList {
     readonly 长度: number;
     清空(): void;
+    取条目(index: number): SVGTransform;
 }
 
 interface SVGURIReference {
@@ -2533,6 +2571,7 @@ interface SVGViewElement {
 
 interface Sanitizer {
     获取(): SanitizerConfig;
+    删属性(attribute: SanitizerAttribute): boolean;
 }
 
 interface Screen {
@@ -2617,10 +2656,12 @@ interface SpeechRecognitionErrorEvent {
 
 interface SpeechRecognitionResult {
     readonly 长度: number;
+    取项(index: number): SpeechRecognitionAlternative;
 }
 
 interface SpeechRecognitionResultList {
     readonly 长度: number;
+    取项(index: number): SpeechRecognitionResult;
 }
 
 interface SpeechSynthesis {
@@ -2644,6 +2685,8 @@ interface SpeechSynthesisUtterance {
 interface Storage {
     readonly 长度: number;
     清空(): void;
+    取条目(key: string): string | null;
+    设条目(key: string, value: string): void;
 }
 
 interface StylePropertyMap {
@@ -2667,6 +2710,7 @@ interface StyleSheet {
 
 interface StyleSheetList {
     readonly 长度: number;
+    取项(index: number): CSSStyleSheet | null;
 }
 
 interface SubtleCrypto {
@@ -2716,6 +2760,7 @@ interface TimeRanges {
 
 interface TouchList {
     readonly 长度: number;
+    取项(index: number): Touch | null;
 }
 
 interface TransformStreamDefaultController<O = any> {
