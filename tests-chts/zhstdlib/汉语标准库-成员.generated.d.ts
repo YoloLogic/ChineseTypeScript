@@ -179,6 +179,7 @@ interface CompositionEventInit {
 
 interface ComputedEffectTiming {
     结束时刻?: CSSNumberish;
+    进度?: number | null;
     起始时刻?: CSSNumberish;
 }
 
@@ -2405,6 +2406,7 @@ interface ElementContentEditable {
 
 interface ElementInternals {
     readonly 表单: HTMLFormElement | null;
+    readonly 标签列: NodeList;
     readonly 影子根: ShadowRoot | null;
     readonly 校验消息: string;
     readonly 有效性: ValidityState;
@@ -2732,6 +2734,7 @@ interface HTMLBodyElement {
 interface HTMLButtonElement {
     已禁用: boolean;
     readonly 表单: HTMLFormElement | null;
+    readonly 标签列: NodeListOf<HTMLLabelElement>;
     名称: string;
     种类: "submit" | "reset" | "button";
     readonly 校验消息: string;
@@ -2931,6 +2934,8 @@ interface HTMLFrameElement {
 }
 
 interface HTMLFrameSetElement {
+    列数: string;
+    行数: string;
     加事件监听<K extends keyof HTMLFrameSetElementEventMap>(type: K, listener: (this: HTMLFrameSetElement, ev: HTMLFrameSetElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLFrameSetElementEventMap>(type: K, listener: (this: HTMLFrameSetElement, ev: HTMLFrameSetElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3021,6 +3026,9 @@ interface HTMLInputElement {
     文件列: FileList | null;
     readonly 表单: HTMLFormElement | null;
     高度: number;
+    不确定: boolean;
+    readonly 标签列: NodeListOf<HTMLLabelElement> | null;
+    readonly 候选列表: HTMLDataListElement | null;
     最大: string;
     最大限制: string;
     最小: string;
@@ -3030,6 +3038,7 @@ interface HTMLInputElement {
     占位提示: string;
     只读: boolean;
     必填: boolean;
+    选区终点: number | null;
     选区起点: number | null;
     大小: number;
     源址: string;
@@ -3038,12 +3047,17 @@ interface HTMLInputElement {
     readonly 校验消息: string;
     readonly 有效性: ValidityState;
     值内容: string;
+    值作日期: Date | null;
+    值作数字: number;
     宽度: number;
     检查校验(): boolean;
     报告校验(): boolean;
     全选(): void;
     设自定义校验(error: string): void;
     设选区范围(start: number | null, end: number | null, direction?: SelectionDirection): void;
+    显示选择器(): void;
+    步减(n?: number): void;
+    步增(n?: number): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLInputElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLInputElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3162,6 +3176,7 @@ interface HTMLMetaElement {
 }
 
 interface HTMLMeterElement {
+    readonly 标签列: NodeListOf<HTMLLabelElement>;
     最大: number;
     最大限制: number;
     最小: number;
@@ -3250,6 +3265,7 @@ interface HTMLOrSVGElement {
 interface HTMLOutputElement {
     默认值: string;
     readonly 表单: HTMLFormElement | null;
+    readonly 标签列: NodeListOf<HTMLLabelElement>;
     名称: string;
     readonly 种类: string;
     readonly 校验消息: string;
@@ -3298,6 +3314,7 @@ interface HTMLPreElement {
 }
 
 interface HTMLProgressElement {
+    readonly 标签列: NodeListOf<HTMLLabelElement>;
     最大: number;
     最大限制: number;
     readonly 位置: number;
@@ -3331,6 +3348,7 @@ interface HTMLSelectElement {
     自动完成: AutoFill;
     已禁用: boolean;
     readonly 表单: HTMLFormElement | null;
+    readonly 标签列: NodeListOf<HTMLLabelElement>;
     长度: number;
     多选: boolean;
     名称: string;
@@ -3349,6 +3367,7 @@ interface HTMLSelectElement {
     移除(index: number): void;
     报告校验(): boolean;
     设自定义校验(error: string): void;
+    显示选择器(): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLSelectElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLSelectElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3432,6 +3451,7 @@ interface HTMLTableDataCellElement {
 
 interface HTMLTableElement {
     对齐: string;
+    readonly 行数: HTMLCollectionOf<HTMLTableRowElement>;
     宽度: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTableElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -3456,6 +3476,7 @@ interface HTMLTableRowElement {
 
 interface HTMLTableSectionElement {
     对齐: string;
+    readonly 行数: HTMLCollectionOf<HTMLTableRowElement>;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTableSectionElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTableSectionElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3471,13 +3492,17 @@ interface HTMLTemplateElement {
 
 interface HTMLTextAreaElement {
     自动完成: AutoFill;
+    列数: number;
     默认值: string;
     已禁用: boolean;
     readonly 表单: HTMLFormElement | null;
+    readonly 标签列: NodeListOf<HTMLLabelElement>;
     名称: string;
     占位提示: string;
     只读: boolean;
     必填: boolean;
+    行数: number;
+    选区终点: number;
     选区起点: number;
     readonly 种类: string;
     readonly 校验消息: string;
