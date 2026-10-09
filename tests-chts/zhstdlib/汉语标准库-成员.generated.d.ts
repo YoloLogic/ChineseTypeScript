@@ -261,6 +261,7 @@ interface CustomEventInit<T = any> {
 interface DOMPointInit {
     横坐标?: number;
     纵坐标?: number;
+    深度坐标?: number;
 }
 
 interface DOMRectInit {
@@ -277,6 +278,13 @@ interface DelayOptions {
 interface DeviceMotionEventAccelerationInit {
     横坐标?: number | null;
     纵坐标?: number | null;
+    深度坐标?: number | null;
+}
+
+interface DeviceMotionEventInit {
+    加速度?: DeviceMotionEventAccelerationInit;
+    间隔?: number;
+    旋转速率?: DeviceMotionEventRotationRateInit;
 }
 
 interface DeviceMotionEventRotationRateInit {
@@ -448,6 +456,7 @@ interface GPUOrigin2DDict {
 interface GPUOrigin3DDict {
     横坐标?: GPUIntegerCoordinate;
     纵坐标?: GPUIntegerCoordinate;
+    深度坐标?: GPUIntegerCoordinate;
 }
 
 interface GPUQuerySetDescriptor {
@@ -1989,6 +1998,7 @@ interface CSSRotate {
     角度: CSSNumericValue;
     横坐标: CSSNumberish;
     纵坐标: CSSNumberish;
+    深度坐标: CSSNumberish;
 }
 
 interface CSSRule {
@@ -2006,6 +2016,7 @@ interface CSSRuleList {
 interface CSSScale {
     横坐标: CSSNumberish;
     纵坐标: CSSNumberish;
+    深度坐标: CSSNumberish;
 }
 
 interface CSSScopeRule {
@@ -2094,6 +2105,7 @@ interface CSSTransition {
 interface CSSTranslate {
     横坐标: CSSNumericValue;
     纵坐标: CSSNumericValue;
+    深度坐标: CSSNumericValue;
 }
 
 interface CSSUnitValue {
@@ -2424,11 +2436,13 @@ interface DOMMatrixReadOnly {
 interface DOMPoint {
     横坐标: number;
     纵坐标: number;
+    深度坐标: number;
 }
 
 interface DOMPointReadOnly {
     readonly 横坐标: number;
     readonly 纵坐标: number;
+    readonly 深度坐标: number;
     矩阵变换(matrix?: DOMMatrixInit): DOMPoint;
     转数据(): any;
 }
@@ -2509,9 +2523,16 @@ interface DelayNode {
     readonly 延迟时长: AudioParam;
 }
 
+interface DeviceMotionEvent {
+    readonly 加速度: DeviceMotionEventAcceleration | null;
+    readonly 间隔: number;
+    readonly 旋转速率: DeviceMotionEventRotationRate | null;
+}
+
 interface DeviceMotionEventAcceleration {
     readonly 横坐标: number | null;
     readonly 纵坐标: number | null;
+    readonly 深度坐标: number | null;
 }
 
 interface DeviceMotionEventRotationRate {
@@ -4662,6 +4683,8 @@ interface NavigateEvent {
 }
 
 interface Navigation {
+    readonly 可后退: boolean;
+    readonly 当前条目: NavigationHistoryEntry | null;
     后退(options?: NavigationOptions): NavigationResult;
     条目(): NavigationHistoryEntry[];
     前进(options?: NavigationOptions): NavigationResult;
@@ -5719,6 +5742,7 @@ interface SVGFEOffsetElement {
 interface SVGFEPointLightElement {
     readonly 横坐标: SVGAnimatedNumber;
     readonly 纵坐标: SVGAnimatedNumber;
+    readonly 深度坐标: SVGAnimatedNumber;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEPointLightElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEPointLightElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -5735,6 +5759,7 @@ interface SVGFESpecularLightingElement {
 interface SVGFESpotLightElement {
     readonly 横坐标: SVGAnimatedNumber;
     readonly 纵坐标: SVGAnimatedNumber;
+    readonly 深度坐标: SVGAnimatedNumber;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFESpotLightElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFESpotLightElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
