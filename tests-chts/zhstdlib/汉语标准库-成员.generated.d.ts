@@ -2925,6 +2925,7 @@ interface FileReader {
     中止时: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
     出错时: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
     加载时: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
+    开始加载时: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
     进度变化时: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
     readonly 就绪态: 0 | 1 | 2;
     中止(): void;
@@ -3159,6 +3160,7 @@ interface GeolocationPositionError {
 
 interface GlobalEventHandlers {
     中止时: ((this: GlobalEventHandlers, ev: UIEvent) => any) | null;
+    动画开始时: ((this: GlobalEventHandlers, ev: AnimationEvent) => any) | null;
     失焦时: ((this: GlobalEventHandlers, ev: FocusEvent) => any) | null;
     可播放时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     变化时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
@@ -3169,6 +3171,7 @@ interface GlobalEventHandlers {
     拖起时: ((this: GlobalEventHandlers, ev: DragEvent) => any) | null;
     放下时: ((this: GlobalEventHandlers, ev: DragEvent) => any) | null;
     时长变化时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
+    清空时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     播放结束时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     出错时: OnErrorEventHandler;
     聚焦时: ((this: GlobalEventHandlers, ev: FocusEvent) => any) | null;
@@ -3176,6 +3179,9 @@ interface GlobalEventHandlers {
     按键按下时: ((this: GlobalEventHandlers, ev: KeyboardEvent) => any) | null;
     按键抬起时: ((this: GlobalEventHandlers, ev: KeyboardEvent) => any) | null;
     加载时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
+    数据载入时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
+    元数据载入时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
+    开始加载时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     鼠标按下时: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null;
     鼠标移动时: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null;
     鼠标移出时: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null;
@@ -3195,7 +3201,9 @@ interface GlobalEventHandlers {
     滚动时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     定位完成时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     正在定位时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
+    停滞时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     提交时: ((this: GlobalEventHandlers, ev: SubmitEvent) => any) | null;
+    挂起时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     时刻更新时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     触控取消时?: ((this: GlobalEventHandlers, ev: TouchEvent) => any) | null | undefined;
     触控结束时?: ((this: GlobalEventHandlers, ev: TouchEvent) => any) | null | undefined;
@@ -7181,7 +7189,12 @@ interface Window {
 }
 
 interface WindowEventHandlers {
+    哈希变化时: ((this: WindowEventHandlers, ev: HashChangeEvent) => any) | null;
     收消息时: ((this: WindowEventHandlers, ev: MessageEvent) => any) | null;
+    离线时: ((this: WindowEventHandlers, ev: Event) => any) | null;
+    上线时: ((this: WindowEventHandlers, ev: Event) => any) | null;
+    历史变化时: ((this: WindowEventHandlers, ev: PopStateEvent) => any) | null;
+    存储变化时: ((this: WindowEventHandlers, ev: StorageEvent) => any) | null;
     加事件监听<K extends keyof WindowEventHandlersEventMap>(type: K, listener: (this: WindowEventHandlers, ev: WindowEventHandlersEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof WindowEventHandlersEventMap>(type: K, listener: (this: WindowEventHandlers, ev: WindowEventHandlersEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -7256,6 +7269,7 @@ interface XMLHttpRequestEventTarget {
     中止时: ((this: XMLHttpRequest, ev: ProgressEvent) => any) | null;
     出错时: ((this: XMLHttpRequest, ev: ProgressEvent) => any) | null;
     加载时: ((this: XMLHttpRequest, ev: ProgressEvent) => any) | null;
+    开始加载时: ((this: XMLHttpRequest, ev: ProgressEvent) => any) | null;
     进度变化时: ((this: XMLHttpRequest, ev: ProgressEvent) => any) | null;
     加事件监听<K extends keyof XMLHttpRequestEventTargetEventMap>(type: K, listener: (this: XMLHttpRequestEventTarget, ev: XMLHttpRequestEventTargetEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
