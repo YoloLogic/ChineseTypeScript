@@ -185,6 +185,10 @@ interface CurrentUserDetailsOptions {
     名称: string;
 }
 
+interface CustomEventInit<T = any> {
+    细节?: T;
+}
+
 interface DOMPointInit {
     横坐标?: number;
     纵坐标?: number;
@@ -243,6 +247,8 @@ interface EncodedVideoChunkInit {
 
 interface ErrorEventInit {
     报错?: any;
+    文件名?: string;
+    行号?: number;
     消息?: string;
 }
 
@@ -309,6 +315,7 @@ interface GPUColorTargetState {
 }
 
 interface GPUCopyExternalImageSourceInfo {
+    源点?: GPUOrigin2D;
     来源: GPUCopyExternalImageSource;
 }
 
@@ -357,6 +364,10 @@ interface GPUTexelCopyBufferInfo {
 
 interface GPUTexelCopyBufferLayout {
     偏移?: GPUSize64;
+}
+
+interface GPUTexelCopyTextureInfo {
+    源点?: GPUOrigin3D;
 }
 
 interface GPUTextureDescriptor {
@@ -539,6 +550,9 @@ interface MediaTrackSupportedConstraints {
 
 interface MessageEventInit<T = any> {
     数据?: T;
+    末事件编号?: string;
+    源点?: string;
+    端口集?: MessagePort[];
     来源?: MessageEventSource | null;
 }
 
@@ -634,7 +648,12 @@ interface Pbkdf2Params {
     散列: HashAlgorithmIdentifier;
 }
 
+interface PerformanceMarkOptions {
+    细节?: any;
+}
+
 interface PerformanceMeasureOptions {
+    细节?: any;
     时长?: DOMHighResTimeStamp;
     开始?: string | DOMHighResTimeStamp;
 }
@@ -891,6 +910,11 @@ interface ScrollTimelineOptions {
     来源?: Element | null;
 }
 
+interface ScrollToOptions {
+    左侧?: number;
+    顶部?: number;
+}
+
 interface SecurityPolicyViolationEventInit {
     来源页?: string;
 }
@@ -959,6 +983,10 @@ interface TouchInit {
 interface Transformer<I = any, O = any> {
     开始?: TransformerStartCallback<O>;
     变换?: TransformerTransformCallback<I, O>;
+}
+
+interface UIEventInit {
+    细节?: number;
 }
 
 interface ULongRange {
@@ -1405,7 +1433,11 @@ interface CSSPerspective {
 }
 
 interface CSSPositionTryDescriptors {
+    底部: string;
     高度: string;
+    左侧: string;
+    右侧: string;
+    顶部: string;
     宽度: string;
 }
 
@@ -1449,6 +1481,7 @@ interface CSSStyleDeclarationBase {
 
 interface CSSStyleProperties {
     全部: string;
+    底部: string;
     清空: string;
     裁剪: string;
     填充: string;
@@ -1456,13 +1489,16 @@ interface CSSStyleProperties {
     滤镜: string;
     字体: string;
     高度: string;
+    左侧: string;
     字距: string;
     偏移: string;
     调整大小: string;
+    右侧: string;
     旋转: string;
     缩放: string;
     描边: string;
     文本对齐: string;
+    顶部: string;
     变换: string;
     平移: string;
     宽度: string;
@@ -1759,6 +1795,10 @@ interface CustomElementRegistry {
     获取(name: string): CustomElementConstructor | undefined;
 }
 
+interface CustomEvent<T = any> {
+    readonly 细节: T;
+}
+
 interface CustomStateSet {
     逐个处理(callbackfn: (value: string, key: string, parent: CustomStateSet) => void, thisArg?: any): void;
 }
@@ -1784,10 +1824,12 @@ interface DOMPoint {
 interface DOMPointReadOnly {
     readonly 横坐标: number;
     readonly 纵坐标: number;
+    矩阵变换(matrix?: DOMMatrixInit): DOMPoint;
     转数据(): any;
 }
 
 interface DOMQuad {
+    取边界(): DOMRect;
     转数据(): any;
 }
 
@@ -1804,7 +1846,11 @@ interface DOMRectList {
 }
 
 interface DOMRectReadOnly {
+    readonly 底部: number;
     readonly 高度: number;
+    readonly 左侧: number;
+    readonly 右侧: number;
+    readonly 顶部: number;
     readonly 宽度: number;
     readonly 横坐标: number;
     readonly 纵坐标: number;
@@ -2102,6 +2148,8 @@ interface EncodedVideoChunk {
 
 interface ErrorEvent {
     readonly 报错: any;
+    readonly 文件名: string;
+    readonly 行号: number;
     readonly 消息: string;
 }
 
@@ -2607,6 +2655,7 @@ interface HTMLHyperlinkElementUtils {
     散列: string;
     链接: string;
     转字符串(): string;
+    readonly 源点: string;
     端口: string;
     协议: string;
     查找: string;
@@ -3337,6 +3386,7 @@ interface Location {
     散列: string;
     链接: string;
     转字符串(): string;
+    readonly 源点: string;
     端口: string;
     协议: string;
     查找: string;
@@ -3522,6 +3572,9 @@ interface MediaStreamTrack {
 
 interface MessageEvent<T = any> {
     readonly 数据: T;
+    readonly 末事件编号: string;
+    readonly 源点: string;
+    readonly 端口集: ReadonlyArray<MessagePort>;
     readonly 来源: MessageEventSource | null;
 }
 
@@ -3768,6 +3821,14 @@ interface PerformanceEventTiming {
     转数据(): any;
 }
 
+interface PerformanceMark {
+    readonly 细节: any;
+}
+
+interface PerformanceMeasure {
+    readonly 细节: any;
+}
+
 interface PerformanceNavigation {
     readonly 种类: number;
     转数据(): any;
@@ -3821,6 +3882,7 @@ interface PictureInPictureWindow {
 }
 
 interface Plugin {
+    readonly 文件名: string;
     readonly 长度: number;
     readonly 名称: string;
     取项(index: number): MimeType | null;
@@ -5011,10 +5073,15 @@ interface TreeWalker {
     前兄弟(): Node | null;
 }
 
+interface UIEvent {
+    readonly 细节: number;
+}
+
 interface URL {
     散列: string;
     链接: string;
     转字符串(): string;
+    readonly 源点: string;
     端口: string;
     协议: string;
     查找: string;
@@ -5208,6 +5275,7 @@ interface Window {
     readonly 长度: number;
     名称: string;
     状态码: string;
+    readonly 顶部: WindowProxy | null;
     失焦(): void;
     取消空闲(handle: number): void;
     关闭(): void;
@@ -5240,6 +5308,7 @@ interface WindowEventHandlers {
 }
 
 interface WindowOrWorkerGlobalScope {
+    readonly 源点: string;
     创建位图(image: ImageBitmapSource, options?: ImageBitmapOptions): Promise<ImageBitmap>;
     创建位图(image: ImageBitmapSource, sx: number, sy: number, sw: number, sh: number, options?: ImageBitmapOptions): Promise<ImageBitmap>;
     排队微任务(callback: VoidFunction): void;
