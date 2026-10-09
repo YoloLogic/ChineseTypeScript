@@ -1706,6 +1706,10 @@ interface CSSAnimation {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface CSSContainerRule {
+    readonly 容器名: string;
+}
+
 interface CSSCounterStyleRule {
     名称: string;
 }
@@ -1878,6 +1882,7 @@ interface CSSStyleProperties {
     底部: string;
     清空: string;
     裁剪: string;
+    容器名: string;
     容器类型: string;
     显示方式: string;
     填充: string;
@@ -4036,6 +4041,9 @@ interface ImageBitmapRenderingContext {
 
 interface ImageCapture {
     readonly 轨道: MediaStreamTrack;
+    取照片能力(): Promise<PhotoCapabilities>;
+    取照片设置(): Promise<PhotoSettings>;
+    抓取帧(): Promise<ImageBitmap>;
     拍照(photoSettings?: PhotoSettings): Promise<Blob>;
 }
 
@@ -4110,6 +4118,7 @@ interface KeyframeEffect {
 }
 
 interface LargestContentfulPaint {
+    readonly 元素: Element | null;
     readonly 编号: string;
     readonly 加载时刻: DOMHighResTimeStamp;
     readonly 渲染时刻: DOMHighResTimeStamp;
@@ -4691,6 +4700,8 @@ interface PaymentResponse {
 }
 
 interface Performance {
+    readonly 事件计数: EventCounts;
+    readonly 时间原点: DOMHighResTimeStamp;
     清标记(markName?: string): void;
     取条目列(): PerformanceEntryList;
     按名取条目(name: string, type?: string): PerformanceEntryList;
@@ -4743,6 +4754,8 @@ interface PerformanceNavigationTiming {
     readonly 加载事件开始: DOMHighResTimeStamp;
     readonly 重定向次数: number;
     readonly 种类: NavigationTimingType;
+    readonly 卸载事件结束: DOMHighResTimeStamp;
+    readonly 卸载事件开始: DOMHighResTimeStamp;
     转数据(): any;
 }
 
@@ -4776,6 +4789,7 @@ interface PerformanceResourceTiming {
     readonly 请求开始: DOMHighResTimeStamp;
     readonly 响应结束: DOMHighResTimeStamp;
     readonly 响应开始: DOMHighResTimeStamp;
+    readonly 响应状态: number;
     readonly 安全连接开始: DOMHighResTimeStamp;
     readonly 服务器计时: ReadonlyArray<PerformanceServerTiming>;
     readonly 传输大小: number;
@@ -4805,6 +4819,8 @@ interface PerformanceTiming {
     readonly 响应结束: number;
     readonly 响应开始: number;
     readonly 安全连接开始: number;
+    readonly 卸载事件结束: number;
+    readonly 卸载事件开始: number;
     转数据(): any;
 }
 
@@ -6468,6 +6484,7 @@ interface VisualViewport {
     readonly 高度: number;
     readonly 偏移左: number;
     readonly 偏移顶: number;
+    readonly 页面左: number;
     readonly 缩放: number;
     readonly 宽度: number;
     加事件监听<K extends keyof VisualViewportEventMap>(type: K, listener: (this: VisualViewport, ev: VisualViewportEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;

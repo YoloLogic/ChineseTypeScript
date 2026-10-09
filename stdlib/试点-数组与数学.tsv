@@ -1180,6 +1180,17 @@ member	postTask	投递任务
 member	isActive	是活动
 member	hasBeenActive	曾经活动
 member	takePhoto	拍照
+member	getPhotoCapabilities	取照片能力
+member	getPhotoSettings	取照片设置
+member	grabFrame	抓取帧
+member	timeOrigin	时间原点
+member	eventCounts	事件计数
+member	unloadEventStart	卸载事件开始
+member	unloadEventEnd	卸载事件结束
+member	responseStatus	响应状态
+member	containerName	容器名
+member	element	元素
+member	pageLeft	页面左
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
