@@ -52,7 +52,8 @@ foreach ($lib in $libs) {
     $members = New-Object System.Collections.Generic.List[string]
     foreach ($line in (Get-Content $lib.FullName -Encoding UTF8)) {
         if ($cur -eq $null) {
-            $m = [regex]::Match($line, '^interface\s+([A-Za-z_$][\w$]*(?:<[^>]*>)?)\s*\{')
+            # 接口头可能带 extends（DOM 里几乎都带，如 interface Node extends EventTarget {），必须允许。
+            $m = [regex]::Match($line, '^interface\s+([A-Za-z_$][\w$]*(?:<[^>]*>)?)(?:\s+extends[^{]*)?\s*\{')
             if ($m.Success) { $cur = $m.Groups[1].Value; $depth = 1; $members.Clear() }
             continue
         }

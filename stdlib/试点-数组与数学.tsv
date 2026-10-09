@@ -95,6 +95,16 @@ member	toExponential	指数记法
 member	clz32	前导零位数
 member	fround	单精度
 member	imul	整数乘
+member	addEventListener	加事件监听
+member	removeEventListener	去事件监听
+member	hasOwnProperty	有自有属性
+member	isPrototypeOf	是原型
+member	querySelector	查询选择器
+member	appendChild	追加子节点
+member	removeChild	移除子节点
+member	setAttribute	设置属性
+member	getAttribute	取属性
+member	getElementById	按编号取元素
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
