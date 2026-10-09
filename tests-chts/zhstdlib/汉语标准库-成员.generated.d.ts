@@ -598,6 +598,10 @@ interface MediaQueryListEventInit {
     媒体?: string;
 }
 
+interface MediaSessionActionDetails {
+    动作: MediaSessionAction;
+}
+
 interface MediaSettingsRange {
     最大?: number;
     最大限制?: number;
@@ -987,6 +991,7 @@ interface RequestInit {
     头集合?: HeadersInit;
     完整性?: string;
     保持活动?: boolean;
+    提交方法?: string;
     模式?: RequestMode;
     优先级?: RequestPriority;
     重定向?: RequestRedirect;
@@ -1154,6 +1159,9 @@ interface ULongRange {
 
 interface URLPatternInit {
     散列?: string;
+    主机名?: string;
+    密码?: string;
+    路径名?: string;
     端口?: string;
     协议?: string;
     查找?: string;
@@ -1162,6 +1170,9 @@ interface URLPatternInit {
 
 interface URLPatternResult {
     散列: URLPatternComponentResult;
+    主机名: URLPatternComponentResult;
+    密码: URLPatternComponentResult;
+    路径名: URLPatternComponentResult;
     端口: URLPatternComponentResult;
     协议: URLPatternComponentResult;
     查找: URLPatternComponentResult;
@@ -2922,10 +2933,14 @@ interface HTMLFontElement {
 }
 
 interface HTMLFormElement {
+    动作: string;
     自动完成: AutoFillBase;
     readonly 元素集合: HTMLFormControlsCollection;
+    编码方式: string;
     readonly 长度: number;
+    提交方法: string;
     名称: string;
+    不校验: boolean;
     关系: string;
     get 关系列表(): DOMTokenList;
     set 关系列表(value: string);
@@ -2994,9 +3009,13 @@ interface HTMLHtmlElement {
 
 interface HTMLHyperlinkElementUtils {
     散列: string;
+    主机: string;
+    主机名: string;
     链接: string;
     转字符串(): string;
     readonly 源点: string;
+    密码: string;
+    路径名: string;
     端口: string;
     协议: string;
     查找: string;
@@ -3660,6 +3679,8 @@ interface HighlightRegistry {
 interface History {
     readonly 长度: number;
     readonly 状态: any;
+    后退(): void;
+    前进(): void;
 }
 
 interface IDBCursor {
@@ -3843,13 +3864,17 @@ interface LinkStyle {
 
 interface Location {
     散列: string;
+    主机: string;
+    主机名: string;
     链接: string;
     转字符串(): string;
     readonly 源点: string;
+    路径名: string;
     端口: string;
     协议: string;
     查找: string;
     合入(url: string | URL): void;
+    重新加载(): void;
     替换(url: string | URL): void;
 }
 
@@ -4131,7 +4156,10 @@ interface NavigateEvent {
 }
 
 interface Navigation {
+    后退(options?: NavigationOptions): NavigationResult;
     条目(): NavigationHistoryEntry[];
+    前进(options?: NavigationOptions): NavigationResult;
+    重新加载(options?: NavigationReloadOptions): NavigationResult;
     加事件监听<K extends keyof NavigationEventMap>(type: K, listener: (this: Navigation, ev: NavigationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof NavigationEventMap>(type: K, listener: (this: Navigation, ev: NavigationEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4166,6 +4194,7 @@ interface NavigationPreloadManager {
 }
 
 interface Navigator {
+    readonly 剪贴板: Clipboard;
     readonly 凭据: CredentialsContainer;
 }
 
@@ -4712,6 +4741,7 @@ interface Request {
     readonly 头集合: Headers;
     readonly 完整性: string;
     readonly 保持活动: boolean;
+    readonly 提交方法: string;
     readonly 模式: RequestMode;
     readonly 重定向: RequestRedirect;
     readonly 来源页: string;
@@ -5440,6 +5470,7 @@ interface SVGTextElement {
 }
 
 interface SVGTextPathElement {
+    readonly 提交方法: SVGAnimatedEnumeration;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGTextPathElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGTextPathElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -5582,6 +5613,7 @@ interface ServiceWorkerRegistration {
 }
 
 interface ShadowRoot {
+    readonly 主机: Element;
     内部标记: string;
     readonly 模式: ShadowRootMode;
     加事件监听<K extends keyof ShadowRootEventMap>(type: K, listener: (this: ShadowRoot, ev: ShadowRootEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5761,6 +5793,10 @@ interface TextDecoder {
     解码(input?: AllowSharedBufferSource, options?: TextDecodeOptions): string;
 }
 
+interface TextDecoderCommon {
+    readonly 编码方式: string;
+}
+
 interface TextDecoderStream {
     readonly 可读: ReadableStream<string>;
     readonly 可写: WritableStream<BufferSource>;
@@ -5768,6 +5804,10 @@ interface TextDecoderStream {
 
 interface TextEncoder {
     编码(input?: string): Uint8Array<ArrayBuffer>;
+}
+
+interface TextEncoderCommon {
+    readonly 编码方式: string;
 }
 
 interface TextEncoderStream {
@@ -5874,9 +5914,13 @@ interface UIEvent {
 
 interface URL {
     散列: string;
+    主机: string;
+    主机名: string;
     链接: string;
     转字符串(): string;
     readonly 源点: string;
+    密码: string;
+    路径名: string;
     端口: string;
     协议: string;
     查找: string;
@@ -5886,6 +5930,9 @@ interface URL {
 
 interface URLPattern {
     readonly 散列: string;
+    readonly 主机名: string;
+    readonly 密码: string;
+    readonly 路径名: string;
     readonly 端口: string;
     readonly 协议: string;
     readonly 查找: string;
