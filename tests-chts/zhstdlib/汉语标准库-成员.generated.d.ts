@@ -20,6 +20,7 @@ interface AddEventListenerOptions {
 }
 
 interface AddressErrors {
+    城市?: string;
     地区?: string;
 }
 
@@ -71,6 +72,7 @@ interface AudioBufferSourceOptions {
 
 interface AudioConfiguration {
     比特率?: number;
+    声道集?: string;
 }
 
 interface AudioContextOptions {
@@ -92,6 +94,7 @@ interface AudioDataInit {
 }
 
 interface AudioDecoderConfig {
+    编解码器: string;
     声道数: number;
     采样率: number;
 }
@@ -102,6 +105,7 @@ interface AudioDecoderInit {
 
 interface AudioEncoderConfig {
     比特率?: number;
+    编解码器: string;
     声道数: number;
     采样率: number;
 }
@@ -233,6 +237,10 @@ interface ConvolverOptions {
     缓冲?: AudioBuffer | null;
 }
 
+interface CookieChangeEventInit {
+    已变更?: CookieList;
+}
+
 interface CookieInit {
     名称: string;
     值内容: string;
@@ -357,6 +365,10 @@ interface EventInit {
     会冒泡?: boolean;
     可取消?: boolean;
     可穿透?: boolean;
+}
+
+interface EventListenerOptions {
+    采集?: boolean;
 }
 
 interface EventModifierInit {
@@ -982,10 +994,12 @@ interface PropertyIndexedKeyframes {
 }
 
 interface PublicKeyCredentialCreationOptions {
+    挑战: BufferSource;
     扩展?: AuthenticationExtensionsClientInputs;
 }
 
 interface PublicKeyCredentialCreationOptionsJSON {
+    挑战: Base64URLString;
     扩展?: AuthenticationExtensionsClientInputsJSON;
 }
 
@@ -1009,11 +1023,13 @@ interface PublicKeyCredentialParameters {
 
 interface PublicKeyCredentialRequestOptions {
     允许凭据?: PublicKeyCredentialDescriptor[];
+    挑战: BufferSource;
     扩展?: AuthenticationExtensionsClientInputs;
 }
 
 interface PublicKeyCredentialRequestOptionsJSON {
     允许凭据?: PublicKeyCredentialDescriptorJSON[];
+    挑战: Base64URLString;
     扩展?: AuthenticationExtensionsClientInputsJSON;
 }
 
@@ -1113,6 +1129,7 @@ interface RTCPeerConnectionIceEventInit {
 }
 
 interface RTCRtpCodec {
+    声道集?: number;
     媒体类型: string;
 }
 
@@ -1246,6 +1263,7 @@ interface RsaOaepParams {
 }
 
 interface SVGBoundingBoxOptions {
+    已裁剪?: boolean;
     填充?: boolean;
     描边?: boolean;
 }
@@ -1508,6 +1526,7 @@ interface VideoConfiguration {
 }
 
 interface VideoDecoderConfig {
+    编解码器: string;
     编码高?: number;
     编码宽?: number;
     色彩空间?: VideoColorSpaceInit;
@@ -1520,6 +1539,7 @@ interface VideoDecoderInit {
 interface VideoEncoderConfig {
     透明度?: AlphaOption;
     比特率?: number;
+    编解码器: string;
     内容提示?: string;
     显示高?: number;
     显示宽?: number;
@@ -2439,6 +2459,10 @@ interface ConvolverNode {
     规范化: boolean;
 }
 
+interface CookieChangeEvent {
+    readonly 已变更: ReadonlyArray<CookieListItem>;
+}
+
 interface CookieStore {
     变化时: ((this: CookieStore, ev: CookieChangeEvent) => any) | null;
     删除(name: string): Promise<void>;
@@ -2647,6 +2671,7 @@ interface Document {
     readonly 全部: HTMLAllCollection;
     主体: HTMLElement;
     readonly 字符集: string;
+    readonly 编码字符集: string;
     readonly 兼容模式: string;
     readonly 默认视图: (WindowProxy & typeof globalThis) | null;
     设计模式: string;
@@ -3276,6 +3301,7 @@ interface HTMLAllCollection {
 }
 
 interface HTMLAnchorElement {
+    编码字符集: string;
     坐标: string;
     下载: string;
     名称: string;
@@ -3660,6 +3686,7 @@ interface HTMLInputElement {
     对齐: string;
     替代文本: string;
     自动完成: AutoFill;
+    采集: string;
     已勾选: boolean;
     默认勾选: boolean;
     默认值: string;
@@ -3736,6 +3763,7 @@ interface HTMLLegendElement {
 interface HTMLLinkElement {
     get 阻塞(): DOMTokenList;
     set 阻塞(value: string);
+    编码字符集: string;
     跨源: string | null;
     已禁用: boolean;
     获取优先级: "high" | "low" | "auto";
@@ -3840,6 +3868,7 @@ interface HTMLMeterElement {
 }
 
 interface HTMLModElement {
+    引用: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLModElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLModElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3980,6 +4009,7 @@ interface HTMLProgressElement {
 }
 
 interface HTMLQuoteElement {
+    引用: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLQuoteElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLQuoteElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3990,6 +4020,7 @@ interface HTMLScriptElement {
     异步: boolean;
     get 阻塞(): DOMTokenList;
     set 阻塞(value: string);
+    编码字符集: string;
     跨源: string | null;
     延迟: boolean;
     获取优先级: "high" | "low" | "auto";
@@ -4138,6 +4169,7 @@ interface HTMLTableHeaderCellElement {
 
 interface HTMLTableRowElement {
     对齐: string;
+    readonly 单元格集: HTMLCollectionOf<HTMLTableCellElement>;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTableRowElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTableRowElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4627,6 +4659,7 @@ interface MediaKeyMessageEvent {
 }
 
 interface MediaKeySession {
+    readonly 已关闭: Promise<MediaKeySessionClosedReason>;
     readonly 密钥状态集: MediaKeyStatusMap;
     收消息时: ((this: MediaKeySession, ev: MediaKeyMessageEvent) => any) | null;
     readonly 会话编号: string;
@@ -5117,6 +5150,7 @@ interface Path2D {
 }
 
 interface PaymentAddress {
+    readonly 城市: string;
     readonly 地区: string;
     转数据(): any;
 }
@@ -5579,6 +5613,7 @@ interface ReadableStreamDefaultReader<R = any> {
 }
 
 interface ReadableStreamGenericReader {
+    readonly 已关闭: Promise<void>;
     取消(reason?: any): Promise<void>;
 }
 
@@ -7205,6 +7240,7 @@ interface WebSocket {
 }
 
 interface WebTransport {
+    readonly 已关闭: Promise<WebTransportCloseInfo>;
     readonly 就绪: Promise<void>;
     关闭(closeInfo?: WebTransportCloseInfo): void;
 }
@@ -7231,6 +7267,7 @@ interface WheelEvent {
 }
 
 interface Window {
+    readonly 已关闭: boolean;
     readonly 长度: number;
     名称: string;
     readonly 朝向: number;
@@ -7314,6 +7351,7 @@ interface WritableStreamDefaultController {
 }
 
 interface WritableStreamDefaultWriter<W = any> {
+    readonly 已关闭: Promise<void>;
     readonly 期望大小: number | null;
     readonly 就绪: Promise<void>;
     中止(reason?: any): Promise<void>;
@@ -8124,6 +8162,14 @@ interface BigInt64Array<TArrayBuffer extends ArrayBufferLike> {
 
 interface BigUint64Array<TArrayBuffer extends ArrayBufferLike> {
     取第(index: number): bigint | undefined;
+}
+
+interface ErrorOptions {
+    起因?: unknown;
+}
+
+interface Error {
+    起因?: unknown;
 }
 
 interface String {
