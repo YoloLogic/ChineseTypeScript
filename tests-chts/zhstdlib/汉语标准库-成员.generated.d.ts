@@ -257,6 +257,10 @@ interface StorageEventInit {
     键名?: string | null;
 }
 
+interface Transformer<I = any, O = any> {
+    变换?: TransformerTransformCallback<I, O>;
+}
+
 interface ULongRange {
     最大?: number;
     最小?: number;
@@ -542,7 +546,11 @@ interface CSSStyleProperties {
     填充: string;
     过滤: string;
     高度: string;
+    旋转: string;
+    缩放: string;
     描边: string;
+    变换: string;
+    平移: string;
     宽度: string;
 }
 
@@ -625,11 +633,23 @@ interface CanvasFilters {
     过滤: string;
 }
 
+interface CanvasImageData {
+    创建图像数据(sw: number, sh: number, settings?: ImageDataSettings): ImageData;
+    创建图像数据(imageData: ImageData): ImageData;
+    取图像数据(sx: number, sy: number, sw: number, sh: number, settings?: ImageDataSettings): ImageData;
+    放图像数据(imageData: ImageData, dx: number, dy: number): void;
+    放图像数据(imageData: ImageData, dx: number, dy: number, dirtyX: number, dirtyY: number, dirtyWidth: number, dirtyHeight: number): void;
+}
+
 interface CanvasPath {
     画弧(x: number, y: number, radius: number, startAngle: number, endAngle: number, counterclockwise?: boolean): void;
     闭合路径(): void;
     连线到(x: number, y: number): void;
     移到(x: number, y: number): void;
+}
+
+interface CanvasPattern {
+    设变换(transform?: DOMMatrix2DInit): void;
 }
 
 interface CanvasRect {
@@ -642,6 +662,20 @@ interface CanvasState {
     重置(): void;
     恢复(): void;
     保存(): void;
+}
+
+interface CanvasText {
+    测量文本(text: string): TextMetrics;
+}
+
+interface CanvasTransform {
+    重置变换(): void;
+    旋转(angle: number): void;
+    缩放(x: number, y: number): void;
+    设变换(a: number, b: number, c: number, d: number, e: number, f: number): void;
+    设变换(transform?: DOMMatrix2DInit): void;
+    变换(a: number, b: number, c: number, d: number, e: number, f: number): void;
+    平移(x: number, y: number): void;
 }
 
 interface CharacterData {
@@ -703,7 +737,10 @@ interface CustomStateSet {
 }
 
 interface DOMMatrixReadOnly {
+    旋转(rotX?: number, rotY?: number, rotZ?: number): DOMMatrix;
+    缩放(scaleX?: number, scaleY?: number, scaleZ?: number, originX?: number, originY?: number, originZ?: number): DOMMatrix;
     转数据(): any;
+    平移(tx?: number, ty?: number, tz?: number): DOMMatrix;
     转字符串(): string;
 }
 
@@ -1114,6 +1151,8 @@ interface HTMLCanvasElement {
     取上下文(contextId: "webgl", options?: WebGLContextAttributes): WebGLRenderingContext | null;
     取上下文(contextId: "webgl2", options?: WebGLContextAttributes): WebGL2RenderingContext | null;
     取上下文(contextId: string, options?: any): RenderingContext | null;
+    转二进制(callback: BlobCallback, type?: string, quality?: number): void;
+    转数据地址(type?: string, quality?: number): string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLCanvasElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLCanvasElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1191,6 +1230,7 @@ interface HTMLDocument {
 
 interface HTMLElement {
     标题: string;
+    平移: boolean;
     点击(): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -2214,6 +2254,14 @@ interface RTCPeerConnection {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface RTCRtpReceiver {
+    变换: RTCRtpReceiverTransform | null;
+}
+
+interface RTCRtpSender {
+    变换: RTCRtpSenderTransform | null;
+}
+
 interface RTCSctpTransport {
     加事件监听<K extends keyof RTCSctpTransportEventMap>(type: K, listener: (this: RTCSctpTransport, ev: RTCSctpTransportEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -2302,6 +2350,7 @@ interface SVGCircleElement {
 }
 
 interface SVGClipPathElement {
+    readonly 变换: SVGAnimatedTransformList;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGClipPathElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGClipPathElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2387,6 +2436,7 @@ interface SVGFEDiffuseLightingElement {
 }
 
 interface SVGFEDisplacementMapElement {
+    readonly 缩放: SVGAnimatedNumber;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEDisplacementMapElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEDisplacementMapElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2564,6 +2614,7 @@ interface SVGGradientElement {
 }
 
 interface SVGGraphicsElement {
+    readonly 变换: SVGAnimatedTransformList;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGGraphicsElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGGraphicsElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2787,6 +2838,7 @@ interface SVGTextPathElement {
 }
 
 interface SVGTextPositioningElement {
+    readonly 旋转: SVGAnimatedNumberList;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGTextPositioningElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGTextPositioningElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3109,6 +3161,7 @@ interface ViewTransitionTypeSet {
 
 interface VisualViewport {
     readonly 高度: number;
+    readonly 缩放: number;
     readonly 宽度: number;
     加事件监听<K extends keyof VisualViewportEventMap>(type: K, listener: (this: VisualViewport, ev: VisualViewportEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
