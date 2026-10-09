@@ -1095,6 +1095,8 @@ interface StartViewTransitionOptions {
 }
 
 interface StaticRangeInit {
+    终点容器: Node;
+    终点偏移: number;
     起点容器: Node;
 }
 
@@ -1316,6 +1318,9 @@ interface AbortSignal {
 }
 
 interface AbstractRange {
+    readonly 折叠态: boolean;
+    readonly 终点容器: Node;
+    readonly 终点偏移: number;
     readonly 起点容器: Node;
 }
 
@@ -4720,10 +4725,18 @@ interface RadioNodeList {
 
 interface Range {
     readonly 公共祖先: Node;
+    复制内容(): DocumentFragment;
+    复制范围(): Range;
     折叠(toStart?: boolean): void;
+    删内容(): void;
     提取内容(): DocumentFragment;
     取边界矩形(): DOMRect;
     取客户端矩形(): DOMRectList;
+    插入节点(node: Node): void;
+    选节点(node: Node): void;
+    设终点(node: Node, offset: number): void;
+    设起点(node: Node, offset: number): void;
+    包围内容(newParent: Node): void;
     转字符串(): string;
 }
 
@@ -5843,6 +5856,10 @@ interface TaskSignal {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface Text {
+    readonly 整段文本: string;
+}
+
 interface TextDecoder {
     解码(input?: AllowSharedBufferSource, options?: TextDecodeOptions): string;
 }
@@ -6063,6 +6080,10 @@ interface VideoFrame {
     readonly 时间戳: number;
     复制(): VideoFrame;
     关闭(): void;
+}
+
+interface ViewTimeline {
+    readonly 终点偏移: CSSNumericValue;
 }
 
 interface ViewTransition {
