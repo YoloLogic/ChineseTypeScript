@@ -1094,6 +1094,10 @@ interface StartViewTransitionOptions {
     更新?: ViewTransitionUpdateCallback | null;
 }
 
+interface StaticRangeInit {
+    起点容器: Node;
+}
+
 interface StereoPannerOptions {
     声像?: number;
 }
@@ -1309,6 +1313,10 @@ interface AbortSignal {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof AbortSignalEventMap>(type: K, listener: (this: AbortSignal, ev: AbortSignalEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface AbstractRange {
+    readonly 起点容器: Node;
 }
 
 interface AbstractWorker {
@@ -4711,6 +4719,8 @@ interface RadioNodeList {
 }
 
 interface Range {
+    readonly 公共祖先: Node;
+    折叠(toStart?: boolean): void;
     提取内容(): DocumentFragment;
     取边界矩形(): DOMRect;
     取客户端矩形(): DOMRectList;
@@ -5606,7 +5616,17 @@ interface SecurityPolicyViolationEvent {
 }
 
 interface Selection {
+    readonly 锚节点: Node | null;
+    readonly 锚偏移: number;
+    readonly 焦点节点: Node | null;
+    readonly 焦点偏移: number;
+    readonly 已折叠: boolean;
+    readonly 范围数: number;
     readonly 种类: string;
+    加范围(range: Range): void;
+    折叠(node: Node | null, offset?: number): void;
+    延伸(node: Node, offset?: number): void;
+    删范围(range: Range): void;
     转字符串(): string;
 }
 
