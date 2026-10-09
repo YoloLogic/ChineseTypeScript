@@ -1,0 +1,93 @@
+# ============================================================================
+#  gen_zhstdlib_lib.ps1 -- 从上游 lib 生成【汉语成员声明】（增补式）。
+#
+#  思路（见 stdlib/规模化方案.md）：不改上游 lib，只从每个 interface 块里
+#  挑出译名表里有的【单行成员】，把成员名换成汉语名，生成【增补声明】
+#  （接口名与类型一律原样保留）—— 于是绕开了交叉引用难题，英文用法照旧可用。
+#
+#  单一真源：上游 lib（tsc/internal/bundled/libs）+ stdlib/试点-数组与数学.tsv
+#  产出：tests-chts/zhstdlib/汉语标准库-成员.generated.d.ts（勿手改）
+#
+#  用法：pwsh -File tools\gen_zhstdlib_lib.ps1          # 重新生成
+#        pwsh -File tools\gen_zhstdlib_lib.ps1 -Check   # 只核对是否最新（守卫用）
+#
+#  已知未覆盖（留给后续）：多行/重载成员、全局别名（数学/数组/控制台…，
+#  仍由手写的 汉语标准库.d.ts 负责）、以及 DOM。
+# ============================================================================
+
+param(
+    [string] $LibDir = '',
+    [string] $Table  = '',
+    [string] $Out    = '',
+    [switch] $Check
+)
+
+$ErrorActionPreference = 'Stop'
+$repo = Split-Path -Parent $PSScriptRoot
+if (-not $LibDir) { $LibDir = Join-Path $repo 'tsc\internal\bundled\libs' }
+if (-not $Table)  { $Table  = Join-Path $repo 'stdlib\试点-数组与数学.tsv' }
+if (-not $Out)    { $Out    = Join-Path $repo 'tests-chts\zhstdlib\汉语标准库-成员.generated.d.ts' }
+$TAB = [string][char]9
+$CRLF = [string][char]13 + [string][char]10
+
+$en2zh = @{}
+foreach ($line in (Get-Content $Table -Encoding UTF8)) {
+    if ($line -notmatch '\S') { continue }
+    $p = $line -split $TAB
+    if ($p.Count -lt 3 -or $p[0].Trim() -ne 'member') { continue }
+    $en2zh[$p[1].Trim()] = $p[2].Trim()
+}
+
+# 扫全部 lib（含 DOM —— 用户 2026-10-08 裁定「含 DOM」）。
+# 扫全部 lib（含 DOM —— 用户 2026-10-08 裁定「含 DOM」），但要排除【默认不加载】的变体：
+# webworker / scripthost 里的成员引用了默认 lib 没有的类型（如 Client），抄进来会「找不到名称」。
+$libs = @(Get-ChildItem $LibDir -File -Filter 'lib.*.d.ts' | Where-Object { $_.Name -notmatch 'webworker|scripthost' } | Sort-Object Name)
+$blocks = New-Object System.Collections.Generic.List[string]
+$blocks.Add('// 【生成物，请勿手改】由 tools/gen_zhstdlib_lib.ps1 从上游 lib + stdlib 译名表生成。')
+$blocks.Add('// 只做「成员改名」的增补：接口名与类型原样保留，英文用法照旧可用。')
+$blocks.Add('')
+$ifaceCount = 0; $skipped = 0
+foreach ($lib in $libs) {
+    $cur = $null; $depth = 0
+    $members = New-Object System.Collections.Generic.List[string]
+    foreach ($line in (Get-Content $lib.FullName -Encoding UTF8)) {
+        if ($cur -eq $null) {
+            $m = [regex]::Match($line, '^interface\s+([A-Za-z_$][\w$]*(?:<[^>]*>)?)\s*\{')
+            if ($m.Success) { $cur = $m.Groups[1].Value; $depth = 1; $members.Clear() }
+            continue
+        }
+        $depth += ([regex]::Matches($line, '\{')).Count - ([regex]::Matches($line, '\}')).Count
+        if ($depth -le 0) {
+            if ($members.Count -gt 0) {
+                $ifaceCount++
+                $blocks.Add('interface ' + $cur + ' {')
+                foreach ($mm in $members) { $blocks.Add($mm) }
+                $blocks.Add('}'); $blocks.Add('')
+            }
+            $cur = $null; $depth = 0; continue
+        }
+        # 前缀含访问器 get/set（须有后随空格，否则名为 get 的方法 Map.get() 会被误当访问器）。
+        $m = [regex]::Match($line, '^(\s{4})(readonly\s+|static\s+|get\s+|set\s+)?([A-Za-z_$][\w$]*)(.*)$')
+        if (-not $m.Success) { continue }
+        $name = $m.Groups[3].Value
+        if (-not $en2zh.ContainsKey($name)) { continue }
+        $rest = $m.Groups[4].Value
+        if ($rest -notmatch ';\s*$') { $skipped++; continue }
+        if (([regex]::Matches($rest, '\(')).Count -ne ([regex]::Matches($rest, '\)')).Count) { $skipped++; continue }
+        $members.Add($m.Groups[1].Value + $m.Groups[2].Value + $en2zh[$name] + $rest)
+    }
+}
+$text = ($blocks -join $CRLF) + $CRLF
+Write-Host ('lib ' + $libs.Count + ' 个；接口块 ' + $ifaceCount + ' 个；跳过 ' + $skipped + ' 处')
+
+if ($Check) {
+    if (-not (Test-Path $Out)) { throw ('生成物不存在：' + $Out) }
+    $disk = ([System.IO.File]::ReadAllText($Out)) -replace ([string][char]13 + [string][char]10), ([string][char]10)
+    if ($disk.TrimEnd() -ne ($text -replace ([string][char]13 + [string][char]10), ([string][char]10)).TrimEnd()) { throw ('生成物与上游 lib/译名表不同步；请运行 tools\gen_zhstdlib_lib.ps1 并提交结果') }
+    Write-Host '  生成物与 lib/译名表一致'
+    exit 0
+}
+$dir = Split-Path -Parent $Out
+if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Force $dir | Out-Null }
+[System.IO.File]::WriteAllText($Out, $text, (New-Object System.Text.UTF8Encoding($true)))
+Write-Host ('  已生成 ' + $Out)

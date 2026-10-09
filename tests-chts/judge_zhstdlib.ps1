@@ -26,6 +26,7 @@ if (-not $Work) { $Work = Join-Path $env:TEMP 'zhstdlib-judge' }
 if (Test-Path $Work) { Remove-Item $Work -Recurse -Force }
 New-Item -ItemType Directory -Force $Work | Out-Null
 Copy-Item (Join-Path $Src '汉语标准库.d.ts') $Work -Force
+Copy-Item (Join-Path $Src '汉语标准库-成员.generated.d.ts') $Work -Force
 Copy-Item (Join-Path $Src '主.ts') $Work -Force
 
 $results = New-Object System.Collections.Generic.List[object]
@@ -108,7 +109,8 @@ Check '⑦ 生成物与译名表同步（单一真源守卫）' ($LASTEXITCODE -
 # ⑧ 防漂移守卫：译名表里每个名字都必须【有对应声明】——
 #    防「先翻译、后补声明」：译名一进表 emit 改写就生效，声明没跟上会误改用户自己的标识符。
 $tsv = Join-Path $repo 'stdlib\试点-数组与数学.tsv'
-$dts = [System.IO.File]::ReadAllText((Join-Path $Src '汉语标准库.d.ts'))
+# 成员声明现在由生成物提供，所以两份合起来查（手写只留全局别名）。
+$dts = [System.IO.File]::ReadAllText((Join-Path $Src '汉语标准库.d.ts')) + [System.IO.File]::ReadAllText((Join-Path $Src '汉语标准库-成员.generated.d.ts'))
 $missing = New-Object System.Collections.Generic.List[string]
 foreach ($line in (Get-Content $tsv -Encoding UTF8)) {
     if ($line -notmatch '\S') { continue }
