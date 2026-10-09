@@ -92,6 +92,9 @@ member	tanh	双曲正切
 member	toFixed	定点
 member	toPrecision	定精度
 member	toExponential	指数记法
+member	clz32	前导零位数
+member	fround	单精度
+member	imul	整数乘
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

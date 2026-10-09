@@ -191,3 +191,10 @@ interface Number {
     定精度(精度?: number): string;
     指数记法(位数?: number): string;
 }
+
+// Math 的其余 ES2015 成员。
+interface Math {
+    前导零位数(数: number): number;
+    单精度(数: number): number;
+    整数乘(甲: number, 乙: number): number;
+}
