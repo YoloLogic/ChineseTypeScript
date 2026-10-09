@@ -4018,6 +4018,11 @@ interface IDBTransaction {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface IdleDeadline {
+    readonly 已超时: boolean;
+    剩余时间(): DOMHighResTimeStamp;
+}
+
 interface ImageBitmap {
     readonly 高度: number;
     readonly 宽度: number;
@@ -4031,6 +4036,7 @@ interface ImageBitmapRenderingContext {
 
 interface ImageCapture {
     readonly 轨道: MediaStreamTrack;
+    拍照(photoSettings?: PhotoSettings): Promise<Blob>;
 }
 
 interface ImageData {
@@ -5907,6 +5913,10 @@ interface Sanitizer {
     删属性(attribute: SanitizerAttribute): boolean;
 }
 
+interface Scheduler {
+    投递任务(callback: SchedulerPostTaskCallback, options?: SchedulerPostTaskOptions): Promise<any>;
+}
+
 interface Screen {
     readonly 可用高: number;
     readonly 可用宽: number;
@@ -6379,6 +6389,11 @@ interface URLSearchParams {
     逐个处理(callbackfn: (value: string, key: string, parent: URLSearchParams) => void, thisArg?: any): void;
 }
 
+interface UserActivation {
+    readonly 曾经活动: boolean;
+    readonly 是活动: boolean;
+}
+
 interface VTTCue {
     对齐: AlignSetting;
     行位置: LineAndPositionSetting;
@@ -6782,6 +6797,8 @@ interface XSLTProcessor {
 }
 
 declare namespace CSS {
+    function 转义(ident: string): string;
+    function 注册属性(definition: PropertyDefinition): void;
     function 支持(property: string, value: string): boolean;
     function 支持(conditionText: string): boolean;
 }
@@ -7664,6 +7681,10 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
 
 interface Float16ArrayConstructor {
     readonly 每元素字节: number;
+}
+
+interface RegExpConstructor {
+    转义(string: string): string;
 }
 
 interface Symbol {

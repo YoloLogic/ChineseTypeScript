@@ -1172,6 +1172,14 @@ member	unicodeRange	字符范围
 member	featureSettings	特性设置
 member	display	显示方式
 member	check	检查
+member	escape	转义
+member	registerProperty	注册属性
+member	didTimeout	已超时
+member	timeRemaining	剩余时间
+member	postTask	投递任务
+member	isActive	是活动
+member	hasBeenActive	曾经活动
+member	takePhoto	拍照
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
