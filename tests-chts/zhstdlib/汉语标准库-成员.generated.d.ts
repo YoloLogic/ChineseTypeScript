@@ -1063,7 +1063,11 @@ interface SecurityPolicyViolationEventInit {
 }
 
 interface ShadowRootInit {
+    可克隆?: boolean;
+    委托焦点?: boolean;
     模式: ShadowRootMode;
+    可序列化?: boolean;
+    插槽分配?: SlotAssignmentMode;
 }
 
 interface ShareData {
@@ -1982,6 +1986,11 @@ interface CharacterData {
     数据: string;
     readonly 长度: number;
     readonly 属主文档: Document;
+    追加数据(data: string): void;
+    删除数据(offset: number, count: number): void;
+    插入数据(offset: number, data: string): void;
+    替换数据(offset: number, count: number, data: string): void;
+    取子串数据(offset: number, count: number): string;
     get 文本内容(): string;
     set 文本内容(value: string | null);
 }
@@ -2083,6 +2092,10 @@ interface CustomStateSet {
 interface DOMException {
     readonly 消息: string;
     readonly 名称: string;
+}
+
+interface DOMImplementation {
+    创建文档(namespace: string | null, qualifiedName: string | null, doctype?: DocumentType | null): XMLDocument;
 }
 
 interface DOMMatrixReadOnly {
@@ -2368,6 +2381,7 @@ interface Element {
     编号: string;
     内部标记: string;
     readonly 本地名: string;
+    外部标记: string;
     readonly 属主文档: Document;
     readonly 滚动高: number;
     滚动左: number;
@@ -5680,9 +5694,13 @@ interface ServiceWorkerRegistration {
 }
 
 interface ShadowRoot {
+    readonly 可克隆: boolean;
+    readonly 委托焦点: boolean;
     readonly 主机: Element;
     内部标记: string;
     readonly 模式: ShadowRootMode;
+    readonly 可序列化: boolean;
+    readonly 插槽分配: SlotAssignmentMode;
     加事件监听<K extends keyof ShadowRootEventMap>(type: K, listener: (this: ShadowRoot, ev: ShadowRootEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof ShadowRootEventMap>(type: K, listener: (this: ShadowRoot, ev: ShadowRootEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -5858,6 +5876,7 @@ interface TaskSignal {
 
 interface Text {
     readonly 整段文本: string;
+    拆分文本(offset: number): Text;
 }
 
 interface TextDecoder {
