@@ -587,6 +587,7 @@ interface NavigationUpdateCurrentEntryOptions {
 }
 
 interface NotificationOptions {
+    主体?: string;
     数据?: any;
     书写方向?: NotificationDirection;
     语言?: string;
@@ -845,11 +846,13 @@ interface RegistrationResponseJSON {
 }
 
 interface Report {
+    主体?: ReportBody | null;
     种类?: string;
     地址?: string;
 }
 
 interface RequestInit {
+    主体?: BodyInit | null;
     缓存?: RequestCache;
     凭据?: RequestCredentials;
     头集合?: HeadersInit;
@@ -1308,6 +1311,7 @@ interface BlobEvent {
 }
 
 interface Body {
+    readonly 主体: ReadableStream<Uint8Array<ArrayBuffer>> | null;
     转缓冲(): Promise<ArrayBuffer>;
     转二进制块(): Promise<Blob>;
     字节(): Promise<Uint8Array<ArrayBuffer>>;
@@ -1473,6 +1477,8 @@ interface CSSRotate {
 }
 
 interface CSSRule {
+    规则文本: string;
+    readonly 父规则: CSSRule | null;
     readonly 父样式表: CSSStyleSheet | null;
     readonly 种类: number;
 }
@@ -1492,7 +1498,9 @@ interface CSSScopeRule {
 }
 
 interface CSSStyleDeclarationBase {
+    规则文本: string;
     readonly 长度: number;
+    readonly 父规则: CSSRule | null;
     取属性优先级(property: string): string;
     取属性值(property: string): string;
     取项(index: number): string;
@@ -1944,11 +1952,15 @@ interface DigitalCredential {
 
 interface Document {
     readonly 全部: HTMLAllCollection;
+    主体: HTMLElement;
     书写方向: string;
+    readonly 文档元素: HTMLElement;
+    readonly 头部: HTMLHeadElement;
     readonly 隐藏: boolean;
     readonly 就绪态: DocumentReadyState;
     readonly 来源页: string;
     标题: string;
+    readonly 可见状态: DocumentVisibilityState;
     收养节点<T extends Node>(node: T): T;
     清空(): void;
     关闭(): void;
@@ -2046,6 +2058,7 @@ interface Document {
     按标签取元素<K extends keyof HTMLElementDeprecatedTagNameMap>(qualifiedName: K): HTMLCollectionOf<HTMLElementDeprecatedTagNameMap[K]>;
     按标签取元素(qualifiedName: string): HTMLCollectionOf<Element>;
     取选区(): Selection | null;
+    有焦点(): boolean;
     导入节点<T extends Node>(node: T, options?: boolean | ImportNodeOptions): T;
     打开(unused1?: string, unused2?: string): Document;
     打开(url: string | URL, name: string, features: string): WindowProxy | null;
@@ -2065,6 +2078,7 @@ interface DocumentFragment {
 }
 
 interface DocumentOrShadowRoot {
+    readonly 活动元素: Element | null;
     取动画列(): Animation[];
 }
 
@@ -2567,14 +2581,18 @@ interface HTMLElement {
     书写方向: string;
     可拖动: boolean;
     隐藏: boolean | "until-found";
+    内部文本: string;
     语言: string;
     readonly 偏移高: number;
     readonly 偏移左: number;
+    readonly 偏移父: Element | null;
     readonly 偏移顶: number;
     readonly 偏移宽: number;
+    外部文本: string;
     拼写检查: boolean;
     标题: string;
     平移: boolean;
+    附加内部(): ElementInternals;
     点击(): void;
     隐藏浮层(): void;
     显示浮层(options?: ShowPopoverOptions): void;
@@ -3759,6 +3777,7 @@ interface NonElementParentNode {
 }
 
 interface Notification {
+    readonly 主体: string;
     readonly 数据: any;
     readonly 书写方向: NotificationDirection;
     readonly 语言: string;
