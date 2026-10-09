@@ -1714,6 +1714,7 @@ interface DigitalCredential {
 
 interface Document {
     readonly 全部: HTMLAllCollection;
+    readonly 隐藏: boolean;
     readonly 就绪态: DocumentReadyState;
     标题: string;
     收养节点<T extends Node>(node: T): T;
@@ -1837,8 +1838,14 @@ interface DocumentType {
 interface Element {
     get 类列表(): DOMTokenList;
     set 类列表(value: string);
+    readonly 客户高: number;
+    readonly 客户宽: number;
     编号: string;
     内部标记: string;
+    readonly 滚动高: number;
+    滚动左: number;
+    滚动顶: number;
+    readonly 滚动宽: number;
     最近祖先<K extends keyof HTMLElementTagNameMap>(selector: K): HTMLElementTagNameMap[K] | null;
     最近祖先<K extends keyof SVGElementTagNameMap>(selector: K): SVGElementTagNameMap[K] | null;
     最近祖先<K extends keyof MathMLElementTagNameMap>(selector: K): MathMLElementTagNameMap[K] | null;
@@ -2264,6 +2271,11 @@ interface HTMLDocument {
 }
 
 interface HTMLElement {
+    隐藏: boolean | "until-found";
+    readonly 偏移高: number;
+    readonly 偏移左: number;
+    readonly 偏移顶: number;
+    readonly 偏移宽: number;
     标题: string;
     平移: boolean;
     点击(): void;
@@ -2614,6 +2626,7 @@ interface HTMLOptionsCollection {
 interface HTMLOrSVGElement {
     自动聚焦: boolean;
     readonly 数据集: DOMStringMap;
+    制表序号: number;
     失焦(): void;
     聚焦(options?: FocusOptions): void;
 }
@@ -4718,6 +4731,8 @@ interface ViewTransitionTypeSet {
 
 interface VisualViewport {
     readonly 高度: number;
+    readonly 偏移左: number;
+    readonly 偏移顶: number;
     readonly 缩放: number;
     readonly 宽度: number;
     加事件监听<K extends keyof VisualViewportEventMap>(type: K, listener: (this: VisualViewport, ev: VisualViewportEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
