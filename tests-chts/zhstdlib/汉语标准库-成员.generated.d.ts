@@ -51,6 +51,7 @@ interface AnalyserOptions {
 
 interface AnimationEventInit {
     动画名?: string;
+    已过时间?: number;
     伪元素?: string;
 }
 
@@ -510,6 +511,10 @@ interface GamepadEffectParameters {
     时长?: number;
 }
 
+interface GamepadEventInit {
+    手柄?: Gamepad | null;
+}
+
 interface GetRootNodeOptions {
     可穿透?: boolean;
 }
@@ -742,6 +747,7 @@ interface MouseEventInit {
     移动纵量?: number;
     相关目标?: EventTarget | null;
     屏幕横坐标?: number;
+    屏幕纵坐标?: number;
 }
 
 interface MutationObserverInit {
@@ -1240,7 +1246,11 @@ interface SpeechSynthesisErrorEventInit {
 }
 
 interface SpeechSynthesisEventInit {
+    字符序号?: number;
+    字符长度?: number;
+    已过时间?: number;
     名称?: string;
+    话语: SpeechSynthesisUtterance;
 }
 
 interface StartViewTransitionOptions {
@@ -1309,10 +1319,17 @@ interface ToggleEventInit {
     来源?: Element | null;
 }
 
+interface TouchEventInit {
+    变化触控集?: Touch[];
+    目标触控集?: Touch[];
+    触控集?: Touch[];
+}
+
 interface TouchInit {
     客户横坐标?: number;
     标识: number;
     屏幕横坐标?: number;
+    屏幕纵坐标?: number;
     目标: EventTarget;
 }
 
@@ -1327,6 +1344,7 @@ interface Transformer<I = any, O = any> {
 }
 
 interface TransitionEventInit {
+    已过时间?: number;
     伪元素?: string;
 }
 
@@ -1574,6 +1592,7 @@ interface AnimationEffect {
 
 interface AnimationEvent {
     readonly 动画名: string;
+    readonly 已过时间: number;
     readonly 伪元素: string;
 }
 
@@ -2998,6 +3017,10 @@ interface GamepadButton {
     readonly 已按下: boolean;
     readonly 已触碰: boolean;
     readonly 值内容: number;
+}
+
+interface GamepadEvent {
+    readonly 手柄: Gamepad;
 }
 
 interface GamepadHapticActuator {
@@ -4565,8 +4588,10 @@ interface MouseEvent {
     readonly 客户横坐标: number;
     readonly 移动横量: number;
     readonly 移动纵量: number;
+    readonly 偏移横坐标: number;
     readonly 相关目标: EventTarget | null;
     readonly 屏幕横坐标: number;
+    readonly 屏幕纵坐标: number;
     readonly 横坐标: number;
     readonly 纵坐标: number;
     取修饰状态(keyArg: string): boolean;
@@ -6294,7 +6319,11 @@ interface SpeechSynthesisErrorEvent {
 }
 
 interface SpeechSynthesisEvent {
+    readonly 字符序号: number;
+    readonly 字符长度: number;
+    readonly 已过时间: number;
     readonly 名称: string;
+    readonly 话语: SpeechSynthesisUtterance;
 }
 
 interface SpeechSynthesisUtterance {
@@ -6312,7 +6341,9 @@ interface SpeechSynthesisUtterance {
 
 interface SpeechSynthesisVoice {
     readonly 语言: string;
+    readonly 本地服务: boolean;
     readonly 名称: string;
+    readonly 语音地址: string;
 }
 
 interface StereoPannerNode {
@@ -6515,7 +6546,14 @@ interface Touch {
     readonly 客户横坐标: number;
     readonly 标识: number;
     readonly 屏幕横坐标: number;
+    readonly 屏幕纵坐标: number;
     readonly 目标: EventTarget;
+}
+
+interface TouchEvent {
+    readonly 变化触控集: TouchList;
+    readonly 目标触控集: TouchList;
+    readonly 触控集: TouchList;
 }
 
 interface TouchList {
@@ -6540,6 +6578,7 @@ interface TransformStreamDefaultController<O = any> {
 }
 
 interface TransitionEvent {
+    readonly 已过时间: number;
     readonly 伪元素: string;
 }
 
@@ -6896,6 +6935,7 @@ interface Window {
     名称: string;
     readonly 朝向: number;
     readonly 屏幕横坐标: number;
+    readonly 屏幕纵坐标: number;
     状态码: string;
     readonly 顶部: WindowProxy | null;
     失焦(): void;
