@@ -2797,6 +2797,7 @@ interface HTMLImageElement {
     对齐: string;
     替代文本: string;
     跨源: string | null;
+    readonly 当前源: string;
     高度: number;
     名称: string;
     源址: string;
@@ -2913,11 +2914,20 @@ interface HTMLMarqueeElement {
 
 interface HTMLMediaElement {
     跨源: string | null;
+    readonly 当前源: string;
+    默认速率: number;
     readonly 时长: number;
+    readonly 已结束: boolean;
     readonly 报错: MediaError | null;
     循环: boolean;
+    readonly 网络状态: number;
+    readonly 已暂停: boolean;
+    预加载: "none" | "metadata" | "auto" | "";
     readonly 就绪态: number;
+    readonly 可定位: TimeRanges;
+    readonly 正在定位: boolean;
     源址: string;
+    可播放类型(type: string): CanPlayTypeResult;
     加载(): void;
     暂停(): void;
     播放(): Promise<void>;
@@ -3318,6 +3328,9 @@ interface HTMLUnknownElement {
 
 interface HTMLVideoElement {
     高度: number;
+    海报: string;
+    readonly 视频高: number;
+    readonly 视频宽: number;
     宽度: number;
     请求画中画(): Promise<PictureInPictureWindow>;
     加事件监听<K extends keyof HTMLVideoElementEventMap>(type: K, listener: (this: HTMLVideoElement, ev: HTMLVideoElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5175,6 +5188,7 @@ interface SpeechRecognitionResultList {
 }
 
 interface SpeechSynthesis {
+    readonly 已暂停: boolean;
     取消(): void;
     暂停(): void;
     继续(): void;
