@@ -1647,6 +1647,7 @@ interface Credential {
 interface CredentialsContainer {
     创建(options?: CredentialCreationOptions): Promise<Credential | null>;
     获取(options?: CredentialRequestOptions): Promise<Credential | null>;
+    存储(credential: Credential): Promise<void>;
 }
 
 interface Crypto {
@@ -2083,10 +2084,12 @@ interface FileSystemWritableFileStream {
 interface FontFace {
     readonly 状态码: FontFaceLoadStatus;
     样式: string;
+    加载(): Promise<FontFace>;
 }
 
 interface FontFaceSet {
     readonly 状态码: FontFaceSetLoadStatus;
+    加载(font: string, text?: string): Promise<FontFace[]>;
     逐个处理(callbackfn: (value: FontFace, key: FontFace, parent: FontFaceSet) => void, thisArg?: any): void;
     加事件监听<K extends keyof FontFaceSetEventMap>(type: K, listener: (this: FontFaceSet, ev: FontFaceSetEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -2627,6 +2630,7 @@ interface HTMLMediaElement {
     readonly 报错: MediaError | null;
     readonly 就绪态: number;
     源址: string;
+    加载(): void;
     加事件监听<K extends keyof HTMLMediaElementEventMap>(type: K, listener: (this: HTMLMediaElement, ev: HTMLMediaElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLMediaElementEventMap>(type: K, listener: (this: HTMLMediaElement, ev: HTMLMediaElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3292,6 +3296,7 @@ interface MediaKeyMessageEvent {
 
 interface MediaKeySession {
     关闭(): Promise<void>;
+    加载(sessionId: string): Promise<boolean>;
     移除(): Promise<void>;
     加事件监听<K extends keyof MediaKeySessionEventMap>(type: K, listener: (this: MediaKeySession, ev: MediaKeySessionEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -5408,6 +5413,7 @@ interface ProxyHandler<T extends object> {
     应用?(target: T, thisArg: any, argArray: any[]): any;
     构造?(target: T, argArray: any[], newTarget: Function): object;
     定义属性?(target: T, property: string | symbol, attributes: PropertyDescriptor): boolean;
+    删特性?(target: T, p: string | symbol): boolean;
     获取?(target: T, p: string | symbol, receiver: any): any;
     取自有描述?(target: T, p: string | symbol): PropertyDescriptor | undefined;
     取原型?(target: T): object | null;
@@ -5433,6 +5439,7 @@ declare namespace Reflect {
     ): R;
     function 构造(target: Function, argumentsList: ArrayLike<any>, newTarget?: Function): any;
     function 定义属性(target: object, propertyKey: PropertyKey, attributes: PropertyDescriptor & ThisType<any>): boolean;
+    function 删特性(target: object, propertyKey: PropertyKey): boolean;
     function 获取<T extends object, P extends PropertyKey>(
         target: T,
         propertyKey: P,
@@ -5534,6 +5541,13 @@ interface SharedArrayBuffer {
 
 interface Atomics {
     添加(typedArray: Int8Array<ArrayBufferLike> | Uint8Array<ArrayBufferLike> | Int16Array<ArrayBufferLike> | Uint16Array<ArrayBufferLike> | Int32Array<ArrayBufferLike> | Uint32Array<ArrayBufferLike>, index: number, value: number): number;
+    比较交换(typedArray: Int8Array<ArrayBufferLike> | Uint8Array<ArrayBufferLike> | Int16Array<ArrayBufferLike> | Uint16Array<ArrayBufferLike> | Int32Array<ArrayBufferLike> | Uint32Array<ArrayBufferLike>, index: number, expectedValue: number, replacementValue: number): number;
+    交换(typedArray: Int8Array<ArrayBufferLike> | Uint8Array<ArrayBufferLike> | Int16Array<ArrayBufferLike> | Uint16Array<ArrayBufferLike> | Int32Array<ArrayBufferLike> | Uint32Array<ArrayBufferLike>, index: number, value: number): number;
+    无锁(size: number): boolean;
+    加载(typedArray: Int8Array<ArrayBufferLike> | Uint8Array<ArrayBufferLike> | Int16Array<ArrayBufferLike> | Uint16Array<ArrayBufferLike> | Int32Array<ArrayBufferLike> | Uint32Array<ArrayBufferLike>, index: number): number;
+    存储(typedArray: Int8Array<ArrayBufferLike> | Uint8Array<ArrayBufferLike> | Int16Array<ArrayBufferLike> | Uint16Array<ArrayBufferLike> | Int32Array<ArrayBufferLike> | Uint32Array<ArrayBufferLike>, index: number, value: number): number;
+    等待(typedArray: Int32Array<ArrayBufferLike>, index: number, value: number, timeout?: number): "ok" | "not-equal" | "timed-out";
+    通知(typedArray: Int32Array<ArrayBufferLike>, index: number, count?: number): number;
 }
 
 interface String {
@@ -5710,6 +5724,12 @@ interface PromiseRejectedResult {
 
 interface Atomics {
     添加(typedArray: BigInt64Array<ArrayBufferLike> | BigUint64Array<ArrayBufferLike>, index: number, value: bigint): bigint;
+    比较交换(typedArray: BigInt64Array<ArrayBufferLike> | BigUint64Array<ArrayBufferLike>, index: number, expectedValue: bigint, replacementValue: bigint): bigint;
+    交换(typedArray: BigInt64Array<ArrayBufferLike> | BigUint64Array<ArrayBufferLike>, index: number, value: bigint): bigint;
+    加载(typedArray: BigInt64Array<ArrayBufferLike> | BigUint64Array<ArrayBufferLike>, index: number): bigint;
+    存储(typedArray: BigInt64Array<ArrayBufferLike> | BigUint64Array<ArrayBufferLike>, index: number, value: bigint): bigint;
+    等待(typedArray: BigInt64Array<ArrayBufferLike>, index: number, value: bigint, timeout?: number): "ok" | "not-equal" | "timed-out";
+    通知(typedArray: BigInt64Array<ArrayBufferLike>, index: number, count?: number): number;
 }
 
 interface String {
@@ -5850,6 +5870,11 @@ interface BigUint64Array<TArrayBuffer extends ArrayBufferLike> {
 interface PromiseWithResolvers<T> {
     解决: (value: T | PromiseLike<T>) => void;
     拒绝: (reason?: any) => void;
+}
+
+interface Atomics {
+    异步等待(typedArray: Int32Array, index: number, value: number, timeout?: number): { async: false; value: "not-equal" | "timed-out"; } | { async: true; value: Promise<"ok" | "timed-out">; };
+    异步等待(typedArray: BigInt64Array, index: number, value: bigint, timeout?: number): { async: false; value: "not-equal" | "timed-out"; } | { async: true; value: Promise<"ok" | "timed-out">; };
 }
 
 interface SharedArrayBuffer {

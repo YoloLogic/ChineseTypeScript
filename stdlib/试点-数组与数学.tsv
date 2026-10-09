@@ -493,6 +493,15 @@ member	timeZone	时区
 member	currency	货币
 member	numberingSystem	数字系统
 member	getCanonicalLocales	取规范区域
+member	deleteProperty	删特性
+member	wait	等待
+member	waitAsync	异步等待
+member	notify	通知
+member	load	加载
+member	store	存储
+member	exchange	交换
+member	compareExchange	比较交换
+member	isLockFree	无锁
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
