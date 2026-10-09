@@ -1772,6 +1772,7 @@ interface AudioParamMap {
 }
 
 interface AudioScheduledSourceNode {
+    播放结束时: ((this: AudioScheduledSourceNode, ev: Event) => any) | null;
     开始(when?: number): void;
     停止(when?: number): void;
     加事件监听<K extends keyof AudioScheduledSourceNodeEventMap>(type: K, listener: (this: AudioScheduledSourceNode, ev: AudioScheduledSourceNodeEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2924,6 +2925,7 @@ interface FileReader {
     中止时: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
     出错时: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
     加载时: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
+    进度变化时: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
     readonly 就绪态: 0 | 1 | 2;
     中止(): void;
     读为缓冲(blob: Blob): void;
@@ -3158,6 +3160,7 @@ interface GeolocationPositionError {
 interface GlobalEventHandlers {
     中止时: ((this: GlobalEventHandlers, ev: UIEvent) => any) | null;
     失焦时: ((this: GlobalEventHandlers, ev: FocusEvent) => any) | null;
+    可播放时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     变化时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     点击时: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null;
     关闭时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
@@ -3165,6 +3168,8 @@ interface GlobalEventHandlers {
     双击时: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null;
     拖起时: ((this: GlobalEventHandlers, ev: DragEvent) => any) | null;
     放下时: ((this: GlobalEventHandlers, ev: DragEvent) => any) | null;
+    时长变化时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
+    播放结束时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     出错时: OnErrorEventHandler;
     聚焦时: ((this: GlobalEventHandlers, ev: FocusEvent) => any) | null;
     输入时: ((this: GlobalEventHandlers, ev: InputEvent) => any) | null;
@@ -3176,19 +3181,28 @@ interface GlobalEventHandlers {
     鼠标移出时: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null;
     鼠标移入时: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null;
     鼠标抬起时: ((this: GlobalEventHandlers, ev: MouseEvent) => any) | null;
+    暂停时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
+    播放开始时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     指针取消时: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null;
     指针按下时: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null;
     指针进入时: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null;
     指针离开时: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null;
     指针移动时: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null;
     指针抬起时: ((this: GlobalEventHandlers, ev: PointerEvent) => any) | null;
+    进度变化时: ((this: GlobalEventHandlers, ev: ProgressEvent) => any) | null;
+    速率变化时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     改变大小时: ((this: GlobalEventHandlers, ev: UIEvent) => any) | null;
     滚动时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
+    定位完成时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
+    正在定位时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     提交时: ((this: GlobalEventHandlers, ev: SubmitEvent) => any) | null;
+    时刻更新时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     触控取消时?: ((this: GlobalEventHandlers, ev: TouchEvent) => any) | null | undefined;
     触控结束时?: ((this: GlobalEventHandlers, ev: TouchEvent) => any) | null | undefined;
     触控移动时?: ((this: GlobalEventHandlers, ev: TouchEvent) => any) | null | undefined;
     触控开始时?: ((this: GlobalEventHandlers, ev: TouchEvent) => any) | null | undefined;
+    音量变化时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
+    等待时: ((this: GlobalEventHandlers, ev: Event) => any) | null;
     滚轮时: ((this: GlobalEventHandlers, ev: WheelEvent) => any) | null;
     加事件监听<K extends keyof GlobalEventHandlersEventMap>(type: K, listener: (this: GlobalEventHandlers, ev: GlobalEventHandlersEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -4605,6 +4619,7 @@ interface MediaQueryListEvent {
 interface MediaRecorder {
     readonly 媒体类型: string;
     出错时: ((this: MediaRecorder, ev: ErrorEvent) => any) | null;
+    暂停时: ((this: MediaRecorder, ev: Event) => any) | null;
     readonly 状态: RecordingState;
     readonly 数据流: MediaStream;
     暂停(): void;
@@ -4667,6 +4682,7 @@ interface MediaStreamTrack {
     readonly 类别: string;
     readonly 标签: string;
     readonly 已静音: boolean;
+    播放结束时: ((this: MediaStreamTrack, ev: Event) => any) | null;
     readonly 就绪态: MediaStreamTrackState;
     应用约束(constraints?: MediaTrackConstraints): Promise<void>;
     复制(): MediaStreamTrack;
@@ -6515,6 +6531,7 @@ interface SpeechSynthesisEvent {
 interface SpeechSynthesisUtterance {
     语言: string;
     出错时: ((this: SpeechSynthesisUtterance, ev: SpeechSynthesisErrorEvent) => any) | null;
+    暂停时: ((this: SpeechSynthesisUtterance, ev: SpeechSynthesisEvent) => any) | null;
     音高: number;
     转文本: string;
     语音: SpeechSynthesisVoice | null;
@@ -7239,6 +7256,7 @@ interface XMLHttpRequestEventTarget {
     中止时: ((this: XMLHttpRequest, ev: ProgressEvent) => any) | null;
     出错时: ((this: XMLHttpRequest, ev: ProgressEvent) => any) | null;
     加载时: ((this: XMLHttpRequest, ev: ProgressEvent) => any) | null;
+    进度变化时: ((this: XMLHttpRequest, ev: ProgressEvent) => any) | null;
     加事件监听<K extends keyof XMLHttpRequestEventTargetEventMap>(type: K, listener: (this: XMLHttpRequestEventTarget, ev: XMLHttpRequestEventTargetEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof XMLHttpRequestEventTargetEventMap>(type: K, listener: (this: XMLHttpRequestEventTarget, ev: XMLHttpRequestEventTargetEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
