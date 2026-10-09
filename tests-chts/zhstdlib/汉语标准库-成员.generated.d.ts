@@ -15,6 +15,10 @@ interface AacEncoderConfig {
     格式化?: AacBitstreamFormat;
 }
 
+interface AddEventListenerOptions {
+    信号?: AbortSignal;
+}
+
 interface AesCtrParams {
     长度: number;
 }
@@ -37,10 +41,15 @@ interface Algorithm {
 
 interface AudioBufferOptions {
     长度: number;
+    采样率: number;
 }
 
 interface AudioBufferSourceOptions {
     缓冲?: AudioBuffer | null;
+}
+
+interface AudioContextOptions {
+    采样率?: number;
 }
 
 interface AudioDataCopyToOptions {
@@ -50,11 +59,20 @@ interface AudioDataCopyToOptions {
 interface AudioDataInit {
     数据: BufferSource;
     格式化: AudioSampleFormat;
+    采样率: number;
     时间戳: number;
+}
+
+interface AudioDecoderConfig {
+    采样率: number;
 }
 
 interface AudioDecoderInit {
     报错: WebCodecsErrorCallback;
+}
+
+interface AudioEncoderConfig {
+    采样率: number;
 }
 
 interface AudioEncoderInit {
@@ -103,7 +121,12 @@ interface CSSNumericType {
 }
 
 interface CSSStyleSheetInit {
+    已禁用?: boolean;
     媒体?: MediaList | string;
+}
+
+interface CanvasRenderingContext2DSettings {
+    透明度?: boolean;
 }
 
 interface ClientQueryOptions {
@@ -149,6 +172,14 @@ interface CookieStoreGetOptions {
     地址?: string;
 }
 
+interface CredentialCreationOptions {
+    信号?: AbortSignal;
+}
+
+interface CredentialRequestOptions {
+    信号?: AbortSignal;
+}
+
 interface CurrentUserDetailsOptions {
     名称: string;
 }
@@ -168,6 +199,14 @@ interface DOMRectInit {
 interface DeviceMotionEventAccelerationInit {
     横坐标?: number | null;
     纵坐标?: number | null;
+}
+
+interface DeviceMotionEventRotationRateInit {
+    透明度?: number | null;
+}
+
+interface DeviceOrientationEventInit {
+    透明度?: number | null;
 }
 
 interface DoubleRange {
@@ -200,6 +239,7 @@ interface EncodedVideoChunkInit {
 
 interface ErrorEventInit {
     报错?: any;
+    消息?: string;
 }
 
 interface FileSystemFlags {
@@ -230,6 +270,10 @@ interface GPUBindGroupLayoutEntry {
     缓冲?: GPUBufferBindingLayout;
 }
 
+interface GPUBlendState {
+    透明度: GPUBlendComponent;
+}
+
 interface GPUBufferBinding {
     缓冲: GPUBuffer;
     偏移?: GPUSize64;
@@ -246,6 +290,10 @@ interface GPUBufferDescriptor {
 
 interface GPUCanvasConfiguration {
     格式化: GPUTextureFormat;
+}
+
+interface GPUCanvasToneMapping {
+    模式?: GPUCanvasToneMappingMode;
 }
 
 interface GPUColorTargetState {
@@ -267,6 +315,10 @@ interface GPUExtent3DDict {
 
 interface GPUExternalTextureDescriptor {
     来源: HTMLVideoElement | VideoFrame;
+}
+
+interface GPUObjectDescriptorBase {
+    标签?: string;
 }
 
 interface GPUOrigin2DDict {
@@ -344,6 +396,10 @@ interface IDBDatabaseInfo {
     名称?: string;
 }
 
+interface ImageBitmapRenderingContextSettings {
+    透明度?: boolean;
+}
+
 interface ImageDecoderInit {
     数据: ImageBufferSource;
     种类: string;
@@ -380,7 +436,17 @@ interface KeyframeAnimationOptions {
 }
 
 interface LockInfo {
+    模式?: LockMode;
     名称?: string;
+}
+
+interface LockOptions {
+    模式?: LockMode;
+    信号?: AbortSignal;
+}
+
+interface MIDIConnectionEventInit {
+    端口?: MIDIPort;
 }
 
 interface MIDIMessageEventInit {
@@ -398,6 +464,14 @@ interface MediaEncodingConfiguration {
 interface MediaImage {
     源址: string;
     种类?: string;
+}
+
+interface MediaKeyMessageEventInit {
+    消息: ArrayBuffer;
+}
+
+interface MediaKeySystemConfiguration {
+    标签?: string;
 }
 
 interface MediaMetadataInit {
@@ -420,27 +494,35 @@ interface MediaSettingsRange {
 
 interface MediaTrackCapabilities {
     高度?: ULongRange;
+    采样率?: ULongRange;
     宽度?: ULongRange;
 }
 
 interface MediaTrackConstraintSet {
     高度?: ConstrainULong;
+    采样率?: ConstrainULong;
     宽度?: ConstrainULong;
 }
 
 interface MediaTrackSettings {
     高度?: number;
+    采样率?: number;
     宽度?: number;
 }
 
 interface MediaTrackSupportedConstraints {
     高度?: boolean;
+    采样率?: boolean;
     宽度?: boolean;
 }
 
 interface MessageEventInit<T = any> {
     数据?: T;
     来源?: MessageEventSource | null;
+}
+
+interface NavigateEventInit {
+    信号: AbortSignal;
 }
 
 interface NavigationNavigateOptions {
@@ -461,6 +543,7 @@ interface NotificationOptions {
 
 interface OfflineAudioContextOptions {
     长度: number;
+    采样率: number;
 }
 
 interface OptionalEffectTiming {
@@ -496,12 +579,17 @@ interface PaymentDetailsUpdate {
     报错?: string;
 }
 
+interface PaymentItem {
+    标签: string;
+}
+
 interface PaymentMethodData {
     数据?: any;
 }
 
 interface PaymentShippingOption {
     编号: string;
+    标签: string;
 }
 
 interface PaymentValidationErrors {
@@ -612,6 +700,7 @@ interface RTCLocalSessionDescriptionInit {
 }
 
 interface RTCPeerConnectionIceErrorEventInit {
+    端口?: number | null;
     地址?: string;
 }
 
@@ -642,6 +731,10 @@ interface ReadableStreamBYOBReaderReadOptions {
     最小?: number;
 }
 
+interface ReadableStreamGetReaderOptions {
+    模式?: ReadableStreamReaderMode;
+}
+
 interface ReadableStreamReadDoneResult<T> {
     已完成: true;
     值内容: T | undefined;
@@ -668,6 +761,8 @@ interface Report {
 
 interface RequestInit {
     头集合?: HeadersInit;
+    模式?: RequestMode;
+    信号?: AbortSignal | null;
 }
 
 interface ResponseInit {
@@ -688,6 +783,10 @@ interface RsaHashedKeyGenParams {
     散列: HashAlgorithmIdentifier;
 }
 
+interface RsaOaepParams {
+    标签?: BufferSource;
+}
+
 interface SVGBoundingBoxOptions {
     填充?: boolean;
     描边?: boolean;
@@ -701,8 +800,16 @@ interface SanitizerElementNamespace {
     名称: string;
 }
 
+interface SchedulerPostTaskOptions {
+    信号?: AbortSignal;
+}
+
 interface ScrollTimelineOptions {
     来源?: Element | null;
+}
+
+interface ShadowRootInit {
+    模式: ShadowRootMode;
 }
 
 interface ShareData {
@@ -717,6 +824,7 @@ interface ShowPopoverOptions {
 
 interface SpeechRecognitionErrorEventInit {
     报错: SpeechRecognitionErrorCode;
+    消息?: string;
 }
 
 interface SpeechSynthesisErrorEventInit {
@@ -730,6 +838,10 @@ interface SpeechSynthesisEventInit {
 interface StorageEventInit {
     键名?: string | null;
     地址?: string;
+}
+
+interface StreamPipeOptions {
+    信号?: AbortSignal;
 }
 
 interface TimelineRangeOffset {
@@ -756,11 +868,13 @@ interface ULongRange {
 
 interface URLPatternInit {
     散列?: string;
+    端口?: string;
     查找?: string;
 }
 
 interface URLPatternResult {
     散列: URLPatternComponentResult;
+    端口: URLPatternComponentResult;
     查找: URLPatternComponentResult;
 }
 
@@ -797,6 +911,7 @@ interface VideoDecoderInit {
 }
 
 interface VideoEncoderConfig {
+    透明度?: AlphaOption;
     高度: number;
     宽度: number;
 }
@@ -821,8 +936,13 @@ interface VideoFrameCopyToOptions {
 }
 
 interface VideoFrameInit {
+    透明度?: AlphaOption;
     时长?: number;
     时间戳?: number;
+}
+
+interface WebGLContextAttributes {
+    透明度?: boolean;
 }
 
 interface WebTransportErrorOptions {
@@ -845,6 +965,7 @@ interface WriteParams {
 }
 
 interface AbortController {
+    readonly 信号: AbortSignal;
     中止(reason?: any): void;
 }
 
@@ -890,6 +1011,7 @@ interface Attr {
 interface AudioBuffer {
     readonly 时长: number;
     readonly 长度: number;
+    readonly 采样率: number;
 }
 
 interface AudioBufferSourceNode {
@@ -912,6 +1034,7 @@ interface AudioContext {
 interface AudioData {
     readonly 时长: number;
     readonly 格式化: AudioSampleFormat | null;
+    readonly 采样率: number;
     readonly 时间戳: number;
     关闭(): void;
 }
@@ -936,6 +1059,16 @@ interface AudioEncoder {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface AudioNode {
+    断开(): void;
+    断开(output: number): void;
+    断开(destinationNode: AudioNode): void;
+    断开(destinationNode: AudioNode, output: number): void;
+    断开(destinationNode: AudioNode, output: number, input: number): void;
+    断开(destinationParam: AudioParam): void;
+    断开(destinationParam: AudioParam, output: number): void;
+}
+
 interface AudioParam {
     值内容: number;
 }
@@ -953,6 +1086,7 @@ interface AudioScheduledSourceNode {
 }
 
 interface AudioWorkletNode {
+    readonly 端口: MessagePort;
     加事件监听<K extends keyof AudioWorkletNodeEventMap>(type: K, listener: (this: AudioWorkletNode, ev: AudioWorkletNodeEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof AudioWorkletNodeEventMap>(type: K, listener: (this: AudioWorkletNode, ev: AudioWorkletNodeEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -960,6 +1094,7 @@ interface AudioWorkletNode {
 }
 
 interface BaseAudioContext {
+    readonly 采样率: number;
     readonly 状态: AudioContextState;
     加事件监听<K extends keyof BaseAudioContextEventMap>(type: K, listener: (this: BaseAudioContext, ev: BaseAudioContextEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1382,6 +1517,7 @@ interface CustomStateSet {
 }
 
 interface DOMException {
+    readonly 消息: string;
     readonly 名称: string;
 }
 
@@ -1464,6 +1600,14 @@ interface DeviceMotionEventAcceleration {
     readonly 纵坐标: number | null;
 }
 
+interface DeviceMotionEventRotationRate {
+    readonly 透明度: number | null;
+}
+
+interface DeviceOrientationEvent {
+    readonly 透明度: number | null;
+}
+
 interface DigitalCredential {
     readonly 数据: any;
     转数据(): any;
@@ -1471,6 +1615,7 @@ interface DigitalCredential {
 
 interface Document {
     readonly 全部: HTMLAllCollection;
+    readonly 就绪态: DocumentReadyState;
     标题: string;
     收养节点<T extends Node>(node: T): T;
     清空(): void;
@@ -1641,6 +1786,7 @@ interface EncodedVideoChunk {
 
 interface ErrorEvent {
     readonly 报错: any;
+    readonly 消息: string;
 }
 
 interface Event {
@@ -1656,6 +1802,7 @@ interface EventCounts {
 
 interface EventSource {
     出错时: ((this: EventSource, ev: Event) => any) | null;
+    readonly 就绪态: number;
     readonly 地址: string;
     关闭(): void;
     加事件监听<K extends keyof EventSourceEventMap>(type: K, listener: (this: EventSource, ev: EventSourceEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1684,6 +1831,7 @@ interface FileList {
 interface FileReader {
     readonly 报错: DOMException | null;
     出错时: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
+    readonly 就绪态: 0 | 1 | 2;
     中止(): void;
     加事件监听<K extends keyof FileReaderEventMap>(type: K, listener: (this: FileReader, ev: FileReaderEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1750,6 +1898,7 @@ interface GPUBuffer {
 
 interface GPUCompilationMessage {
     readonly 长度: number;
+    readonly 消息: string;
     readonly 偏移: number;
     readonly 种类: GPUCompilationMessageType;
 }
@@ -1759,6 +1908,18 @@ interface GPUDevice {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof GPUDeviceEventMap>(type: K, listener: (this: GPUDevice, ev: GPUDeviceEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface GPUDeviceLostInfo {
+    readonly 消息: string;
+}
+
+interface GPUError {
+    readonly 消息: string;
+}
+
+interface GPUObjectBase {
+    标签: string;
 }
 
 interface GPUQuerySet {
@@ -1804,6 +1965,10 @@ interface GeolocationCoordinates {
 interface GeolocationPosition {
     readonly 时间戳: EpochTimeStamp;
     转数据(): any;
+}
+
+interface GeolocationPositionError {
+    readonly 消息: string;
 }
 
 interface GlobalEventHandlers {
@@ -1872,6 +2037,7 @@ interface HTMLBodyElement {
 }
 
 interface HTMLButtonElement {
+    已禁用: boolean;
     名称: string;
     种类: "submit" | "reset" | "button";
     值内容: string;
@@ -1992,6 +2158,7 @@ interface HTMLEmbedElement {
 }
 
 interface HTMLFieldSetElement {
+    已禁用: boolean;
     名称: string;
     readonly 种类: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLFieldSetElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2072,6 +2239,7 @@ interface HTMLHyperlinkElementUtils {
     散列: string;
     链接: string;
     转字符串(): string;
+    端口: string;
     查找: string;
 }
 
@@ -2105,6 +2273,7 @@ interface HTMLImageElement {
 interface HTMLInputElement {
     对齐: string;
     替代文本: string;
+    已禁用: boolean;
     高度: number;
     最大: string;
     最小: string;
@@ -2146,6 +2315,7 @@ interface HTMLLegendElement {
 }
 
 interface HTMLLinkElement {
+    已禁用: boolean;
     链接: string;
     媒体: string;
     目标: string;
@@ -2177,6 +2347,7 @@ interface HTMLMarqueeElement {
 interface HTMLMediaElement {
     readonly 时长: number;
     readonly 报错: MediaError | null;
+    readonly 就绪态: number;
     源址: string;
     加事件监听<K extends keyof HTMLMediaElementEventMap>(type: K, listener: (this: HTMLMediaElement, ev: HTMLMediaElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -2240,6 +2411,8 @@ interface HTMLObjectElement {
 }
 
 interface HTMLOptGroupElement {
+    已禁用: boolean;
+    标签: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLOptGroupElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLOptGroupElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2247,7 +2420,9 @@ interface HTMLOptGroupElement {
 }
 
 interface HTMLOptionElement {
+    已禁用: boolean;
     readonly 序号: number;
+    标签: string;
     转文本: string;
     值内容: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLOptionElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2338,6 +2513,7 @@ interface HTMLScriptElement {
 }
 
 interface HTMLSelectElement {
+    已禁用: boolean;
     长度: number;
     名称: string;
     大小: number;
@@ -2382,6 +2558,7 @@ interface HTMLSpanElement {
 }
 
 interface HTMLStyleElement {
+    已禁用: boolean;
     媒体: string;
     种类: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLStyleElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2465,6 +2642,7 @@ interface HTMLTemplateElement {
 }
 
 interface HTMLTextAreaElement {
+    已禁用: boolean;
     名称: string;
     只读: boolean;
     readonly 种类: string;
@@ -2492,6 +2670,8 @@ interface HTMLTitleElement {
 
 interface HTMLTrackElement {
     类别: string;
+    标签: string;
+    readonly 就绪态: number;
     源址: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTrackElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -2598,6 +2778,7 @@ interface IDBOpenDBRequest {
 interface IDBRequest<T = any> {
     readonly 报错: DOMException | null;
     出错时: ((this: IDBRequest<T>, ev: Event) => any) | null;
+    readonly 就绪态: IDBRequestReadyState;
     readonly 来源: IDBObjectStore | IDBIndex | IDBCursor;
     加事件监听<K extends keyof IDBRequestEventMap>(type: K, listener: (this: IDBRequest<T>, ev: IDBRequestEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -2607,6 +2788,7 @@ interface IDBRequest<T = any> {
 
 interface IDBTransaction {
     readonly 报错: DOMException | null;
+    readonly 模式: IDBTransactionMode;
     出错时: ((this: IDBTransaction, ev: Event) => any) | null;
     中止(): void;
     加事件监听<K extends keyof IDBTransactionEventMap>(type: K, listener: (this: IDBTransaction, ev: IDBTransactionEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2646,6 +2828,10 @@ interface InputEvent {
     readonly 数据: string | null;
 }
 
+interface IntersectionObserver {
+    断开(): void;
+}
+
 interface IntersectionObserverEntry {
     readonly 目标: Element;
 }
@@ -2670,12 +2856,14 @@ interface Location {
     散列: string;
     链接: string;
     转字符串(): string;
+    端口: string;
     查找: string;
     合入(url: string | URL): void;
     替换(url: string | URL): void;
 }
 
 interface Lock {
+    readonly 模式: LockMode;
     readonly 名称: string;
 }
 
@@ -2684,6 +2872,10 @@ interface MIDIAccess {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MIDIAccessEventMap>(type: K, listener: (this: MIDIAccess, ev: MIDIAccessEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface MIDIConnectionEvent {
+    readonly 端口: MIDIPort | null;
 }
 
 interface MIDIInput {
@@ -2735,6 +2927,7 @@ interface MathMLElement {
 
 interface MediaDeviceInfo {
     readonly 类别: MediaDeviceKind;
+    readonly 标签: string;
     转数据(): any;
 }
 
@@ -2743,6 +2936,14 @@ interface MediaDevices {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MediaDevicesEventMap>(type: K, listener: (this: MediaDevices, ev: MediaDevicesEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface MediaError {
+    readonly 消息: string;
+}
+
+interface MediaKeyMessageEvent {
+    readonly 消息: ArrayBuffer;
 }
 
 interface MediaKeySession {
@@ -2797,6 +2998,7 @@ interface MediaRecorder {
 
 interface MediaSource {
     时长: number;
+    readonly 就绪态: ReadyState;
     加事件监听<K extends keyof MediaSourceEventMap>(type: K, listener: (this: MediaSource, ev: MediaSourceEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MediaSourceEventMap>(type: K, listener: (this: MediaSource, ev: MediaSourceEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2814,6 +3016,8 @@ interface MediaStream {
 interface MediaStreamTrack {
     readonly 编号: string;
     readonly 类别: string;
+    readonly 标签: string;
+    readonly 就绪态: MediaStreamTrackState;
     加事件监听<K extends keyof MediaStreamTrackEventMap>(type: K, listener: (this: MediaStreamTrack, ev: MediaStreamTrackEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MediaStreamTrackEventMap>(type: K, listener: (this: MediaStreamTrack, ev: MediaStreamTrackEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2855,6 +3059,10 @@ interface MouseEvent {
     readonly 纵坐标: number;
 }
 
+interface MutationObserver {
+    断开(): void;
+}
+
 interface MutationRecord {
     readonly 后兄弟: Node | null;
     readonly 前兄弟: Node | null;
@@ -2865,6 +3073,10 @@ interface MutationRecord {
 interface NamedNodeMap {
     readonly 长度: number;
     取项(index: number): Attr | null;
+}
+
+interface NavigateEvent {
+    readonly 信号: AbortSignal;
 }
 
 interface Navigation {
@@ -3038,6 +3250,10 @@ interface PerformanceNavigationTiming {
     转数据(): any;
 }
 
+interface PerformanceObserver {
+    断开(): void;
+}
+
 interface PerformancePaintTiming {
     转数据(): any;
 }
@@ -3119,7 +3335,9 @@ interface RTCDTMFSender {
 
 interface RTCDataChannel {
     readonly 编号: number | null;
+    readonly 标签: string;
     出错时: ((this: RTCDataChannel, ev: RTCErrorEvent) => any) | null;
+    readonly 就绪态: RTCDataChannelState;
     关闭(): void;
     发送(data: string): void;
     发送(data: Blob): void;
@@ -3156,6 +3374,7 @@ interface RTCErrorEvent {
 }
 
 interface RTCIceCandidate {
+    readonly 端口: number | null;
     readonly 种类: RTCIceCandidateType | null;
     转数据(): RTCIceCandidateInit;
 }
@@ -3177,6 +3396,7 @@ interface RTCPeerConnection {
 }
 
 interface RTCPeerConnectionIceErrorEvent {
+    readonly 端口: number | null;
     readonly 地址: string;
 }
 
@@ -3232,9 +3452,19 @@ interface RemotePlayback {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface ReportingObserver {
+    断开(): void;
+}
+
 interface Request {
     readonly 头集合: Headers;
+    readonly 模式: RequestMode;
+    readonly 信号: AbortSignal;
     readonly 地址: string;
+}
+
+interface ResizeObserver {
+    断开(): void;
 }
 
 interface ResizeObserverEntry {
@@ -3344,6 +3574,7 @@ interface SVGEllipseElement {
 }
 
 interface SVGFEBlendElement {
+    readonly 模式: SVGAnimatedEnumeration;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEBlendElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEBlendElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3767,6 +3998,7 @@ interface SVGStringList {
 }
 
 interface SVGStyleElement {
+    已禁用: boolean;
     媒体: string;
     标题: string;
     种类: string;
@@ -3926,6 +4158,7 @@ interface ServiceWorkerRegistration {
 
 interface ShadowRoot {
     内部标记: string;
+    readonly 模式: ShadowRootMode;
     加事件监听<K extends keyof ShadowRootEventMap>(type: K, listener: (this: ShadowRoot, ev: ShadowRootEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof ShadowRootEventMap>(type: K, listener: (this: ShadowRoot, ev: ShadowRootEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3933,6 +4166,7 @@ interface ShadowRoot {
 }
 
 interface SharedWorker {
+    readonly 端口: MessagePort;
     加事件监听<K extends keyof AbstractWorkerEventMap>(type: K, listener: (this: SharedWorker, ev: AbstractWorkerEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof AbstractWorkerEventMap>(type: K, listener: (this: SharedWorker, ev: AbstractWorkerEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3940,6 +4174,7 @@ interface SharedWorker {
 }
 
 interface SourceBuffer {
+    模式: AppendMode;
     出错时: ((this: SourceBuffer, ev: Event) => any) | null;
     中止(): void;
     移除(start: number, end: number): void;
@@ -3959,6 +4194,7 @@ interface SourceBufferList {
 
 interface SpeechRecognitionErrorEvent {
     readonly 报错: SpeechRecognitionErrorCode;
+    readonly 消息: string;
 }
 
 interface SpeechRecognitionResult {
@@ -4028,6 +4264,7 @@ interface StylePropertyMapReadOnly {
 }
 
 interface StyleSheet {
+    已禁用: boolean;
     readonly 链接: string | null;
     get 媒体(): MediaList;
     set 媒体(mediaText: string);
@@ -4062,6 +4299,8 @@ interface TextMetrics {
 interface TextTrack {
     readonly 编号: string;
     readonly 类别: TextTrackKind;
+    readonly 标签: string;
+    模式: TextTrackMode;
     加事件监听<K extends keyof TextTrackEventMap>(type: K, listener: (this: TextTrack, ev: TextTrackEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof TextTrackEventMap>(type: K, listener: (this: TextTrack, ev: TextTrackEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4123,12 +4362,14 @@ interface URL {
     散列: string;
     链接: string;
     转字符串(): string;
+    端口: string;
     查找: string;
     转数据(): string;
 }
 
 interface URLPattern {
     readonly 散列: string;
+    readonly 端口: string;
     readonly 查找: string;
     执行(input?: URLPatternInput, baseURL?: string | URL): URLPatternResult | null;
     测试(input?: URLPatternInput, baseURL?: string | URL): boolean;
@@ -4265,6 +4506,7 @@ interface WebGLRenderingContextBase {
 
 interface WebSocket {
     出错时: ((this: WebSocket, ev: Event) => any) | null;
+    readonly 就绪态: 0 | 1 | 2 | 3;
     readonly 地址: string;
     关闭(code?: number, reason?: string): void;
     发送(data: BufferSource | Blob | string): void;
@@ -4317,6 +4559,7 @@ interface WritableStream<W = any> {
 }
 
 interface WritableStreamDefaultController {
+    readonly 信号: AbortSignal;
     报错(e?: any): void;
 }
 
@@ -4334,6 +4577,7 @@ interface XMLDocument {
 }
 
 interface XMLHttpRequest {
+    readonly 就绪态: number;
     readonly 状态码: number;
     readonly 状态文本: string;
     中止(): void;
@@ -4793,6 +5037,7 @@ interface BigInt64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> 
     readonly 每元素字节: number;
     readonly 缓冲: TArrayBuffer;
     readonly 字节长度: number;
+    readonly 字节偏移: number;
     内部复制(target: number, start: number, end?: number): this;
     条目(): ArrayIterator<[number, bigint]>;
     全部满足(predicate: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => boolean, thisArg?: any): boolean;
@@ -4817,6 +5062,7 @@ interface BigInt64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> 
     截取(start?: number, end?: number): BigInt64Array<ArrayBuffer>;
     存在满足(predicate: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => boolean, thisArg?: any): boolean;
     排序(compareFn?: (a: bigint, b: bigint) => number | bigint): this;
+    子数组(begin?: number, end?: number): BigInt64Array<TArrayBuffer>;
     本地转字符串(locales?: string | string[], options?: Intl.NumberFormatOptions): string;
     转字符串(): string;
     取值(): BigInt64Array<TArrayBuffer>;
@@ -4831,6 +5077,7 @@ interface BigUint64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike>
     readonly 每元素字节: number;
     readonly 缓冲: TArrayBuffer;
     readonly 字节长度: number;
+    readonly 字节偏移: number;
     内部复制(target: number, start: number, end?: number): this;
     条目(): ArrayIterator<[number, bigint]>;
     全部满足(predicate: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => boolean, thisArg?: any): boolean;
@@ -4855,6 +5102,7 @@ interface BigUint64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike>
     截取(start?: number, end?: number): BigUint64Array<ArrayBuffer>;
     存在满足(predicate: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => boolean, thisArg?: any): boolean;
     排序(compareFn?: (a: bigint, b: bigint) => number | bigint): this;
+    子数组(begin?: number, end?: number): BigUint64Array<TArrayBuffer>;
     本地转字符串(locales?: string | string[], options?: Intl.NumberFormatOptions): string;
     转字符串(): string;
     取值(): BigUint64Array<TArrayBuffer>;
@@ -4958,6 +5206,71 @@ interface String {
     取第(index: number): string | undefined;
 }
 
+interface Array<T> {
+    反转副本(): T[];
+    排序副本(compareFn?: (a: T, b: T) => number): T[];
+}
+
+interface ReadonlyArray<T> {
+    反转副本(): T[];
+    排序副本(compareFn?: (a: T, b: T) => number): T[];
+}
+
+interface Int8Array<TArrayBuffer extends ArrayBufferLike> {
+    反转副本(): Int8Array<ArrayBuffer>;
+    排序副本(compareFn?: (a: number, b: number) => number): Int8Array<ArrayBuffer>;
+}
+
+interface Uint8Array<TArrayBuffer extends ArrayBufferLike> {
+    反转副本(): Uint8Array<ArrayBuffer>;
+    排序副本(compareFn?: (a: number, b: number) => number): Uint8Array<ArrayBuffer>;
+}
+
+interface Uint8ClampedArray<TArrayBuffer extends ArrayBufferLike> {
+    反转副本(): Uint8ClampedArray<ArrayBuffer>;
+    排序副本(compareFn?: (a: number, b: number) => number): Uint8ClampedArray<ArrayBuffer>;
+}
+
+interface Int16Array<TArrayBuffer extends ArrayBufferLike> {
+    反转副本(): Int16Array<ArrayBuffer>;
+    排序副本(compareFn?: (a: number, b: number) => number): Int16Array<ArrayBuffer>;
+}
+
+interface Uint16Array<TArrayBuffer extends ArrayBufferLike> {
+    反转副本(): Uint16Array<ArrayBuffer>;
+    排序副本(compareFn?: (a: number, b: number) => number): Uint16Array<ArrayBuffer>;
+}
+
+interface Int32Array<TArrayBuffer extends ArrayBufferLike> {
+    反转副本(): Int32Array<ArrayBuffer>;
+    排序副本(compareFn?: (a: number, b: number) => number): Int32Array<ArrayBuffer>;
+}
+
+interface Uint32Array<TArrayBuffer extends ArrayBufferLike> {
+    反转副本(): Uint32Array<ArrayBuffer>;
+    排序副本(compareFn?: (a: number, b: number) => number): Uint32Array<ArrayBuffer>;
+}
+
+interface Float32Array<TArrayBuffer extends ArrayBufferLike> {
+    反转副本(): Float32Array<ArrayBuffer>;
+    排序副本(compareFn?: (a: number, b: number) => number): Float32Array<ArrayBuffer>;
+}
+
+interface Float64Array<TArrayBuffer extends ArrayBufferLike> {
+    反转副本(): Float64Array<ArrayBuffer>;
+    排序副本(compareFn?: (a: number, b: number) => number): Float64Array<ArrayBuffer>;
+}
+
+interface BigInt64Array<TArrayBuffer extends ArrayBufferLike> {
+    反转副本(): BigInt64Array<ArrayBuffer>;
+    排序副本(compareFn?: (a: bigint, b: bigint) => number): BigInt64Array<ArrayBuffer>;
+}
+
+interface BigUint64Array<TArrayBuffer extends ArrayBufferLike> {
+    反转副本(): BigUint64Array<ArrayBuffer>;
+    排序副本(compareFn?: (a: bigint, b: bigint) => number): BigUint64Array<ArrayBuffer>;
+}
+
 interface PromiseWithResolvers<T> {
     解决: (value: T | PromiseLike<T>) => void;
     拒绝: (reason?: any) => void;
@@ -4973,6 +5286,7 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
     readonly 每元素字节: number;
     readonly 缓冲: TArrayBuffer;
     readonly 字节长度: number;
+    readonly 字节偏移: number;
     取第(index: number): number | undefined;
     内部复制(target: number, start: number, end?: number): this;
     全部满足(predicate: (value: number, index: number, array: this) => unknown, thisArg?: any): boolean;
@@ -4998,7 +5312,10 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
     截取(start?: number, end?: number): Float16Array<ArrayBuffer>;
     存在满足(predicate: (value: number, index: number, array: this) => unknown, thisArg?: any): boolean;
     排序(compareFn?: (a: number, b: number) => number): this;
+    子数组(begin?: number, end?: number): Float16Array<TArrayBuffer>;
     本地转字符串(locales?: string | string[], options?: Intl.NumberFormatOptions): string;
+    反转副本(): Float16Array<ArrayBuffer>;
+    排序副本(compareFn?: (a: number, b: number) => number): Float16Array<ArrayBuffer>;
     转字符串(): string;
     取值(): this;
     条目(): ArrayIterator<[number, number]>;
@@ -5164,6 +5481,7 @@ interface RegExp {
 
 interface Error {
     名称: string;
+    消息: string;
 }
 
 interface JSON {
