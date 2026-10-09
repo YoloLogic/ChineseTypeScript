@@ -58,6 +58,10 @@ interface AnimationEventInit {
     伪元素?: string;
 }
 
+interface AssignedNodesOptions {
+    展平化?: boolean;
+}
+
 interface AudioBufferOptions {
     长度: number;
     声道数?: number;
@@ -181,6 +185,7 @@ interface BlobPropertyBag {
 
 interface CSSNumericType {
     角度?: number;
+    弹性?: number;
     频率?: number;
     长度?: number;
 }
@@ -334,11 +339,13 @@ interface DeviceMotionEventInit {
 
 interface DeviceMotionEventRotationRateInit {
     透明度?: number | null;
+    伽马?: number | null;
 }
 
 interface DeviceOrientationEventInit {
     绝对?: boolean;
     透明度?: number | null;
+    伽马?: number | null;
 }
 
 interface DoubleRange {
@@ -853,6 +860,7 @@ interface NavigateEventInit {
 }
 
 interface NavigationInterceptOptions {
+    处理器?: NavigationInterceptHandler;
     滚动?: NavigationScrollBehavior;
 }
 
@@ -1041,6 +1049,7 @@ interface PublicKeyCredentialCreationOptions {
 interface PublicKeyCredentialCreationOptionsJSON {
     挑战: Base64URLString;
     扩展?: AuthenticationExtensionsClientInputsJSON;
+    提示列表?: string[];
 }
 
 interface PublicKeyCredentialDescriptor {
@@ -1071,6 +1080,7 @@ interface PublicKeyCredentialRequestOptionsJSON {
     允许凭据?: PublicKeyCredentialDescriptorJSON[];
     挑战: Base64URLString;
     扩展?: AuthenticationExtensionsClientInputsJSON;
+    提示列表?: string[];
 }
 
 interface PublicKeyCredentialRpEntity {
@@ -1573,6 +1583,7 @@ interface VideoColorSpaceInit {
 
 interface VideoConfiguration {
     比特率: number;
+    帧率: number;
     高度: number;
     宽度: number;
 }
@@ -1595,6 +1606,7 @@ interface VideoEncoderConfig {
     内容提示?: string;
     显示高?: number;
     显示宽?: number;
+    帧率?: number;
     高度: number;
     宽度: number;
 }
@@ -2202,8 +2214,12 @@ interface CSSStyleProperties {
     填充: string;
     过滤: string;
     滤镜: string;
+    弹性: string;
+    浮点: string;
     字体: string;
+    网格: string;
     高度: string;
+    连字: string;
     左侧: string;
     字距: string;
     偏移: string;
@@ -2710,11 +2726,13 @@ interface DeviceMotionEventAcceleration {
 
 interface DeviceMotionEventRotationRate {
     readonly 透明度: number | null;
+    readonly 伽马: number | null;
 }
 
 interface DeviceOrientationEvent {
     readonly 绝对: boolean;
     readonly 透明度: number | null;
+    readonly 伽马: number | null;
 }
 
 interface DigitalCredential {
@@ -2736,6 +2754,7 @@ interface Document {
     readonly 文档类型: DocumentType | null;
     readonly 文档元素: HTMLElement;
     网域: string;
+    readonly 全屏: boolean;
     readonly 头部: HTMLHeadElement;
     readonly 隐藏: boolean;
     readonly 实现对象: DOMImplementation;
@@ -3374,6 +3393,7 @@ interface HTMLAnchorElement {
     编码字符集: string;
     坐标: string;
     下载: string;
+    链接语言: string;
     名称: string;
     来源页策略: string;
     关系: string;
@@ -3839,6 +3859,7 @@ interface HTMLLinkElement {
     已禁用: boolean;
     获取优先级: "high" | "low" | "auto";
     链接: string;
+    链接语言: string;
     完整性: string;
     媒体: string;
     来源页策略: string;
@@ -5755,6 +5776,7 @@ interface Response {
 
 interface SVGAElement {
     下载: string;
+    链接语言: string;
     来源页策略: string;
     关系: string;
     get 关系列表(): DOMTokenList;
@@ -8262,6 +8284,14 @@ interface ErrorOptions {
 
 interface Error {
     起因?: unknown;
+}
+
+interface RegExpMatchArray {
+    索引集?: RegExpIndicesArray;
+}
+
+interface RegExpExecArray {
+    索引集?: RegExpIndicesArray;
 }
 
 interface String {
