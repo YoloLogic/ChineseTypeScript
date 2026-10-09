@@ -1006,6 +1006,10 @@ interface SpeechSynthesisEventInit {
     名称?: string;
 }
 
+interface StartViewTransitionOptions {
+    更新?: ViewTransitionUpdateCallback | null;
+}
+
 interface StorageEventInit {
     键名?: string | null;
     地址?: string;
@@ -1209,6 +1213,7 @@ interface Animatable {
 
 interface Animation {
     编号: string;
+    readonly 就绪: Promise<Animation>;
     起始时刻: CSSNumberish | null;
     时间线: AnimationTimeline | null;
     取消(): void;
@@ -1667,6 +1672,7 @@ interface CSSUnparsedValue {
 
 interface Cache {
     添加(request: RequestInfo | URL): Promise<void>;
+    全部添加(requests: RequestInfo[]): Promise<void>;
     删除(request: RequestInfo | URL, options?: CacheQueryOptions): Promise<boolean>;
     键列(request?: RequestInfo | URL, options?: CacheQueryOptions): Promise<ReadonlyArray<Request>>;
     匹配(request: RequestInfo | URL, options?: CacheQueryOptions): Promise<Response | undefined>;
@@ -2398,6 +2404,7 @@ interface FontFace {
 }
 
 interface FontFaceSet {
+    readonly 就绪: Promise<FontFaceSet>;
     readonly 状态码: FontFaceSetLoadStatus;
     加载(font: string, text?: string): Promise<FontFace[]>;
     逐个处理(callbackfn: (value: FontFace, key: FontFace, parent: FontFaceSet) => void, thisArg?: any): void;
@@ -3446,6 +3453,7 @@ interface IDBCursor {
     readonly 来源: IDBObjectStore | IDBIndex;
     续取(key?: IDBValidKey): void;
     删除(): IDBRequest<undefined>;
+    更新(value: any): IDBRequest<IDBValidKey>;
 }
 
 interface IDBCursorWithValue {
@@ -3561,6 +3569,7 @@ interface ImageTrack {
 
 interface ImageTrackList {
     readonly 长度: number;
+    readonly 就绪: Promise<void>;
     readonly 选中序号: number;
 }
 
@@ -3715,6 +3724,7 @@ interface MediaKeySession {
     关闭(): Promise<void>;
     加载(sessionId: string): Promise<boolean>;
     移除(): Promise<void>;
+    更新(response: BufferSource): Promise<void>;
     加事件监听<K extends keyof MediaKeySessionEventMap>(type: K, listener: (this: MediaKeySession, ev: MediaKeySessionEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MediaKeySessionEventMap>(type: K, listener: (this: MediaKeySession, ev: MediaKeySessionEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -5226,6 +5236,7 @@ interface Selection {
 }
 
 interface ServiceWorker {
+    readonly 脚本地址: string;
     readonly 状态: ServiceWorkerState;
     发消息(message: any, transfer: Transferable[]): void;
     发消息(message: any, options?: StructuredSerializeOptions): void;
@@ -5236,7 +5247,12 @@ interface ServiceWorker {
 }
 
 interface ServiceWorkerContainer {
+    readonly 控制器: ServiceWorker | null;
+    readonly 就绪: Promise<ServiceWorkerRegistration>;
+    取注册(clientURL?: string | URL): Promise<ServiceWorkerRegistration | undefined>;
+    取全部注册(): Promise<ReadonlyArray<ServiceWorkerRegistration>>;
     登记(scriptURL: string | URL, options?: RegistrationOptions): Promise<ServiceWorkerRegistration>;
+    开始消息(): void;
     加事件监听<K extends keyof ServiceWorkerContainerEventMap>(type: K, listener: (this: ServiceWorkerContainer, ev: ServiceWorkerContainerEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof ServiceWorkerContainerEventMap>(type: K, listener: (this: ServiceWorkerContainer, ev: ServiceWorkerContainerEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -5245,7 +5261,10 @@ interface ServiceWorkerContainer {
 
 interface ServiceWorkerRegistration {
     readonly 活动: ServiceWorker | null;
+    readonly 正在安装: ServiceWorker | null;
+    readonly 等待中: ServiceWorker | null;
     注销(): Promise<boolean>;
+    更新(): Promise<ServiceWorkerRegistration>;
     加事件监听<K extends keyof ServiceWorkerRegistrationEventMap>(type: K, listener: (this: ServiceWorkerRegistration, ev: ServiceWorkerRegistrationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof ServiceWorkerRegistrationEventMap>(type: K, listener: (this: ServiceWorkerRegistration, ev: ServiceWorkerRegistrationEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -5624,6 +5643,10 @@ interface VideoFrame {
     关闭(): void;
 }
 
+interface ViewTransition {
+    readonly 就绪: Promise<void>;
+}
+
 interface ViewTransitionTypeSet {
     逐个处理(callbackfn: (value: string, key: string, parent: ViewTransitionTypeSet) => void, thisArg?: any): void;
 }
@@ -5794,6 +5817,7 @@ interface WebSocket {
 }
 
 interface WebTransport {
+    readonly 就绪: Promise<void>;
     关闭(closeInfo?: WebTransportCloseInfo): void;
 }
 
@@ -5883,6 +5907,7 @@ interface WritableStreamDefaultController {
 
 interface WritableStreamDefaultWriter<W = any> {
     readonly 期望大小: number | null;
+    readonly 就绪: Promise<void>;
     中止(reason?: any): Promise<void>;
     关闭(): Promise<void>;
     写入(chunk?: W): Promise<void>;
@@ -5978,6 +6003,10 @@ interface CSSUnparsedValue {
     条目(): ArrayIterator<[number, CSSUnparsedSegment]>;
     键列(): ArrayIterator<number>;
     值列(): ArrayIterator<CSSUnparsedSegment>;
+}
+
+interface Cache {
+    全部添加(requests: Iterable<RequestInfo>): Promise<void>;
 }
 
 interface CanvasPath {
