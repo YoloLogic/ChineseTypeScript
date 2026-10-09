@@ -820,6 +820,17 @@ member	tagName	标签名
 member	localName	本地名
 member	baseURI	基地址
 member	ownerDocument	属主文档
+member	compatMode	兼容模式
+member	characterSet	字符集
+member	defaultView	默认视图
+member	designMode	设计模式
+member	doctype	文档类型
+member	implementation	实现对象
+member	plugins	插件集
+member	scripts	脚本集
+member	styleSheets	样式表集
+member	timeline	时间线
+member	pointerLockElement	指针锁定元素
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

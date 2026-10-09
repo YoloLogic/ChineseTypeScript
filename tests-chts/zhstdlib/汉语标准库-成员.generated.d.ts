@@ -498,6 +498,7 @@ interface Keyframe {
 
 interface KeyframeAnimationOptions {
     编号?: string;
+    时间线?: AnimationTimeline | null;
 }
 
 interface LockInfo {
@@ -1209,6 +1210,7 @@ interface Animatable {
 interface Animation {
     编号: string;
     起始时刻: CSSNumberish | null;
+    时间线: AnimationTimeline | null;
     取消(): void;
     完成(): void;
     暂停(): void;
@@ -2046,13 +2048,22 @@ interface DigitalCredential {
 interface Document {
     readonly 全部: HTMLAllCollection;
     主体: HTMLElement;
+    readonly 字符集: string;
+    readonly 兼容模式: string;
+    readonly 默认视图: (WindowProxy & typeof globalThis) | null;
+    设计模式: string;
     书写方向: string;
+    readonly 文档类型: DocumentType | null;
     readonly 文档元素: HTMLElement;
     readonly 头部: HTMLHeadElement;
     readonly 隐藏: boolean;
+    readonly 实现对象: DOMImplementation;
     readonly 属主文档: null;
+    readonly 插件集: HTMLCollectionOf<HTMLEmbedElement>;
     readonly 就绪态: DocumentReadyState;
     readonly 来源页: string;
+    readonly 脚本集: HTMLCollectionOf<HTMLScriptElement>;
+    readonly 时间线: DocumentTimeline;
     标题: string;
     readonly 可见状态: DocumentVisibilityState;
     收养节点<T extends Node>(node: T): T;
@@ -2174,6 +2185,8 @@ interface DocumentFragment {
 
 interface DocumentOrShadowRoot {
     readonly 活动元素: Element | null;
+    readonly 指针锁定元素: Element | null;
+    readonly 样式表集: StyleSheetList;
     取动画列(): Animation[];
 }
 
@@ -3908,6 +3921,10 @@ interface Navigator {
 
 interface NavigatorLanguage {
     readonly 语种: string;
+}
+
+interface NavigatorPlugins {
+    readonly 插件集: PluginArray;
 }
 
 interface Node {
