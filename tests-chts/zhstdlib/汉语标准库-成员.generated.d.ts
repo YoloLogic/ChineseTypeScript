@@ -124,6 +124,7 @@ interface AuthenticationExtensionsPRFOutputsJSON {
 
 interface AuthenticationResponseJSON {
     编号: string;
+    原始编号: Base64URLString;
     种类: string;
 }
 
@@ -134,6 +135,7 @@ interface AuthenticatorAssertionResponseJSON {
 }
 
 interface AuthenticatorAttestationResponseJSON {
+    证明对象: Base64URLString;
     认证器数据: Base64URLString;
 }
 
@@ -761,6 +763,7 @@ interface OscillatorOptions {
 
 interface PageTransitionEventInit {
     已保持?: boolean;
+    已持久化?: boolean;
 }
 
 interface PannerOptions {
@@ -945,6 +948,7 @@ interface RTCDataChannelInit {
 }
 
 interface RTCDtlsFingerprint {
+    算法?: string;
     值内容?: string;
 }
 
@@ -1060,6 +1064,7 @@ interface RegistrationOptions {
 
 interface RegistrationResponseJSON {
     编号: string;
+    原始编号: Base64URLString;
     种类: string;
 }
 
@@ -1380,6 +1385,7 @@ interface WebTransportErrorOptions {
 }
 
 interface WebTransportHash {
+    算法: string;
     值内容: BufferSource;
 }
 
@@ -1463,6 +1469,7 @@ interface Animation {
     取消(): void;
     完成(): void;
     暂停(): void;
+    持久化(): void;
     播放(): void;
     反转(): void;
     加事件监听<K extends keyof AnimationEventMap>(type: K, listener: (this: Animation, ev: AnimationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1605,6 +1612,12 @@ interface AuthenticatorAssertionResponse {
     readonly 认证器数据: ArrayBuffer;
     readonly 签名数据: ArrayBuffer;
     readonly 用户句柄: ArrayBuffer | null;
+}
+
+interface AuthenticatorAttestationResponse {
+    readonly 证明对象: ArrayBuffer;
+    取公钥(): ArrayBuffer | null;
+    取传输方式(): string[];
 }
 
 interface BaseAudioContext {
@@ -2184,6 +2197,7 @@ interface Credential {
 interface CredentialsContainer {
     创建(options?: CredentialCreationOptions): Promise<Credential | null>;
     获取(options?: CredentialRequestOptions): Promise<Credential | null>;
+    阻止静默访问(): Promise<void>;
     存储(credential: Credential): Promise<void>;
 }
 
@@ -2194,7 +2208,10 @@ interface Crypto {
 }
 
 interface CryptoKey {
+    readonly 算法: KeyAlgorithm;
+    readonly 可导出: boolean;
     readonly 种类: KeyType;
+    readonly 用途集: KeyUsage[];
 }
 
 interface CustomElementRegistry {
@@ -2682,6 +2699,7 @@ interface FileSystem {
 }
 
 interface FileSystemDirectoryEntry {
+    取目录(path?: string | null, options?: FileSystemFlags, successCallback?: FileSystemEntryCallback, errorCallback?: ErrorCallback): void;
     取文件(path?: string | null, options?: FileSystemFlags, successCallback?: FileSystemEntryCallback, errorCallback?: ErrorCallback): void;
 }
 
@@ -2849,6 +2867,7 @@ interface GenericTransformStream {
 
 interface Geolocation {
     取当前位置(successCallback: PositionCallback, errorCallback?: PositionErrorCallback | null, options?: PositionOptions): void;
+    监视位置(successCallback: PositionCallback, errorCallback?: PositionErrorCallback | null, options?: PositionOptions): number;
 }
 
 interface GeolocationCoordinates {
@@ -4562,6 +4581,7 @@ interface OscillatorNode {
 
 interface PageTransitionEvent {
     readonly 已保持: boolean;
+    readonly 已持久化: boolean;
 }
 
 interface PannerNode {
@@ -4790,6 +4810,7 @@ interface ProgressEvent<T extends EventTarget = EventTarget> {
 }
 
 interface PublicKeyCredential {
+    readonly 原始编号: ArrayBuffer;
     转数据(): RegistrationResponseJSON | AuthenticationResponseJSON;
 }
 
@@ -6049,7 +6070,10 @@ interface StorageEvent {
 
 interface StorageManager {
     估算(): Promise<StorageEstimate>;
+    取目录(): Promise<FileSystemDirectoryHandle>;
+    持久化(): Promise<boolean>;
     已保持(): Promise<boolean>;
+    已持久化(): Promise<boolean>;
 }
 
 interface StylePropertyMap {
