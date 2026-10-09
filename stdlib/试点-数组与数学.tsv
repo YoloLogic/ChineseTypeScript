@@ -82,6 +82,10 @@ member	find	找出
 member	findIndex	找出序号
 member	fill	填充
 member	at	取第
+member	replaceAll	全替换
+member	trimStart	去头空白
+member	trimEnd	去尾空白
+member	matchAll	全匹配
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

@@ -169,3 +169,11 @@ interface Array<T> {
     填充(值: T, 起?: number, 末?: number): this;
     取第(序号: number): T | undefined;
 }
+
+// String 的其余 ES2015+ 成员。
+interface String {
+    全替换(查找: string, 替换成: string): string;
+    去头空白(): string;
+    去尾空白(): string;
+    全匹配(正则: RegExp): IterableIterator<RegExpMatchArray>;
+}
