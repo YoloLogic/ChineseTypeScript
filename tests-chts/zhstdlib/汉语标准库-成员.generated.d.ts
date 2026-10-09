@@ -1275,6 +1275,7 @@ interface BaseAudioContext {
     readonly 状态: AudioContextState;
     创建分析器(): AnalyserNode;
     创建滤波器(): BiquadFilterNode;
+    创建缓冲(numberOfChannels: number, length: number, sampleRate: number): AudioBuffer;
     创建缓冲源(): AudioBufferSourceNode;
     创建卷积器(): ConvolverNode;
     创建延迟(maxDelayTime?: number): DelayNode;
@@ -1527,6 +1528,7 @@ interface CSSStyleProperties {
     缩放: string;
     描边: string;
     文本对齐: string;
+    文本渲染: string;
     顶部: string;
     变换: string;
     平移: string;
@@ -1600,6 +1602,7 @@ interface CacheStorage {
 }
 
 interface CanvasCaptureMediaStreamTrack {
+    readonly 画布: HTMLCanvasElement;
     加事件监听<K extends keyof MediaStreamTrackEventMap>(type: K, listener: (this: CanvasCaptureMediaStreamTrack, ev: MediaStreamTrackEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MediaStreamTrackEventMap>(type: K, listener: (this: CanvasCaptureMediaStreamTrack, ev: MediaStreamTrackEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1690,6 +1693,10 @@ interface CanvasRect {
     描边矩形(x: number, y: number, w: number, h: number): void;
 }
 
+interface CanvasRenderingContext2D {
+    readonly 画布: HTMLCanvasElement;
+}
+
 interface CanvasSettings {
     取上下文属性(): CanvasRenderingContext2DSettings;
 }
@@ -1717,6 +1724,7 @@ interface CanvasTextDrawingStyles {
     字距: string;
     文本对齐: CanvasTextAlign;
     文本基线: CanvasTextBaseline;
+    文本渲染: CanvasTextRendering;
     词距: string;
 }
 
@@ -2313,6 +2321,10 @@ interface GPUBuffer {
     readonly 大小: GPUSize64Out;
 }
 
+interface GPUCanvasContext {
+    readonly 画布: HTMLCanvasElement | OffscreenCanvas;
+}
+
 interface GPUCommandEncoder {
     完成(descriptor?: GPUCommandBufferDescriptor): GPUCommandBuffer;
 }
@@ -2325,6 +2337,8 @@ interface GPUCompilationMessage {
 }
 
 interface GPUDevice {
+    创建缓冲(descriptor: GPUBufferDescriptor): GPUBuffer;
+    创建纹理(descriptor: GPUTextureDescriptor): GPUTexture;
     加事件监听<K extends keyof GPUDeviceEventMap>(type: K, listener: (this: GPUDevice, ev: GPUDeviceEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof GPUDeviceEventMap>(type: K, listener: (this: GPUDevice, ev: GPUDeviceEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3373,6 +3387,7 @@ interface ImageBitmap {
 }
 
 interface ImageBitmapRenderingContext {
+    readonly 画布: HTMLCanvasElement | OffscreenCanvas;
     从位图传输(bitmap: ImageBitmap | null): void;
 }
 
@@ -3815,6 +3830,10 @@ interface OffscreenCanvas {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof OffscreenCanvasEventMap>(type: K, listener: (this: OffscreenCanvas, ev: OffscreenCanvasEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface OffscreenCanvasRenderingContext2D {
+    readonly 画布: OffscreenCanvas;
 }
 
 interface OscillatorNode {
@@ -5264,6 +5283,12 @@ interface WakeLockSentinel {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface WebGL2RenderingContextOverloads {
+    缓冲数据(target: GLenum, size: GLsizeiptr, usage: GLenum): void;
+    缓冲数据(target: GLenum, srcData: AllowSharedBufferSource | null, usage: GLenum): void;
+    缓冲数据(target: GLenum, srcData: ArrayBufferView<ArrayBufferLike>, usage: GLenum, srcOffset: number, length?: GLuint): void;
+}
+
 interface WebGLActiveInfo {
     readonly 名称: string;
     readonly 大小: GLint;
@@ -5271,7 +5296,15 @@ interface WebGLActiveInfo {
 }
 
 interface WebGLRenderingContextBase {
+    readonly 画布: HTMLCanvasElement | OffscreenCanvas;
+    绑定缓冲(target: GLenum, buffer: WebGLBuffer | null): void;
+    绑定纹理(target: GLenum, texture: WebGLTexture | null): void;
     清空(mask: GLbitfield): void;
+    创建缓冲(): WebGLBuffer;
+    创建程序(): WebGLProgram;
+    创建着色器(type: GLenum): WebGLShader | null;
+    创建纹理(): WebGLTexture;
+    删着色器(shader: WebGLShader | null): void;
     完成(): void;
     取上下文属性(): WebGLContextAttributes | null;
     取扩展名(name: string): any;
@@ -5312,6 +5345,13 @@ interface WebGLRenderingContextBase {
     取支持扩展(): string[] | null;
     上下文丢失(): boolean;
     线宽(width: GLfloat): void;
+    链接程序(program: WebGLProgram): void;
+    使用程序(program: WebGLProgram | null): void;
+}
+
+interface WebGLRenderingContextOverloads {
+    缓冲数据(target: GLenum, size: GLsizeiptr, usage: GLenum): void;
+    缓冲数据(target: GLenum, data: AllowSharedBufferSource | null, usage: GLenum): void;
 }
 
 interface WebSocket {
