@@ -47,8 +47,32 @@ interface AuthenticationExtensionsLargeBlobInputsJSON {
     写入?: Base64URLString;
 }
 
+interface AuthenticationExtensionsLargeBlobOutputs {
+    转二进制块?: ArrayBuffer;
+}
+
+interface AuthenticationExtensionsLargeBlobOutputsJSON {
+    转二进制块?: Base64URLString;
+}
+
+interface AuthenticationResponseJSON {
+    种类: string;
+}
+
+interface BiquadFilterOptions {
+    种类?: BiquadFilterType;
+}
+
+interface BlobPropertyBag {
+    种类?: string;
+}
+
 interface CSSNumericType {
     长度?: number;
+}
+
+interface ClientQueryOptions {
+    种类?: ClientTypes;
 }
 
 interface CookieInit {
@@ -57,6 +81,10 @@ interface CookieInit {
 
 interface CookieListItem {
     值内容?: string;
+}
+
+interface CookieStoreGetOptions {
+    地址?: string;
 }
 
 interface DOMRectInit {
@@ -71,6 +99,14 @@ interface DoubleRange {
 
 interface EffectTiming {
     填充?: FillMode;
+}
+
+interface EncodedAudioChunkInit {
+    种类: EncodedAudioChunkType;
+}
+
+interface EncodedVideoChunkInit {
+    种类: EncodedVideoChunkType;
 }
 
 interface ErrorEventInit {
@@ -105,6 +141,10 @@ interface GPUBufferBinding {
     大小?: GPUSize64;
 }
 
+interface GPUBufferBindingLayout {
+    种类?: GPUBufferBindingType;
+}
+
 interface GPUBufferDescriptor {
     大小: GPUSize64;
 }
@@ -112,6 +152,14 @@ interface GPUBufferDescriptor {
 interface GPUExtent3DDict {
     高度?: GPUIntegerCoordinate;
     宽度: GPUIntegerCoordinate;
+}
+
+interface GPUQuerySetDescriptor {
+    种类: GPUQueryType;
+}
+
+interface GPUSamplerBindingLayout {
+    种类?: GPUSamplerBindingType;
 }
 
 interface GPUTextureDescriptor {
@@ -134,13 +182,30 @@ interface HmacKeyGenParams {
     长度?: number;
 }
 
+interface ImageDecoderInit {
+    种类: string;
+}
+
+interface ImageEncodeOptions {
+    种类?: string;
+}
+
 interface KeyboardEventInit {
     键名?: string;
     重复?: boolean;
 }
 
+interface MediaDecodingConfiguration {
+    种类: MediaDecodingType;
+}
+
+interface MediaEncodingConfiguration {
+    种类: MediaEncodingType;
+}
+
 interface MediaImage {
     源址: string;
+    种类?: string;
 }
 
 interface MediaMetadataInit {
@@ -184,6 +249,10 @@ interface OptionalEffectTiming {
     填充?: FillMode;
 }
 
+interface OscillatorOptions {
+    种类?: OscillatorType;
+}
+
 interface PaymentCurrencyAmount {
     值内容: string;
 }
@@ -196,9 +265,25 @@ interface PaymentValidationErrors {
     报错?: string;
 }
 
+interface PerformanceObserverInit {
+    种类?: string;
+}
+
 interface PointerEventInit {
     高度?: number;
     宽度?: number;
+}
+
+interface PublicKeyCredentialDescriptor {
+    种类: PublicKeyCredentialType;
+}
+
+interface PublicKeyCredentialDescriptorJSON {
+    种类: string;
+}
+
+interface PublicKeyCredentialParameters {
+    种类: PublicKeyCredentialType;
 }
 
 interface PushSubscriptionJSON {
@@ -222,6 +307,22 @@ interface RTCErrorEventInit {
     报错: RTCError;
 }
 
+interface RTCLocalSessionDescriptionInit {
+    种类?: RTCSdpType;
+}
+
+interface RTCPeerConnectionIceErrorEventInit {
+    地址?: string;
+}
+
+interface RTCSessionDescriptionInit {
+    种类: RTCSdpType;
+}
+
+interface RTCStats {
+    种类: RTCStatsType;
+}
+
 interface ReadableStreamBYOBReaderReadOptions {
     最小?: number;
 }
@@ -236,13 +337,38 @@ interface ReadableStreamReadValueResult<T> {
     值内容: T;
 }
 
+interface RegistrationOptions {
+    种类?: WorkerType;
+}
+
+interface RegistrationResponseJSON {
+    种类: string;
+}
+
+interface Report {
+    种类?: string;
+    地址?: string;
+}
+
+interface RequestInit {
+    头集合?: HeadersInit;
+}
+
+interface ResponseInit {
+    头集合?: HeadersInit;
+    状态码?: number;
+    状态文本?: string;
+}
+
 interface SVGBoundingBoxOptions {
     填充?: boolean;
     描边?: boolean;
 }
 
 interface ShareData {
+    转文本?: string;
     标题?: string;
+    地址?: string;
 }
 
 interface SpeechRecognitionErrorEventInit {
@@ -255,6 +381,7 @@ interface SpeechSynthesisErrorEventInit {
 
 interface StorageEventInit {
     键名?: string | null;
+    地址?: string;
 }
 
 interface Transformer<I = any, O = any> {
@@ -274,10 +401,23 @@ interface URLPatternResult {
     查找: URLPatternComponentResult;
 }
 
+interface UnderlyingByteSource {
+    种类: "bytes";
+}
+
+interface UnderlyingDefaultSource<R = any> {
+    种类?: undefined;
+}
+
 interface UnderlyingSink<W = any> {
     中止?: UnderlyingSinkAbortCallback;
     关闭?: UnderlyingSinkCloseCallback;
+    种类?: undefined;
     写入?: UnderlyingSinkWriteCallback<W>;
+}
+
+interface UnderlyingSource<R = any> {
+    种类?: ReadableStreamType;
 }
 
 interface VideoConfiguration {
@@ -307,8 +447,13 @@ interface WebTransportHash {
     值内容: BufferSource;
 }
 
+interface WorkerOptions {
+    种类?: WorkerType;
+}
+
 interface WriteParams {
     大小?: number | null;
+    种类: WriteCommandType;
 }
 
 interface AbortController {
@@ -417,9 +562,23 @@ interface BaseAudioContext {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface BiquadFilterNode {
+    种类: BiquadFilterType;
+}
+
 interface Blob {
     readonly 大小: number;
+    readonly 种类: string;
+    转缓冲(): Promise<ArrayBuffer>;
     截取(start?: number, end?: number, contentType?: string): Blob;
+    转文本(): Promise<string>;
+}
+
+interface Body {
+    转缓冲(): Promise<ArrayBuffer>;
+    转二进制块(): Promise<Blob>;
+    转对象(): Promise<any>;
+    转文本(): Promise<string>;
 }
 
 interface BroadcastChannel {
@@ -505,6 +664,7 @@ interface CSSNumericValue {
     添加(...values: CSSNumberish[]): CSSNumericValue;
     最大(...values: CSSNumberish[]): CSSNumericValue;
     最小(...values: CSSNumberish[]): CSSNumericValue;
+    种类(): CSSNumericType;
 }
 
 interface CSSPageDescriptors {
@@ -528,6 +688,10 @@ interface CSSPositionTryDescriptors {
 interface CSSPositionTryRule {
     get 样式(): CSSPositionTryDescriptors;
     set 样式(cssText: string);
+}
+
+interface CSSRule {
+    readonly 种类: number;
 }
 
 interface CSSRuleList {
@@ -723,9 +887,17 @@ interface CountQueuingStrategy {
     readonly 大小: QueuingStrategySize;
 }
 
+interface Credential {
+    readonly 种类: string;
+}
+
 interface CredentialsContainer {
     创建(options?: CredentialCreationOptions): Promise<Credential | null>;
     获取(options?: CredentialRequestOptions): Promise<Credential | null>;
+}
+
+interface CryptoKey {
+    readonly 种类: KeyType;
 }
 
 interface CustomElementRegistry {
@@ -786,6 +958,10 @@ interface DOMTokenList {
     逐个处理(callbackfn: (value: string, key: number, parent: DOMTokenList) => void, thisArg?: any): void;
 }
 
+interface DataTransferItem {
+    readonly 种类: string;
+}
+
 interface DataTransferItemList {
     readonly 长度: number;
     添加(data: string, type: string): DataTransferItem | null;
@@ -799,6 +975,7 @@ interface DigitalCredential {
 }
 
 interface Document {
+    readonly 地址: string;
     readonly 全部: HTMLAllCollection;
     标题: string;
     收养节点<T extends Node>(node: T): T;
@@ -952,11 +1129,20 @@ interface ElementCSSInlineStyle {
     set 样式(cssText: string);
 }
 
+interface EncodedAudioChunk {
+    readonly 种类: EncodedAudioChunkType;
+}
+
+interface EncodedVideoChunk {
+    readonly 种类: EncodedVideoChunkType;
+}
+
 interface ErrorEvent {
     readonly 报错: any;
 }
 
 interface Event {
+    readonly 种类: string;
     阻止默认(): void;
     停止传播(): void;
 }
@@ -966,6 +1152,7 @@ interface EventCounts {
 }
 
 interface EventSource {
+    readonly 地址: string;
     关闭(): void;
     readonly 打开: 1;
     加事件监听<K extends keyof EventSourceEventMap>(type: K, listener: (this: EventSource, ev: EventSourceEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1006,10 +1193,12 @@ interface FileSystemWritableFileStream {
 }
 
 interface FontFace {
+    readonly 状态码: FontFaceLoadStatus;
     样式: string;
 }
 
 interface FontFaceSet {
+    readonly 状态码: FontFaceSetLoadStatus;
     逐个处理(callbackfn: (value: FontFace, key: FontFace, parent: FontFaceSet) => void, thisArg?: any): void;
     加事件监听<K extends keyof FontFaceSetEventMap>(type: K, listener: (this: FontFaceSet, ev: FontFaceSetEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1036,6 +1225,7 @@ interface GPUBuffer {
 
 interface GPUCompilationMessage {
     readonly 长度: number;
+    readonly 种类: GPUCompilationMessageType;
 }
 
 interface GPUDevice {
@@ -1043,6 +1233,10 @@ interface GPUDevice {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof GPUDeviceEventMap>(type: K, listener: (this: GPUDevice, ev: GPUDeviceEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface GPUQuerySet {
+    readonly 种类: GPUQueryType;
 }
 
 interface GPUQueue {
@@ -1091,6 +1285,8 @@ interface HTMLAllCollection {
 }
 
 interface HTMLAnchorElement {
+    转文本: string;
+    种类: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLAnchorElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLAnchorElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1129,6 +1325,7 @@ interface HTMLBaseElement {
 }
 
 interface HTMLBodyElement {
+    转文本: string;
     加事件监听<K extends keyof HTMLBodyElementEventMap>(type: K, listener: (this: HTMLBodyElement, ev: HTMLBodyElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLBodyElementEventMap>(type: K, listener: (this: HTMLBodyElement, ev: HTMLBodyElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1136,6 +1333,7 @@ interface HTMLBodyElement {
 }
 
 interface HTMLButtonElement {
+    种类: "submit" | "reset" | "button";
     值内容: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLButtonElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1241,6 +1439,7 @@ interface HTMLElement {
 interface HTMLEmbedElement {
     高度: string;
     源址: string;
+    种类: string;
     宽度: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLEmbedElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1249,6 +1448,7 @@ interface HTMLEmbedElement {
 }
 
 interface HTMLFieldSetElement {
+    readonly 种类: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLFieldSetElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLFieldSetElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1352,6 +1552,7 @@ interface HTMLInputElement {
     最小: string;
     大小: number;
     源址: string;
+    种类: string;
     值内容: string;
     宽度: number;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLInputElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1361,6 +1562,7 @@ interface HTMLInputElement {
 }
 
 interface HTMLLIElement {
+    种类: string;
     值内容: number;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLLIElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1384,6 +1586,7 @@ interface HTMLLegendElement {
 
 interface HTMLLinkElement {
     链接: string;
+    种类: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLLinkElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLLinkElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1447,6 +1650,7 @@ interface HTMLModElement {
 }
 
 interface HTMLOListElement {
+    种类: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLOListElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLOListElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1455,6 +1659,7 @@ interface HTMLOListElement {
 
 interface HTMLObjectElement {
     高度: string;
+    种类: string;
     宽度: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLObjectElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1470,6 +1675,7 @@ interface HTMLOptGroupElement {
 }
 
 interface HTMLOptionElement {
+    转文本: string;
     值内容: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLOptionElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1490,6 +1696,7 @@ interface HTMLOrSVGElement {
 }
 
 interface HTMLOutputElement {
+    readonly 种类: string;
     值内容: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLOutputElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1505,6 +1712,7 @@ interface HTMLParagraphElement {
 }
 
 interface HTMLParamElement {
+    种类: string;
     值内容: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLParamElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1545,6 +1753,8 @@ interface HTMLQuoteElement {
 
 interface HTMLScriptElement {
     源址: string;
+    转文本: string;
+    种类: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLScriptElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLScriptElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1554,6 +1764,7 @@ interface HTMLScriptElement {
 interface HTMLSelectElement {
     长度: number;
     大小: number;
+    readonly 种类: "select-one" | "select-multiple";
     值内容: string;
     添加(element: HTMLOptionElement | HTMLOptGroupElement, before?: HTMLElement | number | null): void;
     取项(index: number): HTMLOptionElement | null;
@@ -1576,6 +1787,7 @@ interface HTMLSlotElement {
 interface HTMLSourceElement {
     高度: number;
     源址: string;
+    种类: string;
     宽度: number;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLSourceElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1591,6 +1803,7 @@ interface HTMLSpanElement {
 }
 
 interface HTMLStyleElement {
+    种类: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLStyleElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLStyleElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1605,6 +1818,7 @@ interface HTMLTableCaptionElement {
 }
 
 interface HTMLTableCellElement {
+    头集合: string;
     高度: string;
     宽度: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTableCellElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1665,6 +1879,7 @@ interface HTMLTemplateElement {
 }
 
 interface HTMLTextAreaElement {
+    readonly 种类: string;
     值内容: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTextAreaElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1680,6 +1895,7 @@ interface HTMLTimeElement {
 }
 
 interface HTMLTitleElement {
+    转文本: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTitleElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTitleElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1696,6 +1912,7 @@ interface HTMLTrackElement {
 }
 
 interface HTMLUListElement {
+    种类: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLUListElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLUListElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -1728,6 +1945,7 @@ interface Headers {
 }
 
 interface Highlight {
+    种类: HighlightType;
     逐个处理(callbackfn: (value: AbstractRange, key: AbstractRange, parent: Highlight) => void, thisArg?: any): void;
 }
 
@@ -1811,6 +2029,7 @@ interface ImageData {
 }
 
 interface ImageDecoder {
+    readonly 种类: string;
     关闭(): void;
     重置(): void;
 }
@@ -1820,6 +2039,7 @@ interface ImageTrackList {
 }
 
 interface ImportMeta {
+    地址: string;
     解决(specifier: string): string;
 }
 
@@ -1830,6 +2050,7 @@ interface KeyboardEvent {
 
 interface LargestContentfulPaint {
     readonly 大小: number;
+    readonly 地址: string;
     转数据(): any;
 }
 
@@ -1872,6 +2093,7 @@ interface MIDIOutputMap {
 }
 
 interface MIDIPort {
+    readonly 种类: MIDIPortType;
     关闭(): Promise<MIDIPort>;
     打开(): Promise<MIDIPort>;
     加事件监听<K extends keyof MIDIPortEventMap>(type: K, listener: (this: MIDIPort, ev: MIDIPortEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -1979,6 +2201,10 @@ interface MessagePort {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface MimeType {
+    readonly 种类: string;
+}
+
 interface MimeTypeArray {
     readonly 长度: number;
     取项(index: number): MimeType | null;
@@ -1987,6 +2213,7 @@ interface MimeTypeArray {
 interface MutationRecord {
     readonly 后兄弟: Node | null;
     readonly 前兄弟: Node | null;
+    readonly 种类: MutationRecordType;
 }
 
 interface NamedNodeMap {
@@ -2004,10 +2231,12 @@ interface Navigation {
 
 interface NavigationDestination {
     readonly 键名: string;
+    readonly 地址: string;
 }
 
 interface NavigationHistoryEntry {
     readonly 键名: string;
+    readonly 地址: string | null;
     加事件监听<K extends keyof NavigationHistoryEntryEventMap>(type: K, listener: (this: NavigationHistoryEntry, ev: NavigationHistoryEntryEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof NavigationHistoryEntryEventMap>(type: K, listener: (this: NavigationHistoryEntry, ev: NavigationHistoryEntryEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2084,6 +2313,7 @@ interface OffscreenCanvas {
 }
 
 interface OscillatorNode {
+    种类: OscillatorType;
     加事件监听<K extends keyof AudioScheduledSourceNodeEventMap>(type: K, listener: (this: OscillatorNode, ev: AudioScheduledSourceNodeEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof AudioScheduledSourceNodeEventMap>(type: K, listener: (this: OscillatorNode, ev: AudioScheduledSourceNodeEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2143,10 +2373,12 @@ interface PerformanceEventTiming {
 }
 
 interface PerformanceNavigation {
+    readonly 种类: number;
     转数据(): any;
 }
 
 interface PerformanceNavigationTiming {
+    readonly 种类: NavigationTimingType;
     转数据(): any;
 }
 
@@ -2231,11 +2463,16 @@ interface RTCDtlsTransport {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface RTCEncodedVideoFrame {
+    readonly 种类: EncodedVideoChunkType;
+}
+
 interface RTCErrorEvent {
     readonly 报错: RTCError;
 }
 
 interface RTCIceCandidate {
+    readonly 种类: RTCIceCandidateType | null;
     转数据(): RTCIceCandidateInit;
 }
 
@@ -2254,6 +2491,10 @@ interface RTCPeerConnection {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface RTCPeerConnectionIceErrorEvent {
+    readonly 地址: string;
+}
+
 interface RTCRtpReceiver {
     变换: RTCRtpReceiverTransform | null;
 }
@@ -2270,6 +2511,7 @@ interface RTCSctpTransport {
 }
 
 interface RTCSessionDescription {
+    readonly 种类: RTCSdpType;
     转数据(): RTCSessionDescriptionInit;
 }
 
@@ -2303,7 +2545,22 @@ interface RemotePlayback {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface Request {
+    readonly 头集合: Headers;
+    readonly 地址: string;
+}
+
+interface Response {
+    readonly 头集合: Headers;
+    readonly 是成功: boolean;
+    readonly 状态码: number;
+    readonly 状态文本: string;
+    readonly 种类: ResponseType;
+    readonly 地址: string;
+}
+
 interface SVGAElement {
+    种类: string;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGAElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGAElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2358,6 +2615,7 @@ interface SVGClipPathElement {
 }
 
 interface SVGComponentTransferFunctionElement {
+    readonly 种类: SVGAnimatedEnumeration;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGComponentTransferFunctionElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGComponentTransferFunctionElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2400,6 +2658,7 @@ interface SVGFEBlendElement {
 }
 
 interface SVGFEColorMatrixElement {
+    readonly 种类: SVGAnimatedEnumeration;
     readonly 值列: SVGAnimatedNumberList;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEColorMatrixElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -2563,6 +2822,7 @@ interface SVGFETileElement {
 }
 
 interface SVGFETurbulenceElement {
+    readonly 种类: SVGAnimatedEnumeration;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFETurbulenceElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFETurbulenceElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2760,6 +3020,7 @@ interface SVGSVGElement {
 }
 
 interface SVGScriptElement {
+    种类: string;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGScriptElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGScriptElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2789,6 +3050,7 @@ interface SVGStringList {
 
 interface SVGStyleElement {
     标题: string;
+    种类: string;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGStyleElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGStyleElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2852,6 +3114,10 @@ interface SVGTitleElement {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface SVGTransform {
+    readonly 种类: number;
+}
+
 interface SVGTransformList {
     readonly 长度: number;
     清空(): void;
@@ -2890,6 +3156,7 @@ interface Screen {
 }
 
 interface ScreenOrientation {
+    readonly 种类: OrientationType;
     加事件监听<K extends keyof ScreenOrientationEventMap>(type: K, listener: (this: ScreenOrientation, ev: ScreenOrientationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof ScreenOrientationEventMap>(type: K, listener: (this: ScreenOrientation, ev: ScreenOrientationEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2904,6 +3171,7 @@ interface ScriptProcessorNode {
 }
 
 interface Selection {
+    readonly 种类: string;
     转字符串(): string;
 }
 
@@ -2986,6 +3254,7 @@ interface SpeechSynthesisErrorEvent {
 }
 
 interface SpeechSynthesisUtterance {
+    转文本: string;
     加事件监听<K extends keyof SpeechSynthesisUtteranceEventMap>(type: K, listener: (this: SpeechSynthesisUtterance, ev: SpeechSynthesisUtteranceEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SpeechSynthesisUtteranceEventMap>(type: K, listener: (this: SpeechSynthesisUtterance, ev: SpeechSynthesisUtteranceEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3003,6 +3272,7 @@ interface Storage {
 
 interface StorageEvent {
     readonly 键名: string | null;
+    readonly 地址: string;
 }
 
 interface StylePropertyMap {
@@ -3022,6 +3292,7 @@ interface StylePropertyMapReadOnly {
 interface StyleSheet {
     readonly 链接: string | null;
     readonly 标题: string | null;
+    readonly 种类: string;
 }
 
 interface StyleSheetList {
@@ -3119,6 +3390,7 @@ interface URLSearchParams {
 
 interface VTTCue {
     大小: number;
+    转文本: string;
     加事件监听<K extends keyof TextTrackCueEventMap>(type: K, listener: (this: VTTCue, ev: TextTrackCueEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof TextTrackCueEventMap>(type: K, listener: (this: VTTCue, ev: TextTrackCueEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3174,6 +3446,7 @@ interface WGSLLanguageFeatures {
 }
 
 interface WakeLockSentinel {
+    readonly 种类: WakeLockType;
     加事件监听<K extends keyof WakeLockSentinelEventMap>(type: K, listener: (this: WakeLockSentinel, ev: WakeLockSentinelEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof WakeLockSentinelEventMap>(type: K, listener: (this: WakeLockSentinel, ev: WakeLockSentinelEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3187,6 +3460,7 @@ interface WebGL2RenderingContextBase {
 
 interface WebGLActiveInfo {
     readonly 大小: GLint;
+    readonly 种类: GLenum;
 }
 
 interface WebGLRenderingContextBase {
@@ -3196,6 +3470,7 @@ interface WebGLRenderingContextBase {
 }
 
 interface WebSocket {
+    readonly 地址: string;
     关闭(code?: number, reason?: string): void;
     发送(data: BufferSource | Blob | string): void;
     readonly 打开: 1;
@@ -3211,6 +3486,7 @@ interface WebTransport {
 
 interface Window {
     readonly 长度: number;
+    状态码: string;
     失焦(): void;
     关闭(): void;
     聚焦(): void;
@@ -3259,10 +3535,14 @@ interface XMLDocument {
 }
 
 interface XMLHttpRequest {
+    readonly 状态码: number;
+    readonly 状态文本: string;
     中止(): void;
+    取响应头(name: string): string | null;
     打开(method: string, url: string | URL): void;
     打开(method: string, url: string | URL, async: boolean, username?: string | null, password?: string | null): void;
     发送(body?: Document | XMLHttpRequestBodyInit | null): void;
+    设请求头(name: string, value: string): void;
     readonly 已完成: 4;
     加事件监听<K extends keyof XMLHttpRequestEventMap>(type: K, listener: (this: XMLHttpRequest, ev: XMLHttpRequestEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -3774,7 +4054,12 @@ interface Number {
 }
 
 interface PromiseFulfilledResult<T> {
+    状态码: "fulfilled";
     值内容: T;
+}
+
+interface PromiseRejectedResult {
+    状态码: "rejected";
 }
 
 interface Atomics {
