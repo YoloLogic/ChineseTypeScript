@@ -61,6 +61,7 @@ interface AudioDataInit {
     格式化: AudioSampleFormat;
     采样率: number;
     时间戳: number;
+    转移?: ArrayBuffer[];
 }
 
 interface AudioDecoderConfig {
@@ -229,6 +230,7 @@ interface EncodedAudioChunkInit {
     数据: AllowSharedBufferSource;
     时长?: number;
     时间戳: number;
+    转移?: ArrayBuffer[];
     种类: EncodedAudioChunkType;
 }
 
@@ -408,6 +410,7 @@ interface ImageBitmapRenderingContextSettings {
 
 interface ImageDecoderInit {
     数据: ImageBufferSource;
+    转移?: ArrayBuffer[];
     种类: string;
 }
 
@@ -877,6 +880,10 @@ interface StreamPipeOptions {
     信号?: AbortSignal;
 }
 
+interface StructuredSerializeOptions {
+    转移?: Transferable[];
+}
+
 interface TimelineRangeOffset {
     偏移?: CSSNumericValue;
 }
@@ -934,6 +941,10 @@ interface UnderlyingSink<W = any> {
 interface UnderlyingSource<R = any> {
     开始?: UnderlyingSourceStartCallback<R>;
     种类?: ReadableStreamType;
+}
+
+interface VideoColorSpaceInit {
+    转移?: VideoTransferCharacteristics | null;
 }
 
 interface VideoConfiguration {
@@ -1090,6 +1101,7 @@ interface AudioData {
 interface AudioDecoder {
     readonly 状态: CodecState;
     关闭(): void;
+    解码(chunk: EncodedAudioChunk): void;
     重置(): void;
     加事件监听<K extends keyof AudioDecoderEventMap>(type: K, listener: (this: AudioDecoder, ev: AudioDecoderEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1100,6 +1112,7 @@ interface AudioDecoder {
 interface AudioEncoder {
     readonly 状态: CodecState;
     关闭(): void;
+    编码(data: AudioData): void;
     重置(): void;
     加事件监听<K extends keyof AudioEncoderEventMap>(type: K, listener: (this: AudioEncoder, ev: AudioEncoderEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1366,6 +1379,7 @@ interface CSSStyleProperties {
     高度: string;
     字距: string;
     偏移: string;
+    调整大小: string;
     旋转: string;
     缩放: string;
     描边: string;
@@ -2522,6 +2536,7 @@ interface HTMLImageElement {
     宽度: number;
     readonly 横坐标: number;
     readonly 纵坐标: number;
+    解码(): Promise<void>;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLImageElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLImageElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3147,6 +3162,7 @@ interface ImageData {
 interface ImageDecoder {
     readonly 种类: string;
     关闭(): void;
+    解码(options?: ImageDecodeOptions): Promise<ImageDecodeResult>;
     重置(): void;
 }
 
@@ -4530,6 +4546,7 @@ interface ServiceWorker {
 }
 
 interface ServiceWorkerContainer {
+    登记(scriptURL: string | URL, options?: RegistrationOptions): Promise<ServiceWorkerRegistration>;
     加事件监听<K extends keyof ServiceWorkerContainerEventMap>(type: K, listener: (this: ServiceWorkerContainer, ev: ServiceWorkerContainerEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof ServiceWorkerContainerEventMap>(type: K, listener: (this: ServiceWorkerContainer, ev: ServiceWorkerContainerEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4537,6 +4554,7 @@ interface ServiceWorkerContainer {
 }
 
 interface ServiceWorkerRegistration {
+    注销(): Promise<boolean>;
     加事件监听<K extends keyof ServiceWorkerRegistrationEventMap>(type: K, listener: (this: ServiceWorkerRegistration, ev: ServiceWorkerRegistrationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof ServiceWorkerRegistrationEventMap>(type: K, listener: (this: ServiceWorkerRegistration, ev: ServiceWorkerRegistrationEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4701,9 +4719,17 @@ interface TaskSignal {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface TextDecoder {
+    解码(input?: AllowSharedBufferSource, options?: TextDecodeOptions): string;
+}
+
 interface TextDecoderStream {
     readonly 可读: ReadableStream<string>;
     readonly 可写: WritableStream<BufferSource>;
+}
+
+interface TextEncoder {
+    编码(input?: string): Uint8Array<ArrayBuffer>;
 }
 
 interface TextEncoderStream {
@@ -4832,12 +4858,14 @@ interface VTTRegion {
 }
 
 interface VideoColorSpace {
+    readonly 转移: VideoTransferCharacteristics | null;
     转数据(): VideoColorSpaceInit;
 }
 
 interface VideoDecoder {
     readonly 状态: CodecState;
     关闭(): void;
+    解码(chunk: EncodedVideoChunk): void;
     重置(): void;
     加事件监听<K extends keyof VideoDecoderEventMap>(type: K, listener: (this: VideoDecoder, ev: VideoDecoderEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -4848,6 +4876,7 @@ interface VideoDecoder {
 interface VideoEncoder {
     readonly 状态: CodecState;
     关闭(): void;
+    编码(frame: VideoFrame, options?: VideoEncoderEncodeOptions): void;
     重置(): void;
     加事件监听<K extends keyof VideoEncoderEventMap>(type: K, listener: (this: VideoEncoder, ev: VideoEncoderEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -5746,6 +5775,15 @@ interface String {
     全替换(searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string;
 }
 
+interface WeakRef<T extends WeakKey> {
+    解引用(): T | undefined;
+}
+
+interface FinalizationRegistry<T> {
+    登记(target: WeakKey, heldValue: T, unregisterToken?: WeakKey): void;
+    注销(unregisterToken: WeakKey): boolean;
+}
+
 interface Array<T> {
     取第(index: number): T | undefined;
 }
@@ -5867,6 +5905,15 @@ interface BigUint64Array<TArrayBuffer extends ArrayBufferLike> {
     排序副本(compareFn?: (a: bigint, b: bigint) => number): BigUint64Array<ArrayBuffer>;
 }
 
+interface ArrayBuffer {
+    get 最大字节长(): number;
+    get 可调整(): boolean;
+    调整大小(newByteLength?: number): void;
+    get 已分离(): boolean;
+    转移(newByteLength?: number): ArrayBuffer;
+    转移定长(newByteLength?: number): ArrayBuffer;
+}
+
 interface PromiseWithResolvers<T> {
     解决: (value: T | PromiseLike<T>) => void;
     拒绝: (reason?: any) => void;
@@ -5878,6 +5925,8 @@ interface Atomics {
 }
 
 interface SharedArrayBuffer {
+    get 可增长(): boolean;
+    get 最大字节长(): number;
     增长(newByteLength?: number): void;
 }
 
