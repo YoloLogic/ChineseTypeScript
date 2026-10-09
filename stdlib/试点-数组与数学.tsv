@@ -1026,6 +1026,17 @@ member	clonable	可克隆
 member	serializable	可序列化
 member	outerHTML	外部标记
 member	createDocument	创建文档
+member	ownerElement	属主元素
+member	specified	已指定
+member	createDocumentType	创建文档类型
+member	createHTMLDocument	创建标记文档
+member	publicId	公共编号
+member	systemId	系统编号
+member	elementFromPoint	按点取元素
+member	currentTarget	当前目标
+member	eventPhase	事件阶段
+member	bubbles	会冒泡
+member	composed	可穿透
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

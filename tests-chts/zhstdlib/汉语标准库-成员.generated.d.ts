@@ -301,6 +301,11 @@ interface ErrorEventInit {
     消息?: string;
 }
 
+interface EventInit {
+    会冒泡?: boolean;
+    可穿透?: boolean;
+}
+
 interface FileSystemFlags {
     创建?: boolean;
 }
@@ -460,6 +465,10 @@ interface GainOptions {
 
 interface GamepadEffectParameters {
     时长?: number;
+}
+
+interface GetRootNodeOptions {
+    可穿透?: boolean;
 }
 
 interface HkdfParams {
@@ -1379,6 +1388,8 @@ interface Attr {
     readonly 本地名: string;
     readonly 名称: string;
     readonly 属主文档: Document;
+    readonly 属主元素: Element | null;
+    readonly 已指定: boolean;
     值内容: string;
     get 文本内容(): string;
     set 文本内容(value: string | null);
@@ -2096,6 +2107,8 @@ interface DOMException {
 
 interface DOMImplementation {
     创建文档(namespace: string | null, qualifiedName: string | null, doctype?: DocumentType | null): XMLDocument;
+    创建文档类型(name: string, publicId: string, systemId: string): DocumentType;
+    创建标记文档(title?: string): Document;
 }
 
 interface DOMMatrixReadOnly {
@@ -2358,12 +2371,15 @@ interface DocumentOrShadowRoot {
     readonly 活动元素: Element | null;
     readonly 指针锁定元素: Element | null;
     readonly 样式表集: StyleSheetList;
+    按点取元素(x: number, y: number): Element | null;
     取动画列(): Animation[];
 }
 
 interface DocumentType {
     readonly 名称: string;
     readonly 属主文档: Document;
+    readonly 公共编号: string;
+    readonly 系统编号: string;
     get 文本内容(): null;
 }
 
@@ -2484,6 +2500,10 @@ interface ErrorEvent {
 }
 
 interface Event {
+    readonly 会冒泡: boolean;
+    readonly 可穿透: boolean;
+    readonly 当前目标: EventTarget | null;
+    readonly 事件阶段: number;
     返回值: boolean;
     readonly 目标: EventTarget | null;
     readonly 种类: string;
