@@ -112,6 +112,7 @@ interface AudioDecoderInit {
 }
 
 interface AudioEncoderConfig {
+    高级音频编码?: AacEncoderConfig;
     比特率?: number;
     编解码器: string;
     声道数: number;
@@ -120,6 +121,22 @@ interface AudioEncoderConfig {
 
 interface AudioEncoderInit {
     报错: WebCodecsErrorCallback;
+}
+
+interface AuthenticationExtensionsClientInputs {
+    应用标识?: string;
+}
+
+interface AuthenticationExtensionsClientInputsJSON {
+    应用标识?: string;
+}
+
+interface AuthenticationExtensionsClientOutputs {
+    应用标识?: boolean;
+}
+
+interface AuthenticationExtensionsClientOutputsJSON {
+    应用标识?: boolean;
 }
 
 interface AuthenticationExtensionsLargeBlobInputs {
@@ -1651,6 +1668,7 @@ interface VideoDecoderInit {
 
 interface VideoEncoderConfig {
     透明度?: AlphaOption;
+    高级视频编码?: AvcEncoderConfig;
     比特率?: number;
     编解码器: string;
     内容提示?: string;
@@ -1659,6 +1677,10 @@ interface VideoEncoderConfig {
     帧率?: number;
     高度: number;
     宽度: number;
+}
+
+interface VideoEncoderEncodeOptions {
+    高级视频编码?: VideoEncoderEncodeOptionsForAvc;
 }
 
 interface VideoEncoderEncodeOptionsForAvc {
@@ -1713,6 +1735,7 @@ interface WaveShaperOptions {
 
 interface WebGLContextAttributes {
     透明度?: boolean;
+    抗锯齿?: boolean;
     深度?: boolean;
     模板缓冲?: boolean;
 }
@@ -2808,6 +2831,8 @@ interface DigitalCredential {
 interface Document {
     链接颜色: string;
     readonly 全部: HTMLAllCollection;
+    readonly 锚点集: HTMLCollectionOf<HTMLAnchorElement>;
+    readonly 小程序集: HTMLCollection;
     主体: HTMLElement;
     readonly 字符集: string;
     readonly 编码字符集: string;
@@ -5991,6 +6016,7 @@ interface SVGClipPathElement {
 }
 
 interface SVGComponentTransferFunctionElement {
+    readonly 振幅: SVGAnimatedNumber;
     readonly 拦截: SVGAnimatedNumber;
     readonly 偏移: SVGAnimatedNumber;
     readonly 种类: SVGAnimatedEnumeration;
@@ -6085,6 +6111,7 @@ interface SVGFEDisplacementMapElement {
 }
 
 interface SVGFEDistantLightElement {
+    readonly 方位角: SVGAnimatedNumber;
     readonly 仰角: SVGAnimatedNumber;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEDistantLightElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -7842,6 +7869,9 @@ interface Math {
     双曲余弦(x: number): number;
     双曲正弦(x: number): number;
     双曲正切(x: number): number;
+    双曲反余弦(x: number): number;
+    双曲反正弦(x: number): number;
+    双曲反正切(x: number): number;
     斜边长(...values: number[]): number;
     截断(x: number): number;
     单精度(x: number): number;
@@ -7873,6 +7903,7 @@ interface String {
     规范化(form?: string): string;
     重复(count: number): string;
     以开头(searchString: string, position?: number): boolean;
+    锚点(name: string): string;
     粗体(): string;
     相减(): string;
 }
