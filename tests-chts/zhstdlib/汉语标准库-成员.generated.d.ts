@@ -668,6 +668,14 @@ interface PropertyIndexedKeyframes {
     偏移?: number | (number | null)[];
 }
 
+interface PublicKeyCredentialCreationOptions {
+    扩展?: AuthenticationExtensionsClientInputs;
+}
+
+interface PublicKeyCredentialCreationOptionsJSON {
+    扩展?: AuthenticationExtensionsClientInputsJSON;
+}
+
 interface PublicKeyCredentialDescriptor {
     编号: BufferSource;
     种类: PublicKeyCredentialType;
@@ -684,6 +692,14 @@ interface PublicKeyCredentialEntity {
 
 interface PublicKeyCredentialParameters {
     种类: PublicKeyCredentialType;
+}
+
+interface PublicKeyCredentialRequestOptions {
+    扩展?: AuthenticationExtensionsClientInputs;
+}
+
+interface PublicKeyCredentialRequestOptionsJSON {
+    扩展?: AuthenticationExtensionsClientInputsJSON;
 }
 
 interface PublicKeyCredentialRpEntity {
@@ -714,6 +730,7 @@ interface QueuingStrategyInit {
 
 interface RTCDataChannelInit {
     编号?: number;
+    协议?: string;
 }
 
 interface RTCDtlsFingerprint {
@@ -954,12 +971,14 @@ interface ULongRange {
 interface URLPatternInit {
     散列?: string;
     端口?: string;
+    协议?: string;
     查找?: string;
 }
 
 interface URLPatternResult {
     散列: URLPatternComponentResult;
     端口: URLPatternComponentResult;
+    协议: URLPatternComponentResult;
     查找: URLPatternComponentResult;
 }
 
@@ -1847,6 +1866,7 @@ interface DeviceOrientationEvent {
 
 interface DigitalCredential {
     readonly 数据: any;
+    readonly 协议: string;
     转数据(): any;
 }
 
@@ -2588,6 +2608,7 @@ interface HTMLHyperlinkElementUtils {
     链接: string;
     转字符串(): string;
     端口: string;
+    协议: string;
     查找: string;
 }
 
@@ -3317,6 +3338,7 @@ interface Location {
     链接: string;
     转字符串(): string;
     端口: string;
+    协议: string;
     查找: string;
     合入(url: string | URL): void;
     替换(url: string | URL): void;
@@ -3473,7 +3495,9 @@ interface MediaSource {
 
 interface MediaStream {
     readonly 编号: string;
+    加轨道(track: MediaStreamTrack): void;
     复制(): MediaStream;
+    删轨道(track: MediaStreamTrack): void;
     加事件监听<K extends keyof MediaStreamEventMap>(type: K, listener: (this: MediaStream, ev: MediaStreamEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MediaStreamEventMap>(type: K, listener: (this: MediaStream, ev: MediaStreamEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3488,6 +3512,7 @@ interface MediaStreamTrack {
     应用约束(constraints?: MediaTrackConstraints): Promise<void>;
     复制(): MediaStreamTrack;
     取能力(): MediaTrackCapabilities;
+    取约束(): MediaTrackConstraints;
     取设置(): MediaTrackSettings;
     加事件监听<K extends keyof MediaStreamTrackEventMap>(type: K, listener: (this: MediaStreamTrack, ev: MediaStreamTrackEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -3840,9 +3865,12 @@ interface RTCDTMFSender {
 }
 
 interface RTCDataChannel {
+    二进制类型: BinaryType;
+    readonly 缓冲量: number;
     readonly 编号: number | null;
     readonly 标签: string;
     出错时: ((this: RTCDataChannel, ev: RTCErrorEvent) => any) | null;
+    readonly 协议: string;
     readonly 就绪态: RTCDataChannelState;
     关闭(): void;
     发送(data: string): void;
@@ -3882,6 +3910,7 @@ interface RTCErrorEvent {
 interface RTCIceCandidate {
     readonly 端口: number | null;
     readonly 优先级: number | null;
+    readonly 协议: RTCIceProtocol | null;
     readonly 种类: RTCIceCandidateType | null;
     转数据(): RTCIceCandidateInit;
 }
@@ -3897,11 +3926,19 @@ interface RTCIceTransport {
 interface RTCPeerConnection {
     加交互候选(candidate?: RTCIceCandidateInit | null): Promise<void>;
     加交互候选(candidate: RTCIceCandidateInit | null, successCallback: VoidFunction, failureCallback: RTCPeerConnectionErrorCallback): Promise<void>;
+    加轨道(track: MediaStreamTrack, ...streams: MediaStream[]): RTCRtpSender;
     关闭(): void;
     创建应答(options?: RTCAnswerOptions): Promise<RTCSessionDescriptionInit>;
     创建应答(successCallback: RTCSessionDescriptionCallback, failureCallback: RTCPeerConnectionErrorCallback): Promise<void>;
+    创建数据通道(label: string, dataChannelDict?: RTCDataChannelInit): RTCDataChannel;
     创建提议(options?: RTCOfferOptions): Promise<RTCSessionDescriptionInit>;
     创建提议(successCallback: RTCSessionDescriptionCallback, failureCallback: RTCPeerConnectionErrorCallback, options?: RTCOfferOptions): Promise<void>;
+    取统计(selector?: MediaStreamTrack | null): Promise<RTCStatsReport>;
+    取收发器(): RTCRtpTransceiver[];
+    删轨道(sender: RTCRtpSender): void;
+    重启交互(): void;
+    设本地描述(description?: RTCLocalSessionDescriptionInit): Promise<void>;
+    设本地描述(description: RTCLocalSessionDescriptionInit, successCallback: VoidFunction, failureCallback: RTCPeerConnectionErrorCallback): Promise<void>;
     设远端描述(description: RTCSessionDescriptionInit): Promise<void>;
     设远端描述(description: RTCSessionDescriptionInit, successCallback: VoidFunction, failureCallback: RTCPeerConnectionErrorCallback): Promise<void>;
     加事件监听<K extends keyof RTCPeerConnectionEventMap>(type: K, listener: (this: RTCPeerConnection, ev: RTCPeerConnectionEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3918,11 +3955,13 @@ interface RTCPeerConnectionIceErrorEvent {
 interface RTCRtpReceiver {
     变换: RTCRtpReceiverTransform | null;
     取参数(): RTCRtpReceiveParameters;
+    取统计(): Promise<RTCStatsReport>;
 }
 
 interface RTCRtpSender {
     变换: RTCRtpSenderTransform | null;
     取参数(): RTCRtpSendParameters;
+    取统计(): Promise<RTCStatsReport>;
     设参数(parameters: RTCRtpSendParameters, setParameterOptions?: RTCSetParameterOptions): Promise<void>;
 }
 
@@ -4977,6 +5016,7 @@ interface URL {
     链接: string;
     转字符串(): string;
     端口: string;
+    协议: string;
     查找: string;
     转数据(): string;
 }
@@ -4984,6 +5024,7 @@ interface URL {
 interface URLPattern {
     readonly 散列: string;
     readonly 端口: string;
+    readonly 协议: string;
     readonly 查找: string;
     执行(input?: URLPatternInput, baseURL?: string | URL): URLPatternResult | null;
     测试(input?: URLPatternInput, baseURL?: string | URL): boolean;
@@ -5130,7 +5171,11 @@ interface WebGLRenderingContextBase {
 }
 
 interface WebSocket {
+    二进制类型: BinaryType;
+    readonly 缓冲量: number;
+    readonly 扩展: string;
     出错时: ((this: WebSocket, ev: Event) => any) | null;
+    readonly 协议: string;
     readonly 就绪态: 0 | 1 | 2 | 3;
     readonly 地址: string;
     关闭(code?: number, reason?: string): void;
