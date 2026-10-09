@@ -384,6 +384,7 @@ interface DragEventInit {
 
 interface DynamicsCompressorOptions {
     拐点?: number;
+    比率?: number;
     释放?: number;
     阈值?: number;
 }
@@ -972,6 +973,7 @@ interface OptionalEffectTiming {
 interface OpusEncoderConfig {
     复杂度?: number;
     格式化?: OpusBitstreamFormat;
+    丢包百分比?: number;
 }
 
 interface OscillatorOptions {
@@ -1098,6 +1100,10 @@ interface ProgressEventInit {
     长度可算?: boolean;
     已加载?: number;
     总量?: number;
+}
+
+interface PromiseRejectionEventInit {
+    承诺对象: Promise<any>;
 }
 
 interface PropertyDefinition {
@@ -1771,6 +1777,7 @@ interface WebTransportHash {
 
 interface WebTransportOptions {
     允许池化?: boolean;
+    协议集?: string[];
 }
 
 interface WheelEventInit {
@@ -2326,8 +2333,13 @@ interface CSSStyleProperties {
     标记物: string;
     偏移: string;
     不透明度: string;
+    孤行: string;
+    轮廓: string;
+    溢出: string;
+    内边距: string;
     透视: string;
     位置: string;
+    引号: string;
     调整大小: string;
     右侧: string;
     旋转: string;
@@ -3019,6 +3031,7 @@ interface DragEvent {
 
 interface DynamicsCompressorNode {
     readonly 拐点: AudioParam;
+    readonly 比率: AudioParam;
     readonly 释放: AudioParam;
     readonly 阈值: AudioParam;
 }
@@ -5603,6 +5616,10 @@ interface ProgressEvent<T extends EventTarget = EventTarget> {
     readonly 总量: number;
 }
 
+interface PromiseRejectionEvent {
+    readonly 承诺对象: Promise<any>;
+}
+
 interface PublicKeyCredential {
     readonly 原始编号: ArrayBuffer;
     转数据(): RegistrationResponseJSON | AuthenticationResponseJSON;
@@ -6001,6 +6018,10 @@ interface SVGAnimatedNumber {
 interface SVGAnimatedNumberList {
     readonly 动画值: SVGNumberList;
     readonly 基值: SVGNumberList;
+}
+
+interface SVGAnimatedPoints {
+    readonly 点集: SVGPointList;
 }
 
 interface SVGAnimatedPreserveAspectRatio {
@@ -7486,6 +7507,10 @@ interface WebGLRenderingContextOverloads {
     读像素(x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type: GLenum, pixels: ArrayBufferView<ArrayBufferLike> | null): void;
 }
 
+interface WebGLShaderPrecisionFormat {
+    readonly 精确度: GLint;
+}
+
 interface WebSocket {
     二进制类型: BinaryType;
     readonly 缓冲量: number;
@@ -7853,6 +7878,10 @@ interface Map<K, V> {
     readonly 大小: number;
 }
 
+interface MapConstructor {
+    readonly 原型: Map<any, any>;
+}
+
 interface ReadonlyMap<K, V> {
     逐个处理(callbackfn: (value: V, key: K, map: ReadonlyMap<K, V>) => void, thisArg?: any): void;
     获取(key: K): V | undefined;
@@ -7867,6 +7896,10 @@ interface WeakMap<K extends WeakKey, V> {
     设置(key: K, value: V): this;
 }
 
+interface WeakMapConstructor {
+    readonly 原型: WeakMap<WeakKey, any>;
+}
+
 interface Set<T> {
     添加(value: T): this;
     清空(): void;
@@ -7874,6 +7907,10 @@ interface Set<T> {
     逐个处理(callbackfn: (value: T, value2: T, set: Set<T>) => void, thisArg?: any): void;
     含有(value: T): boolean;
     readonly 大小: number;
+}
+
+interface SetConstructor {
+    readonly 原型: Set<any>;
 }
 
 interface ReadonlySet<T> {
@@ -7886,6 +7923,10 @@ interface WeakSet<T extends WeakKey> {
     添加(value: T): this;
     删除(value: T): boolean;
     含有(value: T): boolean;
+}
+
+interface WeakSetConstructor {
+    readonly 原型: WeakSet<WeakKey>;
 }
 
 interface Array<T> {
@@ -7995,11 +8036,13 @@ interface Generator<T = unknown, TReturn = any, TNext = any> {
 interface GeneratorFunction {
     readonly 长度: number;
     readonly 名称: string;
+    readonly 原型: Generator;
 }
 
 interface GeneratorFunctionConstructor {
     readonly 长度: number;
     readonly 名称: string;
+    readonly 原型: GeneratorFunction;
 }
 
 interface SymbolConstructor {
@@ -8045,6 +8088,7 @@ interface ReadonlyMap<K, V> {
 }
 
 interface PromiseConstructor {
+    readonly 原型: Promise<any>;
     全部<T extends readonly unknown[] | []>(values: T): Promise<{ -readonly [P in keyof T]: Awaited<T[P]>; }>;
     竞速<T extends readonly unknown[] | []>(values: T): Promise<Awaited<T[number]>>;
     拒绝<T = never>(reason?: any): Promise<T>;
@@ -8109,6 +8153,10 @@ declare namespace Reflect {
     ): boolean;
     function 设置(target: object, propertyKey: PropertyKey, value: any, receiver?: any): boolean;
     function 设原型(target: object, proto: object | null): boolean;
+}
+
+interface SymbolConstructor {
+    readonly 原型: Symbol;
 }
 
 interface SymbolConstructor {
@@ -8187,6 +8235,10 @@ interface SharedArrayBuffer {
     截取(begin?: number, end?: number): SharedArrayBuffer;
 }
 
+interface SharedArrayBufferConstructor {
+    readonly 原型: SharedArrayBuffer;
+}
+
 interface Atomics {
     添加(typedArray: Int8Array<ArrayBufferLike> | Uint8Array<ArrayBufferLike> | Int16Array<ArrayBufferLike> | Uint16Array<ArrayBufferLike> | Int32Array<ArrayBufferLike> | Uint32Array<ArrayBufferLike>, index: number, value: number): number;
     比较交换(typedArray: Int8Array<ArrayBufferLike> | Uint8Array<ArrayBufferLike> | Int16Array<ArrayBufferLike> | Uint16Array<ArrayBufferLike> | Int32Array<ArrayBufferLike> | Uint32Array<ArrayBufferLike>, index: number, expectedValue: number, replacementValue: number): number;
@@ -8211,11 +8263,13 @@ interface AsyncGenerator<T = unknown, TReturn = any, TNext = any> {
 interface AsyncGeneratorFunction {
     readonly 长度: number;
     readonly 名称: string;
+    readonly 原型: AsyncGenerator;
 }
 
 interface AsyncGeneratorFunctionConstructor {
     readonly 长度: number;
     readonly 名称: string;
+    readonly 原型: AsyncGeneratorFunction;
 }
 
 interface AsyncIterator<T, TReturn = any, TNext = any> {
@@ -8271,6 +8325,10 @@ interface BigInt {
     取值(): bigint;
 }
 
+interface BigIntConstructor {
+    readonly 原型: BigInt;
+}
+
 interface BigInt64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
     readonly 每元素字节: number;
     readonly 缓冲: TArrayBuffer;
@@ -8309,6 +8367,7 @@ interface BigInt64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> 
 }
 
 interface BigInt64ArrayConstructor {
+    readonly 原型: BigInt64Array<ArrayBufferLike>;
     readonly 每元素字节: number;
 }
 
@@ -8350,6 +8409,7 @@ interface BigUint64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike>
 }
 
 interface BigUint64ArrayConstructor {
+    readonly 原型: BigUint64Array<ArrayBufferLike>;
     readonly 每元素字节: number;
 }
 
@@ -8396,6 +8456,10 @@ interface AggregateError {
     错误集: any[];
 }
 
+interface AggregateErrorConstructor {
+    readonly 原型: AggregateError;
+}
+
 interface String {
     全替换(searchValue: string | RegExp, replaceValue: string): string;
     全替换(searchValue: string | RegExp, replacer: (substring: string, ...args: any[]) => string): string;
@@ -8405,9 +8469,17 @@ interface WeakRef<T extends WeakKey> {
     解引用(): T | undefined;
 }
 
+interface WeakRefConstructor {
+    readonly 原型: WeakRef<any>;
+}
+
 interface FinalizationRegistry<T> {
     登记(target: WeakKey, heldValue: T, unregisterToken?: WeakKey): void;
     注销(unregisterToken: WeakKey): boolean;
+}
+
+interface FinalizationRegistryConstructor {
+    readonly 原型: FinalizationRegistry<any>;
 }
 
 interface Array<T> {
@@ -8557,6 +8629,7 @@ interface ArrayBuffer {
 }
 
 interface PromiseWithResolvers<T> {
+    承诺对象: Promise<T>;
     解决: (value: T | PromiseLike<T>) => void;
     解析路径: (value: T | PromiseLike<T>) => void;
     拒绝: (reason?: any) => void;
@@ -8630,6 +8703,7 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
 }
 
 interface Float16ArrayConstructor {
+    readonly 原型: Float16Array<ArrayBufferLike>;
     readonly 每元素字节: number;
 }
 
@@ -8660,6 +8734,7 @@ interface Object {
 }
 
 interface ObjectConstructor {
+    readonly 原型: Object;
     取原型(o: any): any;
     取自有描述(o: any, p: PropertyKey): PropertyDescriptor | undefined;
     取自有属性名(o: any): string[];
@@ -8681,8 +8756,13 @@ interface Function {
     应用(this: Function, thisArg: any, argArray?: any): any;
     调用(this: Function, thisArg: any, ...argArray: any[]): any;
     转字符串(): string;
+    原型: any;
     readonly 长度: number;
     调用者: Function;
+}
+
+interface FunctionConstructor {
+    readonly 原型: Function;
 }
 
 interface CallableFunction {
@@ -8723,8 +8803,16 @@ interface String {
     取值(): string;
 }
 
+interface StringConstructor {
+    readonly 原型: String;
+}
+
 interface Boolean {
     取值(): boolean;
+}
+
+interface BooleanConstructor {
+    readonly 原型: Boolean;
 }
 
 interface Number {
@@ -8733,6 +8821,10 @@ interface Number {
     指数记法(fractionDigits?: number): string;
     定精度(precision?: number): string;
     取值(): number;
+}
+
+interface NumberConstructor {
+    readonly 原型: Number;
 }
 
 interface Math {
@@ -8791,6 +8883,7 @@ interface Date {
 }
 
 interface DateConstructor {
+    readonly 原型: Date;
     解析(s: string): number;
     此刻(): number;
     当前值(): number;
@@ -8814,6 +8907,34 @@ interface Error {
     名称: string;
     消息: string;
     调用栈?: string;
+}
+
+interface ErrorConstructor {
+    readonly 原型: Error;
+}
+
+interface EvalErrorConstructor {
+    readonly 原型: EvalError;
+}
+
+interface RangeErrorConstructor {
+    readonly 原型: RangeError;
+}
+
+interface ReferenceErrorConstructor {
+    readonly 原型: ReferenceError;
+}
+
+interface SyntaxErrorConstructor {
+    readonly 原型: SyntaxError;
+}
+
+interface TypeErrorConstructor {
+    readonly 原型: TypeError;
+}
+
+interface URIErrorConstructor {
+    readonly 原型: URIError;
 }
 
 interface JSON {
@@ -8890,6 +9011,10 @@ interface Array<T> {
     反向归纳<U>(callbackfn: (previousValue: U, currentValue: T, currentIndex: number, array: T[]) => U, initialValue: U): U;
 }
 
+interface ArrayConstructor {
+    readonly 原型: any[];
+}
+
 interface TypedPropertyDescriptor<T> {
     可配置?: boolean;
     可写?: boolean;
@@ -8922,6 +9047,10 @@ interface SuppressedError {
     报错: any;
 }
 
+interface SuppressedErrorConstructor {
+    readonly 原型: SuppressedError;
+}
+
 interface DisposableStack {
     readonly 已弃置: boolean;
     弃置(): void;
@@ -8929,10 +9058,18 @@ interface DisposableStack {
     延迟(onDispose: () => void): void;
 }
 
+interface DisposableStackConstructor {
+    readonly 原型: DisposableStack;
+}
+
 interface AsyncDisposableStack {
     readonly 已弃置: boolean;
     收养<T>(value: T, onDisposeAsync: (value: T) => PromiseLike<void> | void): T;
     延迟(onDisposeAsync: () => PromiseLike<void> | void): void;
+}
+
+interface AsyncDisposableStackConstructor {
+    readonly 原型: AsyncDisposableStack;
 }
 
 interface Atomics {
