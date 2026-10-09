@@ -274,6 +274,10 @@ interface DragEventInit {
     数据传送?: DataTransfer | null;
 }
 
+interface DynamicsCompressorOptions {
+    释放?: number;
+}
+
 interface EcdsaParams {
     散列: HashAlgorithmIdentifier;
 }
@@ -565,6 +569,10 @@ interface LockInfo {
     名称?: string;
 }
 
+interface LockManagerSnapshot {
+    待处理?: LockInfo[];
+}
+
 interface LockOptions {
     模式?: LockMode;
     信号?: AbortSignal;
@@ -605,6 +613,7 @@ interface MediaKeySystemConfiguration {
 }
 
 interface MediaMetadataInit {
+    艺术家?: string;
     标题?: string;
 }
 
@@ -616,6 +625,10 @@ interface MediaPositionState {
 interface MediaQueryListEventInit {
     匹配选择器?: boolean;
     媒体?: string;
+}
+
+interface MediaRecorderOptions {
+    媒体类型?: string;
 }
 
 interface MediaSessionActionDetails {
@@ -775,6 +788,7 @@ interface PaymentDetailsUpdate {
 
 interface PaymentItem {
     标签: string;
+    待处理?: boolean;
 }
 
 interface PaymentMethodData {
@@ -922,6 +936,10 @@ interface RTCDtlsFingerprint {
     值内容?: string;
 }
 
+interface RTCEncodedFrameMetadata {
+    媒体类型?: string;
+}
+
 interface RTCEncodedVideoFrameMetadata {
     高度?: number;
     时间戳?: number;
@@ -961,6 +979,10 @@ interface RTCPeerConnectionIceErrorEventInit {
 
 interface RTCPeerConnectionIceEventInit {
     候选?: RTCIceCandidate | null;
+}
+
+interface RTCRtpCodec {
+    媒体类型: string;
 }
 
 interface RTCRtpContributingSource {
@@ -1421,6 +1443,7 @@ interface Animatable {
 
 interface Animation {
     编号: string;
+    readonly 待处理: boolean;
     readonly 就绪: Promise<Animation>;
     readonly 替换状态: AnimationReplaceState;
     起始时刻: CSSNumberish | null;
@@ -2454,6 +2477,10 @@ interface DocumentType {
 
 interface DragEvent {
     readonly 数据传送: DataTransfer | null;
+}
+
+interface DynamicsCompressorNode {
+    readonly 释放: AudioParam;
 }
 
 interface Element {
@@ -4142,6 +4169,7 @@ interface MediaList {
 }
 
 interface MediaMetadata {
+    艺术家: string;
     标题: string;
 }
 
@@ -4160,10 +4188,12 @@ interface MediaQueryListEvent {
 }
 
 interface MediaRecorder {
+    readonly 媒体类型: string;
     出错时: ((this: MediaRecorder, ev: ErrorEvent) => any) | null;
     readonly 状态: RecordingState;
     readonly 数据流: MediaStream;
     暂停(): void;
+    请求数据(): void;
     继续(): void;
     开始(timeslice?: number): void;
     停止(): void;
@@ -4171,6 +4201,11 @@ interface MediaRecorder {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MediaRecorderEventMap>(type: K, listener: (this: MediaRecorder, ev: MediaRecorderEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface MediaSession {
+    元数据: MediaMetadata | null;
+    播放状态: MediaSessionPlaybackState;
 }
 
 interface MediaSource {
@@ -5913,6 +5948,8 @@ interface SpeechRecognitionResultList {
 
 interface SpeechSynthesis {
     readonly 已暂停: boolean;
+    readonly 待处理: boolean;
+    readonly 正在朗读: boolean;
     取消(): void;
     取语音(): SpeechSynthesisVoice[];
     暂停(): void;
@@ -5937,6 +5974,7 @@ interface SpeechSynthesisUtterance {
     出错时: ((this: SpeechSynthesisUtterance, ev: SpeechSynthesisErrorEvent) => any) | null;
     音高: number;
     转文本: string;
+    语音: SpeechSynthesisVoice | null;
     音量: number;
     加事件监听<K extends keyof SpeechSynthesisUtteranceEventMap>(type: K, listener: (this: SpeechSynthesisUtterance, ev: SpeechSynthesisUtteranceEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -6307,6 +6345,7 @@ interface WGSLLanguageFeatures {
 
 interface WakeLockSentinel {
     readonly 种类: WakeLockType;
+    释放(): Promise<void>;
     加事件监听<K extends keyof WakeLockSentinelEventMap>(type: K, listener: (this: WakeLockSentinel, ev: WakeLockSentinelEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof WakeLockSentinelEventMap>(type: K, listener: (this: WakeLockSentinel, ev: WakeLockSentinelEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -7764,6 +7803,10 @@ interface Promise<T> {
 
 interface ArrayLike<T> {
     readonly 长度: number;
+}
+
+interface SymbolConstructor {
+    readonly 元数据: unique symbol;
 }
 
 interface SuppressedError {

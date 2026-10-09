@@ -1085,6 +1085,15 @@ member	audioWorklet	音频工作线程
 member	speak	朗读
 member	getVoices	取语音
 member	pitch	音高
+member	pending	待处理
+member	speaking	正在朗读
+member	voice	语音
+member	requestData	请求数据
+member	mimeType	媒体类型
+member	metadata	元数据
+member	playbackState	播放状态
+member	artist	艺术家
+member	release	释放
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
