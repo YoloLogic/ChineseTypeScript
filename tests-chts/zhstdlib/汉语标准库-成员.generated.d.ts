@@ -892,6 +892,10 @@ interface RTCIceCandidatePairStats {
     状态: RTCStatsIceCandidatePairState;
 }
 
+interface RTCIceServer {
+    用户名?: string;
+}
+
 interface RTCLocalSessionDescriptionInit {
     种类?: RTCSdpType;
 }
@@ -1153,6 +1157,7 @@ interface URLPatternInit {
     端口?: string;
     协议?: string;
     查找?: string;
+    用户名?: string;
 }
 
 interface URLPatternResult {
@@ -1160,6 +1165,7 @@ interface URLPatternResult {
     端口: URLPatternComponentResult;
     协议: URLPatternComponentResult;
     查找: URLPatternComponentResult;
+    用户名: URLPatternComponentResult;
 }
 
 interface UnderlyingByteSource {
@@ -2682,6 +2688,8 @@ interface HTMLAnchorElement {
     名称: string;
     来源页策略: string;
     关系: string;
+    get 关系列表(): DOMTokenList;
+    set 关系列表(value: string);
     目标: string;
     转文本: string;
     种类: string;
@@ -2696,6 +2704,8 @@ interface HTMLAreaElement {
     下载: string;
     来源页策略: string;
     关系: string;
+    get 关系列表(): DOMTokenList;
+    set 关系列表(value: string);
     目标: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLAreaElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -2917,6 +2927,8 @@ interface HTMLFormElement {
     readonly 长度: number;
     名称: string;
     关系: string;
+    get 关系列表(): DOMTokenList;
+    set 关系列表(value: string);
     目标: string;
     检查校验(): boolean;
     报告校验(): boolean;
@@ -2929,6 +2941,8 @@ interface HTMLFormElement {
 }
 
 interface HTMLFrameElement {
+    readonly 内容文档: Document | null;
+    readonly 内容窗口: WindowProxy | null;
     名称: string;
     源址: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLFrameElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2986,11 +3000,17 @@ interface HTMLHyperlinkElementUtils {
     端口: string;
     协议: string;
     查找: string;
+    用户名: string;
 }
 
 interface HTMLIFrameElement {
     对齐: string;
+    允许项: string;
+    允许全屏: boolean;
+    readonly 内容文档: Document | null;
+    readonly 内容窗口: WindowProxy | null;
     高度: string;
+    加载方式: "eager" | "lazy";
     名称: string;
     来源页策略: ReferrerPolicy;
     get 沙箱(): DOMTokenList;
@@ -3010,7 +3030,9 @@ interface HTMLImageElement {
     跨源: string | null;
     readonly 当前源: string;
     解码方式: "async" | "sync" | "auto";
+    获取优先级: "high" | "low" | "auto";
     高度: number;
+    加载方式: "eager" | "lazy";
     名称: string;
     readonly 自然高: number;
     readonly 自然宽: number;
@@ -3107,13 +3129,18 @@ interface HTMLLegendElement {
 }
 
 interface HTMLLinkElement {
+    get 阻塞(): DOMTokenList;
+    set 阻塞(value: string);
     跨源: string | null;
     已禁用: boolean;
+    获取优先级: "high" | "low" | "auto";
     链接: string;
     完整性: string;
     媒体: string;
     来源页策略: string;
     关系: string;
+    get 关系列表(): DOMTokenList;
+    set 关系列表(value: string);
     get 尺寸表(): DOMTokenList;
     set 尺寸表(value: string);
     目标: string;
@@ -3225,6 +3252,8 @@ interface HTMLOListElement {
 
 interface HTMLObjectElement {
     对齐: string;
+    readonly 内容文档: Document | null;
+    readonly 内容窗口: WindowProxy | null;
     数据: string;
     readonly 表单: HTMLFormElement | null;
     高度: string;
@@ -3352,8 +3381,14 @@ interface HTMLQuoteElement {
 }
 
 interface HTMLScriptElement {
+    异步: boolean;
+    get 阻塞(): DOMTokenList;
+    set 阻塞(value: string);
     跨源: string | null;
+    延迟: boolean;
+    获取优先级: "high" | "low" | "auto";
     完整性: string;
+    非模块: boolean;
     来源页策略: string;
     源址: string;
     转文本: string;
@@ -3427,6 +3462,8 @@ interface HTMLSpanElement {
 }
 
 interface HTMLStyleElement {
+    get 阻塞(): DOMTokenList;
+    set 阻塞(value: string);
     已禁用: boolean;
     媒体: string;
     种类: string;
@@ -4708,6 +4745,8 @@ interface SVGAElement {
     下载: string;
     来源页策略: string;
     关系: string;
+    get 关系列表(): DOMTokenList;
+    set 关系列表(value: string);
     readonly 目标: SVGAnimatedString;
     种类: string;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGAElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5841,6 +5880,7 @@ interface URL {
     端口: string;
     协议: string;
     查找: string;
+    用户名: string;
     转数据(): string;
 }
 
@@ -5849,6 +5889,7 @@ interface URLPattern {
     readonly 端口: string;
     readonly 协议: string;
     readonly 查找: string;
+    readonly 用户名: string;
     执行(input?: URLPatternInput, baseURL?: string | URL): URLPatternResult | null;
     测试(input?: URLPatternInput, baseURL?: string | URL): boolean;
 }
@@ -7410,6 +7451,14 @@ interface ArrayLike<T> {
 
 interface SuppressedError {
     报错: any;
+}
+
+interface DisposableStack {
+    延迟(onDispose: () => void): void;
+}
+
+interface AsyncDisposableStack {
+    延迟(onDisposeAsync: () => PromiseLike<void> | void): void;
 }
 
 interface Atomics {
