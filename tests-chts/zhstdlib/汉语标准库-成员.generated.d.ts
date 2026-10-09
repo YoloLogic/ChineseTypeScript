@@ -371,6 +371,10 @@ interface GPUVertexAttribute {
     偏移: GPUSize64;
 }
 
+interface GPUVertexBufferLayout {
+    属性集: GPUVertexAttribute[];
+}
+
 interface GamepadEffectParameters {
     时长?: number;
 }
@@ -526,6 +530,10 @@ interface MessageEventInit<T = any> {
     来源?: MessageEventSource | null;
 }
 
+interface MutationObserverInit {
+    属性集?: boolean;
+}
+
 interface NavigateEventInit {
     信号: AbortSignal;
 }
@@ -544,6 +552,8 @@ interface NavigationUpdateCurrentEntryOptions {
 
 interface NotificationOptions {
     数据?: any;
+    书写方向?: NotificationDirection;
+    语言?: string;
 }
 
 interface OfflineAudioContextOptions {
@@ -804,11 +814,16 @@ interface SanitizerAttributeNamespace {
 }
 
 interface SanitizerConfig {
+    属性集?: SanitizerAttribute[];
     元素集合?: SanitizerElementWithAttributes[];
 }
 
 interface SanitizerElementNamespace {
     名称: string;
+}
+
+interface SanitizerElementNamespaceWithAttributes {
+    属性集?: SanitizerAttribute[];
 }
 
 interface SchedulerPostTaskOptions {
@@ -1714,6 +1729,7 @@ interface DigitalCredential {
 
 interface Document {
     readonly 全部: HTMLAllCollection;
+    书写方向: string;
     readonly 隐藏: boolean;
     readonly 就绪态: DocumentReadyState;
     标题: string;
@@ -1836,6 +1852,7 @@ interface DocumentType {
 }
 
 interface Element {
+    readonly 属性集: NamedNodeMap;
     get 类列表(): DOMTokenList;
     set 类列表(value: string);
     readonly 客户高: number;
@@ -1846,6 +1863,9 @@ interface Element {
     滚动左: number;
     滚动顶: number;
     readonly 滚动宽: number;
+    readonly 影子根: ShadowRoot | null;
+    插槽: string;
+    附加影子(init: ShadowRootInit): ShadowRoot;
     最近祖先<K extends keyof HTMLElementTagNameMap>(selector: K): HTMLElementTagNameMap[K] | null;
     最近祖先<K extends keyof SVGElementTagNameMap>(selector: K): SVGElementTagNameMap[K] | null;
     最近祖先<K extends keyof MathMLElementTagNameMap>(selector: K): MathMLElementTagNameMap[K] | null;
@@ -1891,8 +1911,13 @@ interface ElementCSSInlineStyle {
     set 样式(cssText: string);
 }
 
+interface ElementContentEditable {
+    可编辑: string;
+}
+
 interface ElementInternals {
     readonly 表单: HTMLFormElement | null;
+    readonly 影子根: ShadowRoot | null;
     readonly 校验消息: string;
     readonly 有效性: ValidityState;
     检查校验(): boolean;
@@ -2271,11 +2296,16 @@ interface HTMLDocument {
 }
 
 interface HTMLElement {
+    访问键: string;
+    书写方向: string;
+    可拖动: boolean;
     隐藏: boolean | "until-found";
+    语言: string;
     readonly 偏移高: number;
     readonly 偏移左: number;
     readonly 偏移顶: number;
     readonly 偏移宽: number;
+    拼写检查: boolean;
     标题: string;
     平移: boolean;
     点击(): void;
@@ -2626,6 +2656,7 @@ interface HTMLOptionsCollection {
 interface HTMLOrSVGElement {
     自动聚焦: boolean;
     readonly 数据集: DOMStringMap;
+    一次性令牌: string;
     制表序号: number;
     失焦(): void;
     聚焦(options?: FocusOptions): void;
@@ -3366,6 +3397,7 @@ interface Node {
     复制节点(subtree?: boolean): Node;
     比较文档位置(other: Node): number;
     含节点(other: Node | null): boolean;
+    取根节点(options?: GetRootNodeOptions): Node;
     前插节点<T extends Node>(node: T, child: Node | null): T;
     查命名空间(prefix: string | null): string | null;
     查前缀(namespace: string | null): string | null;
@@ -3396,6 +3428,8 @@ interface NonElementParentNode {
 
 interface Notification {
     readonly 数据: any;
+    readonly 书写方向: NotificationDirection;
+    readonly 语言: string;
     出错时: ((this: Notification, ev: Event) => any) | null;
     readonly 标题: string;
     关闭(): void;
@@ -4495,6 +4529,7 @@ interface SpeechSynthesisEvent {
 }
 
 interface SpeechSynthesisUtterance {
+    语言: string;
     出错时: ((this: SpeechSynthesisUtterance, ev: SpeechSynthesisErrorEvent) => any) | null;
     转文本: string;
     加事件监听<K extends keyof SpeechSynthesisUtteranceEventMap>(type: K, listener: (this: SpeechSynthesisUtterance, ev: SpeechSynthesisUtteranceEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4504,6 +4539,7 @@ interface SpeechSynthesisUtterance {
 }
 
 interface SpeechSynthesisVoice {
+    readonly 语言: string;
     readonly 名称: string;
 }
 
@@ -4941,6 +4977,7 @@ interface XSLTProcessor {
 
 interface Console {
     清空(): void;
+    书写方向(item?: any, options?: any): void;
     报错(...data: any[]): void;
     对数(...data: any[]): void;
     日志(...data: any[]): void;
