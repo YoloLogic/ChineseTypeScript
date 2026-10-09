@@ -993,6 +993,10 @@ interface WriteParams {
     种类: WriteCommandType;
 }
 
+interface ARIAMixin {
+    角色: string | null;
+}
+
 interface AbortController {
     readonly 信号: AbortSignal;
     中止(reason?: any): void;
@@ -1011,6 +1015,11 @@ interface AbstractWorker {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof AbstractWorkerEventMap>(type: K, listener: (this: AbstractWorker, ev: AbstractWorkerEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface Animatable {
+    播放动画(keyframes: Keyframe[] | PropertyIndexedKeyframes | null, options?: number | KeyframeAnimationOptions): Animation;
+    取动画列(options?: GetAnimationsOptions): Animation[];
 }
 
 interface Animation {
@@ -1818,6 +1827,7 @@ interface Document {
     创建范围(): Range;
     创建文本节点(data: string): Text;
     创建树遍历器(root: Node, whatToShow?: number, filter?: NodeFilter | null): TreeWalker;
+    退出全屏(): Promise<void>;
     退出指针锁定(): void;
     按编号取元素(elementId: string): HTMLElement | null;
     按类取元素组(classNames: string): HTMLCollectionOf<Element>;
@@ -1844,6 +1854,10 @@ interface DocumentFragment {
     按编号取元素(elementId: string): HTMLElement | null;
     get 文本内容(): string;
     set 文本内容(value: string | null);
+}
+
+interface DocumentOrShadowRoot {
+    取动画列(): Animation[];
 }
 
 interface DocumentType {
@@ -1888,6 +1902,7 @@ interface Element {
     匹配选择器(selectors: string): boolean;
     释放指针捕获(pointerId: number): void;
     删属性(qualifiedName: string): void;
+    请求全屏(options?: FullscreenOptions): Promise<void>;
     请求指针锁定(options?: PointerLockOptions): Promise<void>;
     滚动偏移(options?: ScrollToOptions): void;
     滚动偏移(x: number, y: number): void;
@@ -1913,6 +1928,8 @@ interface ElementCSSInlineStyle {
 
 interface ElementContentEditable {
     可编辑: string;
+    回车提示: string;
+    输入模式: string;
 }
 
 interface ElementInternals {
@@ -2297,6 +2314,7 @@ interface HTMLDocument {
 
 interface HTMLElement {
     访问键: string;
+    自动大写: string;
     书写方向: string;
     可拖动: boolean;
     隐藏: boolean | "until-found";
@@ -2309,6 +2327,8 @@ interface HTMLElement {
     标题: string;
     平移: boolean;
     点击(): void;
+    隐藏浮层(): void;
+    显示浮层(options?: ShowPopoverOptions): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -2770,6 +2790,7 @@ interface HTMLSelectElement {
 interface HTMLSlotElement {
     名称: string;
     合入(...nodes: (Element | Text)[]): void;
+    分配节点(options?: AssignedNodesOptions): Node[];
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLSlotElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLSlotElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4476,6 +4497,10 @@ interface SharedWorker {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof AbstractWorkerEventMap>(type: K, listener: (this: SharedWorker, ev: AbstractWorkerEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface Slottable {
+    readonly 分配插槽: HTMLSlotElement | null;
 }
 
 interface SourceBuffer {
