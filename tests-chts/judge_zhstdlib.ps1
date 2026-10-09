@@ -142,6 +142,35 @@ $m = [regex]::Match($rdText, '译名：\*\*(\d+) / 7687')
 $docNum = if ($m.Success) { [int]$m.Groups[1].Value } else { -1 }
 Check '⑩ 文档数字与译名表一致（防文档漂移）' ($docNum -eq $rows.Count) ('README 写=' + $docNum + ' 表里=' + $rows.Count)
 
+# ⑪ 夹具同名守卫（防「译名撞上我们自己的夹具成员」——六·六 那个缺陷的早期预警）
+#   规则：夹具里【用户自己声明】的汉语成员名，不得出现在译名表中。
+#   为什么需要：emit 改写是文本级的，一旦译名与用户自己的成员同名，
+#   用户那处会被静默改写成英文标准库名 —— 运行时才炸（本项目已踩三次）。
+$repoRootZh = Split-Path -Parent $PSScriptRoot
+$fixtureDirs = @((Join-Path $repoRootZh 'tests-chts'), (Join-Path $repoRootZh '教程\例子'))
+$zh2en = New-Object 'System.Collections.Generic.Dictionary[string,string]'
+foreach ($row in (Get-Content $tablePath -Encoding UTF8)) {
+    if ($row -notmatch '\S') { continue }
+    $p = $row -split [string][char]9
+    if ($p.Count -ge 3 -and $p[0].Trim() -eq 'member') { $zh2en[$p[2].Trim()] = $p[1].Trim() }
+}
+$collide = New-Object System.Collections.Generic.List[string]
+foreach ($d in $fixtureDirs) {
+    if (-not (Test-Path $d)) { continue }
+    foreach ($f in (Get-ChildItem $d -Recurse -Filter '*.ts' -File -ErrorAction SilentlyContinue)) {
+        # 只扫【非标准库试点】的夹具：试点本来就该用汉语标准库名。
+        if ($f.Name -like '*汉语标准库*' -or $f.Directory.Name -eq 'zhstdlib') { continue }
+        foreach ($line in (Get-Content $f.FullName -Encoding UTF8)) {
+            # 声明形态：以汉语词开头，后面跟着冒号 / 左括号（属性或方法声明）
+            $m = [regex]::Match($line, '^\s*([\u4e00-\u9fa5]{2,8})\s*[(:]')
+            if ($m.Success -and $zh2en.ContainsKey($m.Groups[1].Value)) {
+                $collide.Add($f.Name + ' 的成员「' + $m.Groups[1].Value + '」撞上译名 ' + $zh2en[$m.Groups[1].Value])
+            }
+        }
+    }
+}
+Check '⑪ 夹具里用户自己的汉语成员名不与译名表撞车' ($collide.Count -eq 0) ('撞车: ' + $(if ($collide.Count) { ($collide | Select-Object -Unique) -join '; ' } else { '无' }))
+
 Write-Host '=== 判定汇总 ==='
 $results | ForEach-Object { '  [' + $_.结果 + '] ' + $_.判定 + ' —— ' + $_.说明 }
 $fail = @($results | Where-Object { $_.结果 -ne '通过' }).Count

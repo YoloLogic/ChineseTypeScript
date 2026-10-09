@@ -1451,7 +1451,6 @@ var zhStdlibMembers = map[string]string{
 	"已删除": "deleted",
 	"依赖集": "dependencies",
 	"深度": "depth",
-	"描述": "description",
 	"销毁": "destroy",
 	"详情": "details",
 	"设备": "device",

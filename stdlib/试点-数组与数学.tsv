@@ -1438,7 +1438,6 @@ member	debug	调试
 member	deleted	已删除
 member	dependencies	依赖集
 member	depth	深度
-member	description	描述
 member	destroy	销毁
 member	details	详情
 member	device	设备

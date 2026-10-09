@@ -1,4 +1,4 @@
-﻿# ChineseTypeScript 判定脚本（真编译 · 真运行 · 逐字节比对）
+# ChineseTypeScript 判定脚本（真编译 · 真运行 · 逐字节比对）
 #
 # 判定项：
 #   ① 生成器幂等：go run ./cmd/genzhkeywords -check 通过
@@ -154,8 +154,16 @@ $identJs = Join-Path $outIdent 'demo_ident.js'
 $identOk = Test-Path $identJs
 Check '⑦ 汉语标识符编译通过' $identOk "demo_ident.js=$(Test-Path $identJs)"
 if ($identOk) {
-    $identRun = & $nodeExe $identJs 2>&1 | Out-String
-    Check '⑦b 汉语标识符运行通过' ($LASTEXITCODE -eq 0) $identRun.Trim()
+    # 注意：这里【不要】用 -replace [char]10 —— 参数模式下 [char]10 是字面量，不解析（踩过）。
+    $identLines = @(& $nodeExe $identJs 2>&1 | ForEach-Object { [string]$_ })
+    $identCode = $LASTEXITCODE
+    $identJoined = ($identLines -join '|')
+    # 不只查退出码：还要比对【输出内容】。
+    # 教训（2026-10-09）：本夹具曾只断言退出码，于是 `自身.项.端口` 被 emit 改写成 `.port`
+    # 后输出 `本地:undefined`（而非 `本地:8080`）却一直没人发现 —— 静默错误活了 120 轮。
+    $identWant = '51|本地:8080'
+    Check '⑦b 汉语标识符运行通过（含输出比对）' (($identCode -eq 0) -and ($identJoined -ceq $identWant)) `
+        "退出码=$identCode 输出=$identJoined（期望 $identWant）"
 } else {
     Write-Host $identLog
 }

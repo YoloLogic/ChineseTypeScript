@@ -97,7 +97,6 @@ interface AudioDataInit {
 
 interface AudioDecoderConfig {
     编解码器: string;
-    描述?: AllowSharedBufferSource;
     声道数: number;
     采样率: number;
 }
@@ -1552,7 +1551,6 @@ interface VideoDecoderConfig {
     编码高?: number;
     编码宽?: number;
     色彩空间?: VideoColorSpaceInit;
-    描述?: AllowSharedBufferSource;
 }
 
 interface VideoDecoderInit {
@@ -3136,7 +3134,6 @@ interface GPUAdapter {
 }
 
 interface GPUAdapterInfo {
-    readonly 描述: string;
     readonly 设备: string;
 }
 
@@ -4881,7 +4878,6 @@ interface MessagePort {
 }
 
 interface MimeType {
-    readonly 描述: string;
     readonly 种类: string;
 }
 
@@ -5320,7 +5316,6 @@ interface PerformanceResourceTiming {
 }
 
 interface PerformanceServerTiming {
-    readonly 描述: string;
     readonly 时长: DOMHighResTimeStamp;
     readonly 名称: string;
     转数据(): any;
@@ -5372,7 +5367,6 @@ interface PictureInPictureWindow {
 }
 
 interface Plugin {
-    readonly 描述: string;
     readonly 文件名: string;
     readonly 长度: number;
     readonly 名称: string;
@@ -8019,10 +8013,6 @@ interface ObjectConstructor {
 interface String {
     去尾空白(): string;
     去头空白(): string;
-}
-
-interface Symbol {
-    readonly 描述: string | undefined;
 }
 
 interface BigIntToLocaleStringOptions {
