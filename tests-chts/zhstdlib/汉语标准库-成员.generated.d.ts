@@ -1868,6 +1868,7 @@ interface CryptoKey {
 
 interface CustomElementRegistry {
     获取(name: string): CustomElementConstructor | undefined;
+    初始化(root: Node): void;
 }
 
 interface CustomEvent<T = any> {
@@ -4668,6 +4669,9 @@ interface SVGGradientElement {
 
 interface SVGGraphicsElement {
     readonly 变换: SVGAnimatedTransformList;
+    取包围盒(options?: SVGBoundingBoxOptions): DOMRect;
+    取变换矩阵(): DOMMatrix | null;
+    取屏幕矩阵(): DOMMatrix | null;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGGraphicsElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGGraphicsElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4691,9 +4695,14 @@ interface SVGLength {
 
 interface SVGLengthList {
     readonly 长度: number;
+    readonly 项数: number;
+    追加项(newItem: SVGLength): SVGLength;
     清空(): void;
     取条目(index: number): SVGLength;
+    初始化(newItem: SVGLength): SVGLength;
+    前插项(newItem: SVGLength, index: number): SVGLength;
     删条目(index: number): SVGLength;
+    替换项(newItem: SVGLength, index: number): SVGLength;
 }
 
 interface SVGLineElement {
@@ -4748,9 +4757,14 @@ interface SVGNumber {
 
 interface SVGNumberList {
     readonly 长度: number;
+    readonly 项数: number;
+    追加项(newItem: SVGNumber): SVGNumber;
     清空(): void;
     取条目(index: number): SVGNumber;
+    初始化(newItem: SVGNumber): SVGNumber;
+    前插项(newItem: SVGNumber, index: number): SVGNumber;
     删条目(index: number): SVGNumber;
+    替换项(newItem: SVGNumber, index: number): SVGNumber;
 }
 
 interface SVGPathElement {
@@ -4773,9 +4787,14 @@ interface SVGPatternElement {
 
 interface SVGPointList {
     readonly 长度: number;
+    readonly 项数: number;
+    追加项(newItem: DOMPoint): DOMPoint;
     清空(): void;
     取条目(index: number): DOMPoint;
+    初始化(newItem: DOMPoint): DOMPoint;
+    前插项(newItem: DOMPoint, index: number): DOMPoint;
     删条目(index: number): DOMPoint;
+    替换项(newItem: DOMPoint, index: number): DOMPoint;
 }
 
 interface SVGPolygonElement {
@@ -4815,12 +4834,16 @@ interface SVGRectElement {
 }
 
 interface SVGSVGElement {
+    当前缩放: number;
+    readonly 当前平移: DOMPointReadOnly;
     readonly 高度: SVGAnimatedLength;
     readonly 宽度: SVGAnimatedLength;
     readonly 横坐标: SVGAnimatedLength;
     readonly 纵坐标: SVGAnimatedLength;
     取当前时刻(): number;
     按编号取元素(elementId: string): Element | null;
+    暂停动画(): void;
+    继续动画(): void;
     加事件监听<K extends keyof SVGSVGElementEventMap>(type: K, listener: (this: SVGSVGElement, ev: SVGSVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGSVGElementEventMap>(type: K, listener: (this: SVGSVGElement, ev: SVGSVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4852,9 +4875,14 @@ interface SVGStopElement {
 
 interface SVGStringList {
     readonly 长度: number;
+    readonly 项数: number;
+    追加项(newItem: string): string;
     清空(): void;
     取条目(index: number): string;
+    初始化(newItem: string): string;
+    前插项(newItem: string, index: number): string;
     删条目(index: number): string;
+    替换项(newItem: string, index: number): string;
 }
 
 interface SVGStyleElement {
@@ -4938,9 +4966,14 @@ interface SVGTransform {
 
 interface SVGTransformList {
     readonly 长度: number;
+    readonly 项数: number;
+    追加项(newItem: SVGTransform): SVGTransform;
     清空(): void;
     取条目(index: number): SVGTransform;
+    初始化(newItem: SVGTransform): SVGTransform;
+    前插项(newItem: SVGTransform, index: number): SVGTransform;
     删条目(index: number): SVGTransform;
+    替换项(newItem: SVGTransform, index: number): SVGTransform;
 }
 
 interface SVGURIReference {
