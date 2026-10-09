@@ -630,6 +630,10 @@ interface MediaSettingsRange {
     步长?: number;
 }
 
+interface MediaStreamTrackEventInit {
+    轨道: MediaStreamTrack;
+}
+
 interface MediaTrackCapabilities {
     高度?: ULongRange;
     采样率?: ULongRange;
@@ -908,6 +912,8 @@ interface QueuingStrategyInit {
 interface RTCDataChannelInit {
     编号?: number;
     最大包时长?: number;
+    最大重传?: number;
+    已协商?: boolean;
     有序?: boolean;
     协议?: string;
 }
@@ -984,6 +990,10 @@ interface RTCStats {
     编号: string;
     时间戳: DOMHighResTimeStamp;
     种类: RTCStatsType;
+}
+
+interface RTCTrackEventInit {
+    轨道: MediaStreamTrack;
 }
 
 interface ReadableStreamBYOBReaderReadOptions {
@@ -1200,6 +1210,10 @@ interface TouchInit {
     标识: number;
     屏幕横坐标?: number;
     目标: EventTarget;
+}
+
+interface TrackEventInit {
+    轨道?: TextTrack | null;
 }
 
 interface Transformer<I = any, O = any> {
@@ -1544,6 +1558,7 @@ interface AudioScheduledSourceNode {
 }
 
 interface AudioWorkletNode {
+    readonly 参数集: AudioParamMap;
     readonly 端口: MessagePort;
     加事件监听<K extends keyof AudioWorkletNodeEventMap>(type: K, listener: (this: AudioWorkletNode, ev: AudioWorkletNodeEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -1552,6 +1567,7 @@ interface AudioWorkletNode {
 }
 
 interface BaseAudioContext {
+    readonly 音频工作线程: AudioWorklet;
     readonly 输出端: AudioDestinationNode;
     readonly 采样率: number;
     readonly 状态: AudioContextState;
@@ -3735,6 +3751,7 @@ interface HTMLTrackElement {
     标签: string;
     readonly 就绪态: number;
     源址: string;
+    readonly 轨道: TextTrack;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTrackElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTrackElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3908,6 +3925,10 @@ interface ImageBitmap {
 interface ImageBitmapRenderingContext {
     readonly 画布: HTMLCanvasElement | OffscreenCanvas;
     从位图传输(bitmap: ImageBitmap | null): void;
+}
+
+interface ImageCapture {
+    readonly 轨道: MediaStreamTrack;
 }
 
 interface ImageData {
@@ -4172,6 +4193,7 @@ interface MediaStream {
     加轨道(track: MediaStreamTrack): void;
     复制(): MediaStream;
     取音频轨道(): MediaStreamTrack[];
+    按编号取轨道(trackId: string): MediaStreamTrack | null;
     取视频轨道(): MediaStreamTrack[];
     删轨道(track: MediaStreamTrack): void;
     加事件监听<K extends keyof MediaStreamEventMap>(type: K, listener: (this: MediaStream, ev: MediaStreamEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4202,6 +4224,10 @@ interface MediaStreamTrack {
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MediaStreamTrackEventMap>(type: K, listener: (this: MediaStreamTrack, ev: MediaStreamTrackEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+}
+
+interface MediaStreamTrackEvent {
+    readonly 轨道: MediaStreamTrack;
 }
 
 interface MessageEvent<T = any> {
@@ -4714,6 +4740,8 @@ interface RTCDataChannel {
     readonly 编号: number | null;
     readonly 标签: string;
     readonly 最大包时长: number | null;
+    readonly 最大重传: number | null;
+    readonly 已协商: boolean;
     出错时: ((this: RTCDataChannel, ev: RTCErrorEvent) => any) | null;
     readonly 有序: boolean;
     readonly 协议: string;
@@ -4813,16 +4841,21 @@ interface RTCPeerConnectionIceEvent {
 }
 
 interface RTCRtpReceiver {
+    readonly 轨道: MediaStreamTrack;
     变换: RTCRtpReceiverTransform | null;
     取参数(): RTCRtpReceiveParameters;
     取统计(): Promise<RTCStatsReport>;
 }
 
 interface RTCRtpSender {
+    readonly 双音多频: RTCDTMFSender | null;
+    readonly 轨道: MediaStreamTrack | null;
     变换: RTCRtpSenderTransform | null;
     取参数(): RTCRtpSendParameters;
     取统计(): Promise<RTCStatsReport>;
+    替换轨道(withTrack: MediaStreamTrack | null): Promise<void>;
     设参数(parameters: RTCRtpSendParameters, setParameterOptions?: RTCSetParameterOptions): Promise<void>;
+    设流(...streams: MediaStream[]): void;
 }
 
 interface RTCRtpTransceiver {
@@ -4845,6 +4878,10 @@ interface RTCSessionDescription {
 
 interface RTCStatsReport {
     逐个处理(callbackfn: (value: any, key: string, parent: RTCStatsReport) => void, thisArg?: any): void;
+}
+
+interface RTCTrackEvent {
+    readonly 轨道: MediaStreamTrack;
 }
 
 interface RadioNodeList {
@@ -5877,8 +5914,10 @@ interface SpeechRecognitionResultList {
 interface SpeechSynthesis {
     readonly 已暂停: boolean;
     取消(): void;
+    取语音(): SpeechSynthesisVoice[];
     暂停(): void;
     继续(): void;
+    朗读(utterance: SpeechSynthesisUtterance): void;
     加事件监听<K extends keyof SpeechSynthesisEventMap>(type: K, listener: (this: SpeechSynthesis, ev: SpeechSynthesisEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SpeechSynthesisEventMap>(type: K, listener: (this: SpeechSynthesis, ev: SpeechSynthesisEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -5896,6 +5935,7 @@ interface SpeechSynthesisEvent {
 interface SpeechSynthesisUtterance {
     语言: string;
     出错时: ((this: SpeechSynthesisUtterance, ev: SpeechSynthesisErrorEvent) => any) | null;
+    音高: number;
     转文本: string;
     音量: number;
     加事件监听<K extends keyof SpeechSynthesisUtteranceEventMap>(type: K, listener: (this: SpeechSynthesisUtterance, ev: SpeechSynthesisUtteranceEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -6060,6 +6100,7 @@ interface TextTrackCue {
     编号: string;
     退出暂停: boolean;
     起始时刻: number;
+    readonly 轨道: TextTrack | null;
     加事件监听<K extends keyof TextTrackCueEventMap>(type: K, listener: (this: TextTrackCue, ev: TextTrackCueEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof TextTrackCueEventMap>(type: K, listener: (this: TextTrackCue, ev: TextTrackCueEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -6072,6 +6113,7 @@ interface TextTrackCueList {
 
 interface TextTrackList {
     readonly 长度: number;
+    按编号取轨道(id: string): TextTrack | null;
     加事件监听<K extends keyof TextTrackListEventMap>(type: K, listener: (this: TextTrackList, ev: TextTrackListEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof TextTrackListEventMap>(type: K, listener: (this: TextTrackList, ev: TextTrackListEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -6099,6 +6141,10 @@ interface Touch {
 interface TouchList {
     readonly 长度: number;
     取项(index: number): Touch | null;
+}
+
+interface TrackEvent {
+    readonly 轨道: TextTrack | null;
 }
 
 interface TransformStream<I = any, O = any> {
