@@ -157,8 +157,9 @@ if (-not (Test-Path $locRoot)) {
         # 比较前先把「缺少 N 个属性」的计数抹平 —— 与 judge_oss 同一处理（规格六·十三）：
         # 汉语标准库给接口增补成员，接口成员数必然变多，TS2740 的 N 必然变大（实测 28 → 59）。
         # 这是增补机制的固有代价，不是回归；除此之外逐行严格比对。
-        $refLines = @(Get-Content $refPath -Encoding UTF8) -replace ', and \d+ more\.', ', and N more.'
-        $locLines = @(Get-Content $f.FullName -Encoding UTF8) -replace ', and \d+ more\.', ', and N more.'
+        # 注意要覆盖两种结尾：诊断消息是 ', and 28 more.'，而符号基线的截断是 '... and 1 more)'。
+        $refLines = @(Get-Content $refPath -Encoding UTF8) -replace 'and \d+ more', 'and N more'
+        $locLines = @(Get-Content $f.FullName -Encoding UTF8) -replace 'and \d+ more', 'and N more'
         $d = @(Compare-Object $refLines $locLines -CaseSensitive)
         if ($d.Count -eq 0) { $same++; continue }
         $diffFiles += $rel

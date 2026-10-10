@@ -55,7 +55,8 @@ $flags = @('--noEmit', '--pretty', 'false', '--target', 'es2020', '--module', 'c
 # 于是 TS2740 这类 'missing the following properties … and N more' 的 N 也必然变大
 # （2026-10-10 实测：某 conformance 例 28 → 59）。这是增补机制的固有代价。
 # 注意：这里【只】动这一处计数，消息的其余部分与退出码仍然逐字节比对 —— 不放宽别的。
-$normalizeMore = { param($s) ($s -replace ', and \d+ more\.', ', and N more.') }
+# 注意要覆盖两种结尾：诊断消息是 ', and 28 more.'，而符号类输出里的截断是 '... and 1 more)'。
+$normalizeMore = { param($s) ($s -replace 'and \d+ more', 'and N more') }
 $normalizedFiles = 0
 
 Write-Host ''
