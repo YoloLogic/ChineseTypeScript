@@ -180,6 +180,7 @@ interface AuthenticatorAssertionResponseJSON {
 interface AuthenticatorAttestationResponseJSON {
     证明对象: Base64URLString;
     认证器数据: Base64URLString;
+    传输集: string[];
 }
 
 interface AvcEncoderConfig {
@@ -579,6 +580,7 @@ interface GPURenderPassDepthStencilAttachment {
 
 interface GPURenderPipelineDescriptor {
     图元?: GPUPrimitiveState;
+    顶点: GPUVertexState;
 }
 
 interface GPUSamplerBindingLayout {
@@ -1135,11 +1137,13 @@ interface PublicKeyCredentialCreationOptionsJSON {
 
 interface PublicKeyCredentialDescriptor {
     编号: BufferSource;
+    传输集?: AuthenticatorTransport[];
     种类: PublicKeyCredentialType;
 }
 
 interface PublicKeyCredentialDescriptorJSON {
     编号: Base64URLString;
+    传输集?: string[];
     种类: string;
 }
 
@@ -1198,6 +1202,10 @@ interface QueuingStrategyInit {
 
 interface RTCCertificateExpiration {
     过期时间?: number;
+}
+
+interface RTCDTMFToneChangeEventInit {
+    音调?: string;
 }
 
 interface RTCDataChannelEventInit {
@@ -1286,9 +1294,14 @@ interface RTCRtpEncodingParameters {
     优先级?: RTCPriorityType;
 }
 
+interface RTCRtpHeaderExtensionCapability {
+    资源标识: string;
+}
+
 interface RTCRtpHeaderExtensionParameters {
     已加密?: boolean;
     编号: number;
+    资源标识: string;
 }
 
 interface RTCRtpSendParameters {
@@ -2358,6 +2371,7 @@ interface CSSStyleProperties {
     过渡: string;
     过渡属性: string;
     平移: string;
+    寡行: string;
     宽度: string;
     词距: string;
     横坐标: string;
@@ -3331,6 +3345,7 @@ interface GPUBuffer {
     readonly 大小: GPUSize64Out;
     readonly 用量: GPUFlagsConstant;
     销毁(): void;
+    解映射(): void;
 }
 
 interface GPUCanvasContext {
@@ -3913,6 +3928,7 @@ interface HTMLImageElement {
     尺寸表: string;
     源址: string;
     源集: string;
+    垂直间距: number;
     宽度: number;
     readonly 横坐标: number;
     readonly 纵坐标: number;
@@ -4040,6 +4056,7 @@ interface HTMLMarqueeElement {
     高度: string;
     水平间距: number;
     循环: number;
+    垂直间距: number;
     宽度: string;
     开始(): void;
     停止(): void;
@@ -4145,6 +4162,7 @@ interface HTMLObjectElement {
     种类: string;
     readonly 校验消息: string;
     readonly 有效性: ValidityState;
+    垂直间距: number;
     宽度: string;
     检查校验(): boolean;
     报告校验(): boolean;
@@ -5220,6 +5238,10 @@ interface Navigator {
     发送信标(url: string | URL, data?: BodyInit | null): boolean;
 }
 
+interface NavigatorAutomationInformation {
+    readonly 浏览器驱动: boolean;
+}
+
 interface NavigatorConcurrentHardware {
     readonly 硬件并发: number;
 }
@@ -5665,6 +5687,10 @@ interface RTCDTMFSender {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface RTCDTMFToneChangeEvent {
+    readonly 音调: string;
+}
+
 interface RTCDataChannel {
     二进制类型: BinaryType;
     readonly 缓冲量: number;
@@ -5784,6 +5810,7 @@ interface RTCPeerConnectionIceEvent {
 interface RTCRtpReceiver {
     readonly 轨道: MediaStreamTrack;
     变换: RTCRtpReceiverTransform | null;
+    readonly 传输: RTCDtlsTransport | null;
     取参数(): RTCRtpReceiveParameters;
     取统计(): Promise<RTCStatsReport>;
 }
@@ -5792,6 +5819,7 @@ interface RTCRtpSender {
     readonly 双音多频: RTCDTMFSender | null;
     readonly 轨道: MediaStreamTrack | null;
     变换: RTCRtpSenderTransform | null;
+    readonly 传输: RTCDtlsTransport | null;
     取参数(): RTCRtpSendParameters;
     取统计(): Promise<RTCStatsReport>;
     替换轨道(withTrack: MediaStreamTrack | null): Promise<void>;
@@ -5808,6 +5836,7 @@ interface RTCRtpTransceiver {
 
 interface RTCSctpTransport {
     readonly 状态: RTCSctpTransportState;
+    readonly 传输: RTCDtlsTransport;
     加事件监听<K extends keyof RTCSctpTransportEventMap>(type: K, listener: (this: RTCSctpTransport, ev: RTCSctpTransportEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof RTCSctpTransportEventMap>(type: K, listener: (this: RTCSctpTransport, ev: RTCSctpTransportEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -7756,6 +7785,7 @@ interface Console {
     附加信息(...data: any[]): void;
     对数(...data: any[]): void;
     日志(...data: any[]): void;
+    追踪(...data: any[]): void;
     警告(...data: any[]): void;
 }
 
@@ -7995,6 +8025,7 @@ interface ReadonlyArray<T> {
 
 interface RegExp {
     readonly 吸顶: boolean;
+    readonly 统一码: boolean;
 }
 
 interface String {
@@ -8676,10 +8707,12 @@ interface ReadonlySetLike<T> {
 }
 
 interface Set<T> {
+    并集<U>(other: ReadonlySetLike<U>): Set<T | U>;
     差值<U>(other: ReadonlySetLike<U>): Set<T>;
 }
 
 interface ReadonlySet<T> {
+    并集<U>(other: ReadonlySetLike<U>): Set<T | U>;
     差值<U>(other: ReadonlySetLike<U>): Set<T>;
 }
 
