@@ -200,6 +200,7 @@ interface BlobEventInit {
 }
 
 interface BlobPropertyBag {
+    结尾方式?: EndingType;
     种类?: string;
 }
 
@@ -403,6 +404,10 @@ interface EffectTiming {
     缓动?: string;
     填充?: FillMode;
     迭代次数?: number;
+}
+
+interface ElementDefinitionOptions {
+    继承自?: string;
 }
 
 interface EncodedAudioChunkInit {
@@ -699,6 +704,11 @@ interface IDBObjectStoreParameters {
 
 interface IDBTransactionOptions {
     持久性?: IDBTransactionDurability;
+}
+
+interface IIRFilterOptions {
+    反馈: number[];
+    前馈: number[];
 }
 
 interface ImageBitmapRenderingContextSettings {
@@ -2184,6 +2194,7 @@ interface CSSContainerRule {
 }
 
 interface CSSCounterStyleRule {
+    回退: string;
     名称: string;
 }
 
@@ -2466,6 +2477,10 @@ interface CSSUnitValue {
 interface CSSUnparsedValue {
     readonly 长度: number;
     逐个处理(callbackfn: (value: CSSUnparsedSegment, key: number, parent: CSSUnparsedValue) => void, thisArg?: any): void;
+}
+
+interface CSSVariableReferenceValue {
+    readonly 回退: CSSUnparsedValue | null;
 }
 
 interface CSSViewTransitionRule {
@@ -2939,6 +2954,7 @@ interface Document {
     readonly 文档类型: DocumentType | null;
     readonly 文档元素: HTMLElement;
     网域: string;
+    readonly 嵌入集: HTMLCollectionOf<HTMLEmbedElement>;
     readonly 全屏: boolean;
     readonly 头部: HTMLHeadElement;
     readonly 隐藏: boolean;
@@ -3303,6 +3319,7 @@ interface FileSystemDirectoryHandle {
 }
 
 interface FileSystemEntry {
+    readonly 文件系统: FileSystem;
     readonly 名称: string;
 }
 
@@ -3376,6 +3393,7 @@ interface FormDataEvent {
 }
 
 interface GPUAdapter {
+    readonly 特性集: GPUSupportedFeatures;
     readonly 附加信息: GPUAdapterInfo;
     readonly 限制集: GPUSupportedLimits;
 }
@@ -3410,6 +3428,7 @@ interface GPUCompilationMessage {
 }
 
 interface GPUDevice {
+    readonly 特性集: GPUSupportedFeatures;
     readonly 限制集: GPUSupportedLimits;
     创建缓冲(descriptor: GPUBufferDescriptor): GPUBuffer;
     创建采样器(descriptor?: GPUSamplerDescriptor): GPUSampler;
@@ -3834,6 +3853,7 @@ interface HTMLFieldSetElement {
 }
 
 interface HTMLFontElement {
+    字型: string;
     大小: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLFontElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -4987,6 +5007,7 @@ interface MediaKeyMessageEvent {
 
 interface MediaKeySession {
     readonly 已关闭: Promise<MediaKeySessionClosedReason>;
+    readonly 到期时刻: number;
     readonly 密钥状态集: MediaKeyStatusMap;
     收消息时: ((this: MediaKeySession, ev: MediaKeyMessageEvent) => any) | null;
     readonly 会话编号: string;
@@ -6175,6 +6196,7 @@ interface SVGClipPathElement {
 
 interface SVGComponentTransferFunctionElement {
     readonly 振幅: SVGAnimatedNumber;
+    readonly 幂指数: SVGAnimatedNumber;
     readonly 拦截: SVGAnimatedNumber;
     readonly 偏移: SVGAnimatedNumber;
     readonly 斜率: SVGAnimatedNumber;
@@ -8836,6 +8858,7 @@ interface Symbol {
 
 interface PropertyDescriptor {
     可配置?: boolean;
+    可枚举?: boolean;
     值内容?: any;
     可写?: boolean;
     获取?(): any;
@@ -9135,6 +9158,7 @@ interface ArrayConstructor {
 }
 
 interface TypedPropertyDescriptor<T> {
+    可枚举?: boolean;
     可配置?: boolean;
     可写?: boolean;
     值内容?: T;
