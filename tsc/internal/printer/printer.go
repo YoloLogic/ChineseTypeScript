@@ -50,6 +50,12 @@ type PrinterOptions struct {
 	// StripInternal                 bool
 	PreserveSourceNewlines        bool
 	TerminateUnterminatedLiterals bool // !!!
+
+	// ChineseTypeScript：用户在【自己的源码里声明过】的汉语成员名集合（规格六·十一）。
+	// 命中者在成员位【不改写】：宁可让标准库别名被遮蔽，也不静默改坏用户自己的成员
+	// —— 文本级改写的误伤面已发作三次（教程的 编号、demo_ident 的 描述 与 端口）。
+	// 由 compiler 侧收集后传入；nil / 空集合时行为与以前完全一致。
+	ZhUserDeclaredMembers map[string]bool
 }
 
 type PrintHandlers struct {
@@ -1148,7 +1154,10 @@ func (p *Printer) emitIdentifierText(node *ast.Identifier) {
 			text = english
 		} else if isMemberNamePosition(node.Parent) {
 			if english, ok := scanner.ChineseStdlibMemberName(text); ok {
-				text = english
+				// 用户在【自己的源码里】声明过同名成员 → 不改写（保守方向，规格六·十一）。
+				if !p.Options.ZhUserDeclaredMembers[text] {
+					text = english
+				}
 			}
 		}
 	}

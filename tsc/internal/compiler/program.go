@@ -1827,7 +1827,8 @@ func (p *Program) Emit(ctx context.Context, options EmitOptions) *EmitResult {
 
 	for _, sourceFile := range sourceFiles {
 		emitter := &emitter{
-			writer:     nil,
+			zhUserMembers: p.zhUserDeclaredMemberNames(),
+			writer:        nil,
 			sourceFile: sourceFile,
 			emitOnly:   options.EmitOnly,
 			forceEmit:  options.ForceEmit,
@@ -2033,6 +2034,44 @@ func (p *Program) HasSameFileNames(other *Program) bool {
 func (p *Program) GetSourceFiles() []*ast.SourceFile {
 	return p.files
 }
+
+// zhUserDeclaredMemberNames 收集「用户源码里声明过的汉语成员名」（规格六·十一）。
+//
+// 为什么要它：emit 期的改写是【文本级】的（只看父节点是不是 X.名），所以用户自己声明的
+// 同名成员会被静默改写成英文标准库名 —— 产物运行时炸（已发作三次）。
+// 这里把「用户自己用过这个名字」的事实交给 printer，命中则不改写：
+// 宁可让标准库别名被遮蔽，也不静默改坏用户代码。
+//
+// 只统计成员声明（属性/方法/存取器/对象字面量属性），不统计变量名 ——
+// 变量名已被 ast.IsDeclarationName 放行，不需要在这里重复处理。
+// 内嵌 lib 与 .d.ts 不是「用户源码」，跳过。
+func (p *Program) zhUserDeclaredMemberNames() map[string]bool {
+	result := make(map[string]bool)
+	for _, file := range p.files {
+		name := file.FileName()
+		if strings.HasSuffix(name, ".d.ts") || strings.Contains(name, "bundled/libs") || strings.Contains(name, "bundled\\libs") {
+			continue
+		}
+		var visit func(n *ast.Node) bool
+		visit = func(n *ast.Node) bool {
+			switch n.Kind {
+			case ast.KindPropertyDeclaration, ast.KindMethodDeclaration,
+				ast.KindPropertySignature, ast.KindMethodSignature,
+				ast.KindPropertyAssignment, ast.KindGetAccessor, ast.KindSetAccessor:
+				if nm := n.Name(); nm != nil && ast.IsIdentifier(nm) {
+					if _, ok := scanner.ChineseStdlibMemberName(nm.Text()); ok {
+						result[nm.Text()] = true
+					}
+				}
+			}
+			n.ForEachChild(visit)
+			return false
+		}
+		file.AsNode().ForEachChild(visit)
+	}
+	return result
+}
+
 
 // Testing only
 func (p *Program) GetIncludeReasons() map[tspath.Path][]*FileIncludeReason {

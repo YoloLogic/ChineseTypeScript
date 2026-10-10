@@ -41,6 +41,8 @@ type emitter struct {
 	forceEmit          bool
 	writeFile          func(fileName string, text string, data *WriteFileData) error
 	tr                 *tracing.Tracing
+	// zhUserMembers 用户源码里声明过的汉语成员名（规格六·十一）：命中的不改写。
+	zhUserMembers map[string]bool
 }
 
 func (e *emitter) emit() {
@@ -207,6 +209,8 @@ func (e *emitter) emitJSFile(sourceFile *ast.SourceFile, jsFilePath string, sour
 		InlineSourceMap: options.InlineSourceMap.IsTrue(),
 		InlineSources:   options.InlineSources.IsTrue(),
 		Target:          options.Target,
+		// 用户自己声明过同名成员时不改写（规格六·十一）。
+		ZhUserDeclaredMembers: e.zhUserMembers,
 		// !!!
 	}
 
@@ -264,6 +268,8 @@ func (e *emitter) emitDeclarationFile(sourceFile *ast.SourceFile, declarationFil
 		// ExtendedDiagnostics: options.ExtendedDiagnostics.IsTrue(), // NYI
 		OnlyPrintJSDocStyle:         true,
 		OmitBraceSourceMapPositions: true,
+		// 用户自己声明过同名成员时不改写（规格六·十一）。
+		ZhUserDeclaredMembers: e.zhUserMembers,
 	}
 
 	// create a printer to print the nodes
