@@ -14,8 +14,16 @@
 * 上游仓库：`microsoft/typescript-go`（TypeScript 7 的原生实现，Go 语言）
 * 取得方式：**gitee 镜像克隆**（GitHub 直连太慢，实测 curl 28 Operation still slow）
   `git clone https://gitee.com/mirrors/TypeScript.git`
-* 本副本基线 HEAD：`e26b8d24bee09bf66d59941912166c5aa7975d20`（= 上游 `e26b8d24`）
+* 本副本基线（上游）：`e26b8d24bee09bf66d59941912166c5aa7975d20`（= 上游 `e26b8d24`）
 * 上游原样副本另存于：`E:\TypeScript源代码`（**不要改它**，它是比对的基准）
+* **本仓库的公开地址**：<https://github.com/YoloLogic/ChineseTypeScript>（`github` 远程，SSH）
+  —— 注意 `origin` 仍是**上游 gitee 镜像**（`gitee.com/mirrors/TypeScript`），**不要往它推**。
+* **历史说明（为什么本地 SHA 与上游不同）**：本仓库当初是**浅克隆**（边界=上游 `e26b8d24`），
+  而浅克隆**无法推送到空仓库**（远端做连通性检查时报 `did not receive expected object: 8330d40f…`，
+  那正是边界提交的父提交，本地没有；gitee 镜像太慢，`git fetch --unshallow` 拉不动）。
+  首次推送前用 `git filter-branch --parent-filter` 把**边界提交改写成无父的根提交**
+  （新根 `8b3e2a58`），使历史自包含。**代价：那次改写之后所有本地提交 SHA 都变了**
+  （例如改写前 `8937c58e` → 改写后 `61684a31`）。上游基线 `e26b8d24` 的说法不变。
 * 上游许可：**Apache-2.0**（上游那部分不因我们的条款而改变；见下）
 
 ## 一·五、许可（用户 2026-10-09 裁定：改用自定义条款）
