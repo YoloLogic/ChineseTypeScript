@@ -24,6 +24,11 @@
   首次推送前用 `git filter-branch --parent-filter` 把**边界提交改写成无父的根提交**
   （新根 `8b3e2a58`），使历史自包含。**代价：那次改写之后所有本地提交 SHA 都变了**
   （例如改写前 `8937c58e` → 改写后 `61684a31`）。上游基线 `e26b8d24` 的说法不变。
+* **⚠ 连带坑（已踩一次）**：`E:\cts-base` 是本仓库的**链接工作树**（`git worktree`，detached HEAD），
+  改写历史后它还停在旧提交 `e26b8d24`（该对象已不可达）→ 判据跑「编译基线上游 tsc」时
+  **Go 的 VCS 盖章失败**（`error obtaining VCS status: exit status 128`），`judge_chts` 整项报错。
+  **修法**：在 `E:\cts-base` 里 `git checkout --detach 8b3e2a58`（改写后的根提交，**内容完全相同**）。
+  另：如果只是本地构建，给 `go build` 加 `-buildvcs=false` 也能绕过。
 * 上游许可：**Apache-2.0**（上游那部分不因我们的条款而改变；见下）
 
 ## 一·五、许可（用户 2026-10-09 裁定：改用自定义条款）
