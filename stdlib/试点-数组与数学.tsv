@@ -1606,6 +1606,17 @@ member	assert	断言
 member	attestation	认证声明
 member	autocorrect	自动更正
 member	cname	规范名
+member	archive	归档
+member	attack	攻击
+member	behavior	行为
+member	beta	贝塔
+member	bias	偏置
+member	binding	绑定项
+member	blink	闪烁
+member	callee	被调用者
+member	certificates	证书集
+member	codecs	编解码器集
+member	compact	紧凑
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

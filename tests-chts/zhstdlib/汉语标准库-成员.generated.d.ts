@@ -363,12 +363,14 @@ interface DeviceMotionEventInit {
 
 interface DeviceMotionEventRotationRateInit {
     透明度?: number | null;
+    贝塔?: number | null;
     伽马?: number | null;
 }
 
 interface DeviceOrientationEventInit {
     绝对?: boolean;
     透明度?: number | null;
+    贝塔?: number | null;
     伽马?: number | null;
 }
 
@@ -384,6 +386,7 @@ interface DragEventInit {
 }
 
 interface DynamicsCompressorOptions {
+    攻击?: number;
     拐点?: number;
     比率?: number;
     释放?: number;
@@ -473,11 +476,16 @@ interface GPUBindGroupDescriptor {
     条目: GPUBindGroupEntry[];
 }
 
+interface GPUBindGroupEntry {
+    绑定项: GPUIndex32;
+}
+
 interface GPUBindGroupLayoutDescriptor {
     条目: GPUBindGroupLayoutEntry[];
 }
 
 interface GPUBindGroupLayoutEntry {
+    绑定项: GPUIndex32;
     缓冲?: GPUBufferBindingLayout;
     采样器?: GPUSamplerBindingLayout;
     纹理?: GPUTextureBindingLayout;
@@ -1214,6 +1222,10 @@ interface RTCCertificateExpiration {
     过期时间?: number;
 }
 
+interface RTCConfiguration {
+    证书集?: RTCCertificate[];
+}
+
 interface RTCDTMFToneChangeEventInit {
     音调?: string;
 }
@@ -1293,6 +1305,10 @@ interface RTCRtcpParameters {
     规范名?: string;
 }
 
+interface RTCRtpCapabilities {
+    编解码器集: RTCRtpCodec[];
+}
+
 interface RTCRtpCodec {
     声道集?: number;
     媒体类型: string;
@@ -1316,6 +1332,10 @@ interface RTCRtpHeaderExtensionParameters {
     已加密?: boolean;
     编号: number;
     资源标识: string;
+}
+
+interface RTCRtpParameters {
+    编解码器集: RTCRtpCodecParameters[];
 }
 
 interface RTCRtpSendParameters {
@@ -1469,6 +1489,10 @@ interface SchedulerPostTaskOptions {
 
 interface ScrollIntoViewOptions {
     块区?: ScrollLogicalPosition;
+}
+
+interface ScrollOptions {
+    行为?: ScrollBehavior;
 }
 
 interface ScrollTimelineOptions {
@@ -2883,12 +2907,14 @@ interface DeviceMotionEventAcceleration {
 
 interface DeviceMotionEventRotationRate {
     readonly 透明度: number | null;
+    readonly 贝塔: number | null;
     readonly 伽马: number | null;
 }
 
 interface DeviceOrientationEvent {
     readonly 绝对: boolean;
     readonly 透明度: number | null;
+    readonly 贝塔: number | null;
     readonly 伽马: number | null;
 }
 
@@ -3066,6 +3092,7 @@ interface DragEvent {
 }
 
 interface DynamicsCompressorNode {
+    readonly 攻击: AudioParam;
     readonly 拐点: AudioParam;
     readonly 比率: AudioParam;
     readonly 释放: AudioParam;
@@ -3678,6 +3705,7 @@ interface HTMLCollectionOf<T extends Element> {
 }
 
 interface HTMLDListElement {
+    紧凑: boolean;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDListElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDListElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3723,6 +3751,7 @@ interface HTMLDialogElement {
 }
 
 interface HTMLDirectoryElement {
+    紧凑: boolean;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDirectoryElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLDirectoryElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4071,6 +4100,7 @@ interface HTMLMapElement {
 }
 
 interface HTMLMarqueeElement {
+    行为: string;
     方向: string;
     高度: string;
     水平间距: number;
@@ -4120,6 +4150,7 @@ interface HTMLMediaElement {
 }
 
 interface HTMLMenuElement {
+    紧凑: boolean;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLMenuElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLMenuElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4158,6 +4189,7 @@ interface HTMLModElement {
 }
 
 interface HTMLOListElement {
+    紧凑: boolean;
     已反转: boolean;
     开始: number;
     种类: string;
@@ -4169,6 +4201,7 @@ interface HTMLOListElement {
 
 interface HTMLObjectElement {
     对齐: string;
+    归档: string;
     边框: string;
     readonly 内容文档: Document | null;
     readonly 内容窗口: WindowProxy | null;
@@ -4542,6 +4575,7 @@ interface HTMLTrackElement {
 }
 
 interface HTMLUListElement {
+    紧凑: boolean;
     种类: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLUListElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -6213,6 +6247,7 @@ interface SVGFECompositeElement {
 }
 
 interface SVGFEConvolveMatrixElement {
+    readonly 偏置: SVGAnimatedNumber;
     readonly 除数: SVGAnimatedNumber;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEConvolveMatrixElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -8063,6 +8098,7 @@ interface String {
     重复(count: number): string;
     以开头(searchString: string, position?: number): boolean;
     锚点(name: string): string;
+    闪烁(): string;
     粗体(): string;
     字号(size: number): string;
     字号(size: string): string;
@@ -8861,6 +8897,7 @@ interface NewableFunction {
 
 interface IArguments {
     长度: number;
+    被调用者: Function;
 }
 
 interface String {
