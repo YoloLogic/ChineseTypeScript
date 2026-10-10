@@ -158,11 +158,13 @@ interface AuthenticationExtensionsClientOutputsJSON {
 
 interface AuthenticationExtensionsLargeBlobInputs {
     读取?: boolean;
+    支撑?: string;
     写入?: BufferSource;
 }
 
 interface AuthenticationExtensionsLargeBlobInputsJSON {
     读取?: boolean;
+    支撑?: string;
     写入?: Base64URLString;
 }
 
@@ -462,6 +464,10 @@ interface EncodedVideoChunkInit {
     时长?: number;
     时间戳: number;
     种类: EncodedVideoChunkType;
+}
+
+interface EncodedVideoChunkMetadata {
+    服务?: SvcOutputMetadata;
 }
 
 interface ErrorEventInit {
@@ -776,6 +782,10 @@ interface IIRFilterOptions {
     前馈: number[];
 }
 
+interface IdleRequestOptions {
+    超时?: number;
+}
+
 interface ImageBitmapRenderingContextSettings {
     透明度?: boolean;
 }
@@ -878,6 +888,7 @@ interface MIDIMessageEventInit {
 }
 
 interface MIDIOptions {
+    软件?: boolean;
     系统专用?: boolean;
 }
 
@@ -1217,6 +1228,10 @@ interface PopStateEventInit {
     状态?: any;
 }
 
+interface PositionOptions {
+    超时?: number;
+}
+
 interface ProgressEventInit {
     长度可算?: boolean;
     已加载?: number;
@@ -1242,6 +1257,7 @@ interface PublicKeyCredentialCreationOptions {
     认证声明?: AttestationConveyancePreference;
     挑战: BufferSource;
     扩展?: AuthenticationExtensionsClientInputs;
+    超时?: number;
 }
 
 interface PublicKeyCredentialCreationOptionsJSON {
@@ -1249,6 +1265,7 @@ interface PublicKeyCredentialCreationOptionsJSON {
     挑战: Base64URLString;
     扩展?: AuthenticationExtensionsClientInputsJSON;
     提示列表?: string[];
+    超时?: number;
 }
 
 interface PublicKeyCredentialDescriptor {
@@ -1276,6 +1293,7 @@ interface PublicKeyCredentialRequestOptions {
     允许凭据?: PublicKeyCredentialDescriptor[];
     挑战: BufferSource;
     扩展?: AuthenticationExtensionsClientInputs;
+    超时?: number;
 }
 
 interface PublicKeyCredentialRequestOptionsJSON {
@@ -1283,6 +1301,7 @@ interface PublicKeyCredentialRequestOptionsJSON {
     挑战: Base64URLString;
     扩展?: AuthenticationExtensionsClientInputsJSON;
     提示列表?: string[];
+    超时?: number;
 }
 
 interface PublicKeyCredentialRpEntity {
@@ -1443,6 +1462,7 @@ interface RTCRtpSendParameters {
 
 interface RTCRtpStreamStats {
     类别: string;
+    同步源: number;
 }
 
 interface RTCRtpTransceiverInit {
@@ -2315,6 +2335,7 @@ interface CSSCounterStyleRule {
     前缀: string;
     范围: string;
     后缀: string;
+    符号集: string;
     系统: string;
 }
 
@@ -4651,6 +4672,7 @@ interface HTMLTableElement {
     字幕: HTMLTableCaptionElement | null;
     readonly 行数: HTMLCollectionOf<HTMLTableRowElement>;
     规则表: string;
+    概要: string;
     宽度: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTableElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -5489,6 +5511,7 @@ interface Navigator {
     readonly 权限集: Permissions;
     readonly 服务工作线程: ServiceWorkerContainer;
     发送信标(url: string | URL, data?: BodyInit | null): boolean;
+    共享(data?: ShareData): Promise<void>;
     振动(pattern: VibratePattern): boolean;
 }
 
@@ -7912,9 +7935,11 @@ interface Window {
     打开者: any;
     readonly 朝向: number;
     readonly 个人栏: BarProp;
+    readonly 屏幕: Screen;
     readonly 屏幕横坐标: number;
     readonly 屏幕纵坐标: number;
     readonly 滚动条: BarProp;
+    readonly 自身: Window & typeof globalThis;
     状态码: string;
     readonly 状态栏: BarProp;
     readonly 工具栏: BarProp;
@@ -8020,6 +8045,7 @@ interface XMLHttpRequest {
     readonly 应答内容: any;
     readonly 状态码: number;
     readonly 状态文本: string;
+    超时: number;
     readonly 上传: XMLHttpRequestUpload;
     中止(): void;
     取响应头(name: string): string | null;
@@ -8359,6 +8385,7 @@ interface String {
     小值(): string;
     删除线(): string;
     相减(): string;
+    上标(): string;
 }
 
 interface StringConstructor {
@@ -8995,6 +9022,10 @@ interface BigInt64Array<TArrayBuffer extends ArrayBufferLike> {
 interface BigUint64Array<TArrayBuffer extends ArrayBufferLike> {
     反转副本(): BigUint64Array<ArrayBuffer>;
     排序副本(compareFn?: (a: bigint, b: bigint) => number): BigUint64Array<ArrayBuffer>;
+}
+
+interface WeakKeyTypes {
+    符号名: symbol;
 }
 
 interface ArrayBuffer {
