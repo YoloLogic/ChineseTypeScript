@@ -223,6 +223,7 @@ interface RegExp {
     执行(string: string): RegExpExecArray | null;
     测试(string: string): boolean;
     readonly 来源: string;
+    readonly 全局: boolean;
     readonly 多行: boolean;
     编译(pattern: string, flags?: string): this;
 }

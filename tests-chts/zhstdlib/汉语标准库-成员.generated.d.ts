@@ -194,10 +194,12 @@ interface AuthenticationExtensionsPRFOutputsJSON {
 }
 
 interface AuthenticationExtensionsPRFValues {
+    首个: BufferSource;
     秒数?: BufferSource;
 }
 
 interface AuthenticationExtensionsPRFValuesJSON {
+    首个: Base64URLString;
     秒数?: Base64URLString;
 }
 
@@ -451,6 +453,7 @@ interface EcdsaParams {
 }
 
 interface EffectTiming {
+    延时?: number;
     方向?: PlaybackDirection;
     时长?: number | CSSNumericValue | string;
     缓动?: string;
@@ -912,6 +915,7 @@ interface LockInfo {
 }
 
 interface LockManagerSnapshot {
+    按住?: LockInfo[];
     待处理?: LockInfo[];
 }
 
@@ -1092,6 +1096,7 @@ interface NavigationInterceptOptions {
 }
 
 interface NavigationNavigateOptions {
+    历史?: NavigationHistoryBehavior;
     状态?: any;
 }
 
@@ -1135,6 +1140,7 @@ interface OfflineAudioContextOptions {
 }
 
 interface OptionalEffectTiming {
+    延时?: number;
     方向?: PlaybackDirection;
     时长?: number | string;
     缓动?: string;
@@ -1241,6 +1247,7 @@ interface PerformanceMarkOptions {
 interface PerformanceMeasureOptions {
     细节?: any;
     时长?: DOMHighResTimeStamp;
+    结束?: string | DOMHighResTimeStamp;
     开始?: string | DOMHighResTimeStamp;
 }
 
@@ -1664,6 +1671,7 @@ interface SanitizerElementNamespaceWithAttributes {
 }
 
 interface SchedulerPostTaskOptions {
+    延时?: number;
     优先级?: TaskPriority;
     信号?: AbortSignal;
 }
@@ -2570,6 +2578,7 @@ interface CSSScale {
 }
 
 interface CSSScopeRule {
+    readonly 结束: string | null;
     readonly 开始: string | null;
 }
 
@@ -3673,6 +3682,10 @@ interface GPUCompilationMessage {
     readonly 种类: GPUCompilationMessageType;
 }
 
+interface GPUComputePassEncoder {
+    结束(): void;
+}
+
 interface GPUDevice {
     readonly 特性集: GPUSupportedFeatures;
     readonly 限制集: GPUSupportedLimits;
@@ -3715,6 +3728,10 @@ interface GPURenderBundleEncoder {
 
 interface GPURenderCommandsMixin {
     绘制(vertexCount: GPUSize32, instanceCount?: GPUSize32, firstVertex?: GPUSize32, firstInstance?: GPUSize32): void;
+}
+
+interface GPURenderPassEncoder {
+    结束(): void;
 }
 
 interface GPUSupportedFeatures {
@@ -4331,6 +4348,7 @@ interface HTMLLIElement {
 }
 
 interface HTMLLabelElement {
+    readonly 控制项: HTMLElement | null;
     readonly 表单: HTMLFormElement | null;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLLabelElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -4453,6 +4471,7 @@ interface HTMLMetaElement {
 }
 
 interface HTMLMeterElement {
+    高值: number;
     readonly 标签列: NodeListOf<HTMLLabelElement>;
     最大: number;
     最大限制: number;
@@ -7241,6 +7260,7 @@ interface Selection {
     readonly 种类: string;
     加范围(range: Range): void;
     折叠(node: Node | null, offset?: number): void;
+    空值(): void;
     延伸(node: Node, offset?: number): void;
     删范围(range: Range): void;
     转字符串(): string;
@@ -7603,6 +7623,7 @@ interface TextTrackList {
 
 interface TimeRanges {
     readonly 长度: number;
+    结束(index: number): number;
     开始(index: number): number;
 }
 
@@ -7964,6 +7985,7 @@ interface WebGLRenderingContextBase {
     取着色器参数(shader: WebGLShader, pname: GLenum): any;
     取支持扩展(): string[] | null;
     取一致位置(program: WebGLProgram, name: string): WebGLUniformLocation | null;
+    提示(target: GLenum, mode: GLenum): void;
     上下文丢失(): boolean;
     是启用(cap: GLenum): GLboolean;
     线宽(width: GLfloat): void;
@@ -8039,6 +8061,7 @@ interface Window {
     readonly 事件: Event | undefined;
     readonly 外部: External;
     readonly 帧集: WindowProxy;
+    readonly 历史: History;
     readonly 长度: number;
     readonly 地址栏: BarProp;
     名称: string;
@@ -8106,6 +8129,7 @@ interface WindowOrWorkerGlobalScope {
     readonly 调度器: Scheduler;
     创建位图(image: ImageBitmapSource, options?: ImageBitmapOptions): Promise<ImageBitmap>;
     创建位图(image: ImageBitmapSource, sx: number, sy: number, sw: number, sh: number, options?: ImageBitmapOptions): Promise<ImageBitmap>;
+    抓取(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
     排队微任务(callback: VoidFunction): void;
     结构化复制<T = any>(value: T, options?: StructuredSerializeOptions): T;
 }
@@ -8227,6 +8251,7 @@ interface Console {
     调试(...data: any[]): void;
     书写方向(item?: any, options?: any): void;
     报错(...data: any[]): void;
+    分组(...data: any[]): void;
     附加信息(...data: any[]): void;
     对数(...data: any[]): void;
     日志(...data: any[]): void;
@@ -9440,6 +9465,7 @@ interface RegExp {
     执行(string: string): RegExpExecArray | null;
     测试(string: string): boolean;
     readonly 来源: string;
+    readonly 全局: boolean;
     readonly 多行: boolean;
     编译(pattern: string, flags?: string): this;
 }

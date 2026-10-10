@@ -157,8 +157,12 @@ if (-not (Test-Path $locRoot)) {
         $d = @(Compare-Object (Get-Content $refPath -Encoding UTF8) (Get-Content $f.FullName -Encoding UTF8) -CaseSensitive)
         if ($d.Count -eq 0) { $same++; continue }
         $diffFiles += $rel
-        # 允许的差异：行里含汉字（本项目新增的汉语内容）。其余一律当成问题。
-        $unexplained = @($d | Where-Object { $_.InputObject -notmatch '[\u4e00-\u9fff]' })
+        # 允许的差异只有两类：
+        #   (1) 行里含汉字 —— 本项目新增的汉语内容；
+        #   (2) 行里含我们的分块 lib 文件名 lib.zhts.* —— 自动加载（2026-10-10 起）让每次编译
+        #       多 49 个块文件，于是「文件清单 / 依赖列表」这类 baseline 会出现【不含汉字】的差异。
+        #       这是自动加载的固有后果（规格六·十三），不是回归；其余一律当成问题。
+        $unexplained = @($d | Where-Object { $_.InputObject -notmatch '[\u4e00-\u9fff]' -and $_.InputObject -notmatch 'lib\.zhts\.' })
         if ($unexplained.Count -gt 0) { $bad += "$rel -> $($unexplained[0].InputObject.Trim())" }
     }
     Check '④ baseline 差异只与汉语有关' ($bad.Count -eq 0) `
