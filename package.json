@@ -40,7 +40,7 @@
         "tar": "^7.5.19",
         "tmp": "^0.2.7",
         "typescript": "^6.0.3",
-        "which": "^6.0.1"
+        "which": "^7.0.0"
     },
     "overrides": {
         "@microsoft/applicationinsights-web-basic": "3.3.11",
