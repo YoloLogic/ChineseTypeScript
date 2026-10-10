@@ -593,6 +593,10 @@ interface GPUExternalTextureDescriptor {
     来源: HTMLVideoElement | VideoFrame;
 }
 
+interface GPUFragmentState {
+    目标集: (GPUColorTargetState | null)[];
+}
+
 interface GPUObjectDescriptorBase {
     标签?: string;
 }
@@ -708,6 +712,10 @@ interface GetAnimationsOptions {
     子树?: boolean;
 }
 
+interface GetNotificationOptions {
+    标签项?: string;
+}
+
 interface GetRootNodeOptions {
     可穿透?: boolean;
 }
@@ -741,6 +749,10 @@ interface HmacKeyGenParams {
 interface IDBDatabaseInfo {
     名称?: string;
     版本?: number;
+}
+
+interface IDBIndexParameters {
+    唯一?: boolean;
 }
 
 interface IDBObjectStoreParameters {
@@ -1043,6 +1055,7 @@ interface NotificationOptions {
     语言?: string;
     需交互?: boolean;
     静默?: boolean | null;
+    标签项?: string;
 }
 
 interface OfflineAudioContextOptions {
@@ -1206,6 +1219,7 @@ interface PromiseRejectionEventInit {
 
 interface PropertyDefinition {
     名称: string;
+    语法?: string;
 }
 
 interface PropertyIndexedKeyframes {
@@ -2288,6 +2302,7 @@ interface CSSCounterStyleRule {
     前缀: string;
     范围: string;
     后缀: string;
+    系统: string;
 }
 
 interface CSSFontFaceRule {
@@ -2332,6 +2347,7 @@ interface CSSLayerBlockRule {
 }
 
 interface CSSMathClamp {
+    readonly 上界: CSSNumericValue;
     readonly 值内容: CSSNumericValue;
 }
 
@@ -2427,6 +2443,7 @@ interface CSSPositionTryRule {
 
 interface CSSPropertyRule {
     readonly 名称: string;
+    readonly 语法: string;
 }
 
 interface CSSRotate {
@@ -2886,6 +2903,7 @@ interface CryptoKey {
 interface CustomElementRegistry {
     获取(name: string): CustomElementConstructor | undefined;
     初始化(root: Node): void;
+    升级(root: Node): void;
 }
 
 interface CustomEvent<T = any> {
@@ -3516,6 +3534,7 @@ interface GPUAdapter {
 interface GPUAdapterInfo {
     readonly 体系结构: string;
     readonly 设备: string;
+    readonly 供应方: string;
 }
 
 interface GPUBuffer {
@@ -4823,6 +4842,7 @@ interface IDBIndex {
     readonly 键路径: string | string[];
     名称: string;
     readonly 对象存储: IDBObjectStore;
+    readonly 唯一: boolean;
     获取(query: IDBValidKey | IDBKeyRange): IDBRequest<any>;
     取全部(queryOrOptions?: IDBValidKey | IDBKeyRange | null, count?: number): IDBRequest<any[]>;
     取全部键(queryOrOptions?: IDBValidKey | IDBKeyRange | null, count?: number): IDBRequest<IDBValidKey[]>;
@@ -4831,6 +4851,7 @@ interface IDBIndex {
 }
 
 interface IDBKeyRange {
+    readonly 上界: any;
     包含(key: any): boolean;
 }
 
@@ -5471,6 +5492,7 @@ interface NavigatorID {
     readonly 应用代号: string;
     readonly 平台: string;
     readonly 用户代理: string;
+    readonly 供应方: string;
 }
 
 interface NavigatorLanguage {
@@ -5560,6 +5582,7 @@ interface Notification {
     出错时: ((this: Notification, ev: Event) => any) | null;
     readonly 需交互: boolean;
     readonly 静默: boolean | null;
+    readonly 标签项: string;
     readonly 标题: string;
     关闭(): void;
     加事件监听<K extends keyof NotificationEventMap>(type: K, listener: (this: Notification, ev: NotificationEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5691,6 +5714,7 @@ interface PaymentResponse {
 interface Performance {
     readonly 事件计数: EventCounts;
     readonly 时间原点: DOMHighResTimeStamp;
+    readonly 时序: PerformanceTiming;
     清标记(markName?: string): void;
     取条目列(): PerformanceEntryList;
     按名取条目(name: string, type?: string): PerformanceEntryList;
@@ -7576,6 +7600,10 @@ interface VTTRegion {
     宽度: number;
 }
 
+interface ValidityState {
+    readonly 有效: boolean;
+}
+
 interface VideoColorSpace {
     readonly 原色集: VideoColorPrimaries | null;
     readonly 转移: VideoTransferCharacteristics | null;
@@ -7970,6 +7998,7 @@ interface XMLHttpRequest {
     readonly 应答内容: any;
     readonly 状态码: number;
     readonly 状态文本: string;
+    readonly 上传: XMLHttpRequestUpload;
     中止(): void;
     取响应头(name: string): string | null;
     打开(method: string, url: string | URL): void;
@@ -8040,6 +8069,7 @@ interface Console {
     附加信息(...data: any[]): void;
     对数(...data: any[]): void;
     日志(...data: any[]): void;
+    表格(tabularData?: any, properties?: string[]): void;
     时间(label?: string): void;
     追踪(...data: any[]): void;
     警告(...data: any[]): void;
