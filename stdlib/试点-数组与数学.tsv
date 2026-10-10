@@ -1473,7 +1473,6 @@ member	handler	处理器
 member	hints	提示列表
 member	hreflang	链接语言
 member	hyphens	连字
-member	indices	索引集
 member	limits	限制集
 member	lines	行集
 member	links	链接集

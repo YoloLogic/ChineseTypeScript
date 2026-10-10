@@ -227,6 +227,8 @@ var (
 	libs_lib_webworker_importscripts_d_ts string
 	//go:embed libs/lib.webworker.iterable.d.ts
 	libs_lib_webworker_iterable_d_ts string
+	//go:embed libs/lib.zhts.d.ts
+	libs_lib_zhts_d_ts string
 )
 
 var embeddedContents = map[string]string{
@@ -338,6 +340,7 @@ var embeddedContents = map[string]string{
 	"libs/lib.webworker.d.ts":               libs_lib_webworker_d_ts,
 	"libs/lib.webworker.importscripts.d.ts": libs_lib_webworker_importscripts_d_ts,
 	"libs/lib.webworker.iterable.d.ts":      libs_lib_webworker_iterable_d_ts,
+	"libs/lib.zhts.d.ts":                    libs_lib_zhts_d_ts,
 }
 
 var libsEntries = []fs.DirEntry{
@@ -449,4 +452,5 @@ var libsEntries = []fs.DirEntry{
 	&fileInfo{name: "lib.webworker.d.ts", size: int64(len(libs_lib_webworker_d_ts))},
 	&fileInfo{name: "lib.webworker.importscripts.d.ts", size: int64(len(libs_lib_webworker_importscripts_d_ts))},
 	&fileInfo{name: "lib.webworker.iterable.d.ts", size: int64(len(libs_lib_webworker_iterable_d_ts))},
+	&fileInfo{name: "lib.zhts.d.ts", size: int64(len(libs_lib_zhts_d_ts))},
 }

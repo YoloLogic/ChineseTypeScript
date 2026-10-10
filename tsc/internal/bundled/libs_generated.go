@@ -113,4 +113,5 @@ var LibNames = []string{
 	"lib.webworker.d.ts",
 	"lib.webworker.importscripts.d.ts",
 	"lib.webworker.iterable.d.ts",
+	"lib.zhts.d.ts",
 }

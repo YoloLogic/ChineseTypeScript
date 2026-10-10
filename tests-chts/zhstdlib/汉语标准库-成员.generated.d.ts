@@ -9067,14 +9067,6 @@ interface Error {
     起因?: unknown;
 }
 
-interface RegExpMatchArray {
-    索引集?: RegExpIndicesArray;
-}
-
-interface RegExpExecArray {
-    索引集?: RegExpIndicesArray;
-}
-
 interface String {
     取第(index: number): string | undefined;
 }

@@ -47,7 +47,8 @@ foreach ($line in (Get-Content $Table -Encoding UTF8)) {
 # 扫全部 lib（含 DOM —— 用户 2026-10-08 裁定「含 DOM」）。
 # 扫全部 lib（含 DOM —— 用户 2026-10-08 裁定「含 DOM」），但要排除【默认不加载】的变体：
 # webworker / scripthost 里的成员引用了默认 lib 没有的类型（如 Client），抄进来会「找不到名称」。
-$libs = @(Get-ChildItem $LibDir -File -Filter 'lib.*.d.ts' | Where-Object { $_.Name -notmatch 'webworker|scripthost' } | Sort-Object Name)
+# 注意排除 lib.zhts.d.ts —— 那是【本生成器的输出】，不排除的话它会把自己也扫一遍（自我递归）。
+$libs = @(Get-ChildItem $LibDir -File -Filter 'lib.*.d.ts' | Where-Object { $_.Name -notmatch 'webworker|scripthost|^lib\.zhts\.d\.ts$' } | Sort-Object Name)
 $blocks = New-Object System.Collections.Generic.List[string]
 $blocks.Add('// 【生成物，请勿手改】由 tools/gen_zhstdlib_lib.ps1 从上游 lib + stdlib 译名表生成。')
 $blocks.Add('// 只做「成员改名」的增补：接口名与类型原样保留，英文用法照旧可用。')
@@ -132,3 +133,40 @@ $dir = Split-Path -Parent $Out
 if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Force $dir | Out-Null }
 [System.IO.File]::WriteAllText($Out, $text, (New-Object System.Text.UTF8Encoding($true)))
 Write-Host ('  已生成 ' + $Out)
+
+# ---- 追加输出：一个真正的 lib 文件（供编译器【默认加载】）----------------------
+# 为什么要它：做成 lib 文件后随默认 lib 集合自动加载，用户不必再手写 /// <reference>
+# （这就是**自动加载**：标准库汉化从「半成品」变成「装完就能用」）。
+$repo = Split-Path -Parent $PSScriptRoot
+$globalsPath = Join-Path $repo 'tests-chts\zhstdlib\汉语标准库.d.ts'
+$libOut = Join-Path $repo 'tsc\internal\bundled\libs\lib.zhts.d.ts'
+$globalsLines = @(Get-Content $globalsPath -Encoding UTF8 | Where-Object { $_ -notmatch '^/// <reference path=' })
+# 上游 bundled/generate.go 要求每个内嵌 lib【必须以 CopyrightNotice.txt 开头 + 一个空行】
+# （lib 文件是上游 lib 的派生作品，保留声明既合规也是上游硬校验）。
+$noticePath = Join-Path $repo 'tsc\internal\bundled\CopyrightNotice.txt'
+$notice = ([System.IO.File]::ReadAllText($noticePath)) -replace ($CRLF), ([string][char]10)
+$libHead = @(
+    '// ChineseTypeScript 汉语标准库 —— 随默认 lib 集合自动加载的 lib 文件。',
+    '//',
+    '// 【生成物，请勿手改】由 tools/gen_zhstdlib_lib.ps1 生成：',
+    '//   内容 = 手写全局别名（tests-chts/zhstdlib/汉语标准库.d.ts）',
+    '//        + 生成的成员声明（同目录 汉语标准库-成员.generated.d.ts）。',
+    '// 机制：声明层给汉语名；运行时那一半由编译器 emit 改写负责（甲.追加 → 甲.push）。',
+    ''
+)
+# 注意必须用【LF】：上游内嵌 lib 的生成器（bundled/generate.go）会校验行尾，
+# 用 CRLF 会直接报 ' lib.zhts.d.ts must use LF line endings' 并拒绝生成。
+$LF = [string][char]10
+# 上游的要求是 content.HasPrefix(copyright + "\n")：声明原文（本身以 \n\n 结尾）再补一个 \n。
+# 别 TrimEnd —— 少一个换行就会被拒。
+$libText = ($notice + $LF + (($libHead + $globalsLines + @('') + ($text -split ($CRLF))) -join $LF))
+if ($Check) {
+    if (-not (Test-Path $libOut)) { throw ('lib 生成物不存在：' + $libOut) }
+    $libDisk = ([System.IO.File]::ReadAllText($libOut)) -replace ($CRLF), $LF
+    if ($libDisk.TrimEnd() -ne ($libText.TrimEnd())) { throw ('lib.zhts.d.ts 与译名表不同步；请运行 tools\gen_zhstdlib_lib.ps1 并提交结果') }
+    Write-Host '  lib.zhts.d.ts 与译名表一致'
+}
+else {
+    [System.IO.File]::WriteAllText($libOut, $libText, (New-Object System.Text.UTF8Encoding($false)))
+    Write-Host ('  已生成 ' + $libOut)
+}

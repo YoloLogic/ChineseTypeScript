@@ -122,6 +122,8 @@ var LibMap = collections.NewOrderedMapFromList([]collections.MapEntry[string, an
 	// Decorators
 	{Key: "decorators", Value: "lib.decorators.d.ts"},
 	{Key: "decorators.legacy", Value: "lib.decorators.legacy.d.ts"},
+	// ChineseTypeScript：汉语标准库（本项目自己的 lib 文件，随默认集合自动加载）
+	{Key: "zhts", Value: "lib.zhts.d.ts"},
 })
 
 var (

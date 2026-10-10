@@ -1485,7 +1485,6 @@ var zhStdlibMembers = map[string]string{
 	"提示列表":   "hints",
 	"链接语言":   "hreflang",
 	"连字":     "hyphens",
-	"索引集":    "indices",
 	"限制集":    "limits",
 	"行集":     "lines",
 	"链接集":    "links",
