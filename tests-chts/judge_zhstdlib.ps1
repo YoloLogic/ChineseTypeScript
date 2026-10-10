@@ -169,7 +169,39 @@ foreach ($d in $fixtureDirs) {
         }
     }
 }
-Check '⑪ 夹具里用户自己的汉语成员名不与译名表撞车' ($collide.Count -eq 0) ('撞车: ' + $(if ($collide.Count) { ($collide | Select-Object -Unique) -join '; ' } else { '无' }))
+# 【信息行，不再判失败】从 2026-10-10（长目标第 3 轮）起，「用户声明屏蔽 pass」已上线：
+#   夹具里用户自己声明的汉语成员名若与译名同名，printer 会【不改写】它（判据⑬/⑭ 守着行为）。
+#   所以名字撞车本身不再是缺陷 —— 这里把它打印出来，只是让我们看得见（例如 n 个），
+#   不再因为「夹具恰好用过某个通用词」而挡住翻译（否则每放一批通用名词都要改夹具）。
+Write-Host ('  [信息] ⑪ 夹具成员名与译名表同名的处数（已由屏蔽 pass 保护，不再判失败）: ' + $collide.Count)
+if ($collide.Count -gt 0) {
+    ($collide | Select-Object -Unique) | Select-Object -First 8 | ForEach-Object { Write-Host ('         · ' + $_) }
+}
+
+# ⑭ 屏蔽 pass【形态覆盖】守卫：一次证明【各种成员声明形态】的用户同名成员都不会被改写。
+#   为什么要它：⑬ 只覆盖「方法声明」一种形态；collector 若漏了某种形态（如对象字面量属性、
+#   属性签名），该形态的用户成员又会被误改 —— 这是最容易悄悄退化的地方，必须钉死。
+Set-Content -Path (Join-Path $Work '同名形态.ts') -Encoding utf8 -Value (@(
+    '/// <reference path="汉语标准库.d.ts" />',
+    '类型 甲 {',
+    '  长度(): 数字 { 返回 1 }',
+    '  宽度: 数字 = 2',
+    '}',
+    '接口 乙 { 长度: 数字 }',
+    '接口 丙 { 长度(): 数字 }',
+    '常量 丁 = { 长度: 3 }',
+    '常量 戊 = 新建 甲()',
+    'console.log(戊.长度() + 戊.宽度 + 丁.长度)'
+) -join [char]10)
+$out4 = Join-Path $Work 'out4'
+if (Test-Path $out4) { Remove-Item $out4 -Recurse -Force }
+& $Tsc (Join-Path $Work '同名形态.ts') --outDir $out4 --target es2020 --module commonjs --pretty false --locale en 2>&1 | Out-Null
+$js4 = Join-Path $out4 '同名形态.js'
+$js4Text = if (Test-Path $js4) { [System.IO.File]::ReadAllText($js4) } else { '' }
+$run4 = if ($node -and (Test-Path $js4)) { (& $node $js4 2>&1 | Out-String).Trim() } else { '' }
+$zh4 = [bool]($js4Text -match '\.长度') -and [bool]($js4Text -match '\.宽度')
+$en4 = [bool]($js4Text -match '\.length') -or [bool]($js4Text -match '\.width')
+Check '⑭ 屏蔽 pass 形态覆盖：方法/属性/属性签名/方法签名/对象字面量属性 的用户同名成员都不被改写' (($zh4) -and (-not $en4) -and ($run4 -eq '6')) ('产物含 .长度/.宽度=' + $zh4 + ' 含 .length/.width=' + $en4 + ' 运行输出=' + $run4)
 
 # ⑫ Go 源文件不得带 UTF-8 BOM（跨平台编译）
 #   为什么必须单独钉：Go 在 Linux/macOS 上对 BOM 直接报
