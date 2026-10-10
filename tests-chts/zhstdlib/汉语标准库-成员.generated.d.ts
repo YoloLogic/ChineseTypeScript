@@ -642,6 +642,10 @@ interface GamepadEventInit {
     手柄?: Gamepad | null;
 }
 
+interface GetAnimationsOptions {
+    子树?: boolean;
+}
+
 interface GetRootNodeOptions {
     可穿透?: boolean;
 }
@@ -907,6 +911,7 @@ interface MouseEventInit {
 
 interface MutationObserverInit {
     属性集?: boolean;
+    子树?: boolean;
 }
 
 interface NavigateEventInit {
@@ -1077,6 +1082,7 @@ interface PermissionDescriptor {
 
 interface PlaneLayout {
     偏移: number;
+    行跨度: number;
 }
 
 interface PointerEventInit {
@@ -3121,6 +3127,7 @@ interface ElementInternals {
     readonly 表单: HTMLFormElement | null;
     readonly 标签列: NodeList;
     readonly 影子根: ShadowRoot | null;
+    readonly 状态集: CustomStateSet;
     readonly 校验消息: string;
     readonly 有效性: ValidityState;
     检查校验(): boolean;
@@ -3801,6 +3808,7 @@ interface HTMLFrameElement {
     readonly 内容文档: Document | null;
     readonly 内容窗口: WindowProxy | null;
     名称: string;
+    滚动方式: string;
     源址: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLFrameElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -3876,6 +3884,7 @@ interface HTMLIFrameElement {
     来源页策略: ReferrerPolicy;
     get 沙箱(): DOMTokenList;
     set 沙箱(value: string);
+    滚动方式: string;
     源址: string;
     源文档: string;
     宽度: string;
@@ -4113,6 +4122,7 @@ interface HTMLModElement {
 }
 
 interface HTMLOListElement {
+    已反转: boolean;
     开始: number;
     种类: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLOListElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4131,6 +4141,7 @@ interface HTMLObjectElement {
     高度: string;
     水平间距: number;
     名称: string;
+    待机: string;
     种类: string;
     readonly 校验消息: string;
     readonly 有效性: ValidityState;
@@ -4372,6 +4383,7 @@ interface HTMLTableCellElement {
 
 interface HTMLTableColElement {
     对齐: string;
+    跨度: number;
     宽度: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTableColElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -6077,6 +6089,7 @@ interface SVGComponentTransferFunctionElement {
     readonly 振幅: SVGAnimatedNumber;
     readonly 拦截: SVGAnimatedNumber;
     readonly 偏移: SVGAnimatedNumber;
+    readonly 斜率: SVGAnimatedNumber;
     readonly 种类: SVGAnimatedEnumeration;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGComponentTransferFunctionElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -6653,6 +6666,7 @@ interface SVGTextElement {
 
 interface SVGTextPathElement {
     readonly 提交方法: SVGAnimatedEnumeration;
+    readonly 间距: SVGAnimatedEnumeration;
     readonly 起始偏移: SVGAnimatedLength;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGTextPathElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -7572,6 +7586,7 @@ interface Window {
     readonly 屏幕纵坐标: number;
     readonly 滚动条: BarProp;
     状态码: string;
+    readonly 状态栏: BarProp;
     readonly 工具栏: BarProp;
     readonly 顶部: WindowProxy | null;
     告警(message?: any): void;
@@ -7978,6 +7993,10 @@ interface ReadonlyArray<T> {
     本地转字符串(locales: string | string[], options?: Intl.NumberFormatOptions & Intl.DateTimeFormatOptions): string;
 }
 
+interface RegExp {
+    readonly 吸顶: boolean;
+}
+
 interface String {
     取码点(pos: number): number | undefined;
     包含(searchString: string, position?: number): boolean;
@@ -8114,6 +8133,10 @@ interface ProxyHandler<T extends object> {
     止扩展?(target: T): boolean;
     设置?(target: T, p: string | symbol, newValue: any, receiver: any): boolean;
     设原型?(target: T, v: object | null): boolean;
+}
+
+interface ProxyConstructor {
+    可撤销<T extends object>(target: T, handler: ProxyHandler<T>): { proxy: T; revoke: () => void; };
 }
 
 declare namespace Reflect {
