@@ -188,6 +188,28 @@ foreach ($f in (git -C $repoRootZh ls-files '*.go')) {
 }
 Check '⑫ Go 源文件不带 UTF-8 BOM（防跨平台编译失败）' ($bomFiles.Count -eq 0) ('带 BOM: ' + $(if ($bomFiles.Count) { ($bomFiles | Select-Object -First 5) -join '; ' } else { '无' }))
 
+# ⑬ 用户同名【成员】守卫（符号感知的验收判据，今天是【红】的）
+#    这是文本级改写最真实的误伤面（规格六·六，已发作三次）：
+#    用户自己的类型里声明了 描述()，调用 x.描述() —— 现在会被 emit 改写成 x.description，
+#    产物运行时 TypeError。修复方向见规格六·十一（用户声明屏蔽 pass）。
+Set-Content -Path (Join-Path $Work '同名成员.ts') -Encoding utf8 -Value (@(
+    '/// <reference path="汉语标准库.d.ts" />',
+    '类型 甲 {',
+    '  长度(): 字符串 { 返回 "本地:8080" }',
+    '}',
+    '常量 x = 新建 甲()',
+    'console.log(x.长度())'
+) -join [char]10)
+$out3 = Join-Path $Work 'out3'
+if (Test-Path $out3) { Remove-Item $out3 -Recurse -Force }
+& $Tsc (Join-Path $Work '同名成员.ts') --outDir $out3 --target es2020 --module commonjs --pretty false --locale en 2>&1 | Out-Null
+$js3 = Join-Path $out3 '同名成员.js'
+$js3Text = if (Test-Path $js3) { [System.IO.File]::ReadAllText($js3) } else { '' }
+$run3 = if ($node -and (Test-Path $js3)) { (& $node $js3 2>&1 | Out-String).Trim() } else { '' }
+$zh3 = [bool]($js3Text -match '\.长度')
+$en3 = [bool]($js3Text -match '\.length')
+Check '⑬ 用户同名成员守卫：x.长度() 不得被改写（产物仍是 .长度，且真跑正确）' (($zh3) -and (-not $en3) -and ($run3 -eq '本地:8080')) ('产物含 .长度=' + $zh3 + ' 含 .length=' + $en3 + ' 运行输出=' + $run3)
+
 Write-Host '=== 判定汇总 ==='
 $results | ForEach-Object { '  [' + $_.结果 + '] ' + $_.判定 + ' —— ' + $_.说明 }
 $fail = @($results | Where-Object { $_.结果 -ne '通过' }).Count
