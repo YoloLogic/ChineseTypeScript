@@ -161,10 +161,20 @@ interface AuthenticationExtensionsLargeBlobOutputsJSON {
 
 interface AuthenticationExtensionsPRFOutputs {
     已启用?: boolean;
+    结果集?: AuthenticationExtensionsPRFValues;
 }
 
 interface AuthenticationExtensionsPRFOutputsJSON {
     已启用?: boolean;
+    结果集?: AuthenticationExtensionsPRFValuesJSON;
+}
+
+interface AuthenticationExtensionsPRFValues {
+    秒数?: BufferSource;
+}
+
+interface AuthenticationExtensionsPRFValuesJSON {
+    秒数?: Base64URLString;
 }
 
 interface AuthenticationResponseJSON {
@@ -815,6 +825,7 @@ interface LockManagerSnapshot {
 interface LockOptions {
     模式?: LockMode;
     信号?: AbortSignal;
+    窃取?: boolean;
 }
 
 interface MIDIConnectionEventInit {
@@ -827,6 +838,10 @@ interface MIDIMessageEventInit {
 
 interface MIDIOptions {
     系统专用?: boolean;
+}
+
+interface MediaCapabilitiesInfo {
+    平滑: boolean;
 }
 
 interface MediaCapabilitiesKeySystemConfiguration {
@@ -1564,6 +1579,10 @@ interface ShowPopoverOptions {
 interface SpeechRecognitionErrorEventInit {
     报错: SpeechRecognitionErrorCode;
     消息?: string;
+}
+
+interface SpeechRecognitionEventInit {
+    结果集: SpeechRecognitionResultList;
 }
 
 interface SpeechSynthesisErrorEventInit {
@@ -2781,6 +2800,7 @@ interface CookieStore {
 }
 
 interface CookieStoreManager {
+    订阅(subscriptions: CookieStoreGetOptions[]): Promise<void>;
     退订(subscriptions: CookieStoreGetOptions[]): Promise<void>;
 }
 
@@ -3665,6 +3685,8 @@ interface HTMLAnchorElement {
     关系: string;
     get 关系列表(): DOMTokenList;
     set 关系列表(value: string);
+    修订号: string;
+    形状: string;
     目标: string;
     转文本: string;
     种类: string;
@@ -3683,6 +3705,7 @@ interface HTMLAreaElement {
     关系: string;
     get 关系列表(): DOMTokenList;
     set 关系列表(value: string);
+    形状: string;
     目标: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLAreaElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -4144,6 +4167,7 @@ interface HTMLLinkElement {
     关系: string;
     get 关系列表(): DOMTokenList;
     set 关系列表(value: string);
+    修订号: string;
     get 尺寸表(): DOMTokenList;
     set 尺寸表(value: string);
     目标: string;
@@ -5230,6 +5254,7 @@ interface MessagePort {
 }
 
 interface MimeType {
+    readonly 后缀集: string;
     readonly 种类: string;
 }
 
@@ -5792,6 +5817,10 @@ interface PromiseRejectionEvent {
 interface PublicKeyCredential {
     readonly 原始编号: ArrayBuffer;
     转数据(): RegistrationResponseJSON | AuthenticationResponseJSON;
+}
+
+interface PushManager {
+    订阅(options?: PushSubscriptionOptionsInit): Promise<PushSubscription>;
 }
 
 interface PushManagerAttribute {
@@ -7076,6 +7105,10 @@ interface SpeechRecognitionErrorEvent {
     readonly 消息: string;
 }
 
+interface SpeechRecognitionEvent {
+    readonly 结果集: SpeechRecognitionResultList;
+}
+
 interface SpeechRecognitionResult {
     readonly 长度: number;
     取项(index: number): SpeechRecognitionAlternative;
@@ -7963,6 +7996,7 @@ interface CanvasPathDrawingStyles {
 }
 
 interface CookieStoreManager {
+    订阅(subscriptions: Iterable<CookieStoreGetOptions>): Promise<void>;
     退订(subscriptions: Iterable<CookieStoreGetOptions>): Promise<void>;
 }
 
@@ -8185,6 +8219,8 @@ interface String {
     粗体(): string;
     字号(size: number): string;
     字号(size: string): string;
+    小值(): string;
+    删除线(): string;
     相减(): string;
 }
 
@@ -8362,6 +8398,7 @@ interface SymbolConstructor {
     readonly 匹配: unique symbol;
     readonly 替换: unique symbol;
     readonly 查找: unique symbol;
+    readonly 物种: unique symbol;
     readonly 拆分: unique symbol;
     readonly 不可作用域: unique symbol;
 }
@@ -9006,6 +9043,7 @@ interface String {
     转大写(): string;
     去空白(): string;
     readonly 长度: number;
+    截取子串(from: number, length?: number): string;
     取值(): string;
 }
 
