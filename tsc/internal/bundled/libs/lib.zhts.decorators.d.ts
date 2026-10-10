@@ -27,5 +27,6 @@ interface ClassAccessorDecoratorTarget<This, Value> {
 interface ClassAccessorDecoratorResult<This, Value> {
     获取?(this: This): Value;
     设置?(this: This, value: Value): void;
+    初值?(this: This, value: Value): Value;
 }
 

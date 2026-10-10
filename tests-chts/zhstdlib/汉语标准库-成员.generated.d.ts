@@ -9,6 +9,7 @@ interface ClassAccessorDecoratorTarget<This, Value> {
 interface ClassAccessorDecoratorResult<This, Value> {
     获取?(this: This): Value;
     设置?(this: This, value: Value): void;
+    初值?(this: This, value: Value): Value;
 }
 
 interface AacEncoderConfig {
@@ -546,6 +547,7 @@ interface FormDataEventInit {
 
 interface GPUBindGroupDescriptor {
     条目: GPUBindGroupEntry[];
+    布局: GPUBindGroupLayout;
 }
 
 interface GPUBindGroupEntry {
@@ -636,6 +638,7 @@ interface GPUFragmentState {
 
 interface GPUMultisampleState {
     计数?: GPUSize32;
+    掩码?: GPUSampleMask;
 }
 
 interface GPUObjectDescriptorBase {
@@ -651,6 +654,10 @@ interface GPUOrigin3DDict {
     横坐标?: GPUIntegerCoordinate;
     纵坐标?: GPUIntegerCoordinate;
     深度坐标?: GPUIntegerCoordinate;
+}
+
+interface GPUPipelineDescriptorBase {
+    布局: GPUPipelineLayout | GPUAutoLayoutMode;
 }
 
 interface GPUPrimitiveState {
@@ -1302,6 +1309,7 @@ interface PromiseRejectionEventInit {
 }
 
 interface PropertyDefinition {
+    继承: boolean;
     名称: string;
     语法?: string;
 }
@@ -1678,6 +1686,7 @@ interface SchedulerPostTaskOptions {
 
 interface ScrollIntoViewOptions {
     块区?: ScrollLogicalPosition;
+    内联?: ScrollLogicalPosition;
 }
 
 interface ScrollOptions {
@@ -1924,6 +1933,7 @@ interface UnderlyingSource<R = any> {
 }
 
 interface VideoColorSpaceInit {
+    矩阵?: VideoMatrixCoefficients | null;
     原色集?: VideoColorPrimaries | null;
     转移?: VideoTransferCharacteristics | null;
 }
@@ -1992,6 +2002,7 @@ interface VideoFrameBufferInit {
     显示宽?: number;
     时长?: number;
     格式化: VideoPixelFormat;
+    布局?: PlaneLayout[];
     时间戳: number;
     可见矩形?: DOMRectInit;
 }
@@ -2004,6 +2015,7 @@ interface VideoFrameCallbackMetadata {
 interface VideoFrameCopyToOptions {
     色彩空间?: PredefinedColorSpace;
     格式化?: VideoPixelFormat;
+    布局?: PlaneLayout[];
     矩形?: DOMRectInit;
 }
 
@@ -2453,6 +2465,7 @@ interface CSSLayerBlockRule {
 }
 
 interface CSSMathClamp {
+    readonly 下界: CSSNumericValue;
     readonly 上界: CSSNumericValue;
     readonly 值内容: CSSNumericValue;
 }
@@ -2483,6 +2496,10 @@ interface CSSMathSum {
 
 interface CSSMathValue {
     readonly 运算符: CSSMathOperator;
+}
+
+interface CSSMatrixComponent {
+    矩阵: DOMMatrix;
 }
 
 interface CSSMediaRule {
@@ -2519,6 +2536,7 @@ interface CSSNumericValue {
 }
 
 interface CSSPageDescriptors {
+    边距: string;
     大小: string;
 }
 
@@ -2536,6 +2554,7 @@ interface CSSPositionTryDescriptors {
     底部: string;
     高度: string;
     左侧: string;
+    边距: string;
     右侧: string;
     顶部: string;
     宽度: string;
@@ -2548,6 +2567,7 @@ interface CSSPositionTryRule {
 }
 
 interface CSSPropertyRule {
+    readonly 继承: boolean;
     readonly 名称: string;
     readonly 语法: string;
 }
@@ -2629,7 +2649,9 @@ interface CSSStyleProperties {
     连字: string;
     左侧: string;
     字距: string;
+    边距: string;
     标记物: string;
+    掩码: string;
     偏移: string;
     不透明度: string;
     顺序: string;
@@ -3689,6 +3711,7 @@ interface GPUComputePassEncoder {
 interface GPUDevice {
     readonly 特性集: GPUSupportedFeatures;
     readonly 限制集: GPUSupportedLimits;
+    readonly 已丢失: Promise<GPUDeviceLostInfo>;
     readonly 队列: GPUQueue;
     创建缓冲(descriptor: GPUBufferDescriptor): GPUBuffer;
     创建采样器(descriptor?: GPUSamplerDescriptor): GPUSampler;
@@ -4473,6 +4496,7 @@ interface HTMLMetaElement {
 interface HTMLMeterElement {
     高值: number;
     readonly 标签列: NodeListOf<HTMLLabelElement>;
+    低值: number;
     最大: number;
     最大限制: number;
     最小: number;
@@ -5001,6 +5025,7 @@ interface IDBIndex {
 }
 
 interface IDBKeyRange {
+    readonly 下界: any;
     readonly 上界: any;
     包含(key: any): boolean;
 }
@@ -5626,6 +5651,7 @@ interface Navigator {
     readonly 剪贴板: Clipboard;
     readonly 凭据: CredentialsContainer;
     readonly 地理位置: Geolocation;
+    readonly 登录: NavigatorLogin;
     readonly 最大触控点: number;
     readonly 媒体设备: MediaDevices;
     readonly 权限集: Permissions;
@@ -6179,6 +6205,7 @@ interface RTCIceCandidate {
 }
 
 interface RTCIceCandidatePair {
+    本地: RTCIceCandidate;
     远端: RTCIceCandidate;
 }
 
@@ -7155,6 +7182,7 @@ interface SVGTitleElement {
 
 interface SVGTransform {
     readonly 角度: number;
+    readonly 矩阵: DOMMatrix;
     readonly 种类: number;
     设矩阵(matrix?: DOMMatrix2DInit): void;
     设旋转(angle: number, cx: number, cy: number): void;
@@ -7775,6 +7803,7 @@ interface ValidityState {
 }
 
 interface VideoColorSpace {
+    readonly 矩阵: VideoMatrixCoefficients | null;
     readonly 原色集: VideoColorPrimaries | null;
     readonly 转移: VideoTransferCharacteristics | null;
     转数据(): VideoColorSpaceInit;
