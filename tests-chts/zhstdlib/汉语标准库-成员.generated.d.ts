@@ -650,6 +650,7 @@ interface GPUTextureBindingLayout {
 }
 
 interface GPUTextureDescriptor {
+    维度?: GPUTextureDimension;
     格式化: GPUTextureFormat;
     大小: GPUExtent3D;
     用量: GPUTextureUsageFlags;
@@ -657,6 +658,7 @@ interface GPUTextureDescriptor {
 
 interface GPUTextureViewDescriptor {
     纵横比?: GPUTextureAspect;
+    维度?: GPUTextureViewDimension;
     格式化?: GPUTextureFormat;
     用量?: GPUTextureUsageFlags;
 }
@@ -780,7 +782,9 @@ interface IntersectionObserverInit {
 
 interface JsonWebKey {
     算法名?: string;
+    曲线名?: string;
     扩展名?: boolean;
+    密钥类型?: string;
     横坐标?: string;
     纵坐标?: string;
 }
@@ -1009,6 +1013,7 @@ interface NavigationReloadOptions {
 }
 
 interface NavigationResult {
+    已提交?: Promise<NavigationHistoryEntry>;
     已终结?: Promise<NavigationHistoryEntry>;
 }
 
@@ -1144,6 +1149,10 @@ interface PerformanceMeasureOptions {
 interface PerformanceObserverInit {
     缓冲区间?: boolean;
     种类?: string;
+}
+
+interface PeriodicWaveOptions {
+    虚部?: number[] | Float32Array;
 }
 
 interface PermissionDescriptor {
@@ -2450,6 +2459,7 @@ interface CSSStyleProperties {
     底部: string;
     清空: string;
     裁剪: string;
+    列集: string;
     容器: string;
     容器名: string;
     容器类型: string;
@@ -3026,6 +3036,7 @@ interface Document {
     readonly 文档元素: HTMLElement;
     网域: string;
     readonly 嵌入集: HTMLCollectionOf<HTMLEmbedElement>;
+    readonly 表单集: HTMLCollectionOf<HTMLFormElement>;
     readonly 全屏: boolean;
     readonly 头部: HTMLHeadElement;
     readonly 隐藏: boolean;
@@ -3553,6 +3564,7 @@ interface GPUSupportedFeatures {
 }
 
 interface GPUTexture {
+    readonly 维度: GPUTextureDimension;
     readonly 格式化: GPUTextureFormat;
     readonly 高度: GPUIntegerCoordinateOut;
     readonly 用量: GPUFlagsConstant;
@@ -4777,6 +4789,8 @@ interface IDBDatabase {
 }
 
 interface IDBFactory {
+    比较结果(first: any, second: any): number;
+    数据库集(): Promise<IDBDatabaseInfo[]>;
     打开(name: string, version?: number): IDBOpenDBRequest;
 }
 
@@ -5400,6 +5414,7 @@ interface NavigationPreloadManager {
 }
 
 interface NavigationTransition {
+    readonly 已提交: Promise<void>;
     readonly 已终结: Promise<void>;
 }
 
@@ -5421,6 +5436,10 @@ interface NavigatorAutomationInformation {
 
 interface NavigatorConcurrentHardware {
     readonly 硬件并发: number;
+}
+
+interface NavigatorGPU {
+    readonly 图形处理器: GPU;
 }
 
 interface NavigatorID {
@@ -6926,6 +6945,7 @@ interface SVGTransformList {
     readonly 项数: number;
     追加项(newItem: SVGTransform): SVGTransform;
     清空(): void;
+    合并(): SVGTransform | null;
     取条目(index: number): SVGTransform;
     初始化(newItem: SVGTransform): SVGTransform;
     前插项(newItem: SVGTransform, index: number): SVGTransform;
@@ -8248,6 +8268,7 @@ interface String {
     锚点(name: string): string;
     闪烁(): string;
     粗体(): string;
+    字体颜色(color: string): string;
     字号(size: number): string;
     字号(size: string): string;
     小值(): string;
