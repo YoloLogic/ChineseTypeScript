@@ -58,7 +58,15 @@
         "packages/typescript/tsconfig.tsbuildinfo",
         "packages/vscode-typescript/dist/**",
         "packages/vscode-typescript-nightly/dist/**",
-        "packages/typescript/vendor/**"
+        "packages/typescript/vendor/**",
+        // ChineseTypeScript：以下目录里的 .ts 用【汉语关键字】写（例如
+        // `导入 { 平方 } 来自 "./数学.ts"`），dprint 的 TS 解析器读不懂，格式化必然失败。
+        // 它们只受本项目自己的判据（tests-chts/judge_*）管，不参与上游的格式检查。
+        "tests-chts/**",
+        "教程/**",
+        "stdlib/**",
+        "packaging/**",
+        "docs/**"
     ],
     // Note: if adding new languages, make sure settings.template.json is updated too.
     // Also, if updating typescript, update the one in package.json.
