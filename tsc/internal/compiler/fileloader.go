@@ -194,10 +194,13 @@ func processAllProgramFiles(
 					libFile := loader.pathForLibFile(name)
 					reason := &FileIncludeReason{kind: fileIncludeKindLibFile, data: index}
 					loader.addRootTask(libFile.path, libFile, reason)
-					// ChineseTypeScript：显式 --lib 时同样带上对应的汉语增补块（规格六·十二）。
-					if chunk, hasChunk := zhChunkFileName(name); hasChunk {
-						chunkFile := loader.pathForLibFile(chunk)
-						loader.addRootTask(chunkFile.path, chunkFile, reason)
+					// ChineseTypeScript：显式 --lib 时同样带上对应的汉语增补块（规格六·十二），
+					// 但【用户替换过的 lib 不带块】（'replaced' 表示这个 lib 来自用户自己的同名文件）。
+					if !libFile.Replaced {
+						if chunk, hasChunk := zhChunkFileName(name); hasChunk {
+							chunkFile := loader.pathForLibFile(chunk)
+							loader.addRootTask(chunkFile.path, chunkFile, reason)
+						}
 					}
 				}
 				// !!! error on unknown name

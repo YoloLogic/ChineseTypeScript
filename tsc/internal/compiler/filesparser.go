@@ -177,12 +177,16 @@ func (t *parseTask) load(loader *fileLoader) {
 				// ChineseTypeScript：一并加载该来源 lib 的【汉语增补块】（规格六·十二）。
 				// 块与来源 lib 同生共死 —— 只加载 es2020 不加载 dom 时，dom 块不会被加载，
 				// 所以块里引用的 dom 类型（BufferSource 等）必定可用；没有对应块则静默跳过。
-				if chunk, ok := zhChunkFileName(name); ok {
-					chunkFile := loader.pathForLibFile(chunk)
-					t.addSubTask(resolvedRef{
-						fileName:      chunkFile.path,
-						includeReason: includeReason,
-					}, chunkFile)
+				// 只在【内嵌 lib】上注入块：libFile.replaced 为真表示这个 lib 被用户自己的
+				// 同名文件替换了（--lib 替换场景），此时不该带上我们的块（否则会污染用户的 lib）。
+				if !libFile.Replaced {
+					if chunk, ok := zhChunkFileName(name); ok {
+						chunkFile := loader.pathForLibFile(chunk)
+						t.addSubTask(resolvedRef{
+							fileName:      chunkFile.path,
+							includeReason: includeReason,
+						}, chunkFile)
+					}
 				}
 			} else {
 				t.processingDiagnostics = append(t.processingDiagnostics, &processingDiagnostic{
