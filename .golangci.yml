@@ -102,6 +102,11 @@ linters:
         text: should likely be used instead
       - path: 'tools'
         text: should likely be used instead
+      # cmd/genzhkeywords 是本项目自己的【独立代码生成器】:它的职责就是读上游源码、
+      # 写出汉语关键字表,因此不走上游的 host 抽象层(那里禁 os.ReadFile/WriteFile 等)。
+      # 与上游对 tools/ 的豁免同一性质 —— 只豁免 forbidigo 这一条文案,别的规则照旧。
+      - path: 'cmd/genzhkeywords'
+        text: should likely be used instead
 
     presets:
       - comments

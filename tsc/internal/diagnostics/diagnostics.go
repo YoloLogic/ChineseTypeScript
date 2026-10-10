@@ -138,9 +138,7 @@ func mergeZhExtra(base map[Key]string) map[Key]string {
 		}
 	}
 	// 覆盖（少数条目上游已有译文，但我们要换说法，例如 --help 首行 tsc → chtsc）。
-	for key, text := range zhOverrides {
-		result[key] = text
-	}
+	maps.Copy(result, zhOverrides)
 	return result
 }
 

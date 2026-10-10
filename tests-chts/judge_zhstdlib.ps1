@@ -171,6 +171,23 @@ foreach ($d in $fixtureDirs) {
 }
 Check '⑪ 夹具里用户自己的汉语成员名不与译名表撞车' ($collide.Count -eq 0) ('撞车: ' + $(if ($collide.Count) { ($collide | Select-Object -Unique) -join '; ' } else { '无' }))
 
+# ⑫ Go 源文件不得带 UTF-8 BOM（跨平台编译）
+#   为什么必须单独钉：Go 在 Linux/macOS 上对 BOM 直接报
+#   「invalid BOM in the middle of the file」——底层包 build failed 会让**全仓库**测试红。
+#   Windows 上的 Go 容忍它，所以本地怎么跑都是绿的，只有 CI（ubuntu/macos）才暴露。
+#   本项目的两个 Go 生成物（zh_stdlib_generated.go、genzhkeywords/main.go）曾双双带 BOM。
+$bomFiles = New-Object System.Collections.Generic.List[string]
+foreach ($f in (git -C $repoRootZh ls-files '*.go')) {
+    $full = Join-Path $repoRootZh $f
+    if (-not (Test-Path $full)) { continue }
+    $fs = [System.IO.File]::OpenRead($full)
+    $buf = New-Object byte[] 3
+    $null = $fs.Read($buf, 0, 3)
+    $fs.Close()
+    if ($buf[0] -eq 0xEF -and $buf[1] -eq 0xBB -and $buf[2] -eq 0xBF) { $bomFiles.Add($f) }
+}
+Check '⑫ Go 源文件不带 UTF-8 BOM（防跨平台编译失败）' ($bomFiles.Count -eq 0) ('带 BOM: ' + $(if ($bomFiles.Count) { ($bomFiles | Select-Object -First 5) -join '; ' } else { '无' }))
+
 Write-Host '=== 判定汇总 ==='
 $results | ForEach-Object { '  [' + $_.结果 + '] ' + $_.判定 + ' —— ' + $_.说明 }
 $fail = @($results | Where-Object { $_.结果 -ne '通过' }).Count

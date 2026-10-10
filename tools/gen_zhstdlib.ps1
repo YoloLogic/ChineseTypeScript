@@ -8,7 +8,10 @@
 #    pwsh -File tools\gen_zhstdlib.ps1            # 重新生成
 #    pwsh -File tools\gen_zhstdlib.ps1 -Check     # 只核对是否最新（守卫用）
 #
-#  ENCODING: UTF-8 with BOM。
+#  ENCODING: UTF-8 **无 BOM**。
+#  ⚠ 生成物是 Go 源文件：Go 在 Linux/macOS 上对 BOM 直接报
+#     「invalid BOM in the middle of the file」，会让底层包 build failed、
+#     进而全仓库测试红。Windows 上容忍，所以本地永远看不出问题（CI 才暴露）。
 # ============================================================================
 
 param(
@@ -41,14 +44,21 @@ foreach ($line in (Get-Content $Table -Encoding UTF8)) {
 }
 
 function EmitTable([string]$varName, $names) {
+    # 一律用 LF、且结尾不留换行：这样拼出来的 Go 文件与 gofmt 的输出一致
+    # （AppendLine 在 Windows 上写 CRLF，还多一个尾换行 → 会让 CI 的 format 检查报差异）。
+    # 还要按【最长的键】补齐空格 —— gofmt 会把 map 的值列对齐，不补就会出现
+    # format 检查的差异。汉字在 UTF-16 里各占 1 个 char，与 gofmt/tabwriter 的按 rune 计一致。
+    $maxLen = 0
+    foreach ($n in $names) { $l = ('"' + $n + '":').Length; if ($l -gt $maxLen) { $maxLen = $l } }
     $sb = New-Object System.Text.StringBuilder
-    [void]$sb.AppendLine('var ' + $varName + ' = map[string]string{')
+    [void]$sb.Append('var ' + $varName + ' = map[string]string{' + [char]10)
     foreach ($n in $names) {
-        $key = $n
+        $key = ('"' + $n + '":')
         $val = ($script:rows[$n])
-        [void]$sb.AppendLine(($TAB + '"' + $key + '": "' + $val + '",'))
+        $pad = ' ' * ($maxLen - $key.Length + 1)
+        [void]$sb.Append($TAB + $key + $pad + '"' + $val + '",' + [char]10)
     }
-    [void]$sb.AppendLine('}')
+    [void]$sb.Append('}')
     return $sb.ToString()
 }
 
@@ -117,5 +127,6 @@ if ($Check) {
     exit 0
 }
 
-Set-Content -Path $Out -Value $text -NoNewline -Encoding utf8BOM
+# 写 Go 源文件必须无 BOM（见文件头说明）。UTF8Encoding($false) = 不写 BOM。
+[System.IO.File]::WriteAllText($Out, $text, (New-Object System.Text.UTF8Encoding($false)))
 Write-Host ('  已生成 ' + $Out)

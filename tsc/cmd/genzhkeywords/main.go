@@ -1,4 +1,4 @@
-﻿// Command genzhkeywords 由 tsc/internal/scanner/zh_keywords.txt 生成两份产物：
+// Command genzhkeywords 由 tsc/internal/scanner/zh_keywords.txt 生成两份产物：
 //
 //	tsc/internal/scanner/zh_keywords_generated.go   —— 编译器真正在用的汉语别名表
 //	docs/中文对照表.md                                —— 给用户看的中英对照表
@@ -55,7 +55,7 @@ type entry struct {
 	Chinese string // 汉语译名
 }
 
-func fatal(format string, args ...any) {
+func fatalf(format string, args ...any) {
 	fmt.Fprintf(os.Stderr, "genzhkeywords: "+format+"\n", args...)
 	os.Exit(1)
 }
@@ -64,11 +64,11 @@ func fatal(format string, args ...any) {
 func parseScannerKeywords() map[string]string {
 	data, err := os.ReadFile(scannerPath)
 	if err != nil {
-		fatal("读不到 %s：%v", scannerPath, err)
+		fatalf("读不到 %s：%v", scannerPath, err)
 	}
 	result := map[string]string{}
 	inTable := false
-	for _, line := range strings.Split(string(data), "\n") {
+	for line := range strings.SplitSeq(string(data), "\n") {
 		if strings.Contains(line, "textToKeyword = map[string]ast.Kind{") {
 			inTable = true
 			continue
@@ -84,7 +84,7 @@ func parseScannerKeywords() map[string]string {
 		}
 	}
 	if len(result) == 0 {
-		fatal("没能从 %s 解出任何 textToKeyword 条目（扫描器结构变了？）", scannerPath)
+		fatalf("没能从 %s 解出任何 textToKeyword 条目（扫描器结构变了？）", scannerPath)
 	}
 	return result
 }
@@ -103,10 +103,10 @@ func hanCount(s string) int {
 func parseWordList() []entry {
 	data, err := os.ReadFile(wordListPath)
 	if err != nil {
-		fatal("读不到 %s：%v", wordListPath, err)
+		fatalf("读不到 %s：%v", wordListPath, err)
 	}
 	if !utf8.Valid(data) {
-		fatal("%s 不是合法 UTF-8", wordListPath)
+		fatalf("%s 不是合法 UTF-8", wordListPath)
 	}
 	scannerKinds := parseScannerKeywords()
 
@@ -114,7 +114,7 @@ func parseWordList() []entry {
 	seenEn := map[string]bool{}
 	seenZh := map[string]string{}
 	lineNo := 0
-	for _, raw := range strings.Split(string(data), "\n") {
+	for raw := range strings.SplitSeq(string(data), "\n") {
 		lineNo++
 		line := strings.TrimSpace(raw)
 		if line == "" || strings.HasPrefix(line, "#") {
@@ -122,24 +122,24 @@ func parseWordList() []entry {
 		}
 		fields := strings.Fields(line)
 		if len(fields) != 2 {
-			fatal("%s:%d 格式应为「<英文关键字> <中文译名>」，实际为 %q", wordListPath, lineNo, line)
+			fatalf("%s:%d 格式应为「<英文关键字> <中文译名>」，实际为 %q", wordListPath, lineNo, line)
 		}
 		en, zh := fields[0], fields[1]
 		kind, ok := scannerKinds[en]
 		if !ok {
-			fatal("%s:%d 英文关键字 %q 不在 scanner.go 的 textToKeyword 里", wordListPath, lineNo, en)
+			fatalf("%s:%d 英文关键字 %q 不在 scanner.go 的 textToKeyword 里", wordListPath, lineNo, en)
 		}
 		if seenEn[en] {
-			fatal("%s:%d 英文关键字 %q 重复", wordListPath, lineNo, en)
+			fatalf("%s:%d 英文关键字 %q 重复", wordListPath, lineNo, en)
 		}
 		if prev, dup := seenZh[zh]; dup {
-			fatal("%s:%d 译名 %q 重复（已被 %q 使用）—— 译名必须唯一", wordListPath, lineNo, zh, prev)
+			fatalf("%s:%d 译名 %q 重复（已被 %q 使用）—— 译名必须唯一", wordListPath, lineNo, zh, prev)
 		}
 		if n := hanCount(zh); n < 2 || n > 6 {
-			fatal("%s:%d 译名 %q 有 %d 个汉字，违反定则（必须 2..6 个汉字）", wordListPath, lineNo, zh, n)
+			fatalf("%s:%d 译名 %q 有 %d 个汉字，违反定则（必须 2..6 个汉字）", wordListPath, lineNo, zh, n)
 		}
 		if strings.ContainsAny(zh, " \t") {
-			fatal("%s:%d 译名 %q 含空白字符", wordListPath, lineNo, zh)
+			fatalf("%s:%d 译名 %q 含空白字符", wordListPath, lineNo, zh)
 		}
 		seenEn[en] = true
 		seenZh[zh] = en
@@ -155,7 +155,7 @@ func parseWordList() []entry {
 	}
 	if len(missing) > 0 {
 		sort.Strings(missing)
-		fatal("%s 漏译 %d 个英文关键字：%s", wordListPath, len(missing), strings.Join(missing, " "))
+		fatalf("%s 漏译 %d 个英文关键字：%s", wordListPath, len(missing), strings.Join(missing, " "))
 	}
 
 	sort.Slice(entries, func(i, j int) bool { return entries[i].English < entries[j].English })
@@ -244,7 +244,7 @@ func renderMarkdown(entries []entry) []byte {
 	b.WriteString("| 中文 | 英文 | 中文 | 英文 |\n")
 	b.WriteString("|---|---|---|---|\n")
 	half := (n + 1) / 2
-	for i := 0; i < half; i++ {
+	for i := range half {
 		l := entries[i]
 		if i+half < n {
 			r := entries[i+half]
@@ -336,24 +336,24 @@ func main() {
 	raw := render(entries)
 	formatted, err := format.Source(raw)
 	if err != nil {
-		fatal("生成的源码不是合法 Go：%v\n%s", err, raw)
+		fatalf("生成的源码不是合法 Go：%v\n%s", err, raw)
 	}
 	md := renderMarkdown(entries)
 
 	if *check {
 		existing, err := os.ReadFile(outputPath)
 		if err != nil {
-			fatal("%s 不存在，请先运行 go run ./cmd/genzhkeywords", outputPath)
+			fatalf("%s 不存在，请先运行 go run ./cmd/genzhkeywords", outputPath)
 		}
 		if !bytes.Equal(existing, formatted) {
-			fatal("%s 与 %s 不一致，请运行 go run ./cmd/genzhkeywords", outputPath, wordListPath)
+			fatalf("%s 与 %s 不一致，请运行 go run ./cmd/genzhkeywords", outputPath, wordListPath)
 		}
 		existingMd, err := os.ReadFile(mdPath)
 		if err != nil {
-			fatal("%s 不存在，请先运行 go run ./cmd/genzhkeywords", mdPath)
+			fatalf("%s 不存在，请先运行 go run ./cmd/genzhkeywords", mdPath)
 		}
 		if !bytes.Equal(existingMd, md) {
-			fatal("%s 与 %s 不一致（对照表过期了），请运行 go run ./cmd/genzhkeywords", mdPath, wordListPath)
+			fatalf("%s 与 %s 不一致（对照表过期了），请运行 go run ./cmd/genzhkeywords", mdPath, wordListPath)
 		}
 		fmt.Printf("genzhkeywords: 两份产物均与 %s 一致（%d 条译名）：%s、%s\n",
 			wordListPath, len(entries), outputPath, mdPath)
@@ -362,14 +362,14 @@ func main() {
 
 	for _, p := range []string{outputPath, mdPath} {
 		if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
-			fatal("建目录失败：%v", err)
+			fatalf("建目录失败：%v", err)
 		}
 	}
 	if err := os.WriteFile(outputPath, formatted, 0o644); err != nil {
-		fatal("写 %s 失败：%v", outputPath, err)
+		fatalf("写 %s 失败：%v", outputPath, err)
 	}
 	if err := os.WriteFile(mdPath, md, 0o644); err != nil {
-		fatal("写 %s 失败：%v", mdPath, err)
+		fatalf("写 %s 失败：%v", mdPath, err)
 	}
 	fmt.Printf("genzhkeywords: 已生成两份产物（%d 条译名）：%s、%s\n", len(entries), outputPath, mdPath)
 }
