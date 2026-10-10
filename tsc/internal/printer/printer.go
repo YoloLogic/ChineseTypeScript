@@ -1151,7 +1151,12 @@ func (p *Printer) emitIdentifierText(node *ast.Identifier) {
 	// 所以必须先判空，否则空指针崩溃。
 	if node.Parent != nil && !ast.IsDeclarationName(node.AsNode()) {
 		if english, ok := scanner.ChineseStdlibGlobalName(text); ok {
-			text = english
+			// 用户在【自己的代码里声明过】这个名字（变量/函数/类…）→ 不改写。
+			// 全局别名在任何引用位都会改，所以这一条尤其重要：
+			// 用户 `常量 对象 = {...}` 后引用 `对象`，绝不能被改成 Object。
+			if !p.Options.ZhUserDeclaredMembers[text] {
+				text = english
+			}
 		} else if isMemberNamePosition(node.Parent) {
 			if english, ok := scanner.ChineseStdlibMemberName(text); ok {
 				// 用户在【自己的源码里】声明过同名成员 → 不改写（保守方向，规格六·十一）。

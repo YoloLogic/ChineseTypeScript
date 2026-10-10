@@ -2054,14 +2054,16 @@ func (p *Program) zhUserDeclaredMemberNames() map[string]bool {
 		}
 		var visit func(n *ast.Node) bool
 		visit = func(n *ast.Node) bool {
-			switch n.Kind {
-			case ast.KindPropertyDeclaration, ast.KindMethodDeclaration,
-				ast.KindPropertySignature, ast.KindMethodSignature,
-				ast.KindPropertyAssignment, ast.KindGetAccessor, ast.KindSetAccessor:
-				if nm := n.Name(); nm != nil && ast.IsIdentifier(nm) {
-					if _, ok := scanner.ChineseStdlibMemberName(nm.Text()); ok {
-						result[nm.Text()] = true
-					}
+			// 收【任何被声明出来的名字】：变量、参数、函数、类、成员都要。
+			// 为什么不能只收成员：全局别名（对象/数学/控制台…）的改写发生在【任何引用位】，
+			// 用户写 `常量 对象 = {...}` 再引用 `对象` 时，只保护成员位是不够的 ——
+			// 2026-10-10 教程例子 02-变量与类型.ts 就是这么坏的（对象→Object → TypeError）。
+			if ast.IsIdentifier(n) && ast.IsDeclarationName(n) {
+				name := n.Text()
+				if _, ok := scanner.ChineseStdlibMemberName(name); ok {
+					result[name] = true
+				} else if _, ok := scanner.ChineseStdlibGlobalName(name); ok {
+					result[name] = true
 				}
 			}
 			n.ForEachChild(visit)
