@@ -50,6 +50,14 @@ if ($Sample -le 0 -or $Sample -ge $all.Count) {
 
 $flags = @('--noEmit', '--pretty', 'false', '--target', 'es2020', '--module', 'commonjs', '--locale', 'en')
 
+# 【规范化】只抹平「缺少 N 个属性」消息里的 N。
+# 为什么必须这样：汉语标准库的做法是【给接口增补成员】，接口成员数必然变多，
+# 于是 TS2740 这类 'missing the following properties … and N more' 的 N 也必然变大
+# （2026-10-10 实测：某 conformance 例 28 → 59）。这是增补机制的固有代价。
+# 注意：这里【只】动这一处计数，消息的其余部分与退出码仍然逐字节比对 —— 不放宽别的。
+$normalizeMore = { param($s) ($s -replace ', and \d+ more\.', ', and N more.') }
+$normalizedFiles = 0
+
 Write-Host ''
 Write-Host "=== 2) 逐个文件对比【诊断 + 退出码】 ==="
 $same = 0; $diff = 0; $diffList = @()
@@ -61,7 +69,10 @@ foreach ($f in $picked) {
     $outChts = (& $chtsTsc $f.FullName @flags 2>&1 | Out-String)
     $codeChts = $LASTEXITCODE
 
-    if ($outBase -ceq $outChts -and $codeBase -eq $codeChts) {
+    $normBase = & $normalizeMore $outBase
+    $normChts = & $normalizeMore $outChts
+    if ($normBase -ceq $normChts -and $codeBase -eq $codeChts) {
+        if ($outBase -cne $outChts) { $normalizedFiles++ }
         $same++
     } else {
         $diff++
@@ -112,6 +123,7 @@ Write-Host '=== 判定汇总 ==='
 $ok = ($diff -eq 0) -and ($emitDiff -eq 0)
 Write-Host "  语料文件总数        : $($all.Count)"
 Write-Host "  诊断对比抽样        : $($picked.Count) 个，相同 $same，不同 $diff"
+Write-Host "  其中「缺少 N 个属性」计数被规范化（增补成员的固有代价）: $normalizedFiles 个"
 Write-Host "  产物对比抽样        : $($emitList.Count) 个，相同 $emitSame，不同 $emitDiff"
 if ($diff -gt 0) {
     Write-Host ''
