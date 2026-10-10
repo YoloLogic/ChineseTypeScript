@@ -1737,6 +1737,17 @@ member	svc	服务
 member	symbol	符号名
 member	symbols	符号集
 member	timeout	超时
+member	oth	其他
+member	recursive	递归
+member	rid	请求编号
+member	rtcp	实时传输控制
+member	sctp	流控制传输
+member	useinbandfec	启用带内纠错
+member	xor	异或
+member	scheme	方案
+member	variable	可变
+member	request	请求
+member	resource	资源
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点

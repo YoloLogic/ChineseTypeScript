@@ -505,6 +505,10 @@ interface FileSystemGetFileOptions {
     创建?: boolean;
 }
 
+interface FileSystemRemoveOptions {
+    递归?: boolean;
+}
+
 interface FocusEventInit {
     相关目标?: EventTarget | null;
 }
@@ -532,6 +536,7 @@ interface GPUBindGroupDescriptor {
 
 interface GPUBindGroupEntry {
     绑定项: GPUIndex32;
+    资源: GPUBindingResource;
 }
 
 interface GPUBindGroupLayoutDescriptor {
@@ -827,6 +832,7 @@ interface JsonWebKey {
     曲线名?: string;
     扩展名?: boolean;
     密钥类型?: string;
+    其他?: RsaOtherPrimesInfo[];
     横坐标?: string;
     纵坐标?: string;
 }
@@ -1095,6 +1101,7 @@ interface OpusEncoderConfig {
     复杂度?: number;
     格式化?: OpusBitstreamFormat;
     丢包百分比?: number;
+    启用带内纠错?: boolean;
 }
 
 interface OscillatorOptions {
@@ -1404,6 +1411,7 @@ interface RTCLocalSessionDescriptionInit {
 
 interface RTCOutboundRtpStreamStats {
     活动?: boolean;
+    请求编号?: string;
 }
 
 interface RTCPeerConnectionIceErrorEventInit {
@@ -1432,6 +1440,10 @@ interface RTCRtpCodec {
     媒体类型: string;
 }
 
+interface RTCRtpCodingParameters {
+    请求编号?: string;
+}
+
 interface RTCRtpContributingSource {
     来源: number;
     时间戳: DOMHighResTimeStamp;
@@ -1454,6 +1466,7 @@ interface RTCRtpHeaderExtensionParameters {
 
 interface RTCRtpParameters {
     编解码器集: RTCRtpCodecParameters[];
+    实时传输控制: RTCRtcpParameters;
 }
 
 interface RTCRtpSendParameters {
@@ -2637,6 +2650,7 @@ interface CSSUnparsedValue {
 
 interface CSSVariableReferenceValue {
     readonly 回退: CSSUnparsedValue | null;
+    可变: string;
 }
 
 interface CSSViewTransitionRule {
@@ -4358,6 +4372,7 @@ interface HTMLMenuElement {
 interface HTMLMetaElement {
     媒体: string;
     名称: string;
+    方案: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLMetaElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLMetaElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4842,6 +4857,7 @@ interface History {
 interface IDBCursor {
     readonly 方向: IDBCursorDirection;
     readonly 键名: IDBValidKey;
+    readonly 请求: IDBRequest;
     readonly 来源: IDBObjectStore | IDBIndex;
     推进(count: number): void;
     续取(key?: IDBValidKey): void;
@@ -5095,6 +5111,8 @@ interface Lock {
 
 interface LockManager {
     查询(): Promise<LockManagerSnapshot>;
+    请求<T>(name: string, callback: LockGrantedCallback<T>): Promise<Awaited<T>>;
+    请求<T>(name: string, options: LockOptions, callback: LockGrantedCallback<T>): Promise<Awaited<T>>;
 }
 
 interface MIDIAccess {
@@ -6075,6 +6093,7 @@ interface RTCPeerConnection {
     readonly 本地描述: RTCSessionDescription | null;
     readonly 待定本地描述: RTCSessionDescription | null;
     readonly 远端描述: RTCSessionDescription | null;
+    readonly 流控制传输: RTCSctpTransport | null;
     readonly 信令状态: RTCSignalingState;
     加交互候选(candidate?: RTCIceCandidateInit | null): Promise<void>;
     加交互候选(candidate: RTCIceCandidateInit | null, successCallback: VoidFunction, failureCallback: RTCPeerConnectionErrorCallback): Promise<void>;
@@ -7733,6 +7752,10 @@ interface WGSLLanguageFeatures {
     逐个处理(callbackfn: (value: string, key: string, parent: WGSLLanguageFeatures) => void, thisArg?: any): void;
 }
 
+interface WakeLock {
+    请求(type?: WakeLockType): Promise<WakeLockSentinel>;
+}
+
 interface WakeLockSentinel {
     readonly 已释放: boolean;
     readonly 种类: WakeLockType;
@@ -8653,6 +8676,7 @@ interface Atomics {
     相减(typedArray: Int8Array<ArrayBufferLike> | Uint8Array<ArrayBufferLike> | Int16Array<ArrayBufferLike> | Uint16Array<ArrayBufferLike> | Int32Array<ArrayBufferLike> | Uint32Array<ArrayBufferLike>, index: number, value: number): number;
     等待(typedArray: Int32Array<ArrayBufferLike>, index: number, value: number, timeout?: number): "ok" | "not-equal" | "timed-out";
     通知(typedArray: Int32Array<ArrayBufferLike>, index: number, count?: number): number;
+    异或(typedArray: Int8Array<ArrayBufferLike> | Uint8Array<ArrayBufferLike> | Int16Array<ArrayBufferLike> | Uint16Array<ArrayBufferLike> | Int32Array<ArrayBufferLike> | Uint32Array<ArrayBufferLike>, index: number, value: number): number;
 }
 
 interface String {
@@ -8846,6 +8870,7 @@ interface Atomics {
     相减(typedArray: BigInt64Array<ArrayBufferLike> | BigUint64Array<ArrayBufferLike>, index: number, value: bigint): bigint;
     等待(typedArray: BigInt64Array<ArrayBufferLike>, index: number, value: bigint, timeout?: number): "ok" | "not-equal" | "timed-out";
     通知(typedArray: BigInt64Array<ArrayBufferLike>, index: number, count?: number): number;
+    异或(typedArray: BigInt64Array<ArrayBufferLike> | BigUint64Array<ArrayBufferLike>, index: number, value: bigint): bigint;
 }
 
 interface String {
