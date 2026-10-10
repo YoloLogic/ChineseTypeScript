@@ -567,6 +567,10 @@ interface GPUBindGroupLayoutEntry {
     可见性: GPUShaderStageFlags;
 }
 
+interface GPUBlendComponent {
+    操作?: GPUBlendOperation;
+}
+
 interface GPUBlendState {
     透明度: GPUBlendComponent;
     颜色: GPUBlendComponent;
@@ -1466,6 +1470,10 @@ interface RTCIceServer {
     用户名?: string;
 }
 
+interface RTCInboundRtpStreamStats {
+    中点?: string;
+}
+
 interface RTCLocalSessionDescriptionInit {
     会话描述?: string;
     种类?: RTCSdpType;
@@ -1473,6 +1481,7 @@ interface RTCLocalSessionDescriptionInit {
 
 interface RTCOutboundRtpStreamStats {
     活动?: boolean;
+    中点?: string;
     请求编号?: string;
 }
 
@@ -1663,6 +1672,7 @@ interface SVGBoundingBoxOptions {
 
 interface SanitizerAttributeNamespace {
     名称: string;
+    命名空间?: string | null;
 }
 
 interface SanitizerConfig {
@@ -1672,6 +1682,7 @@ interface SanitizerConfig {
 
 interface SanitizerElementNamespace {
     名称: string;
+    命名空间?: string | null;
 }
 
 interface SanitizerElementNamespaceWithAttributes {
@@ -2415,6 +2426,7 @@ interface CSSContainerRule {
 interface CSSCounterStyleRule {
     回退: string;
     名称: string;
+    负值: string;
     补齐: string;
     前缀: string;
     范围: string;
@@ -2740,6 +2752,7 @@ interface CSSVariableReferenceValue {
 }
 
 interface CSSViewTransitionRule {
+    readonly 导航: string;
     readonly 类型列: ReadonlyArray<string>;
 }
 
@@ -3695,6 +3708,10 @@ interface GPUCanvasContext {
 
 interface GPUCommandEncoder {
     完成(descriptor?: GPUCommandBufferDescriptor): GPUCommandBuffer;
+}
+
+interface GPUCompilationInfo {
+    readonly 消息列: ReadonlyArray<GPUCompilationMessage>;
 }
 
 interface GPUCompilationMessage {
@@ -5900,6 +5917,7 @@ interface PaymentResponse {
 
 interface Performance {
     readonly 事件计数: EventCounts;
+    readonly 导航: PerformanceNavigation;
     readonly 时间原点: DOMHighResTimeStamp;
     readonly 时序: PerformanceTiming;
     清标记(markName?: string): void;
@@ -6282,6 +6300,7 @@ interface RTCRtpSender {
 
 interface RTCRtpTransceiver {
     方向: RTCRtpTransceiverDirection;
+    readonly 中点: string | null;
     readonly 接收器: RTCRtpReceiver;
     readonly 发送方: RTCRtpSender;
     停止(): void;
@@ -7290,6 +7309,7 @@ interface Selection {
     折叠(node: Node | null, offset?: number): void;
     空值(): void;
     延伸(node: Node, offset?: number): void;
+    修改(alter?: string, direction?: string, granularity?: string): void;
     删范围(range: Range): void;
     转字符串(): string;
 }
@@ -8093,7 +8113,9 @@ interface Window {
     readonly 历史: History;
     readonly 长度: number;
     readonly 地址栏: BarProp;
+    readonly 菜单栏: BarProp;
     名称: string;
+    readonly 导航: Navigation;
     打开者: any;
     readonly 朝向: number;
     readonly 个人栏: BarProp;

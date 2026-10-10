@@ -1796,6 +1796,15 @@ member	lower	下界
 member	margin	边距
 member	mask	掩码
 member	matrix	矩阵
+member	menubar	菜单栏
+member	messages	消息列
+member	mid	中点
+member	modify	修改
+member	namespace	命名空间
+member	navigation	导航
+member	negative	负值
+member	object	对象
+member	operation	操作
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
