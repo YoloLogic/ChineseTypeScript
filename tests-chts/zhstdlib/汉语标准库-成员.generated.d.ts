@@ -268,6 +268,7 @@ interface ClipboardEventInit {
 }
 
 interface CloseEventInit {
+    代码?: number;
     是干净?: boolean;
 }
 
@@ -339,6 +340,7 @@ interface CookieInit {
     过期时间?: DOMHighResTimeStamp | null;
     名称: string;
     已分区?: boolean;
+    路径?: string;
     值内容: string;
 }
 
@@ -351,6 +353,7 @@ interface CookieStoreDeleteOptions {
     网域?: string | null;
     名称: string;
     已分区?: boolean;
+    路径?: string;
 }
 
 interface CookieStoreGetOptions {
@@ -553,6 +556,7 @@ interface GPUBindGroupLayoutEntry {
 
 interface GPUBlendState {
     透明度: GPUBlendComponent;
+    颜色: GPUBlendComponent;
 }
 
 interface GPUBufferBinding {
@@ -615,6 +619,10 @@ interface GPUFragmentState {
     目标集: (GPUColorTargetState | null)[];
 }
 
+interface GPUMultisampleState {
+    计数?: GPUSize32;
+}
+
 interface GPUObjectDescriptorBase {
     标签?: string;
 }
@@ -639,6 +647,7 @@ interface GPUProgrammableStage {
 }
 
 interface GPUQuerySetDescriptor {
+    计数: GPUSize32;
     种类: GPUQueryType;
 }
 
@@ -659,6 +668,10 @@ interface GPURenderPipelineDescriptor {
 
 interface GPUSamplerBindingLayout {
     种类?: GPUSamplerBindingType;
+}
+
+interface GPUShaderModuleDescriptor {
+    代码: string;
 }
 
 interface GPUStorageTextureBindingLayout {
@@ -847,6 +860,7 @@ interface KeySystemTrackConfiguration {
 
 interface KeyboardEventInit {
     字符码?: number;
+    代码?: string;
     正在组字?: boolean;
     键名?: string;
     键码?: number;
@@ -1265,6 +1279,7 @@ interface PublicKeyCredentialCreationOptions {
     挑战: BufferSource;
     扩展?: AuthenticationExtensionsClientInputs;
     超时?: number;
+    用户: PublicKeyCredentialUserEntity;
 }
 
 interface PublicKeyCredentialCreationOptionsJSON {
@@ -1273,6 +1288,7 @@ interface PublicKeyCredentialCreationOptionsJSON {
     扩展?: AuthenticationExtensionsClientInputsJSON;
     提示列表?: string[];
     超时?: number;
+    用户: PublicKeyCredentialUserEntityJSON;
 }
 
 interface PublicKeyCredentialDescriptor {
@@ -1813,6 +1829,7 @@ interface ULongRange {
 
 interface URLPatternComponentResult {
     分组集: Record<string, string | undefined>;
+    输入: string;
 }
 
 interface URLPatternInit {
@@ -2547,10 +2564,12 @@ interface CSSStyleProperties {
     底部: string;
     清空: string;
     裁剪: string;
+    颜色: string;
     列集: string;
     容器: string;
     容器名: string;
     容器类型: string;
+    内容: string;
     光标: string;
     方向: string;
     显示方式: string;
@@ -2574,6 +2593,7 @@ interface CSSStyleProperties {
     轮廓: string;
     溢出: string;
     内边距: string;
+    页面: string;
     透视: string;
     位置: string;
     引号: string;
@@ -2860,6 +2880,7 @@ interface ClipboardItem {
 }
 
 interface CloseEvent {
+    readonly 代码: number;
     readonly 是干净: boolean;
 }
 
@@ -2964,6 +2985,7 @@ interface CustomStateSet {
 }
 
 interface DOMException {
+    readonly 代码: number;
     readonly 消息: string;
     readonly 名称: string;
 }
@@ -3501,6 +3523,10 @@ interface FileSystemEntry {
     readonly 名称: string;
 }
 
+interface FileSystemFileEntry {
+    文件(successCallback: FileCallback, errorCallback?: ErrorCallback): void;
+}
+
 interface FileSystemFileHandle {
     readonly 类别: "file";
     创建可写流(options?: FileSystemCreateWritableOptions): Promise<FileSystemWritableFileStream>;
@@ -3637,6 +3663,7 @@ interface GPUObjectBase {
 }
 
 interface GPUQuerySet {
+    readonly 计数: GPUSize32Out;
     readonly 种类: GPUQueryType;
     销毁(): void;
 }
@@ -3728,6 +3755,7 @@ interface GeolocationPosition {
 }
 
 interface GeolocationPositionError {
+    readonly 代码: number;
     readonly 消息: string;
 }
 
@@ -3860,6 +3888,7 @@ interface HTMLBaseElement {
 }
 
 interface HTMLBodyElement {
+    超链: string;
     转文本: string;
     加事件监听<K extends keyof HTMLBodyElementEventMap>(type: K, listener: (this: HTMLBodyElement, ev: HTMLBodyElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -4042,6 +4071,7 @@ interface HTMLFieldSetElement {
 }
 
 interface HTMLFontElement {
+    颜色: string;
     字型: string;
     大小: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLFontElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4098,6 +4128,7 @@ interface HTMLFrameSetElement {
 
 interface HTMLHRElement {
     对齐: string;
+    颜色: string;
     大小: string;
     宽度: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLHRElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4220,6 +4251,7 @@ interface HTMLInputElement {
     最小长度: number;
     多选: boolean;
     名称: string;
+    范式: string;
     占位提示: string;
     只读: boolean;
     必填: boolean;
@@ -4370,6 +4402,7 @@ interface HTMLMenuElement {
 }
 
 interface HTMLMetaElement {
+    内容: string;
     媒体: string;
     名称: string;
     方案: string;
@@ -4416,6 +4449,7 @@ interface HTMLObjectElement {
     对齐: string;
     归档: string;
     边框: string;
+    代码: string;
     readonly 内容文档: Document | null;
     readonly 内容窗口: WindowProxy | null;
     数据: string;
@@ -4555,6 +4589,7 @@ interface HTMLScriptElement {
     编码字符集: string;
     跨源: string | null;
     延迟: boolean;
+    事件: string;
     获取优先级: "high" | "low" | "auto";
     完整性: string;
     非模块: boolean;
@@ -4721,6 +4756,7 @@ interface HTMLTableSectionElement {
 }
 
 interface HTMLTemplateElement {
+    readonly 内容: DocumentFragment;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTemplateElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLTemplateElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4897,6 +4933,7 @@ interface IDBIndex {
     名称: string;
     readonly 对象存储: IDBObjectStore;
     readonly 唯一: boolean;
+    计数(query?: IDBValidKey | IDBKeyRange): IDBRequest<number>;
     获取(query: IDBValidKey | IDBKeyRange): IDBRequest<any>;
     取全部(queryOrOptions?: IDBValidKey | IDBKeyRange | null, count?: number): IDBRequest<any[]>;
     取全部键(queryOrOptions?: IDBValidKey | IDBKeyRange | null, count?: number): IDBRequest<IDBValidKey[]>;
@@ -4916,6 +4953,7 @@ interface IDBObjectStore {
     readonly 事务: IDBTransaction;
     添加(value: any, key?: IDBValidKey): IDBRequest<IDBValidKey>;
     清空(): IDBRequest<undefined>;
+    计数(query?: IDBValidKey | IDBKeyRange): IDBRequest<number>;
     创建索引(name: string, keyPath: string | string[], options?: IDBIndexParameters): IDBIndex;
     删除(query: IDBValidKey | IDBKeyRange): IDBRequest<undefined>;
     删除索引(name: string): void;
@@ -5058,6 +5096,7 @@ interface IntersectionObserverEntry {
 interface KeyboardEvent {
     readonly 替代键: boolean;
     readonly 字符码: number;
+    readonly 代码: string;
     readonly 正在组字: boolean;
     readonly 键名: string;
     readonly 键码: number;
@@ -5204,6 +5243,7 @@ interface MediaElementAudioSourceNode {
 }
 
 interface MediaError {
+    readonly 代码: number;
     readonly 消息: string;
 }
 
@@ -7950,6 +7990,7 @@ interface WheelEvent {
 interface Window {
     readonly 已关闭: boolean;
     readonly 文档: Document;
+    readonly 事件: Event | undefined;
     readonly 外部: External;
     readonly 帧集: WindowProxy;
     readonly 长度: number;
@@ -8134,6 +8175,7 @@ declare namespace WebAssembly {
 interface Console {
     断言(condition?: boolean, ...data: any[]): void;
     清空(): void;
+    计数(label?: string): void;
     调试(...data: any[]): void;
     书写方向(item?: any, options?: any): void;
     报错(...data: any[]): void;
@@ -8405,6 +8447,7 @@ interface String {
     字体颜色(color: string): string;
     字号(size: number): string;
     字号(size: string): string;
+    超链(url: string): string;
     小值(): string;
     删除线(): string;
     相减(): string;
@@ -9336,10 +9379,12 @@ interface DateConstructor {
 
 interface RegExpMatchArray {
     序号?: number;
+    输入?: string;
 }
 
 interface RegExpExecArray {
     序号: number;
+    输入: string;
 }
 
 interface RegExp {
