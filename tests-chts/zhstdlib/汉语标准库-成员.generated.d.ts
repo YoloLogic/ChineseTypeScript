@@ -600,6 +600,7 @@ interface GPUTexelCopyBufferLayout {
 }
 
 interface GPUTexelCopyTextureInfo {
+    纵横比?: GPUTextureAspect;
     源点?: GPUOrigin3D;
     纹理: GPUTexture;
 }
@@ -611,6 +612,7 @@ interface GPUTextureDescriptor {
 }
 
 interface GPUTextureViewDescriptor {
+    纵横比?: GPUTextureAspect;
     格式化?: GPUTextureFormat;
     用量?: GPUTextureUsageFlags;
 }
@@ -727,6 +729,7 @@ interface IntersectionObserverInit {
 }
 
 interface JsonWebKey {
+    算法名?: string;
     横坐标?: string;
     纵坐标?: string;
 }
@@ -989,6 +992,10 @@ interface OscillatorOptions {
     种类?: OscillatorType;
 }
 
+interface PageSwapEventInit {
+    激活方式?: NavigationActivation | null;
+}
+
 interface PageTransitionEventInit {
     已保持?: boolean;
     已持久化?: boolean;
@@ -1125,11 +1132,13 @@ interface PropertyIndexedKeyframes {
 }
 
 interface PublicKeyCredentialCreationOptions {
+    认证声明?: AttestationConveyancePreference;
     挑战: BufferSource;
     扩展?: AuthenticationExtensionsClientInputs;
 }
 
 interface PublicKeyCredentialCreationOptionsJSON {
+    认证声明?: string;
     挑战: Base64URLString;
     扩展?: AuthenticationExtensionsClientInputsJSON;
     提示列表?: string[];
@@ -1152,6 +1161,7 @@ interface PublicKeyCredentialEntity {
 }
 
 interface PublicKeyCredentialParameters {
+    算法名: COSEAlgorithmIdentifier;
     种类: PublicKeyCredentialType;
 }
 
@@ -1277,6 +1287,10 @@ interface RTCPeerConnectionIceEventInit {
 
 interface RTCReceivedRtpStreamStats {
     抖动?: number;
+}
+
+interface RTCRtcpParameters {
+    规范名?: string;
 }
 
 interface RTCRtpCodec {
@@ -2327,7 +2341,9 @@ interface CSSStyleProperties {
     自身对齐: string;
     对齐基线: string;
     全部: string;
+    动画: string;
     动画名: string;
+    外观: string;
     边框: string;
     底部: string;
     清空: string;
@@ -3338,6 +3354,7 @@ interface GPUAdapter {
 }
 
 interface GPUAdapterInfo {
+    readonly 体系结构: string;
     readonly 设备: string;
 }
 
@@ -3731,6 +3748,7 @@ interface HTMLElement {
     访问键: string;
     readonly 访问键标签: string;
     自动大写: string;
+    自动更正: boolean;
     书写方向: string;
     可拖动: boolean;
     隐藏: boolean | "until-found";
@@ -4044,6 +4062,7 @@ interface HTMLLinkElement {
 }
 
 interface HTMLMapElement {
+    readonly 区域集: HTMLCollection;
     名称: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLMapElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -4734,6 +4753,7 @@ interface ImageDecoder {
 }
 
 interface ImageTrack {
+    readonly 可动画: boolean;
     已选中: boolean;
 }
 
@@ -5177,6 +5197,7 @@ interface NavigateEvent {
 }
 
 interface Navigation {
+    readonly 激活方式: NavigationActivation | null;
     readonly 可后退: boolean;
     readonly 可前进: boolean;
     readonly 当前条目: NavigationHistoryEntry | null;
@@ -5392,6 +5413,10 @@ interface OscillatorNode {
 
 interface OverconstrainedError {
     readonly 约束: string;
+}
+
+interface PageSwapEvent {
+    readonly 激活方式: NavigationActivation | null;
 }
 
 interface PageTransitionEvent {
@@ -7778,6 +7803,7 @@ declare namespace WebAssembly {
 }
 
 interface Console {
+    断言(condition?: boolean, ...data: any[]): void;
     清空(): void;
     调试(...data: any[]): void;
     书写方向(item?: any, options?: any): void;
