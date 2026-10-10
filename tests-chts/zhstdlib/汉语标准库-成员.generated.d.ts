@@ -106,6 +106,7 @@ interface AudioDataInit {
 
 interface AudioDecoderConfig {
     编解码器: string;
+    描述?: AllowSharedBufferSource;
     声道数: number;
     采样率: number;
 }
@@ -116,6 +117,7 @@ interface AudioDecoderInit {
 }
 
 interface AudioDecoderSupport {
+    配置?: AudioDecoderConfig;
     已支持?: boolean;
 }
 
@@ -133,6 +135,7 @@ interface AudioEncoderInit {
 }
 
 interface AudioEncoderSupport {
+    配置?: AudioEncoderConfig;
     已支持?: boolean;
 }
 
@@ -273,6 +276,7 @@ interface CloseEventInit {
 }
 
 interface CommandEventInit {
+    命令?: string;
     来源?: Element | null;
 }
 
@@ -417,6 +421,10 @@ interface DeviceOrientationEventInit {
     透明度?: number | null;
     贝塔?: number | null;
     伽马?: number | null;
+}
+
+interface DisplayMediaStreamOptions {
+    音频?: boolean | MediaTrackConstraints;
 }
 
 interface DoubleRange {
@@ -591,6 +599,10 @@ interface GPUColorTargetState {
     格式化: GPUTextureFormat;
 }
 
+interface GPUComputePipelineDescriptor {
+    计算: GPUProgrammableStage;
+}
+
 interface GPUCopyExternalImageDestInfo {
     色彩空间?: PredefinedColorSpace;
 }
@@ -670,11 +682,20 @@ interface GPUSamplerBindingLayout {
     种类?: GPUSamplerBindingType;
 }
 
+interface GPUSamplerDescriptor {
+    比较?: GPUCompareFunction;
+}
+
 interface GPUShaderModuleDescriptor {
     代码: string;
 }
 
+interface GPUStencilFaceState {
+    比较?: GPUCompareFunction;
+}
+
 interface GPUStorageTextureBindingLayout {
+    访问?: GPUStorageTextureAccess;
     格式化: GPUTextureFormat;
 }
 
@@ -813,6 +834,7 @@ interface ImageDataSettings {
 }
 
 interface ImageDecodeResult {
+    完备: boolean;
     图像: VideoFrame;
 }
 
@@ -918,7 +940,12 @@ interface MediaCapabilitiesInfo {
 }
 
 interface MediaCapabilitiesKeySystemConfiguration {
+    音频?: KeySystemTrackConfiguration;
     密钥系统: string;
+}
+
+interface MediaConfiguration {
+    音频?: AudioConfiguration;
 }
 
 interface MediaDecodingConfiguration {
@@ -983,6 +1010,10 @@ interface MediaSettingsRange {
     最小?: number;
     最小限制?: number;
     步长?: number;
+}
+
+interface MediaStreamConstraints {
+    音频?: boolean | MediaTrackConstraints;
 }
 
 interface MediaStreamTrackEventInit {
@@ -1901,6 +1932,7 @@ interface VideoDecoderConfig {
     编码高?: number;
     编码宽?: number;
     色彩空间?: VideoColorSpaceInit;
+    描述?: AllowSharedBufferSource;
 }
 
 interface VideoDecoderInit {
@@ -1909,6 +1941,7 @@ interface VideoDecoderInit {
 }
 
 interface VideoDecoderSupport {
+    配置?: VideoDecoderConfig;
     已支持?: boolean;
 }
 
@@ -1939,6 +1972,7 @@ interface VideoEncoderInit {
 }
 
 interface VideoEncoderSupport {
+    配置?: VideoEncoderConfig;
     已支持?: boolean;
 }
 
@@ -2560,6 +2594,7 @@ interface CSSStyleProperties {
     动画: string;
     动画名: string;
     外观: string;
+    背景: string;
     边框: string;
     底部: string;
     清空: string;
@@ -2885,6 +2920,7 @@ interface CloseEvent {
 }
 
 interface CommandEvent {
+    readonly 命令: string;
     readonly 来源: Element | null;
 }
 
@@ -3608,6 +3644,7 @@ interface GPUAdapter {
 
 interface GPUAdapterInfo {
     readonly 体系结构: string;
+    readonly 描述: string;
     readonly 设备: string;
     readonly 供应方: string;
 }
@@ -3888,6 +3925,7 @@ interface HTMLBaseElement {
 }
 
 interface HTMLBodyElement {
+    背景: string;
     超链: string;
     转文本: string;
     加事件监听<K extends keyof HTMLBodyElementEventMap>(type: K, listener: (this: HTMLBodyElement, ev: HTMLBodyElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -3897,6 +3935,7 @@ interface HTMLBodyElement {
 }
 
 interface HTMLButtonElement {
+    命令: string;
     已禁用: boolean;
     readonly 表单: HTMLFormElement | null;
     readonly 标签列: NodeListOf<HTMLLabelElement>;
@@ -4201,6 +4240,7 @@ interface HTMLImageElement {
     对齐: string;
     替代文本: string;
     边框: string;
+    readonly 完备: boolean;
     跨源: string | null;
     readonly 当前源: string;
     解码方式: "async" | "sync" | "auto";
@@ -5037,6 +5077,7 @@ interface ImageData {
 }
 
 interface ImageDecoder {
+    readonly 完备: boolean;
     readonly 解码完成: Promise<void>;
     readonly 轨道集: ImageTrackList;
     readonly 种类: string;
@@ -5195,6 +5236,7 @@ interface MIDIOutputMap {
 }
 
 interface MIDIPort {
+    readonly 连接项: MIDIPortConnectionState;
     readonly 编号: string;
     readonly 厂商: string | null;
     readonly 名称: string | null;
@@ -5431,6 +5473,7 @@ interface MessagePort {
 }
 
 interface MimeType {
+    readonly 描述: string;
     readonly 后缀集: string;
     readonly 种类: string;
 }
@@ -5801,6 +5844,7 @@ interface PaymentRequest {
 
 interface PaymentResponse {
     readonly 详情: any;
+    完备(result?: PaymentComplete): Promise<void>;
     重试(errorFields?: PaymentValidationErrors): Promise<void>;
     转数据(): any;
     加事件监听<K extends keyof PaymentResponseEventMap>(type: K, listener: (this: PaymentResponse, ev: PaymentResponseEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5909,6 +5953,7 @@ interface PerformanceResourceTiming {
 }
 
 interface PerformanceServerTiming {
+    readonly 描述: string;
     readonly 时长: DOMHighResTimeStamp;
     readonly 名称: string;
     转数据(): any;
@@ -5960,6 +6005,7 @@ interface PictureInPictureWindow {
 }
 
 interface Plugin {
+    readonly 描述: string;
     readonly 文件名: string;
     readonly 长度: number;
     readonly 名称: string;
@@ -8013,6 +8059,7 @@ interface Window {
     失焦(): void;
     取消空闲(handle: number): void;
     关闭(): void;
+    确认(message?: string): boolean;
     聚焦(): void;
     取计算样式(elt: Element, pseudoElt?: string | null): CSSStyleDeclaration;
     取选区(): Selection | null;
@@ -8168,6 +8215,7 @@ declare namespace CSS {
 }
 
 declare namespace WebAssembly {
+    function 编译(bytes: BufferSource, options?: WebAssemblyCompileOptions): Promise<Module>;
     function 实例化(bytes: BufferSource, importObject?: Imports, options?: WebAssemblyCompileOptions): Promise<WebAssemblyInstantiatedSource>;
     function 实例化(moduleObject: Module, importObject?: Imports): Promise<Instance>;
 }
@@ -8783,6 +8831,10 @@ interface String {
     去头空白(): string;
 }
 
+interface Symbol {
+    readonly 描述: string | undefined;
+}
+
 interface BigIntToLocaleStringOptions {
     样式?: string;
     数字系统?: string;
@@ -9237,6 +9289,7 @@ interface ObjectConstructor {
 interface Function {
     应用(this: Function, thisArg: any, argArray?: any): any;
     调用(this: Function, thisArg: any, ...argArray: any[]): any;
+    绑定(this: Function, thisArg: any, ...argArray: any[]): any;
     转字符串(): string;
     原型: any;
     readonly 长度: number;
@@ -9251,12 +9304,16 @@ interface CallableFunction {
     应用<T, R>(this: (this: T) => R, thisArg: T): R;
     应用<T, A extends any[], R>(this: (this: T, ...args: A) => R, thisArg: T, args: A): R;
     调用<T, A extends any[], R>(this: (this: T, ...args: A) => R, thisArg: T, ...args: A): R;
+    绑定<T>(this: T, thisArg: ThisParameterType<T>): OmitThisParameter<T>;
+    绑定<T, A extends any[], B extends any[], R>(this: (this: T, ...args: [...A, ...B]) => R, thisArg: T, ...args: A): (...args: B) => R;
 }
 
 interface NewableFunction {
     应用<T>(this: new () => T, thisArg: T): void;
     应用<T, A extends any[]>(this: new (...args: A) => T, thisArg: T, args: A): void;
     调用<T, A extends any[]>(this: new (...args: A) => T, thisArg: T, ...args: A): void;
+    绑定<T>(this: T, thisArg: any): T;
+    绑定<A extends any[], B extends any[], R>(this: new (...args: [...A, ...B]) => R, thisArg: any, ...args: A): new (...args: B) => R;
 }
 
 interface IArguments {
@@ -9392,6 +9449,7 @@ interface RegExp {
     测试(string: string): boolean;
     readonly 来源: string;
     readonly 多行: boolean;
+    编译(pattern: string, flags?: string): this;
 }
 
 interface Error {
