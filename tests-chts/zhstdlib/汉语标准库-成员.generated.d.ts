@@ -262,22 +262,27 @@ interface ConstantSourceOptions {
 
 interface ConstrainBooleanOrDOMStringParameters {
     精确?: boolean | string;
+    理想值?: boolean | string;
 }
 
 interface ConstrainBooleanParameters {
     精确?: boolean;
+    理想值?: boolean;
 }
 
 interface ConstrainDOMStringParameters {
     精确?: string | string[];
+    理想值?: string | string[];
 }
 
 interface ConstrainDoubleRange {
     精确?: number;
+    理想值?: number;
 }
 
 interface ConstrainULongRange {
     精确?: number;
+    理想值?: number;
 }
 
 interface ContentVisibilityAutoStateChangeEventInit {
@@ -473,6 +478,10 @@ interface FontFaceDescriptors {
     字重?: string;
 }
 
+interface FontFaceSetLoadEventInit {
+    字体面集?: FontFace[];
+}
+
 interface FormDataEventInit {
     表单数据: FormData;
 }
@@ -592,6 +601,7 @@ interface GPURenderPassDepthStencilAttachment {
 }
 
 interface GPURenderPipelineDescriptor {
+    片段?: GPUFragmentState;
     图元?: GPUPrimitiveState;
     顶点: GPUVertexState;
 }
@@ -748,6 +758,7 @@ interface IntersectionObserverInit {
 
 interface JsonWebKey {
     算法名?: string;
+    扩展名?: boolean;
     横坐标?: string;
     纵坐标?: string;
 }
@@ -967,6 +978,10 @@ interface NavigationPreloadState {
 
 interface NavigationReloadOptions {
     状态?: any;
+}
+
+interface NavigationResult {
+    已终结?: Promise<NavigationHistoryEntry>;
 }
 
 interface NavigationUpdateCurrentEntryOptions {
@@ -1698,6 +1713,7 @@ interface URLPatternInit {
 interface URLPatternResult {
     散列: URLPatternComponentResult;
     主机名: URLPatternComponentResult;
+    输入集: URLPatternInput[];
     密码: URLPatternComponentResult;
     路径名: URLPatternComponentResult;
     端口: URLPatternComponentResult;
@@ -1922,6 +1938,7 @@ interface Animatable {
 
 interface Animation {
     效果: AnimationEffect | null;
+    readonly 已终结: Promise<Animation>;
     编号: string;
     readonly 待处理: boolean;
     readonly 就绪: Promise<Animation>;
@@ -2395,6 +2412,7 @@ interface CSSStyleProperties {
     弹性: string;
     浮点: string;
     字体: string;
+    间隙: string;
     网格: string;
     高度: string;
     连字: string;
@@ -3370,6 +3388,10 @@ interface FontFaceSet {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface FontFaceSetLoadEvent {
+    readonly 字体面集: ReadonlyArray<FontFace>;
+}
+
 interface FontFaceSource {
     readonly 字体集: FontFaceSet;
 }
@@ -3800,6 +3822,7 @@ interface HTMLElement {
     书写方向: string;
     可拖动: boolean;
     隐藏: boolean | "until-found";
+    惰性: boolean;
     内部文本: string;
     语言: string;
     readonly 偏移高: number;
@@ -4912,6 +4935,7 @@ interface LockManager {
 }
 
 interface MIDIAccess {
+    readonly 输入集: MIDIInputMap;
     加事件监听<K extends keyof MIDIAccessEventMap>(type: K, listener: (this: MIDIAccess, ev: MIDIAccessEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MIDIAccessEventMap>(type: K, listener: (this: MIDIAccess, ev: MIDIAccessEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -5270,6 +5294,10 @@ interface Navigation {
     去事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
 }
 
+interface NavigationActivation {
+    readonly 单条目: NavigationHistoryEntry;
+}
+
 interface NavigationDestination {
     readonly 编号: string;
     readonly 序号: number;
@@ -5301,6 +5329,10 @@ interface NavigationPreloadManager {
     禁用(): Promise<void>;
     启用(): Promise<void>;
     取状态(): Promise<NavigationPreloadState>;
+}
+
+interface NavigationTransition {
+    readonly 已终结: Promise<void>;
 }
 
 interface Navigator {
@@ -5829,6 +5861,7 @@ interface RTCErrorEvent {
 interface RTCIceCandidate {
     readonly 候选: string;
     readonly 组件: RTCIceComponent | null;
+    readonly 基础: string | null;
     readonly 端口: number | null;
     readonly 优先级: number | null;
     readonly 协议: RTCIceProtocol | null;
@@ -7465,6 +7498,7 @@ interface ViewTimeline {
 }
 
 interface ViewTransition {
+    readonly 已终结: Promise<void>;
     readonly 就绪: Promise<void>;
     readonly 类型列: ViewTransitionTypeSet;
 }
@@ -8107,6 +8141,7 @@ interface ReadonlyArray<T> {
 }
 
 interface RegExp {
+    readonly 标志集: string;
     readonly 吸顶: boolean;
     readonly 统一码: boolean;
 }
@@ -8792,11 +8827,13 @@ interface ReadonlySetLike<T> {
 
 interface Set<T> {
     并集<U>(other: ReadonlySetLike<U>): Set<T | U>;
+    交集<U>(other: ReadonlySetLike<U>): Set<T & U>;
     差值<U>(other: ReadonlySetLike<U>): Set<T>;
 }
 
 interface ReadonlySet<T> {
     并集<U>(other: ReadonlySetLike<U>): Set<T | U>;
+    交集<U>(other: ReadonlySetLike<U>): Set<T & U>;
     差值<U>(other: ReadonlySetLike<U>): Set<T>;
 }
 
