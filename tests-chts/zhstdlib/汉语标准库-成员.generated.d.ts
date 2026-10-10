@@ -113,6 +113,10 @@ interface AudioDecoderInit {
     报错: WebCodecsErrorCallback;
 }
 
+interface AudioDecoderSupport {
+    已支持?: boolean;
+}
+
 interface AudioEncoderConfig {
     高级音频编码?: AacEncoderConfig;
     比特率?: number;
@@ -123,6 +127,10 @@ interface AudioEncoderConfig {
 
 interface AudioEncoderInit {
     报错: WebCodecsErrorCallback;
+}
+
+interface AudioEncoderSupport {
+    已支持?: boolean;
 }
 
 interface AuthenticationExtensionsClientInputs {
@@ -153,11 +161,13 @@ interface AuthenticationExtensionsLargeBlobInputsJSON {
 
 interface AuthenticationExtensionsLargeBlobOutputs {
     转二进制块?: ArrayBuffer;
+    已支持?: boolean;
     已写入?: boolean;
 }
 
 interface AuthenticationExtensionsLargeBlobOutputsJSON {
     转二进制块?: Base64URLString;
+    已支持?: boolean;
     已写入?: boolean;
 }
 
@@ -182,6 +192,7 @@ interface AuthenticationExtensionsPRFValuesJSON {
 interface AuthenticationResponseJSON {
     编号: string;
     原始编号: Base64URLString;
+    应答内容: AuthenticatorAssertionResponseJSON;
     种类: string;
 }
 
@@ -224,6 +235,7 @@ interface CSSNumericType {
     频率?: number;
     长度?: number;
     百分比?: number;
+    分辨率?: number;
     时间?: number;
 }
 
@@ -851,6 +863,7 @@ interface MIDIOptions {
 
 interface MediaCapabilitiesInfo {
     平滑: boolean;
+    已支持: boolean;
 }
 
 interface MediaCapabilitiesKeySystemConfiguration {
@@ -1464,6 +1477,7 @@ interface RegistrationOptions {
 interface RegistrationResponseJSON {
     编号: string;
     原始编号: Base64URLString;
+    应答内容: AuthenticatorAttestationResponseJSON;
     种类: string;
 }
 
@@ -1571,6 +1585,7 @@ interface ScrollToOptions {
 interface SecurityPolicyViolationEventInit {
     处置方式?: SecurityPolicyViolationEventDisposition;
     来源页?: string;
+    采样?: string;
 }
 
 interface ShadowRootInit {
@@ -1817,6 +1832,10 @@ interface VideoDecoderInit {
     报错: WebCodecsErrorCallback;
 }
 
+interface VideoDecoderSupport {
+    已支持?: boolean;
+}
+
 interface VideoEncoderConfig {
     透明度?: AlphaOption;
     高级视频编码?: AvcEncoderConfig;
@@ -1840,6 +1859,10 @@ interface VideoEncoderEncodeOptionsForAvc {
 
 interface VideoEncoderInit {
     报错: WebCodecsErrorCallback;
+}
+
+interface VideoEncoderSupport {
+    已支持?: boolean;
 }
 
 interface VideoFrameBufferInit {
@@ -2264,6 +2287,7 @@ interface CSSCounterStyleRule {
     补齐: string;
     前缀: string;
     范围: string;
+    后缀: string;
 }
 
 interface CSSFontFaceRule {
@@ -3193,6 +3217,7 @@ interface DynamicsCompressorNode {
     readonly 攻击: AudioParam;
     readonly 拐点: AudioParam;
     readonly 比率: AudioParam;
+    readonly 归约: number;
     readonly 释放: AudioParam;
     readonly 阈值: AudioParam;
 }
@@ -5655,6 +5680,7 @@ interface PaymentRequest {
 
 interface PaymentResponse {
     readonly 详情: any;
+    重试(errorFields?: PaymentValidationErrors): Promise<void>;
     转数据(): any;
     加事件监听<K extends keyof PaymentResponseEventMap>(type: K, listener: (this: PaymentResponse, ev: PaymentResponseEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -5821,6 +5847,7 @@ interface Plugin {
 interface PluginArray {
     readonly 长度: number;
     取项(index: number): Plugin | null;
+    刷新(): void;
 }
 
 interface PointerEvent {
@@ -5857,6 +5884,7 @@ interface PromiseRejectionEvent {
 
 interface PublicKeyCredential {
     readonly 原始编号: ArrayBuffer;
+    readonly 应答内容: AuthenticatorResponse;
     转数据(): RegistrationResponseJSON | AuthenticationResponseJSON;
 }
 
@@ -6112,6 +6140,7 @@ interface ReadableStreamBYOBReader {
 
 interface ReadableStreamBYOBRequest {
     readonly 视图: ArrayBufferView<ArrayBuffer> | null;
+    应答(bytesWritten: number): void;
 }
 
 interface ReadableStreamDefaultController<R = any> {
@@ -6179,6 +6208,7 @@ interface ResizeObserverEntry {
 interface Response {
     readonly 头集合: Headers;
     readonly 是成功: boolean;
+    readonly 已重定向: boolean;
     readonly 状态码: number;
     readonly 状态文本: string;
     readonly 种类: ResponseType;
@@ -7024,6 +7054,7 @@ interface ScrollTimeline {
 interface SecurityPolicyViolationEvent {
     readonly 处置方式: SecurityPolicyViolationEventDisposition;
     readonly 来源页: string;
+    readonly 采样: string;
 }
 
 interface Selection {
@@ -7631,6 +7662,7 @@ interface WGSLLanguageFeatures {
 }
 
 interface WakeLockSentinel {
+    readonly 已释放: boolean;
     readonly 种类: WakeLockType;
     释放(): Promise<void>;
     加事件监听<K extends keyof WakeLockSentinelEventMap>(type: K, listener: (this: WakeLockSentinel, ev: WakeLockSentinelEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -7935,6 +7967,7 @@ interface XMLDocument {
 
 interface XMLHttpRequest {
     readonly 就绪态: number;
+    readonly 应答内容: any;
     readonly 状态码: number;
     readonly 状态文本: string;
     中止(): void;
@@ -9343,6 +9376,7 @@ interface SymbolConstructor {
 
 interface SuppressedError {
     报错: any;
+    已抑制: any;
 }
 
 interface SuppressedErrorConstructor {
