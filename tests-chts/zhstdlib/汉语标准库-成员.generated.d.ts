@@ -153,10 +153,12 @@ interface AuthenticationExtensionsLargeBlobInputsJSON {
 
 interface AuthenticationExtensionsLargeBlobOutputs {
     转二进制块?: ArrayBuffer;
+    已写入?: boolean;
 }
 
 interface AuthenticationExtensionsLargeBlobOutputsJSON {
     转二进制块?: Base64URLString;
+    已写入?: boolean;
 }
 
 interface AuthenticationExtensionsPRFOutputs {
@@ -222,6 +224,7 @@ interface CSSNumericType {
     频率?: number;
     长度?: number;
     百分比?: number;
+    时间?: number;
 }
 
 interface CSSStyleSheetInit {
@@ -515,6 +518,7 @@ interface GPUBindGroupLayoutEntry {
     缓冲?: GPUBufferBindingLayout;
     采样器?: GPUSamplerBindingLayout;
     纹理?: GPUTextureBindingLayout;
+    可见性: GPUShaderStageFlags;
 }
 
 interface GPUBlendState {
@@ -722,6 +726,7 @@ interface HmacKeyGenParams {
 
 interface IDBDatabaseInfo {
     名称?: string;
+    版本?: number;
 }
 
 interface IDBObjectStoreParameters {
@@ -937,6 +942,7 @@ interface MediaTrackSettings {
     采样率?: number;
     手电筒?: boolean;
     宽度?: number;
+    变焦?: number;
 }
 
 interface MediaTrackSupportedConstraints {
@@ -1477,6 +1483,7 @@ interface RequestInit {
     来源页?: string;
     来源页策略?: ReferrerPolicy;
     信号?: AbortSignal | null;
+    窗口?: null;
 }
 
 interface ResizeObserverOptions {
@@ -1657,6 +1664,7 @@ interface TextDecoderOptions {
 
 interface TextEncoderEncodeIntoResult {
     读取: number;
+    已写入: number;
 }
 
 interface TimelineRangeOffset {
@@ -2145,6 +2153,10 @@ interface AuthenticatorAttestationResponse {
     取传输方式(): string[];
 }
 
+interface BarProp {
+    readonly 可见: boolean;
+}
+
 interface BaseAudioContext {
     readonly 音频工作线程: AudioWorklet;
     readonly 输出端: AudioDestinationNode;
@@ -2242,6 +2254,7 @@ interface CSSCounterStyleRule {
     名称: string;
     补齐: string;
     前缀: string;
+    范围: string;
 }
 
 interface CSSFontFaceRule {
@@ -2477,11 +2490,13 @@ interface CSSStyleProperties {
     过渡: string;
     过渡属性: string;
     平移: string;
+    可见性: string;
     寡行: string;
     宽度: string;
     词距: string;
     横坐标: string;
     纵坐标: string;
+    变焦: string;
 }
 
 interface CSSStyleRule {
@@ -3349,6 +3364,7 @@ interface FileReader {
     开始加载时: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
     进度变化时: ((this: FileReader, ev: ProgressEvent<FileReader>) => any) | null;
     readonly 就绪态: 0 | 1 | 2;
+    readonly 结果: string | ArrayBuffer | null;
     中止(): void;
     读为缓冲(blob: Blob): void;
     读为文本(blob: Blob, encoding?: string): void;
@@ -4000,6 +4016,7 @@ interface HTMLHeadingElement {
 }
 
 interface HTMLHtmlElement {
+    版本: string;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLHtmlElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLHtmlElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -4748,6 +4765,7 @@ interface IDBDatabase {
     关闭时: ((this: IDBDatabase, ev: Event) => any) | null;
     出错时: ((this: IDBDatabase, ev: Event) => any) | null;
     版本变化时: ((this: IDBDatabase, ev: IDBVersionChangeEvent) => any) | null;
+    readonly 版本: number;
     关闭(): void;
     创建对象存储(name: string, options?: IDBObjectStoreParameters): IDBObjectStore;
     删除对象存储(name: string): void;
@@ -4810,6 +4828,7 @@ interface IDBRequest<T = any> {
     出错时: ((this: IDBRequest<T>, ev: Event) => any) | null;
     成功时: ((this: IDBRequest<T>, ev: Event) => any) | null;
     readonly 就绪态: IDBRequestReadyState;
+    readonly 结果: T;
     readonly 来源: IDBObjectStore | IDBIndex | IDBCursor;
     readonly 事务: IDBTransaction | null;
     加事件监听<K extends keyof IDBRequestEventMap>(type: K, listener: (this: IDBRequest<T>, ev: IDBRequestEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4919,6 +4938,7 @@ interface IntersectionObserverEntry {
     readonly 正在相交: boolean;
     readonly 根边界: DOMRectReadOnly | null;
     readonly 目标: Element;
+    readonly 时间: DOMHighResTimeStamp;
 }
 
 interface KeyboardEvent {
@@ -5025,6 +5045,7 @@ interface MIDIPort {
     readonly 名称: string | null;
     readonly 状态: MIDIPortDeviceState;
     readonly 种类: MIDIPortType;
+    readonly 版本: string | null;
     关闭(): Promise<MIDIPort>;
     打开(): Promise<MIDIPort>;
     加事件监听<K extends keyof MIDIPortEventMap>(type: K, listener: (this: MIDIPort, ev: MIDIPortEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5391,6 +5412,7 @@ interface Navigator {
     readonly 权限集: Permissions;
     readonly 服务工作线程: ServiceWorkerContainer;
     发送信标(url: string | URL, data?: BodyInit | null): boolean;
+    振动(pattern: VibratePattern): boolean;
 }
 
 interface NavigatorAutomationInformation {
@@ -6531,6 +6553,7 @@ interface SVGFilterElement {
 
 interface SVGFilterPrimitiveStandardAttributes {
     readonly 高度: SVGAnimatedLength;
+    readonly 结果: SVGAnimatedString;
     readonly 宽度: SVGAnimatedLength;
     readonly 横坐标: SVGAnimatedLength;
     readonly 纵坐标: SVGAnimatedLength;
@@ -7151,6 +7174,7 @@ interface SpeechSynthesisUtterance {
     出错时: ((this: SpeechSynthesisUtterance, ev: SpeechSynthesisErrorEvent) => any) | null;
     暂停时: ((this: SpeechSynthesisUtterance, ev: SpeechSynthesisEvent) => any) | null;
     音高: number;
+    速率: number;
     转文本: string;
     语音: SpeechSynthesisVoice | null;
     音量: number;
@@ -7486,6 +7510,7 @@ interface VTTCue {
     大小: number;
     对齐行: boolean;
     转文本: string;
+    垂直: DirectionSetting;
     取提示标记(): DocumentFragment;
     加事件监听<K extends keyof TextTrackCueEventMap>(type: K, listener: (this: VTTCue, ev: TextTrackCueEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -7793,6 +7818,7 @@ interface Window {
     readonly 状态栏: BarProp;
     readonly 工具栏: BarProp;
     readonly 顶部: WindowProxy | null;
+    readonly 窗口: Window & typeof globalThis;
     告警(message?: any): void;
     失焦(): void;
     取消空闲(handle: number): void;
@@ -7961,6 +7987,7 @@ interface Console {
     附加信息(...data: any[]): void;
     对数(...data: any[]): void;
     日志(...data: any[]): void;
+    时间(label?: string): void;
     追踪(...data: any[]): void;
     警告(...data: any[]): void;
 }
@@ -8038,6 +8065,10 @@ interface MediaKeyStatusMap {
     条目(): MediaKeyStatusMapIterator<[BufferSource, MediaKeyStatus]>;
     键列(): MediaKeyStatusMapIterator<BufferSource>;
     值列(): MediaKeyStatusMapIterator<MediaKeyStatus>;
+}
+
+interface Navigator {
+    振动(pattern: Iterable<number>): boolean;
 }
 
 interface NodeList {
