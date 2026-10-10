@@ -162,7 +162,4 @@ var LibNames = []string{
 	"lib.zhts.esnext.decorators.d.ts",
 	"lib.zhts.esnext.disposable.d.ts",
 	"lib.zhts.esnext.sharedmemory.d.ts",
-	"lib.zhts.zhts.dom.d.ts",
-	"lib.zhts.zhts.es2024.arraybuffer.d.ts",
-	"lib.zhts.zhts.es2024.sharedmemory.d.ts",
 }
