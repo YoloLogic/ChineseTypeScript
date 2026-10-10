@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/microsoft/TypeScript/tsc/internal/ast"
+	"github.com/microsoft/TypeScript/tsc/internal/bundled"
 	"github.com/microsoft/TypeScript/tsc/internal/collections"
 	"github.com/microsoft/TypeScript/tsc/internal/core"
 	"github.com/microsoft/TypeScript/tsc/internal/diagnostics"
@@ -46,6 +47,20 @@ type parseTask struct {
 
 	loadedTask        *parseTask
 	allIncludeReasons []*FileIncludeReason
+}
+
+// zhChunkFileName 由「来源 lib 文件名」推导「汉语标准库增补块」的文件名（规格六·十二）。
+// lib.dom.d.ts -> lib.zhts.dom.d.ts；只有该块确实存在（bundled.ZhChunkKeySet）时才返回 true。
+// 块清单由 tools/gen_zhstdlib_lib.ps1 生成，所以译名表一变，这里自动跟着变。
+func zhChunkFileName(libFileName string) (string, bool) {
+	if !strings.HasPrefix(libFileName, "lib.") || !strings.HasSuffix(libFileName, ".d.ts") {
+		return "", false
+	}
+	key := libFileName[len("lib.") : len(libFileName)-len(".d.ts")]
+	if !bundled.ZhChunkKeySet[key] {
+		return "", false
+	}
+	return "lib.zhts." + key + ".d.ts", true
 }
 
 func (t *parseTask) FileName() string {
@@ -159,6 +174,16 @@ func (t *parseTask) load(loader *fileLoader) {
 					fileName:      libFile.path,
 					includeReason: includeReason,
 				}, libFile)
+				// ChineseTypeScript：一并加载该来源 lib 的【汉语增补块】（规格六·十二）。
+				// 块与来源 lib 同生共死 —— 只加载 es2020 不加载 dom 时，dom 块不会被加载，
+				// 所以块里引用的 dom 类型（BufferSource 等）必定可用；没有对应块则静默跳过。
+				if chunk, ok := zhChunkFileName(name); ok {
+					chunkFile := loader.pathForLibFile(chunk)
+					t.addSubTask(resolvedRef{
+						fileName:      chunkFile.path,
+						includeReason: includeReason,
+					}, chunkFile)
+				}
 			} else {
 				t.processingDiagnostics = append(t.processingDiagnostics, &processingDiagnostic{
 					kind: processingDiagnosticKindUnknownReference,

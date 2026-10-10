@@ -25,8 +25,6 @@ if (-not $Src)  { $Src  = Join-Path $repo 'tests-chts\zhstdlib' }
 if (-not $Work) { $Work = Join-Path $env:TEMP 'zhstdlib-judge' }
 if (Test-Path $Work) { Remove-Item $Work -Recurse -Force }
 New-Item -ItemType Directory -Force $Work | Out-Null
-Copy-Item (Join-Path $Src '汉语标准库.d.ts') $Work -Force
-Copy-Item (Join-Path $Src '汉语标准库-成员.generated.d.ts') $Work -Force
 Copy-Item (Join-Path $Src '主.ts') $Work -Force
 
 $results = New-Object System.Collections.Generic.List[object]
@@ -51,7 +49,6 @@ Check '① 汉语标准库名通过类型检查' ($a.code -eq 0) ('主.ts exit='
 
 # ② 负对照：未声明的汉语成员必须报错（文件由判定自己生成，不依赖仓库里有没有）
 Set-Content -Path (Join-Path $Work '负对照.ts') -Encoding utf8 -Value (@(
-    '/// <reference path="汉语标准库.d.ts" />',
     'declare const 甲: number[];',
     '甲.发送(1);'
 ) -join [char]10)
@@ -60,7 +57,6 @@ Check '② 负对照：未声明的汉语成员报 TS2339' (($b.code -ne 0) -and
 
 # ③ 英文用法与汉语用法并存（别名要求）
 Set-Content -Path (Join-Path $Work '并存.ts') -Encoding utf8 -Value (@(
-    '/// <reference path="汉语标准库.d.ts" />',
     '常量 甲: 数组<数字> = [3, 1];',
     '甲.追加(2);',
     '甲.push(4);',
@@ -91,7 +87,6 @@ if ($node -and (Test-Path $js)) {
 
 # ⑥ 收窄守卫：用户自己声明的同名标识符【不得】被改写
 Set-Content -Path (Join-Path $Work '同名变量.ts') -Encoding utf8 -Value (@(
-    '/// <reference path="汉语标准库.d.ts" />',
     '常量 追加 = 5;',
     'console.log(追加 + 1);'
 ) -join [char]10)
@@ -182,7 +177,6 @@ if ($collide.Count -gt 0) {
 #   为什么要它：⑬ 只覆盖「方法声明」一种形态；collector 若漏了某种形态（如对象字面量属性、
 #   属性签名），该形态的用户成员又会被误改 —— 这是最容易悄悄退化的地方，必须钉死。
 Set-Content -Path (Join-Path $Work '同名形态.ts') -Encoding utf8 -Value (@(
-    '/// <reference path="汉语标准库.d.ts" />',
     '类型 甲 {',
     '  长度(): 数字 { 返回 1 }',
     '  宽度: 数字 = 2',
@@ -225,7 +219,6 @@ Check '⑫ Go 源文件不带 UTF-8 BOM（防跨平台编译失败）' ($bomFile
 #    用户自己的类型里声明了 描述()，调用 x.描述() —— 现在会被 emit 改写成 x.description，
 #    产物运行时 TypeError。修复方向见规格六·十一（用户声明屏蔽 pass）。
 Set-Content -Path (Join-Path $Work '同名成员.ts') -Encoding utf8 -Value (@(
-    '/// <reference path="汉语标准库.d.ts" />',
     '类型 甲 {',
     '  长度(): 字符串 { 返回 "本地:8080" }',
     '}',
@@ -242,6 +235,23 @@ $zh3 = [bool]($js3Text -match '\.长度')
 $en3 = [bool]($js3Text -match '\.length')
 Check '⑬ 用户同名成员守卫：x.长度() 不得被改写（产物仍是 .长度，且真跑正确）' (($zh3) -and (-not $en3) -and ($run3 -eq '本地:8080')) ('产物含 .长度=' + $zh3 + ' 含 .length=' + $en3 + ' 运行输出=' + $run3)
 
+# ⑮ 自动加载守卫（规格六·十二）：不写任何 reference 就能用汉语标准库名；
+#    而且【我们的块不得引入任何诊断】—— 尤其在窄 lib 集合（--lib es2020，不带 dom）下。
+#    为什么必须钉：块是按来源 lib 分块加载的，一旦挂钩错了（例如无条件加载），
+#    低目标/窄 lib 集合会因 BufferSource、FlatArray、RegExpIndicesArray 这类类型不可用而炸。
+Set-Content -Path (Join-Path $Work '自动加载.ts') -Encoding utf8 -Value (@(
+    '常量 甲 = [1, 2];',
+    '甲.追加(3);'
+) -join [char]10)
+$out5 = Join-Path $Work 'out5'
+if (Test-Path $out5) { Remove-Item $out5 -Recurse -Force }
+$d1 = @(& $Tsc (Join-Path $Work '自动加载.ts') --outDir $out5 --target es2015 --module commonjs --pretty false --locale en 2>&1)
+$js5 = Join-Path $out5 '自动加载.js'
+$js5Text = if (Test-Path $js5) { [System.IO.File]::ReadAllText($js5) } else { '' }
+Check '⑮a 自动加载：es2015 下不写 reference 也能编译（0 诊断）' (($LASTEXITCODE -eq 0) -and (@($d1).Count -eq 0) -and ($js5Text -match '\.push')) ('exit=' + $LASTEXITCODE + ' 诊断=' + @($d1).Count + ' 产物含 .push=' + [bool]($js5Text -match '\.push'))
+$d2 = @(& $Tsc (Join-Path $Work '自动加载.ts') --outDir $out5 --target es2020 --lib es2020 --module commonjs --pretty false --locale en 2>&1)
+$chunkErr = @($d2 | Where-Object { $_ -match 'lib\.zhts\.' })
+Check '⑮b 自动加载：窄 lib 集合（--lib es2020，不带 dom）下我们的块不引入诊断' ($chunkErr.Count -eq 0) ('我们的块的诊断=' + $chunkErr.Count + ' 全部诊断=' + @($d2).Count)
 Write-Host '=== 判定汇总 ==='
 $results | ForEach-Object { '  [' + $_.结果 + '] ' + $_.判定 + ' —— ' + $_.说明 }
 $fail = @($results | Where-Object { $_.结果 -ne '通过' }).Count

@@ -48,13 +48,22 @@ foreach ($line in (Get-Content $Table -Encoding UTF8)) {
 # 扫全部 lib（含 DOM —— 用户 2026-10-08 裁定「含 DOM」），但要排除【默认不加载】的变体：
 # webworker / scripthost 里的成员引用了默认 lib 没有的类型（如 Client），抄进来会「找不到名称」。
 # 注意排除 lib.zhts.d.ts —— 那是【本生成器的输出】，不排除的话它会把自己也扫一遍（自我递归）。
-$libs = @(Get-ChildItem $LibDir -File -Filter 'lib.*.d.ts' | Where-Object { $_.Name -notmatch 'webworker|scripthost|^lib\.zhts\.d\.ts$' } | Sort-Object Name)
+# 注意排除【所有】 lib.zhts.*.d.ts —— 那些是本生成器的输出（分块）；只排 lib.zhts.d.ts
+# 一个名字会让 dom/es2015 等分块被当成输入再扫一遍 → 把 get 又翻成 获取、产物语法坏掉（第 10 轮踩过）。
+$libs = @(Get-ChildItem $LibDir -File -Filter 'lib.*.d.ts' | Where-Object { $_.Name -notmatch 'webworker|scripthost' -and $_.Name -notmatch '^lib\.zhts\.' } | Sort-Object Name)
 $blocks = New-Object System.Collections.Generic.List[string]
 $blocks.Add('// 【生成物，请勿手改】由 tools/gen_zhstdlib_lib.ps1 从上游 lib + stdlib 译名表生成。')
 $blocks.Add('// 只做「成员改名」的增补：接口名与类型原样保留，英文用法照旧可用。')
 $blocks.Add('')
 $ifaceCount = 0; $skipped = New-Object System.Collections.Generic.List[string]
+# 【按来源 lib 分块】块键 -> 该块的行（规格六·十二）。
+# 为什么要分块：我们的增补会用到来来源 lib 的类型（dom 的 BufferSource、es2022.regexp 的
+# RegExpIndicesArray…），而用户可以只加载 es2020 不加载 dom —— 单文件无条件加载必然报错。
+# 分块后每个块只与自己的来源 lib 同生共死（由 compiler 在解析 lib 引用时一起加载）。
+$chunks = @{}
 foreach ($lib in $libs) {
+    $key = ($lib.Name -replace '^lib\.', '') -replace '\.d\.ts$', ''
+    if (-not $chunks.ContainsKey($key)) { $chunks[$key] = New-Object System.Collections.Generic.List[string] }
     $cur = $null; $depth = 0; $isNs = $false
     $members = New-Object System.Collections.Generic.List[string]
     foreach ($line in (Get-Content $lib.FullName -Encoding UTF8)) {
@@ -88,9 +97,12 @@ foreach ($lib in $libs) {
         if ($depth -le 0) {
             if ($members.Count -gt 0) {
                 $ifaceCount++
-                $blocks.Add(($(if ($isNs) { 'declare namespace ' } else { 'interface ' })) + $cur + ' {')
-                foreach ($mm in $members) { $blocks.Add($mm) }
-                $blocks.Add('}'); $blocks.Add('')
+                $ifaceLines = @((($(if ($isNs) { 'declare namespace ' } else { 'interface ' })) + $cur + ' {'))
+                foreach ($mm in $members) { $ifaceLines += $mm }
+                $ifaceLines += '}'
+                $ifaceLines += ''
+                foreach ($one in $ifaceLines) { $blocks.Add($one) }
+                foreach ($one in $ifaceLines) { $chunks[$key].Add($one) }
             }
             $cur = $null; $depth = 0; continue
         }
@@ -134,39 +146,74 @@ if (-not (Test-Path $dir)) { New-Item -ItemType Directory -Force $dir | Out-Null
 [System.IO.File]::WriteAllText($Out, $text, (New-Object System.Text.UTF8Encoding($true)))
 Write-Host ('  已生成 ' + $Out)
 
-# ---- 追加输出：一个真正的 lib 文件（供编译器【默认加载】）----------------------
-# 为什么要它：做成 lib 文件后随默认 lib 集合自动加载，用户不必再手写 /// <reference>
-# （这就是**自动加载**：标准库汉化从「半成品」变成「装完就能用」）。
+# ---- 输出：按来源 lib 分块的 lib 文件（自动加载用，规格六·十二）----------------
+# 为什么不是单个文件：我们的增补会用到来来源 lib 的类型（dom 的 BufferSource、
+# es2022.regexp 的 RegExpIndicesArray…），而用户可以只加载 es2020 不加载 dom ——
+# 单文件无条件加载【不可能】对任意 lib 集合都正确（第 8/9 轮实测）。
+# 分块后：每个块只与其来源 lib 同生共死（compiler 加载 lib.<键>.d.ts 时一并加载本块）。
 $repo = Split-Path -Parent $PSScriptRoot
 $globalsPath = Join-Path $repo 'tests-chts\zhstdlib\汉语标准库.d.ts'
-$libOut = Join-Path $repo 'tsc\internal\bundled\libs\lib.zhts.d.ts'
-$globalsLines = @(Get-Content $globalsPath -Encoding UTF8 | Where-Object { $_ -notmatch '^/// <reference path=' })
-# 上游 bundled/generate.go 要求每个内嵌 lib【必须以 CopyrightNotice.txt 开头 + 一个空行】
-# （lib 文件是上游 lib 的派生作品，保留声明既合规也是上游硬校验）。
+$LibOutDir = $LibDir
 $noticePath = Join-Path $repo 'tsc\internal\bundled\CopyrightNotice.txt'
 $notice = ([System.IO.File]::ReadAllText($noticePath)) -replace ($CRLF), ([string][char]10)
-$libHead = @(
-    '// ChineseTypeScript 汉语标准库 —— 随默认 lib 集合自动加载的 lib 文件。',
+$LF = [string][char]10
+
+# 手写全局按 '// @lib <键>' 标记归入对应分块（没标记的行是文件头说明，丢弃）。
+$currentLib = $null
+foreach ($line in (Get-Content $globalsPath -Encoding UTF8)) {
+    if ($line -match '^\s*//\s*@lib\s+(\S+)\s*$') { $currentLib = $Matches[1]; continue }
+    if ($line -match '^/// <reference path=') { continue }
+    if ($null -eq $currentLib) { continue }
+    if (-not $chunks.ContainsKey($currentLib)) { $chunks[$currentLib] = New-Object System.Collections.Generic.List[string] }
+    $chunks[$currentLib].Add($line)
+}
+
+$chunkHead = @(
+    '// ChineseTypeScript 汉语标准库 —— 本块只增补【来自该来源 lib】的成员。',
     '//',
-    '// 【生成物，请勿手改】由 tools/gen_zhstdlib_lib.ps1 生成：',
-    '//   内容 = 手写全局别名（tests-chts/zhstdlib/汉语标准库.d.ts）',
-    '//        + 生成的成员声明（同目录 汉语标准库-成员.generated.d.ts）。',
-    '// 机制：声明层给汉语名；运行时那一半由编译器 emit 改写负责（甲.追加 → 甲.push）。',
+    '// 【生成物，请勿手改】由 tools/gen_zhstdlib_lib.ps1 生成（规格六·十二）。',
+    '// 自动加载：compiler 在加载 lib.<键>.d.ts 时一并加载本块，故本块引用的类型必定可用。',
     ''
 )
-# 注意必须用【LF】：上游内嵌 lib 的生成器（bundled/generate.go）会校验行尾，
-# 用 CRLF 会直接报 ' lib.zhts.d.ts must use LF line endings' 并拒绝生成。
-$LF = [string][char]10
-# 上游的要求是 content.HasPrefix(copyright + "\n")：声明原文（本身以 \n\n 结尾）再补一个 \n。
-# 别 TrimEnd —— 少一个换行就会被拒。
-$libText = ($notice + $LF + (($libHead + $globalsLines + @('') + ($text -split ($CRLF))) -join $LF))
-if ($Check) {
-    if (-not (Test-Path $libOut)) { throw ('lib 生成物不存在：' + $libOut) }
-    $libDisk = ([System.IO.File]::ReadAllText($libOut)) -replace ($CRLF), $LF
-    if ($libDisk.TrimEnd() -ne ($libText.TrimEnd())) { throw ('lib.zhts.d.ts 与译名表不同步；请运行 tools\gen_zhstdlib_lib.ps1 并提交结果') }
-    Write-Host '  lib.zhts.d.ts 与译名表一致'
+$writtenChunks = New-Object System.Collections.Generic.List[string]
+foreach ($k in (@($chunks.Keys) | Sort-Object)) {
+    $lines = @($chunks[$k])
+    if ($lines.Count -eq 0) { continue }
+    $outChunk = Join-Path $LibOutDir ('lib.zhts.' + $k + '.d.ts')
+    # 上游 bundled/generate.go 要求：LF 行尾 + 以 CopyrightNotice 原文（其本身以 \n\n 结尾）
+    # 加一个 \n 开头（它做 HasPrefix(copyright+"\n") 校验）。少一个换行就会被拒。
+    $body = (($chunkHead + $lines) -join $LF)
+    $textChunk = $notice + $LF + $body + $LF
+    [System.IO.File]::WriteAllText($outChunk, $textChunk, (New-Object System.Text.UTF8Encoding($false)))
+    $writtenChunks.Add($k)
 }
-else {
-    [System.IO.File]::WriteAllText($libOut, $libText, (New-Object System.Text.UTF8Encoding($false)))
-    Write-Host ('  已生成 ' + $libOut)
-}
+Write-Host ('  分块写出 ' + $writtenChunks.Count + ' 个 lib.zhts.<键>.d.ts；前几个：' + (($writtenChunks | Select-Object -First 8) -join ' '))
+
+# 块清单（Go）：编译器的挂钩要靠它判断「某个来源 lib 有没有对应的汉语块」。
+# 生成它而不是手写：块的集合随译名表变化，手写必然漂移。
+$chunkKeys = @($writtenChunks | Sort-Object)
+$go = New-Object System.Text.StringBuilder
+[void]$go.Append('// Code generated by tools/gen_zhstdlib_lib.ps1; DO NOT EDIT.' + $LF)
+[void]$go.Append($LF)
+[void]$go.Append('package bundled' + $LF)
+[void]$go.Append($LF)
+[void]$go.Append('// ZhChunkKeys 是「汉语标准库增补块」的来源 lib 键（规格六·十二）。' + $LF)
+[void]$go.Append('// 块文件名 = lib.zhts.<键>.d.ts；键来自 lib.<键>.d.ts。' + $LF)
+[void]$go.Append('var ZhChunkKeys = []string{' + $LF)
+foreach ($k in $chunkKeys) { [void]$go.Append(($TAB + '"' + $k + '",' + $LF)) }
+[void]$go.Append('}' + $LF)
+[void]$go.Append($LF)
+[void]$go.Append('// ZhChunkKeySet 是 ZhChunkKeys 的集合形式，供 O(1) 查询。' + $LF)
+[void]$go.Append('var ZhChunkKeySet = func() map[string]bool {' + $LF)
+[void]$go.Append(($TAB + 'm := make(map[string]bool, len(ZhChunkKeys))' + $LF))
+[void]$go.Append(($TAB + 'for _, k := range ZhChunkKeys {' + $LF))
+[void]$go.Append(($TAB + $TAB + 'm[k] = true' + $LF))
+[void]$go.Append(($TAB + '}' + $LF))
+[void]$go.Append(($TAB + 'return m' + $LF))
+[void]$go.Append('}()' + $LF)
+$chunkGoPath = Join-Path $repo 'tsc\internal\bundled\zhchunks_generated.go'
+[System.IO.File]::WriteAllText($chunkGoPath, $go.ToString(), (New-Object System.Text.UTF8Encoding($false)))
+Write-Host ('  已生成块清单 ' + $chunkGoPath)
+# 旧的单文件聚合已废弃（它对任意 lib 集合不可能成立）：存在就删掉。
+$oldAgg = Join-Path $LibOutDir 'lib.zhts.d.ts'
+if (Test-Path $oldAgg) { Remove-Item $oldAgg -Force; Write-Host '  已删除废弃的 lib.zhts.d.ts（单文件聚合）' }

@@ -192,7 +192,13 @@ func processAllProgramFiles(
 			for index, lib := range compilerOptions.Lib {
 				if name, ok := tsoptions.GetLibFileName(lib); ok {
 					libFile := loader.pathForLibFile(name)
-					loader.addRootTask(libFile.path, libFile, &FileIncludeReason{kind: fileIncludeKindLibFile, data: index})
+					reason := &FileIncludeReason{kind: fileIncludeKindLibFile, data: index}
+					loader.addRootTask(libFile.path, libFile, reason)
+					// ChineseTypeScript：显式 --lib 时同样带上对应的汉语增补块（规格六·十二）。
+					if chunk, hasChunk := zhChunkFileName(name); hasChunk {
+						chunkFile := loader.pathForLibFile(chunk)
+						loader.addRootTask(chunkFile.path, chunkFile, reason)
+					}
 				}
 				// !!! error on unknown name
 			}
