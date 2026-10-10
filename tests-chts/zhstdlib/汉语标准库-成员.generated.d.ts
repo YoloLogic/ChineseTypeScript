@@ -16,12 +16,14 @@ interface AacEncoderConfig {
 }
 
 interface AddEventListenerOptions {
+    被动?: boolean;
     信号?: AbortSignal;
 }
 
 interface AddressErrors {
     城市?: string;
     国家?: string;
+    组织?: string;
     接收方?: string;
     地区?: string;
 }
@@ -602,6 +604,7 @@ interface GPURenderPassDepthStencilAttachment {
 
 interface GPURenderPipelineDescriptor {
     片段?: GPUFragmentState;
+    多样本?: GPUMultisampleState;
     图元?: GPUPrimitiveState;
     顶点: GPUVertexState;
 }
@@ -626,6 +629,10 @@ interface GPUTexelCopyTextureInfo {
     纵横比?: GPUTextureAspect;
     源点?: GPUOrigin3D;
     纹理: GPUTexture;
+}
+
+interface GPUTextureBindingLayout {
+    多样本化?: boolean;
 }
 
 interface GPUTextureDescriptor {
@@ -1983,6 +1990,7 @@ interface Attr {
     readonly 名称: string;
     readonly 属主文档: Document;
     readonly 属主元素: Element | null;
+    readonly 前缀: string | null;
     readonly 已指定: boolean;
     值内容: string;
     get 文本内容(): string;
@@ -2213,6 +2221,8 @@ interface CSSContainerRule {
 interface CSSCounterStyleRule {
     回退: string;
     名称: string;
+    补齐: string;
+    前缀: string;
 }
 
 interface CSSFontFaceRule {
@@ -2284,9 +2294,17 @@ interface CSSMathSum {
     readonly 值列: CSSNumericArray;
 }
 
+interface CSSMathValue {
+    readonly 运算符: CSSMathOperator;
+}
+
 interface CSSMediaRule {
     get 媒体(): MediaList;
     set 媒体(mediaText: string);
+}
+
+interface CSSNamespaceRule {
+    readonly 前缀: string;
 }
 
 interface CSSNestedDeclarations {
@@ -3145,6 +3163,9 @@ interface Element {
     readonly 本地名: string;
     外部标记: string;
     readonly 属主文档: Document;
+    get 部件(): DOMTokenList;
+    set 部件(value: string);
+    readonly 前缀: string | null;
     readonly 滚动高: number;
     滚动左: number;
     滚动顶: number;
@@ -4936,6 +4957,7 @@ interface LockManager {
 
 interface MIDIAccess {
     readonly 输入集: MIDIInputMap;
+    readonly 输出集: MIDIOutputMap;
     加事件监听<K extends keyof MIDIAccessEventMap>(type: K, listener: (this: MIDIAccess, ev: MIDIAccessEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MIDIAccessEventMap>(type: K, listener: (this: MIDIAccess, ev: MIDIAccessEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -5549,6 +5571,7 @@ interface Path2D {
 interface PaymentAddress {
     readonly 城市: string;
     readonly 国家: string;
+    readonly 组织: string;
     readonly 接收方: string;
     readonly 地区: string;
     转数据(): any;
@@ -6295,6 +6318,7 @@ interface SVGFEComponentTransferElement {
 }
 
 interface SVGFECompositeElement {
+    readonly 运算符: SVGAnimatedEnumeration;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFECompositeElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFECompositeElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -6406,6 +6430,7 @@ interface SVGFEMergeNodeElement {
 }
 
 interface SVGFEMorphologyElement {
+    readonly 运算符: SVGAnimatedEnumeration;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEMorphologyElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGFEMorphologyElement, ev: SVGElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -7725,6 +7750,7 @@ interface Window {
     readonly 长度: number;
     readonly 地址栏: BarProp;
     名称: string;
+    打开者: any;
     readonly 朝向: number;
     readonly 个人栏: BarProp;
     readonly 屏幕横坐标: number;
@@ -8490,6 +8516,7 @@ interface BigIntToLocaleStringOptions {
     数字系统?: string;
     单位?: string;
     货币?: string;
+    记法?: string;
 }
 
 interface BigInt {
@@ -9080,6 +9107,7 @@ interface RegExp {
     执行(string: string): RegExpExecArray | null;
     测试(string: string): boolean;
     readonly 来源: string;
+    readonly 多行: boolean;
 }
 
 interface Error {
