@@ -24,6 +24,7 @@ interface AddressErrors {
     城市?: string;
     国家?: string;
     组织?: string;
+    电话?: string;
     接收方?: string;
     地区?: string;
 }
@@ -111,6 +112,7 @@ interface AudioDecoderConfig {
 
 interface AudioDecoderInit {
     报错: WebCodecsErrorCallback;
+    输出: AudioDataOutputCallback;
 }
 
 interface AudioDecoderSupport {
@@ -127,6 +129,7 @@ interface AudioEncoderConfig {
 
 interface AudioEncoderInit {
     报错: WebCodecsErrorCallback;
+    输出: EncodedAudioChunkOutputCallback;
 }
 
 interface AudioEncoderSupport {
@@ -135,18 +138,22 @@ interface AudioEncoderSupport {
 
 interface AuthenticationExtensionsClientInputs {
     应用标识?: string;
+    伪随机函数?: AuthenticationExtensionsPRFInputs;
 }
 
 interface AuthenticationExtensionsClientInputsJSON {
     应用标识?: string;
+    伪随机函数?: AuthenticationExtensionsPRFInputsJSON;
 }
 
 interface AuthenticationExtensionsClientOutputs {
     应用标识?: boolean;
+    伪随机函数?: AuthenticationExtensionsPRFOutputs;
 }
 
 interface AuthenticationExtensionsClientOutputsJSON {
     应用标识?: boolean;
+    伪随机函数?: AuthenticationExtensionsPRFOutputsJSON;
 }
 
 interface AuthenticationExtensionsLargeBlobInputs {
@@ -788,6 +795,7 @@ interface ImageDecoderInit {
 }
 
 interface ImageEncodeOptions {
+    质量?: number;
     种类?: string;
 }
 
@@ -1107,6 +1115,7 @@ interface PannerOptions {
 interface PayerErrors {
     邮箱?: string;
     名称?: string;
+    电话?: string;
 }
 
 interface PaymentCurrencyAmount {
@@ -1179,6 +1188,7 @@ interface PerformanceObserverInit {
 
 interface PeriodicWaveOptions {
     虚部?: number[] | Float32Array;
+    实数?: number[] | Float32Array;
 }
 
 interface PermissionDescriptor {
@@ -1660,6 +1670,7 @@ interface StereoPannerOptions {
 }
 
 interface StorageEstimate {
+    配额?: number;
     用量?: number;
 }
 
@@ -1844,6 +1855,7 @@ interface VideoDecoderConfig {
 
 interface VideoDecoderInit {
     报错: WebCodecsErrorCallback;
+    输出: VideoFrameOutputCallback;
 }
 
 interface VideoDecoderSupport {
@@ -1873,6 +1885,7 @@ interface VideoEncoderEncodeOptionsForAvc {
 
 interface VideoEncoderInit {
     报错: WebCodecsErrorCallback;
+    输出: EncodedVideoChunkOutputCallback;
 }
 
 interface VideoEncoderSupport {
@@ -2522,6 +2535,7 @@ interface CSSStyleProperties {
     标记物: string;
     偏移: string;
     不透明度: string;
+    顺序: string;
     孤行: string;
     轮廓: string;
     溢出: string;
@@ -3564,6 +3578,7 @@ interface GPUCompilationMessage {
 interface GPUDevice {
     readonly 特性集: GPUSupportedFeatures;
     readonly 限制集: GPUSupportedLimits;
+    readonly 队列: GPUQueue;
     创建缓冲(descriptor: GPUBufferDescriptor): GPUBuffer;
     创建采样器(descriptor?: GPUSamplerDescriptor): GPUSampler;
     创建纹理(descriptor: GPUTextureDescriptor): GPUTexture;
@@ -4293,6 +4308,7 @@ interface HTMLMediaElement {
     readonly 已播放区间: TimeRanges;
     预加载: "none" | "metadata" | "auto" | "";
     readonly 就绪态: number;
+    readonly 远端: RemotePlayback;
     readonly 可定位: TimeRanges;
     readonly 正在定位: boolean;
     readonly 输出设备: string;
@@ -5686,6 +5702,7 @@ interface PaymentAddress {
     readonly 城市: string;
     readonly 国家: string;
     readonly 组织: string;
+    readonly 电话: string;
     readonly 接收方: string;
     readonly 地区: string;
     转数据(): any;
@@ -6013,6 +6030,10 @@ interface RTCIceCandidate {
     readonly 种类: RTCIceCandidateType | null;
     readonly 用户名片段: string | null;
     转数据(): RTCIceCandidateInit;
+}
+
+interface RTCIceCandidatePair {
+    远端: RTCIceCandidate;
 }
 
 interface RTCIceTransport {
@@ -7945,6 +7966,7 @@ interface WindowOrWorkerGlobalScope {
     readonly 缓存集: CacheStorage;
     readonly 加密模块: Crypto;
     readonly 源点: string;
+    readonly 性能: Performance;
     readonly 调度器: Scheduler;
     创建位图(image: ImageBitmapSource, options?: ImageBitmapOptions): Promise<ImageBitmap>;
     创建位图(image: ImageBitmapSource, sx: number, sy: number, sw: number, sh: number, options?: ImageBitmapOptions): Promise<ImageBitmap>;
@@ -8337,6 +8359,10 @@ interface String {
     小值(): string;
     删除线(): string;
     相减(): string;
+}
+
+interface StringConstructor {
+    原始(template: { raw: readonly string[] | ArrayLike<string>; }, ...substitutions: any[]): string;
 }
 
 interface Int8Array<TArrayBuffer extends ArrayBufferLike> {
@@ -9184,6 +9210,10 @@ interface Number {
 
 interface NumberConstructor {
     readonly 原型: Number;
+}
+
+interface TemplateStringsArray {
+    readonly 原始: readonly string[];
 }
 
 interface Math {
