@@ -28,6 +28,46 @@ jobs:
       - run: npx hereby build
       - run: npx hereby build:api
 
+  # ==========================================================================
+  # 本项目自有的判定 job（只增不改，2026-10-10 起）。
+  #
+  # 为什么需要它：上游的 test / test-extra 里那些 fourslash 补全期望与 baseline，
+  # 因为我们【故意】加入了汉语关键字、汉语补全、汉语标准库增补而必然不同（见
+  # stdlib/规模化方案.md 六·十三），于是长期是红的。这里单独跑【本项目自己的判据】：
+  # 它们才是这个分支真正要守的东西。
+  #
+  # 只跑【不依赖上游基线 tsc】的判据（judge_chts / judge_oss 需要 ../cts-base，留给本地与
+  # 后续的“clone 上游基线”步骤）。
+  # ==========================================================================
+  zh-judges:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 'lts/*'
+      - uses: ./.github/actions/setup-go
+      - name: 构建 chtsc
+        shell: bash
+        run: |
+          cd tsc
+          go build -o "$RUNNER_TEMP/chtsc" ./cmd/tsc
+      - name: 跑本项目判据（汉语标准库 / 关键字作用域 / 中文诊断 / 语言服务 / 教程 / 许可 / 项目）
+        shell: pwsh
+        env:
+          CHTSC: ${{ runner.temp }}/chtsc
+        run: |
+          ./tests-chts/judge_zhstdlib.ps1 -NoBuild
+          ./tests-chts/judge_kwscope.ps1 -NoBuild
+          ./tests-chts/judge_zhdiag.ps1 -NoBuild
+          ./tests-chts/judge_langservice.ps1 -NoBuild
+          ./tests-chts/judge_tutorial.ps1 -NoBuild
+          ./tests-chts/judge_proj.ps1 -NoBuild
+          ./tests-chts/judge_licenses.ps1
   release-build:
     if: ${{ github.repository == 'microsoft/TypeScript' && github.event_name != 'merge_group' }}
     runs-on: TypeScript-1ES-GitHub-TypeScript-1
