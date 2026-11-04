@@ -8189,10 +8189,14 @@ interface WindowOrWorkerGlobalScope {
     readonly 源点: string;
     readonly 性能: Performance;
     readonly 调度器: Scheduler;
+    清定时(id: number | undefined): void;
+    清延时(id: number | undefined): void;
     创建位图(image: ImageBitmapSource, options?: ImageBitmapOptions): Promise<ImageBitmap>;
     创建位图(image: ImageBitmapSource, sx: number, sy: number, sw: number, sh: number, options?: ImageBitmapOptions): Promise<ImageBitmap>;
     抓取(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
     排队微任务(callback: VoidFunction): void;
+    设定时(handler: TimerHandler, timeout?: number, ...arguments: any[]): number;
+    设延时(handler: TimerHandler, timeout?: number, ...arguments: any[]): number;
     结构化复制<T = any>(value: T, options?: StructuredSerializeOptions): T;
 }
 
@@ -9659,6 +9663,7 @@ interface PromiseLike<T> {
 
 interface Promise<T> {
     然后<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    捕获<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
 }
 
 interface ArrayLike<T> {

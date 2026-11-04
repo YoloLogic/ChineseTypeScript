@@ -1809,6 +1809,11 @@ member	parent	父级
 member	print	打印
 member	product	产品
 member	public	公有
+member	setTimeout	设延时
+member	setInterval	设定时
+member	clearTimeout	清延时
+member	clearInterval	清定时
+member	catch	捕获
 member	video	视频
 member	charAt	取字符
 member	charCodeAt	取字符码
