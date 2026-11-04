@@ -428,6 +428,7 @@ interface DeviceOrientationEventInit {
 
 interface DisplayMediaStreamOptions {
     音频?: boolean | MediaTrackConstraints;
+    视频?: boolean | MediaTrackConstraints;
 }
 
 interface DoubleRange {
@@ -447,6 +448,10 @@ interface DynamicsCompressorOptions {
     比率?: number;
     释放?: number;
     阈值?: number;
+}
+
+interface EcdhKeyDeriveParams {
+    公有: CryptoKey;
 }
 
 interface EcdsaParams {
@@ -957,10 +962,12 @@ interface MediaCapabilitiesInfo {
 interface MediaCapabilitiesKeySystemConfiguration {
     音频?: KeySystemTrackConfiguration;
     密钥系统: string;
+    视频?: KeySystemTrackConfiguration;
 }
 
 interface MediaConfiguration {
     音频?: AudioConfiguration;
+    视频?: VideoConfiguration;
 }
 
 interface MediaDecodingConfiguration {
@@ -1029,6 +1036,7 @@ interface MediaSettingsRange {
 
 interface MediaStreamConstraints {
     音频?: boolean | MediaTrackConstraints;
+    视频?: boolean | MediaTrackConstraints;
 }
 
 interface MediaStreamTrackEventInit {
@@ -5693,6 +5701,7 @@ interface NavigatorGPU {
 interface NavigatorID {
     readonly 应用代号: string;
     readonly 平台: string;
+    readonly 产品: string;
     readonly 用户代理: string;
     readonly 供应方: string;
 }
@@ -8118,6 +8127,7 @@ interface Window {
     readonly 导航: Navigation;
     打开者: any;
     readonly 朝向: number;
+    readonly 父级: WindowProxy;
     readonly 个人栏: BarProp;
     readonly 屏幕: Screen;
     readonly 屏幕横坐标: number;
@@ -8142,6 +8152,7 @@ interface Window {
     打开(url?: string | URL, target?: string, features?: string): WindowProxy | null;
     发消息(message: any, targetOrigin: string, transfer?: Transferable[]): void;
     发消息(message: any, options?: WindowPostMessageOptions): void;
+    打印(): void;
     提示符(message?: string, _default?: string): string | null;
     请求空闲(callback: IdleRequestCallback, options?: IdleRequestOptions): number;
     滚动(options?: ScrollToOptions): void;

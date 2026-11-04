@@ -1805,6 +1805,11 @@ member	navigation	导航
 member	negative	负值
 member	object	对象
 member	operation	操作
+member	parent	父级
+member	print	打印
+member	product	产品
+member	public	公有
+member	video	视频
 member	charAt	取字符
 member	charCodeAt	取字符码
 member	codePointAt	取码点
