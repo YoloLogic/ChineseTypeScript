@@ -3447,6 +3447,7 @@ interface Element {
     按标签取元素<K extends keyof HTMLElementDeprecatedTagNameMap>(qualifiedName: K): HTMLCollectionOf<HTMLElementDeprecatedTagNameMap[K]>;
     按标签取元素(qualifiedName: string): HTMLCollectionOf<Element>;
     有属性(qualifiedName: string): boolean;
+    有指针捕获(pointerId: number): boolean;
     邻近插入元素(where: InsertPosition, element: Element): Element | null;
     邻近插入标记(position: InsertPosition, string: string): void;
     邻近插入文本(where: InsertPosition, data: string): void;
@@ -5750,6 +5751,7 @@ interface Node {
     比较文档位置(other: Node): number;
     含节点(other: Node | null): boolean;
     取根节点(options?: GetRootNodeOptions): Node;
+    有子节点(): boolean;
     前插节点<T extends Node>(node: T, child: Node | null): T;
     查命名空间(prefix: string | null): string | null;
     查前缀(namespace: string | null): string | null;

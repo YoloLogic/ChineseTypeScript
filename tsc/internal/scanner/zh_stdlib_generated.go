@@ -1826,6 +1826,8 @@ var zhStdlibMembers = map[string]string{
 	"清延时":    "clearTimeout",
 	"清定时":    "clearInterval",
 	"捕获":     "catch",
+	"有子节点":   "hasChildNodes",
+	"有指针捕获":  "hasPointerCapture",
 	"视频":     "video",
 	"取字符":    "charAt",
 	"取字符码":   "charCodeAt",
