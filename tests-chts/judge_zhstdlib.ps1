@@ -254,6 +254,24 @@ Check '⑮a 自动加载：es2015 下不写 reference 也能编译（0 诊断）
 $d2 = @(& $Tsc (Join-Path $Work '自动加载.ts') --outDir $out5 --target es2020 --lib es2020 --module commonjs --pretty false --locale en 2>&1)
 $chunkErr = @($d2 | Where-Object { $_ -match 'lib\.zhts\.' })
 Check '⑮b 自动加载：窄 lib 集合（--lib es2020，不带 dom）下我们的块不引入诊断' ($chunkErr.Count -eq 0) ('我们的块的诊断=' + $chunkErr.Count + ' 全部诊断=' + @($d2).Count)
+# ⑯ 用户【变量】名撞全局别名时不得被改写（2026-10-10 真回归的回归测试）。
+#    背景：屏蔽集合最初只收「成员声明」，而全局别名（对象/数学/控制台…）的改写发生在【任何引用位】，
+#    于是用户写 `常量 对象 = {...}` 后引用 `对象` 会被改成 Object → 运行时 TypeError。
+#    教程例子 02-变量与类型.ts 就是这么坏的（judge_tutorial 抓到）。这条判据把它钉死。
+Set-Content -Path (Join-Path $Work '变量屏蔽.ts') -Encoding utf8 -Value (@(
+    '常量 对象 = { 名字: "甲" };',
+    'console.log(对象.名字);'
+) -join [char]10)
+$out6 = Join-Path $Work 'out6'
+if (Test-Path $out6) { Remove-Item $out6 -Recurse -Force }
+$d3 = @(& $Tsc (Join-Path $Work '变量屏蔽.ts') --outDir $out6 --target es2020 --module commonjs --pretty false --locale en 2>&1)
+$js6 = Join-Path $out6 '变量屏蔽.js'
+$js6Text = if (Test-Path $js6) { [System.IO.File]::ReadAllText($js6) } else { '' }
+$ran = if (Test-Path $js6) { @(& node $js6 2>&1) } else { @() }
+$keptVar = $js6Text -match 'const 对象'
+$notObject = -not ($js6Text -match 'Object\.名字')
+$ranOk = (@($ran).Count -eq 1) -and ($ran[0] -eq '甲')
+Check '⑯ 用户变量名撞全局别名时不被改写（产物保留 对象，不是 Object）' (($LASTEXITCODE -eq 0) -and $keptVar -and $notObject -and $ranOk) ('exit=' + $LASTEXITCODE + ' 保留对象=' + $keptVar + ' 未改成Object=' + $notObject + ' 真跑=' + ($ran -join ','))
 Write-Host '=== 判定汇总 ==='
 $results | ForEach-Object { '  [' + $_.结果 + '] ' + $_.判定 + ' —— ' + $_.说明 }
 $fail = @($results | Where-Object { $_.结果 -ne '通过' }).Count
