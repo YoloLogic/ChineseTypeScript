@@ -60,7 +60,10 @@ try {
 Write-Host '=== 2) 工作副本（含汉语关键字）跑 go test ./... ==='
 Push-Location $workTsc
 try {
-    & $GoExe test ./... 2>&1 | Out-File -FilePath $logWork -Encoding UTF8
+    # -count=1 强制真跑：不加的话 go test 命中【测试缓存】就直接复用结果，
+# 于是 testdata/baselines/local 根本不会被重新生成 —— ④ 会拿「只有 1 个文件」的空集
+# 比对出「0 差异」，变成空转（2026-10-10 实测到）。
+& $GoExe test -count=1 ./... 2>&1 | Out-File -FilePath $logWork -Encoding UTF8
     Write-Host "  退出码=$LASTEXITCODE 日志=$logWork"
 } finally { Pop-Location }
 
