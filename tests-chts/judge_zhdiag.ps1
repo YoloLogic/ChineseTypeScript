@@ -16,12 +16,16 @@
 # ============================================================================
 
 param(
-    [string] $Tsc  = 'E:\cts-build\chtsc.exe',
-    [string] $Work = 'E:\cts-build\zhdiag-judge',
+    [string] $Tsc  = '',   # 留空则按 common.ps1 解析（CI 友好）
+    [string] $Work = '',
     [switch] $NoBuild
 )
 
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'common.ps1')
+if (-not $Tsc)  { $Tsc  = Resolve-ChtscPath '' }
+if (-not $Work) { $Work = Resolve-JudgeWork '' 'judge_zhdiag' }
+Set-GoEnvironment
 $repo = Split-Path -Parent $PSScriptRoot
 
 $results = New-Object System.Collections.Generic.List[object]

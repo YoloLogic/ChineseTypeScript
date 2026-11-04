@@ -1,4 +1,4 @@
-﻿# 《ChineseTypeScript 教学教程》守卫 —— 真编译、真运行、逐行核对期望输出。
+# 《ChineseTypeScript 教学教程》守卫 —— 真编译、真运行、逐行核对期望输出。
 #
 # 做四件事：
 #   ① 教程正文与「模板 + 例子源码 + 关键字对照表」一致（转调 make_tutorial_chts.ps1 -Check）
@@ -16,12 +16,16 @@
 # 用法：pwsh -File tests-chts\judge_tutorial.ps1
 
 param(
-    [string]$Tsc = 'E:\cts-build\chtsc.exe',
-    [string]$Work = 'E:\cts-build\tutorial-ts',
+    [string]$Tsc = '',   # 留空则按 common.ps1 解析（CI 友好）
+    [string]$Work = '',
     [switch]$Quiet
 )
 
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'common.ps1')
+if (-not $Tsc)  { $Tsc  = Resolve-ChtscPath '' }
+if (-not $Work) { $Work = Resolve-JudgeWork '' 'judge_tutorial' }
+Set-GoEnvironment
 $repo = Split-Path -Parent $PSScriptRoot
 $exDir = Join-Path $repo '教程\例子'
 $bad = 0
