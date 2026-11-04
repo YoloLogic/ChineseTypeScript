@@ -192,7 +192,7 @@ func processAllProgramFiles(
 		loader.addRootFileTask(rootFile, nil, &FileIncludeReason{kind: fileIncludeKindRootFile, data: index})
 	}
 	if len(rootFiles) > 0 && compilerOptions.NoLib.IsFalseOrUnknown() {
-		loader.zhChunksEnabled = anyRootFileHasHan(rootFiles)
+		loader.zhChunksEnabled = anyRootFileHasHan(rootFiles, loader.opts.Host)
 		if compilerOptions.Lib == nil {
 			name := tsoptions.GetDefaultLibFileName(compilerOptions)
 			libFile := loader.pathForLibFile(name)
@@ -959,13 +959,22 @@ func (p *fileLoader) createSyntheticImport(text string, file *ast.SourceFile) *a
 //   * 纯英文项目（上游测试、开源语料）一个块都不加载 → 产物与诊断逐字节零回归；
 //   * 中文项目照常自动加载 → 用户不必写 reference，"装完就能用"。
 // 读不到文件时按【加载】处理：宁可让中文用户可用，也不要让特性悄悄失效。
-func anyRootFileHasHan(rootFiles []string) bool {
+func anyRootFileHasHan(rootFiles []string, host CompilerHost) bool {
 	for _, f := range rootFiles {
-		b, err := os.ReadFile(f)
-		if err != nil {
+		// 读文件必须【两条路都试】：
+		//   * CLI 场景：根文件是真实路径，os.ReadFile 就行；
+		//   * 测试运行器场景：根文件是虚拟路径（c:/...），os.ReadFile 读不到，
+		//     必须走宿主 FS —— 否则「读不到就启用」会让纯英文的上游测试也加载汉语块，
+		//     把 6 个 baseline 弄脏（2026-10-10 实测到的坑）。
+		var text []byte
+		if b, err := os.ReadFile(f); err == nil {
+			text = b
+		} else if s, ok := host.FS().ReadFile(f); ok {
+			text = []byte(s)
+		} else {
 			return true
 		}
-		if bytes.ContainsFunc(b, func(r rune) bool { return unicode.Is(unicode.Han, r) }) {
+		if bytes.ContainsFunc(text, func(r rune) bool { return unicode.Is(unicode.Han, r) }) {
 			return true
 		}
 	}
