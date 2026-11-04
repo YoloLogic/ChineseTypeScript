@@ -158,8 +158,19 @@ if (-not (Test-Path $locRoot)) {
         # 汉语标准库给接口增补成员，接口成员数必然变多，TS2740 的 N 必然变大（实测 28 → 59）。
         # 这是增补机制的固有代价，不是回归；除此之外逐行严格比对。
         # 注意要覆盖两种结尾：诊断消息是 ', and 28 more.'，而符号基线的截断是 '... and 1 more)'。
-        $refLines = @(Get-Content $refPath -Encoding UTF8) -replace 'and \d+ more', 'and N more'
-        $locLines = @(Get-Content $f.FullName -Encoding UTF8) -replace 'and \d+ more', 'and N more'
+        # 结构化规范化：把【自动加载的固有痕迹】从两边都抹掉，剩下的才是真差异。
+        #   (1) 符号基线的声明列表里会多出 Decl(lib.zhts.<键>.d.ts, --, --)
+        #   (2) 各类截断计数 'and N more'（诊断的 ', and 28 more.' 与符号的 '... and 1 more)' 两种结尾）
+        # 这是「明知代价、精确圈定」：只抹这两类痕迹，其余任何差异仍然算问题。
+        function Normalize-Line([string]$s) {
+            $s = $s -replace ', and \d+ more', ', and N more'
+            $s = $s -replace 'and \d+ more', 'and N more'
+            $s = $s -replace ', Decl\(lib\.zhts\.[^)]*\)', ''
+            $s = $s -replace 'Decl\(lib\.zhts\.[^)]*\)', ''
+            return $s
+        }
+        $refLines = @(Get-Content $refPath -Encoding UTF8 | ForEach-Object { Normalize-Line $_ })
+        $locLines = @(Get-Content $f.FullName -Encoding UTF8 | ForEach-Object { Normalize-Line $_ })
         $d = @(Compare-Object $refLines $locLines -CaseSensitive)
         if ($d.Count -eq 0) { $same++; continue }
         $diffFiles += $rel
