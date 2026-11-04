@@ -1,13 +1,16 @@
 package compiler
 
 import (
+	"bytes"
 	"cmp"
 	"errors"
 	"fmt"
+	"os"
 	"slices"
 	"strings"
 	"sync"
 	"sync/atomic"
+	"unicode"
 
 	"github.com/microsoft/TypeScript/tsc/internal/ast"
 	"github.com/microsoft/TypeScript/tsc/internal/collections"
@@ -45,6 +48,12 @@ type sourceFileFromReferenceDiagnostic struct {
 }
 
 type fileLoader struct {
+	// zhChunksEnabled：是否加载「汉语标准库增补块」（规格六·十三的 C 方案）。
+	// 判定规则：只要有【任何一个根文件含汉字】就加载 —— 于是
+	//   * 纯英文项目（上游测试、开源语料）**不加载**，产物与诊断逐字节零回归；
+	//   * 中文项目自动加载，用户不必写 reference，"装完就能用"。
+	// 在加 lib 任务之前算好，之后只读，故无并发问题。
+	zhChunksEnabled                               bool
 	opts                                           ProgramOptions
 	resolver                                       *module.Resolver
 	defaultLibraryPath                             string
@@ -183,6 +192,7 @@ func processAllProgramFiles(
 		loader.addRootFileTask(rootFile, nil, &FileIncludeReason{kind: fileIncludeKindRootFile, data: index})
 	}
 	if len(rootFiles) > 0 && compilerOptions.NoLib.IsFalseOrUnknown() {
+		loader.zhChunksEnabled = anyRootFileHasHan(rootFiles)
 		if compilerOptions.Lib == nil {
 			name := tsoptions.GetDefaultLibFileName(compilerOptions)
 			libFile := loader.pathForLibFile(name)
@@ -196,7 +206,7 @@ func processAllProgramFiles(
 					loader.addRootTask(libFile.path, libFile, reason)
 					// ChineseTypeScript：显式 --lib 时同样带上对应的汉语增补块（规格六·十二），
 					// 但【用户替换过的 lib 不带块】（'replaced' 表示这个 lib 来自用户自己的同名文件）。
-					if !libFile.Replaced {
+					if loader.zhChunksEnabled && !libFile.Replaced {
 						if chunk, hasChunk := zhChunkFileName(name); hasChunk {
 							chunkFile := loader.pathForLibFile(chunk)
 							loader.addRootTask(chunkFile.path, chunkFile, reason)
@@ -942,6 +952,25 @@ func (p *fileLoader) createSyntheticImport(text string, file *ast.SourceFile) *a
 	return externalHelpersModuleReference
 }
 
+
+// anyRootFileHasHan 判断根文件里有没有汉字 —— 决定是否加载「汉语标准库增补块」。
+// 为什么要这个开关（2026-10-10，规格六·十三的 C 方案）：给接口增补成员会让接口的成员数变多，
+// 极少数极端泛型用例的推断会变弱（实测 6/1769 个上游 baseline）。于是：
+//   * 纯英文项目（上游测试、开源语料）一个块都不加载 → 产物与诊断逐字节零回归；
+//   * 中文项目照常自动加载 → 用户不必写 reference，"装完就能用"。
+// 读不到文件时按【加载】处理：宁可让中文用户可用，也不要让特性悄悄失效。
+func anyRootFileHasHan(rootFiles []string) bool {
+	for _, f := range rootFiles {
+		b, err := os.ReadFile(f)
+		if err != nil {
+			return true
+		}
+		if bytes.ContainsFunc(b, func(r rune) bool { return unicode.Is(unicode.Han, r) }) {
+			return true
+		}
+	}
+	return false
+}
 func (p *fileLoader) pathForLibFile(name string) *LibFile {
 	if cached, ok := p.pathForLibFileCache.Load(name); ok {
 		return cached
