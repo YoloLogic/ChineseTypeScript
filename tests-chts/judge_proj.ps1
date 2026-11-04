@@ -1,4 +1,4 @@
-﻿# ChineseTypeScript 项目级 / 模块级判定
+# ChineseTypeScript 项目级 / 模块级判定
 #
 # 判定项：
 #   ① 主靶子（无扩展名导入）编译通过，且同时产出 主.js 与 数学.js
@@ -14,10 +14,15 @@
 # 用法：pwsh -File tests-chts\judge_proj.ps1
 
 param(
-    [string]$Work = 'E:\cts-build'
+    [string]$Work = '',   # 编译产物目录（留空则取 chtsc 所在目录，CI 友好）
+    [string]$Tsc  = ''
 )
 
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'common.ps1')
+if (-not $Tsc)  { $Tsc  = Resolve-ChtscPath '' }
+if (-not $Work) { $Work = Split-Path -Parent $Tsc }
+Set-GoEnvironment
 $repo = Split-Path -Parent $PSScriptRoot
 . (Join-Path $PSScriptRoot 'zhcheck.ps1')
 $tscDir = Join-Path $repo 'tsc'
