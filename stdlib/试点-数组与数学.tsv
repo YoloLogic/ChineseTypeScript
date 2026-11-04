@@ -1816,6 +1816,11 @@ member	clearInterval	清定时
 member	catch	捕获
 member	hasChildNodes	有子节点
 member	hasPointerCapture	有指针捕获
+member	cookie	会话数据
+member	contentType	内容类型
+member	location	地点
+member	fullscreenElement	全屏元素
+member	fullscreenEnabled	全屏可用
 member	video	视频
 member	charAt	取字符
 member	charCodeAt	取字符码

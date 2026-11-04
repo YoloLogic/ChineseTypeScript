@@ -91,6 +91,7 @@ interface AudioBufferSourceOptions {
 interface AudioConfiguration {
     比特率?: number;
     声道集?: string;
+    内容类型: string;
     采样频率?: number;
 }
 
@@ -912,6 +913,7 @@ interface KeyboardEventInit {
     正在组字?: boolean;
     键名?: string;
     键码?: number;
+    地点?: number;
     重复?: boolean;
 }
 
@@ -1005,6 +1007,7 @@ interface MediaKeySystemConfiguration {
 }
 
 interface MediaKeySystemMediaCapability {
+    内容类型?: string;
     健壮性?: string;
 }
 
@@ -1966,6 +1969,7 @@ interface VideoColorSpaceInit {
 
 interface VideoConfiguration {
     比特率: number;
+    内容类型: string;
     帧率: number;
     高度: number;
     宽度: number;
@@ -3237,6 +3241,8 @@ interface Document {
     readonly 字符集: string;
     readonly 编码字符集: string;
     readonly 兼容模式: string;
+    readonly 内容类型: string;
+    会话数据: string;
     readonly 默认视图: (WindowProxy & typeof globalThis) | null;
     设计模式: string;
     书写方向: string;
@@ -3246,11 +3252,14 @@ interface Document {
     readonly 嵌入集: HTMLCollectionOf<HTMLEmbedElement>;
     readonly 表单集: HTMLCollectionOf<HTMLFormElement>;
     readonly 全屏: boolean;
+    readonly 全屏可用: boolean;
     readonly 头部: HTMLHeadElement;
     readonly 隐藏: boolean;
     readonly 图像集: HTMLCollectionOf<HTMLImageElement>;
     readonly 实现对象: DOMImplementation;
     readonly 链接集: HTMLCollectionOf<HTMLAnchorElement | HTMLAreaElement>;
+    get 地点(): Location;
+    set 地点(href: string);
     readonly 属主文档: null;
     readonly 插件集: HTMLCollectionOf<HTMLEmbedElement>;
     readonly 就绪态: DocumentReadyState;
@@ -3379,6 +3388,7 @@ interface DocumentFragment {
 interface DocumentOrShadowRoot {
     readonly 活动元素: Element | null;
     采用的样式表: CSSStyleSheet[];
+    readonly 全屏元素: Element | null;
     readonly 指针锁定元素: Element | null;
     readonly 样式表集: StyleSheetList;
     按点取元素(x: number, y: number): Element | null;
@@ -5218,6 +5228,7 @@ interface KeyboardEvent {
     readonly 正在组字: boolean;
     readonly 键名: string;
     readonly 键码: number;
+    readonly 地点: number;
     readonly 重复: boolean;
     取修饰状态(keyArg: string): boolean;
 }
@@ -8130,6 +8141,8 @@ interface Window {
     readonly 帧集: WindowProxy;
     readonly 历史: History;
     readonly 长度: number;
+    get 地点(): Location;
+    set 地点(href: string);
     readonly 地址栏: BarProp;
     readonly 菜单栏: BarProp;
     名称: string;
