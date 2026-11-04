@@ -1823,14 +1823,6 @@ member	fullscreenElement	全屏元素
 member	fullscreenEnabled	全屏可用
 member	clientTop	客户区上边
 member	clientLeft	客户区左边
-member	requestPermission	请求权限
-member	cancelBubble	取消冒泡
-member	requestSubmit	请求提交
-member	requestFrame	请求帧
-member	requestStorageAccess	请求存储访问
-member	requestsSent	已发请求
-member	requestsReceived	已收请求
-member	requestDevice	请求设备
 member	video	视频
 member	charAt	取字符
 member	charCodeAt	取字符码

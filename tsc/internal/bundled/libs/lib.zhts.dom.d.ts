@@ -1479,8 +1479,6 @@ interface RTCIceCandidateInit {
 
 interface RTCIceCandidatePairStats {
     已提名?: boolean;
-    已收请求?: number;
-    已发请求?: number;
     状态: RTCStatsIceCandidatePairState;
 }
 
@@ -2797,7 +2795,6 @@ interface CacheStorage {
 
 interface CanvasCaptureMediaStreamTrack {
     readonly 画布: HTMLCanvasElement;
-    请求帧(): void;
     加事件监听<K extends keyof MediaStreamTrackEventMap>(type: K, listener: (this: CanvasCaptureMediaStreamTrack, ev: MediaStreamTrackEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof MediaStreamTrackEventMap>(type: K, listener: (this: CanvasCaptureMediaStreamTrack, ev: MediaStreamTrackEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
@@ -3372,7 +3369,6 @@ interface Document {
     导入节点<T extends Node>(node: T, options?: boolean | ImportNodeOptions): T;
     打开(unused1?: string, unused2?: string): Document;
     打开(url: string | URL, name: string, features: string): WindowProxy | null;
-    请求存储访问(): Promise<void>;
     写入(...text: string[]): void;
     写入行(...text: string[]): void;
     get 文本内容(): null;
@@ -3544,7 +3540,6 @@ interface ErrorEvent {
 
 interface Event {
     readonly 会冒泡: boolean;
-    取消冒泡: boolean;
     readonly 可取消: boolean;
     readonly 可穿透: boolean;
     readonly 当前目标: EventTarget | null;
@@ -3717,7 +3712,6 @@ interface GPUAdapter {
     readonly 特性集: GPUSupportedFeatures;
     readonly 附加信息: GPUAdapterInfo;
     readonly 限制集: GPUSupportedLimits;
-    请求设备(descriptor?: GPUDeviceDescriptor): Promise<GPUDevice>;
 }
 
 interface GPUAdapterInfo {
@@ -4227,7 +4221,6 @@ interface HTMLFormElement {
     目标: string;
     检查校验(): boolean;
     报告校验(): boolean;
-    请求提交(submitter?: HTMLElement | null): void;
     重置(): void;
     提交(): void;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLFormElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
