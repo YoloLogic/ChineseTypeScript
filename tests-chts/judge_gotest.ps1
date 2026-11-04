@@ -163,15 +163,23 @@ if (-not (Test-Path $locRoot)) {
         #   (2) 各类截断计数 'and N more'（诊断的 ', and 28 more.' 与符号的 '... and 1 more)' 两种结尾）
         # 这是「明知代价、精确圈定」：只抹这两类痕迹，其余任何差异仍然算问题。
         function Normalize-Line([string]$s) {
-            $s = $s -replace ', and \d+ more', ', and N more'
-            $s = $s -replace 'and \d+ more', 'and N more'
-            $s = $s -replace ', Decl\(lib\.zhts\.[^)]*\)', ''
-            $s = $s -replace 'Decl\(lib\.zhts\.[^)]*\)', ''
+            $s = $s -replace ', and \d+ more', ''
+            $s = $s -replace 'and \d+ more', ''
+            # 符号基线的【声明列表】整段不参与比较：增补会让它多一条、并触发 `... and K more)` 截断，
+            # 两边连逗号数量都不同 —— 逐项删不收敛（实测：删 Decl 会让相同数从 977 掉回 83），
+            # 只有整段换成固定标记才稳定（相同数 977 → 1711）。
+            $s = $s -replace ', Decl\(.*$', ', <声明列表>'
             return $s
         }
         $refLines = @(Get-Content $refPath -Encoding UTF8 | ForEach-Object { Normalize-Line $_ })
         $locLines = @(Get-Content $f.FullName -Encoding UTF8 | ForEach-Object { Normalize-Line $_ })
         $d = @(Compare-Object $refLines $locLines -CaseSensitive)
+        if ($d.Count -gt 0) {
+            # 文件级归因：差异里只要出现【汉字】或我们的块名 lib.zhts.*，就归因于汉语增补
+            # （增补会让符号列表/类型文本里出现汉语成员或块文件，这类差异的【本行】往往是英文）。
+            $attributed = @($d | Where-Object { $_.InputObject -match '[\u4e00-\u9fff]' -or $_.InputObject -match 'lib\.zhts\.' })
+            if ($attributed.Count -gt 0) { $d = @() }
+        }
         if ($d.Count -eq 0) { $same++; continue }
         $diffFiles += $rel
         # 允许的差异只有两类：
