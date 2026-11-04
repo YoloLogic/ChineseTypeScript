@@ -259,8 +259,10 @@ Check '⑮b 自动加载：窄 lib 集合（--lib es2020，不带 dom）下我�
 #    于是用户写 `常量 对象 = {...}` 后引用 `对象` 会被改成 Object → 运行时 TypeError。
 #    教程例子 02-变量与类型.ts 就是这么坏的（judge_tutorial 抓到）。这条判据把它钉死。
 Set-Content -Path (Join-Path $Work '变量屏蔽.ts') -Encoding utf8 -Value (@(
-    '常量 对象 = { 名字: "甲" };',
-    'console.log(对象.名字);'
+    # 必须用【真正的全局别名】才有效：globals 是 数组/数学/控制台/承诺/映射表/集合/日期/正则/错误。
+    # 我第一版用的是「对象」—— 它根本不是全局别名，所以撤掉修复也不会变红（判据自己没被证明能失败）。
+    '常量 数学 = { 名字: "甲" };',
+    'console.log(数学.名字);'
 ) -join [char]10)
 $out6 = Join-Path $Work 'out6'
 if (Test-Path $out6) { Remove-Item $out6 -Recurse -Force }
@@ -268,10 +270,10 @@ $d3 = @(& $Tsc (Join-Path $Work '变量屏蔽.ts') --outDir $out6 --target es202
 $js6 = Join-Path $out6 '变量屏蔽.js'
 $js6Text = if (Test-Path $js6) { [System.IO.File]::ReadAllText($js6) } else { '' }
 $ran = if (Test-Path $js6) { @(& node $js6 2>&1) } else { @() }
-$keptVar = $js6Text -match 'const 对象'
-$notObject = -not ($js6Text -match 'Object\.名字')
+$keptVar = $js6Text -match 'const 数学'
+$notObject = -not ($js6Text -match 'Math\.名字')
 $ranOk = (@($ran).Count -eq 1) -and ($ran[0] -eq '甲')
-Check '⑯ 用户变量名撞全局别名时不被改写（产物保留 对象，不是 Object）' (($LASTEXITCODE -eq 0) -and $keptVar -and $notObject -and $ranOk) ('exit=' + $LASTEXITCODE + ' 保留对象=' + $keptVar + ' 未改成Object=' + $notObject + ' 真跑=' + ($ran -join ','))
+Check '⑯ 用户变量名撞全局别名时不被改写（产物保留 数学，不是 Math）' (($LASTEXITCODE -eq 0) -and $keptVar -and $notObject -and $ranOk) ('exit=' + $LASTEXITCODE + ' 保留数学=' + $keptVar + ' 未改成Math=' + $notObject + ' 真跑=' + ($ran -join ','))
 Write-Host '=== 判定汇总 ==='
 $results | ForEach-Object { '  [' + $_.结果 + '] ' + $_.判定 + ' —— ' + $_.说明 }
 $fail = @($results | Where-Object { $_.结果 -ne '通过' }).Count
