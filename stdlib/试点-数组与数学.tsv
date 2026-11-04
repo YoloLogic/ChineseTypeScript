@@ -1821,6 +1821,8 @@ member	contentType	内容类型
 member	location	地点
 member	fullscreenElement	全屏元素
 member	fullscreenEnabled	全屏可用
+member	clientTop	客户区上边
+member	clientLeft	客户区左边
 member	video	视频
 member	charAt	取字符
 member	charCodeAt	取字符码

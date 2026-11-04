@@ -1833,6 +1833,8 @@ var zhStdlibMembers = map[string]string{
 	"地点":     "location",
 	"全屏元素":   "fullscreenElement",
 	"全屏可用":   "fullscreenEnabled",
+	"客户区上边":  "clientTop",
+	"客户区左边":  "clientLeft",
 	"视频":     "video",
 	"取字符":    "charAt",
 	"取字符码":   "charCodeAt",

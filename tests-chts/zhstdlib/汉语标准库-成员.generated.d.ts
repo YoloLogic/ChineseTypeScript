@@ -3415,6 +3415,8 @@ interface Element {
     set 类列表(value: string);
     类名: string;
     readonly 客户高: number;
+    readonly 客户区左边: number;
+    readonly 客户区上边: number;
     readonly 客户宽: number;
     编号: string;
     内部标记: string;
