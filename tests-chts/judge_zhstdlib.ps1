@@ -13,13 +13,15 @@
 # ============================================================================
 
 param(
-    [string] $Tsc  = 'E:\cts-build\chtsc.exe',
+    [string] $Tsc  = '',
     [string] $Src  = '',   # 夹具源（仓库内，已跟踪：汉语标准库.d.ts / 主.ts）
     [string] $Work = '',   # 判定工作目录（默认在仓库【外】，避免生成物混进仓库）
     [switch] $NoBuild
 )
 
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'common.ps1')
+if (-not $Tsc) { $Tsc = Resolve-ChtscPath '' }
 $repo = Split-Path -Parent $PSScriptRoot
 if (-not $Src)  { $Src  = Join-Path $repo 'tests-chts\zhstdlib' }
 if (-not $Work) { $Work = Join-Path $env:TEMP 'zhstdlib-judge' }
