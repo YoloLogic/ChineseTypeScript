@@ -1,4 +1,4 @@
-﻿# ============================================================================
+# ============================================================================
 #  judge_kwscope.ps1 -- 端到端判定：汉语关键字【在普通 .ts 里全局生效】。
 #
 #  背景（2026-10-08 用户裁定）：本项目的用法就是【用普通 .ts 写汉语关键字】，
@@ -16,12 +16,16 @@
 # ============================================================================
 
 param(
-    [string] $Tsc  = 'E:\cts-build\chtsc.exe',
-    [string] $Work = 'E:\cts-build\kwscope-judge',
+    [string] $Tsc  = '',   # 留空则按 common.ps1 解析（CI 友好）
+    [string] $Work = '',   # 同上
     [switch] $NoBuild
 )
 
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'common.ps1')
+if (-not $Tsc)  { $Tsc  = Resolve-ChtscPath '' }
+if (-not $Work) { $Work = Resolve-JudgeWork '' 'kwscope-judge' }
+Set-GoEnvironment
 $repo = Split-Path -Parent $PSScriptRoot
 
 $results = New-Object System.Collections.Generic.List[object]

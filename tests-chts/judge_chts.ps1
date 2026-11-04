@@ -20,12 +20,17 @@
 # 用法：pwsh -File tests-chts\judge_chts.ps1
 
 param(
-    [string]$GoExe = 'E:\Go\bin\go.exe',
-    [string]$Work = 'E:\cts-build',
-    [string]$Base = 'E:\cts-base'
+    [string]$GoExe = '',   # 留空则按 common.ps1 解析（CI 友好）
+    [string]$Work = '',
+    [string]$Base = ''
 )
 
 $ErrorActionPreference = 'Stop'
+. (Join-Path $PSScriptRoot 'common.ps1')
+if (-not $GoExe) { $GoExe = Resolve-GoPath '' }
+if (-not $Work)  { $Work  = Resolve-JudgeWork '' 'chts-build' }
+if (-not $Base)  { $Base  = (Join-Path (Split-Path -Parent $PSScriptRoot) '..\cts-base') }
+Set-GoEnvironment
 $repo = Split-Path -Parent $PSScriptRoot
 . (Join-Path $PSScriptRoot 'zhcheck.ps1')
 $tscDir = Join-Path $repo 'tsc'
