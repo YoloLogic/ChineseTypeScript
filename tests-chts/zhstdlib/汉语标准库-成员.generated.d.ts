@@ -1647,7 +1647,7 @@ interface RequestInit {
     头集合?: HeadersInit;
     完整性?: string;
     保持活动?: boolean;
-    提交方法?: string;
+    方法?: string;
     模式?: RequestMode;
     优先级?: RequestPriority;
     重定向?: RequestRedirect;
@@ -4227,7 +4227,7 @@ interface HTMLFormElement {
     编码方式: string;
     编码类型: string;
     readonly 长度: number;
-    提交方法: string;
+    方法: string;
     名称: string;
     不校验: boolean;
     关系: string;
@@ -6470,7 +6470,7 @@ interface Request {
     readonly 头集合: Headers;
     readonly 完整性: string;
     readonly 保持活动: boolean;
-    readonly 提交方法: string;
+    readonly 方法: string;
     readonly 模式: RequestMode;
     readonly 重定向: RequestRedirect;
     readonly 来源页: string;
@@ -7223,7 +7223,7 @@ interface SVGTextElement {
 }
 
 interface SVGTextPathElement {
-    readonly 提交方法: SVGAnimatedEnumeration;
+    readonly 方法: SVGAnimatedEnumeration;
     readonly 间距: SVGAnimatedEnumeration;
     readonly 起始偏移: SVGAnimatedLength;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGTextPathElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;

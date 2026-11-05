@@ -973,7 +973,7 @@ var zhStdlibMembers = map[string]string{
 	"主机":     "host",
 	"主机名":    "hostname",
 	"路径名":    "pathname",
-	"提交方法":   "method",
+	"方法":     "method",
 	"动作":     "action",
 	"编码方式":   "encoding",
 	"不校验":    "noValidate",

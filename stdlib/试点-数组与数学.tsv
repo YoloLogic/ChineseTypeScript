@@ -961,7 +961,7 @@ member	password	密码
 member	host	主机
 member	hostname	主机名
 member	pathname	路径名
-member	method	提交方法
+member	method	方法
 member	action	动作
 member	encoding	编码方式
 member	noValidate	不校验
