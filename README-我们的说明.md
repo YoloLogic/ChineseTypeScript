@@ -215,7 +215,7 @@
   需要连汉语一起认的地方显式调用 `StringToTokenIncludingChinese`。
 * 判定：`judge_langservice.ps1` **9/9**；`ls` 6 条 + `parser` 4 条 + `scanner` 5 条 Go 守卫
   （JS-only 过滤对汉语同样生效、补全确定、缓存不串扰）；
-  英文路径零回归照旧（`judge_oss` 1200/1200）；上游补全类测试多一类**有意**差异（见上）。
+  英文路径零回归照旧（`judge_oss` 全量 5894/5894）；上游补全类测试多一类**有意**差异（见上）。
 
 ## 六·七、`.d.chts` 声明文件（item②）——**已撤销**（2026-10-08 方向调整）
 
@@ -270,7 +270,7 @@
 * **判定**：`tests-chts/judge_kwscope.ps1` **6/6**（新六项：① 普通 `.ts` 认汉语关键字；
   ② 汉语保留字不能当标识符 → TS1389（代价自证）；③ `.tsx` 也认；④ `.mts`/`.cts` 也认；
   ⑤ `.d.ts` 也认；⑥ 负对照：正确英文 `.ts` 无诊断）。
-* **全量判定**：`judge_oss` 1200/1200 零回归；`judge_gotest` 4/4（baseline 差异 **0**；
+* **全量判定**：`judge_oss` 全量 5894/5894 零回归；`judge_gotest` 4/4（baseline 差异 **0**；
   多出的失败包只有 `internal/fourslash/tests`，属**有意**差异、已在允许清单内）。
 
 ## 七、判定证据（本轮实测）
@@ -283,7 +283,7 @@ judge_proj.ps1   15/15 通过
 judge_oss.ps1    真实语料 = 上游官方 conformance 目录里【全部】5894 个 .ts/.tsx（排除 .d.ts）
                  全量跑：【诊断输出 + 退出码】5894/5894 逐字节相同（一个不落）
                  另抽 300 个：产物【逐字节】300/300 相同
-                 （-Sample N 抽样、-Sample 0 全量；抽样 600 → 600/600 与 60/60，抽样 1200 → 1200/1200 与 100/100）
+                 （-Sample N 抽样、-Sample 0 全量；**本轮已跑全量：5894/5894 与 120/120**）
 judge_gotest.ps1  4/4 通过（上游自带 Go 测试全集，跑两遍：基线 vs 工作副本）
                  基线失败包 = astnav（缺 node_modules/typescript）、
                               fswatch（非管理员无建符号链接特权）—— 环境问题
@@ -430,11 +430,12 @@ run_all.ps1       八项：judge_chts / judge_proj / judge_oss / judge_tutorial 
 **证据**（`judge_oss`：真实 TypeScript 语料 vs 上游基线编译器，逐字节比对）：
 
 ```
-诊断对比抽样 : 1200 个，相同 1200，不同 0
+全量：5894 个文件（官方 conformance 目录里全部 .ts/.tsx，排除 .d.ts）
+诊断+退出码：相同 5894，不同 0
 其中「缺少 N 个属性」计数被规范化 : 0 个   ← 之前是 1 个，现在为 0
-产物对比抽样 : 100 个，相同 100，不同 0
+产物对比抽样 : 120 个，相同 120，不同 0
 结论：全部一致（英文路径零回归）
-（同一判定跑过 600 抽样：600/600 与 60/60；本轮加倍到 1200 仍 0 差异）
+（历史：600 抽样 600/600 与 60/60；1200 抽样 1200/1200 与 100/100；本轮直接跑【全量】5894，0 差异）
 ```
 
 **关键机制**（规格六·十三）：汉语标准库的 49 个增补块**只在源码含汉字时加载**
@@ -494,7 +495,7 @@ run_all.ps1       八项：judge_chts / judge_proj / judge_oss / judge_tutorial 
 本版更新（2026-10-08）：**方向撤销** —— 不再有 `.chts`/`.d.chts`，ChineseTypeScript 直接用普通 `.ts`，
 汉语关键字与编辑器补全**对所有 `.ts` 全局生效**（推广考虑）；9 个扩展名相关文件已逐字节还原为上游，
 上游源码改动收敛为 **7 个文件**。当前判定：**八项全绿** —— 五套核心（`judge_chts` 18/18、
-`judge_proj` 15/15、`judge_oss` 1200/1200 零回归、`judge_tutorial`、`judge_gotest` 4/4）
+`judge_proj` 15/15、`judge_oss` 全量 5894/5894 零回归、`judge_tutorial`、`judge_gotest` 4/4）
 + 三个特性（`judge_langservice` 9/9、`judge_zhdiag` 7/7、`judge_kwscope` 6/6）；
 `judge_dchts.ps1` 已删除，`run_all.ps1` 现为**八项**。
 更早：词表落盘、生成器与守卫就位；独立发行包 0.1 与打包判定；
