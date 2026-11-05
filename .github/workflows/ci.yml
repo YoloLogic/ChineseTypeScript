@@ -81,6 +81,9 @@ jobs:
             Write-Host "---> judge_$j 退出码=$code"
             Note ('- judge_' + $j + ' 退出码=' + $code)
             if ($code -ne 0) {
+              # workflow 命令 → check-run annotation：日志要等整个 run 结束才放出，
+              # annotation 用 gh api .../check-runs/{id}/annotations 随时能读。
+              Write-Host ("::error title=judge_" + $j + " 失败::judge_" + $j + " 退出码=" + $code)
               $failed += $j
               Note ('<details><summary>judge_' + $j + ' 输出（失败）</summary>' + "`n`n" + '```' + "`n" + $out + '```' + "`n</details>")
             }
@@ -90,6 +93,7 @@ jobs:
           Note ('- judge_licenses 退出码=' + $LASTEXITCODE)
           if ($LASTEXITCODE -ne 0) { $failed += 'licenses' }
           if ($failed.Count -gt 0) {
+            Write-Host ("::error title=失败判据::失败判据: " + ($failed -join ', '))
             Note ("`n**失败判据: " + ($failed -join ', ') + "**")
             Write-Host ("失败判据: " + ($failed -join ', '))
             exit 1
