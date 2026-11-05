@@ -131,7 +131,7 @@ member	lastChild	末子节点
 member	nextSibling	后兄弟
 member	previousSibling	前兄弟
 member	nodeName	节点名
-member	nodeType	节点种类
+member	nodeType	节点类型
 member	textContent	文本内容
 member	innerHTML	内部标记
 member	getElementsByTagName	按标签取元素
@@ -254,7 +254,7 @@ member	status	状态码
 member	statusText	状态文本
 member	headers	头集合
 member	url	地址
-member	type	种类
+member	type	类型
 member	blob	转二进制块
 member	name	名称
 member	index	序号
@@ -730,7 +730,7 @@ member	markerUnits	标记单位
 member	markerWidth	标记宽
 member	markerHeight	标记高
 member	orientAngle	朝向角
-member	orientType	朝向种类
+member	orientType	朝向类型
 member	setOrientToAngle	设朝向角
 member	gradientUnits	渐变单位
 member	gradientTransform	渐变变换
