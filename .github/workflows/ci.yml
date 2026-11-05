@@ -64,14 +64,25 @@ jobs:
         shell: pwsh
         env:
           CHTSC: ${{ runner.temp }}/chtsc
+        # 逐个跑并【汇总】结果：以前是顺序调用，某一条失败会被后面的成功掩盖
+        # （PowerShell 的 step 退出码只取最后一条命令），也会让失败原因不可见。
         run: |
-          ./tests-chts/judge_zhstdlib.ps1 -NoBuild
-          ./tests-chts/judge_kwscope.ps1 -NoBuild
-          ./tests-chts/judge_zhdiag.ps1 -NoBuild
-          ./tests-chts/judge_langservice.ps1 -NoBuild
-          ./tests-chts/judge_tutorial.ps1 -NoBuild
-          ./tests-chts/judge_proj.ps1 -NoBuild
-          ./tests-chts/judge_licenses.ps1
+          $judges = @('zhstdlib','kwscope','zhdiag','langservice','tutorial','proj')
+          $failed = @()
+          foreach ($j in $judges) {
+            Write-Host "===== judge_$j ====="
+            pwsh -NoProfile -File "./tests-chts/judge_$j.ps1" -NoBuild
+            $code = $LASTEXITCODE
+            Write-Host "---> judge_$j 退出码=$code"
+            if ($code -ne 0) { $failed += $j }
+          }
+          pwsh -NoProfile -File ./tests-chts/judge_licenses.ps1
+          if ($LASTEXITCODE -ne 0) { $failed += 'licenses' }
+          if ($failed.Count -gt 0) {
+            Write-Host ("失败判据: " + ($failed -join ', '))
+            exit 1
+          }
+          Write-Host '全部判据通过'
   release-build:
     if: ${{ github.repository == 'microsoft/TypeScript' && github.event_name != 'merge_group' }}
     runs-on: TypeScript-1ES-GitHub-TypeScript-1
