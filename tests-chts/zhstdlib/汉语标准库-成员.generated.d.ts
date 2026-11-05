@@ -63,6 +63,10 @@ interface AnimationEventInit {
     伪元素?: string;
 }
 
+interface AnimationPlaybackEventInit {
+    当前时刻?: CSSNumberish | null;
+}
+
 interface AssignedNodesOptions {
     展平化?: boolean;
 }
@@ -79,6 +83,7 @@ interface AudioBufferSourceOptions {
     循环?: boolean;
     循环终点?: number;
     循环起点?: number;
+    播放速率?: number;
 }
 
 interface AudioConfiguration {
@@ -94,6 +99,7 @@ interface AudioContextOptions {
 
 interface AudioDataCopyToOptions {
     格式化?: AudioSampleFormat;
+    总帧数?: number;
 }
 
 interface AudioDataInit {
@@ -466,6 +472,7 @@ interface EffectTiming {
     缓动?: string;
     填充?: FillMode;
     迭代次数?: number;
+    播放速率?: number;
 }
 
 interface ElementDefinitionOptions {
@@ -1013,6 +1020,7 @@ interface MediaMetadataInit {
 
 interface MediaPositionState {
     时长?: number;
+    播放速率?: number;
     位置?: number;
 }
 
@@ -1168,6 +1176,7 @@ interface OptionalEffectTiming {
     缓动?: string;
     填充?: FillMode;
     迭代次数?: number;
+    播放速率?: number;
 }
 
 interface OpusEncoderConfig {
@@ -2157,10 +2166,12 @@ interface Animatable {
 }
 
 interface Animation {
+    当前时刻: CSSNumberish | null;
     效果: AnimationEffect | null;
     readonly 已终结: Promise<Animation>;
     编号: string;
     readonly 待处理: boolean;
+    播放速率: number;
     readonly 就绪: Promise<Animation>;
     readonly 替换状态: AnimationReplaceState;
     起始时刻: CSSNumberish | null;
@@ -2194,7 +2205,12 @@ interface AnimationFrameProvider {
     请求动画帧(callback: FrameRequestCallback): number;
 }
 
+interface AnimationPlaybackEvent {
+    readonly 当前时刻: CSSNumberish | null;
+}
+
 interface AnimationTimeline {
+    readonly 当前时刻: CSSNumberish | null;
     readonly 时长: CSSNumberish | null;
 }
 
@@ -2226,6 +2242,7 @@ interface AudioBufferSourceNode {
     循环: boolean;
     循环终点: number;
     循环起点: number;
+    readonly 播放速率: AudioParam;
     开始(when?: number, offset?: number, duration?: number): void;
     加事件监听<K extends keyof AudioScheduledSourceNodeEventMap>(type: K, listener: (this: AudioBufferSourceNode, ev: AudioScheduledSourceNodeEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -2345,6 +2362,7 @@ interface BarProp {
 
 interface BaseAudioContext {
     readonly 音频工作线程: AudioWorklet;
+    readonly 当前时刻: number;
     readonly 输出端: AudioDestinationNode;
     readonly 监听器: AudioListener;
     readonly 采样率: number;
@@ -4483,6 +4501,7 @@ interface HTMLMediaElement {
     控件: boolean;
     跨源: string | null;
     readonly 当前源: string;
+    当前时刻: number;
     默认速率: number;
     readonly 时长: number;
     readonly 已结束: boolean;
@@ -4491,8 +4510,10 @@ interface HTMLMediaElement {
     已静音: boolean;
     readonly 网络状态: number;
     readonly 已暂停: boolean;
+    播放速率: number;
     readonly 已播放区间: TimeRanges;
     预加载: "none" | "metadata" | "auto" | "";
+    保持音高: boolean;
     readonly 就绪态: number;
     readonly 远端: RemotePlayback;
     readonly 可定位: TimeRanges;
@@ -5170,6 +5191,7 @@ interface ImageDecoder {
 
 interface ImageTrack {
     readonly 可动画: boolean;
+    readonly 总帧数: number;
     已选中: boolean;
 }
 
@@ -7303,6 +7325,7 @@ interface ScreenOrientation {
 }
 
 interface ScriptProcessorNode {
+    readonly 缓冲大小: number;
     加事件监听<K extends keyof ScriptProcessorNodeEventMap>(type: K, listener: (this: ScriptProcessorNode, ev: ScriptProcessorNodeEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
     去事件监听<K extends keyof ScriptProcessorNodeEventMap>(type: K, listener: (this: ScriptProcessorNode, ev: ScriptProcessorNodeEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
