@@ -22,7 +22,7 @@ and limitations under the License.
 interface PromiseWithResolvers<T> {
     承诺对象: Promise<T>;
     解决: (value: T | PromiseLike<T>) => void;
-    解析路径: (value: T | PromiseLike<T>) => void;
+    兑现: (value: T | PromiseLike<T>) => void;
     拒绝: (reason?: any) => void;
 }
 

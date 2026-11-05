@@ -25,10 +25,10 @@ interface PromiseConstructor {
     竞速<T extends readonly unknown[] | []>(values: T): Promise<Awaited<T[number]>>;
     拒绝<T = never>(reason?: any): Promise<T>;
     解决(): Promise<void>;
-    解析路径(): Promise<void>;
+    兑现(): Promise<void>;
     解决<T>(value: T): Promise<Awaited<T>>;
-    解析路径<T>(value: T): Promise<Awaited<T>>;
+    兑现<T>(value: T): Promise<Awaited<T>>;
     解决<T>(value: T | PromiseLike<T>): Promise<Awaited<T>>;
-    解析路径<T>(value: T | PromiseLike<T>): Promise<Awaited<T>>;
+    兑现<T>(value: T | PromiseLike<T>): Promise<Awaited<T>>;
 }
 

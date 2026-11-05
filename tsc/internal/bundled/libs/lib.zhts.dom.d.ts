@@ -813,7 +813,7 @@ interface HashChangeEventInit {
 
 interface HkdfParams {
     散列: HashAlgorithmIdentifier;
-    附加信息: BufferSource;
+    信息: BufferSource;
     盐值: BufferSource;
 }
 
@@ -1122,7 +1122,7 @@ interface NavigateEventInit {
     下载请求?: string | null;
     表单数据?: FormData | null;
     哈希变化?: boolean;
-    附加信息?: any;
+    信息?: any;
     信号: AbortSignal;
     用户发起?: boolean;
 }
@@ -1138,7 +1138,7 @@ interface NavigationNavigateOptions {
 }
 
 interface NavigationOptions {
-    附加信息?: any;
+    信息?: any;
 }
 
 interface NavigationPreloadState {
@@ -1162,7 +1162,7 @@ interface NotificationOptions {
     徽标?: string;
     主体?: string;
     数据?: any;
-    书写方向?: NotificationDirection;
+    展开对象?: NotificationDirection;
     图标?: string;
     语言?: string;
     需交互?: boolean;
@@ -3263,7 +3263,7 @@ interface Document {
     会话数据: string;
     readonly 默认视图: (WindowProxy & typeof globalThis) | null;
     设计模式: string;
-    书写方向: string;
+    展开对象: string;
     readonly 文档类型: DocumentType | null;
     readonly 文档元素: HTMLElement;
     网域: string;
@@ -3641,7 +3641,7 @@ interface FileSystemDirectoryHandle {
     取文件句柄(name: string, options?: FileSystemGetFileOptions): Promise<FileSystemFileHandle>;
     删记录(name: string, options?: FileSystemRemoveOptions): Promise<void>;
     解决(possibleDescendant: FileSystemHandle): Promise<string[] | null>;
-    解析路径(possibleDescendant: FileSystemHandle): Promise<string[] | null>;
+    兑现(possibleDescendant: FileSystemHandle): Promise<string[] | null>;
 }
 
 interface FileSystemEntry {
@@ -3728,7 +3728,7 @@ interface FormDataEvent {
 
 interface GPUAdapter {
     readonly 特性集: GPUSupportedFeatures;
-    readonly 附加信息: GPUAdapterInfo;
+    readonly 信息: GPUAdapterInfo;
     readonly 限制集: GPUSupportedLimits;
 }
 
@@ -4156,7 +4156,7 @@ interface HTMLElement {
     readonly 访问键标签: string;
     自动大写: string;
     自动更正: boolean;
-    书写方向: string;
+    展开对象: string;
     可拖动: boolean;
     隐藏: boolean | "until-found";
     惰性: boolean;
@@ -5211,7 +5211,7 @@ interface ImageTrackList {
 interface ImportMeta {
     地址: string;
     解决(specifier: string): string;
-    解析路径(specifier: string): string;
+    兑现(specifier: string): string;
 }
 
 interface InputDeviceInfo {
@@ -5647,7 +5647,7 @@ interface NavigateEvent {
     readonly 下载请求: string | null;
     readonly 表单数据: FormData | null;
     readonly 哈希变化: boolean;
-    readonly 附加信息: any;
+    readonly 信息: any;
     readonly 信号: AbortSignal;
     readonly 用户发起: boolean;
     拦截(options?: NavigationInterceptOptions): void;
@@ -5829,7 +5829,7 @@ interface NonElementParentNode {
 interface Notification {
     readonly 主体: string;
     readonly 数据: any;
-    readonly 书写方向: NotificationDirection;
+    readonly 展开对象: NotificationDirection;
     readonly 图标: string;
     readonly 语言: string;
     点击时: ((this: Notification, ev: Event) => any) | null;
@@ -8362,10 +8362,10 @@ interface Console {
     清空(): void;
     计数(label?: string): void;
     调试(...data: any[]): void;
-    书写方向(item?: any, options?: any): void;
+    展开对象(item?: any, options?: any): void;
     报错(...data: any[]): void;
     分组(...data: any[]): void;
-    附加信息(...data: any[]): void;
+    信息(...data: any[]): void;
     对数(...data: any[]): void;
     日志(...data: any[]): void;
     表格(tabularData?: any, properties?: string[]): void;

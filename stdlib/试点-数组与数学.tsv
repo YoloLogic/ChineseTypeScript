@@ -441,7 +441,7 @@ member	tabIndex	制表序号
 member	contentEditable	可编辑
 member	spellcheck	拼写检查
 member	lang	语言
-member	dir	书写方向
+member	dir	展开对象
 member	accessKey	访问键
 member	slot	插槽
 member	attributes	属性集
@@ -1099,7 +1099,7 @@ member	createWritable	创建可写流
 member	getDirectoryHandle	取目录句柄
 member	getFileHandle	取文件句柄
 member	removeEntry	删记录
-member	resolve	解析路径
+member	resolve	兑现
 member	seek	定位
 member	truncate	截短
 member	setActionHandler	设动作处理
@@ -1292,7 +1292,7 @@ member	canGoBack	可后退
 member	canIntercept	可拦截
 member	downloadRequest	下载请求
 member	hashChange	哈希变化
-member	info	附加信息
+member	info	信息
 member	intercept	拦截
 member	userInitiated	用户发起
 member	navigate	导航到
