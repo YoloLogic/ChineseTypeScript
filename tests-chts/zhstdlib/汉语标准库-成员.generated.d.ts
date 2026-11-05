@@ -3433,7 +3433,7 @@ interface Element {
     get 类列表(): DOMTokenList;
     set 类列表(value: string);
     类名: string;
-    readonly 客户高: number;
+    readonly 客户区高度: number;
     readonly 客户区左边: number;
     readonly 客户区上边: number;
     readonly 客户宽: number;
@@ -3445,10 +3445,10 @@ interface Element {
     get 部件(): DOMTokenList;
     set 部件(value: string);
     readonly 前缀: string | null;
-    readonly 滚动高: number;
+    readonly 滚动高度: number;
     滚动左: number;
     滚动顶: number;
-    readonly 滚动宽: number;
+    readonly 滚动宽度: number;
     readonly 影子根: ShadowRoot | null;
     插槽: string;
     readonly 标签名: string;
