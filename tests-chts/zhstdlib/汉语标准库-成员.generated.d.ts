@@ -9274,7 +9274,7 @@ interface ArrayBuffer {
     调整大小(newByteLength?: number): void;
     get 已分离(): boolean;
     转移(newByteLength?: number): ArrayBuffer;
-    转移定长(newByteLength?: number): ArrayBuffer;
+    转为定长(newByteLength?: number): ArrayBuffer;
 }
 
 interface PromiseWithResolvers<T> {

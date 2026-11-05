@@ -518,7 +518,7 @@ var zhStdlibMembers = map[string]string{
 	"可调整":    "resizable",
 	"最大字节长度": "maxByteLength",
 	"已分离":    "detached",
-	"转移定长":   "transferToFixedLength",
+	"转为定长":   "transferToFixedLength",
 	"可增长":    "growable",
 	"登记":     "register",
 	"注销":     "unregister",
