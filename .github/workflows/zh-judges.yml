@@ -11,8 +11,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  content
-s: read
+  contents: read
 
 jobs:
   zh-judges:
