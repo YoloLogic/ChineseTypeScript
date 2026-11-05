@@ -26,7 +26,8 @@ Set-GoEnvironment
 $repo = Split-Path -Parent $PSScriptRoot
 . (Join-Path $PSScriptRoot 'zhcheck.ps1')
 $tscDir = Join-Path $repo 'tsc'
-$chtsTsc = Join-Path $Work 'chtsc.exe'
+# 不要写死 chtsc.exe：Linux/macOS 上没有 .exe 后缀（CI 就是这样红过一次）。
+$chtsTsc = if ($Tsc -and (Test-Path $Tsc)) { $Tsc } elseif (Test-Path (Join-Path $Work (Get-ExeName 'chtsc'))) { Join-Path $Work (Get-ExeName 'chtsc') } else { Join-Path $Work 'chtsc' }
 if (-not (Test-Path $chtsTsc)) { throw "找不到本编译器 $chtsTsc，请先跑 judge_chts.ps1" }
 $nodeExe = (Get-Command node -ErrorAction SilentlyContinue).Source
 if (-not $nodeExe) { throw '找不到 node' }

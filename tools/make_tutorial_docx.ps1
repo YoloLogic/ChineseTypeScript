@@ -15,7 +15,7 @@
 # 所以同样的 md 一定生成逐字节相同的 docx —— 直接比哈希就够了。
 
 param(
-    [string]$Pandoc = 'E:\anaconda3\Library\bin\pandoc.exe',
+    [string]$Pandoc = '',
     [switch]$Check
 )
 
@@ -25,7 +25,12 @@ $md = Join-Path $root '教程\ChineseTypeScript-教学教程.md'
 $out = Join-Path $root '教程\ChineseTypeScript-教学教程.docx'
 
 if (-not (Test-Path $md)) { throw "找不到教程正文：$md（先跑 tools\make_tutorial_chts.ps1）" }
-if (-not (Test-Path $Pandoc)) { throw "找不到 pandoc：$Pandoc" }
+# pandoc 的找法：-Pandoc 参数 → PANDOC 环境变量 → PATH → 已知安装位置。
+# 找不到**不是**错误（CI 上可能没装），由调用方决定跳过还是失败。
+if (-not $Pandoc) { $Pandoc = $env:PANDOC }
+if (-not $Pandoc) { $c = Get-Command pandoc -ErrorAction SilentlyContinue; if ($c) { $Pandoc = $c.Source } }
+if (-not $Pandoc) { foreach ($c in @('E:\anaconda3\Library\bin\pandoc.exe', '/usr/bin/pandoc', '/usr/local/bin/pandoc')) { if (Test-Path $c) { $Pandoc = $c; break } } }
+if (-not $Pandoc -or -not (Test-Path $Pandoc)) { Write-Host '（提示）没有 pandoc，跳过 docx 生成'; return }
 Add-Type -AssemblyName System.IO.Compression.FileSystem
 
 # 把 pandoc 的输出重写成【确定性】docx：固定时间戳 + 固定 zip 条目时间

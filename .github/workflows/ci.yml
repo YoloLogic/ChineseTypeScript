@@ -51,6 +51,10 @@ jobs:
         with:
           node-version: 'lts/*'
       - uses: ./.github/actions/setup-go
+      - name: 装 pandoc（仅 ubuntu，教程 docx 校验要用）
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq pandoc
       - name: 构建 chtsc
         shell: bash
         run: |

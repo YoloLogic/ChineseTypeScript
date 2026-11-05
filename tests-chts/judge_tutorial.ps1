@@ -141,6 +141,10 @@ $docxGen = Join-Path $repo 'tools\make_tutorial_docx.ps1'
 if (-not (Test-Path $docxGen)) {
     Write-Host '  ❌ 找不到 tools\make_tutorial_docx.ps1' -ForegroundColor Red
     $bad++
+} elseif (-not (Get-Command pandoc -ErrorAction SilentlyContinue) -and -not $env:PANDOC -and -not (Test-Path 'E:\anaconda3\Library\bin\pandoc.exe') -and -not (Test-Path '/usr/bin/pandoc')) {
+    # 没有 pandoc 就没法【重新生成】docx 来比对；这里**明确跳过并说明**，不假装通过、也不算失败。
+    # （CI 的 ubuntu 任务会装 pandoc，所以那边真的会跑这一项。）
+    Say '  ⏭ 跳过：本机没有 pandoc，无法校验 docx 与正文同步'
 } else {
     & pwsh -NoProfile -File $docxGen -Check
     if ($LASTEXITCODE -ne 0) {
