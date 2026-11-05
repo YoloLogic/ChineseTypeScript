@@ -440,9 +440,9 @@ interface DisplayMediaStreamOptions {
 
 interface DoubleRange {
     最大?: number;
-    最大限制?: number;
+    取最大?: number;
     最小?: number;
-    最小限制?: number;
+    取最小?: number;
 }
 
 interface DragEventInit {
@@ -1039,9 +1039,9 @@ interface MediaSessionActionDetails {
 
 interface MediaSettingsRange {
     最大?: number;
-    最大限制?: number;
+    取最大?: number;
     最小?: number;
-    最小限制?: number;
+    取最小?: number;
     步长?: number;
 }
 
@@ -1594,7 +1594,7 @@ interface RTCTrackEventInit {
 
 interface ReadableStreamBYOBReaderReadOptions {
     最小?: number;
-    最小限制?: number;
+    取最小?: number;
 }
 
 interface ReadableStreamGetReaderOptions {
@@ -1901,9 +1901,9 @@ interface UIEventInit {
 
 interface ULongRange {
     最大?: number;
-    最大限制?: number;
+    取最大?: number;
     最小?: number;
-    最小限制?: number;
+    取最小?: number;
 }
 
 interface URLPatternComponentResult {
@@ -2568,9 +2568,9 @@ interface CSSNumericValue {
     除以(...values: CSSNumberish[]): CSSNumericValue;
     等于(...value: CSSNumberish[]): boolean;
     最大(...values: CSSNumberish[]): CSSNumericValue;
-    最大限制(...values: CSSNumberish[]): CSSNumericValue;
+    取最大(...values: CSSNumberish[]): CSSNumericValue;
     最小(...values: CSSNumberish[]): CSSNumericValue;
-    最小限制(...values: CSSNumberish[]): CSSNumericValue;
+    取最小(...values: CSSNumberish[]): CSSNumericValue;
     乘以(...values: CSSNumberish[]): CSSNumericValue;
     相减(...values: CSSNumberish[]): CSSNumericValue;
     转换为(unit: string): CSSUnitValue;
@@ -2681,7 +2681,7 @@ interface CSSStyleProperties {
     显示方式: string;
     填充: string;
     过滤: string;
-    滤镜: string;
+    筛选: string;
     弹性: string;
     浮点: string;
     字体: string;
@@ -2844,7 +2844,7 @@ interface CanvasFillStrokeStyles {
 
 interface CanvasFilters {
     过滤: string;
-    滤镜: string;
+    筛选: string;
 }
 
 interface CanvasGradient {
@@ -4380,10 +4380,10 @@ interface HTMLInputElement {
     readonly 标签列: NodeListOf<HTMLLabelElement> | null;
     readonly 候选列表: HTMLDataListElement | null;
     最大: string;
-    最大限制: string;
+    取最大: string;
     最大长度: number;
     最小: string;
-    最小限制: string;
+    取最小: string;
     最小长度: number;
     多选: boolean;
     名称: string;
@@ -4557,9 +4557,9 @@ interface HTMLMeterElement {
     readonly 标签列: NodeListOf<HTMLLabelElement>;
     低值: number;
     最大: number;
-    最大限制: number;
+    取最大: number;
     最小: number;
-    最小限制: number;
+    取最小: number;
     最佳值: number;
     值内容: number;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLMeterElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4707,7 +4707,7 @@ interface HTMLPreElement {
 interface HTMLProgressElement {
     readonly 标签列: NodeListOf<HTMLLabelElement>;
     最大: number;
-    最大限制: number;
+    取最大: number;
     readonly 位置: number;
     值内容: number;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLProgressElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5790,7 +5790,7 @@ interface Node {
 
 interface NodeIterator {
     readonly 过滤: NodeFilter | null;
-    readonly 滤镜: NodeFilter | null;
+    readonly 筛选: NodeFilter | null;
     readonly 参考节点之前: boolean;
     readonly 参考节点: Node;
     readonly 根元素: Node;
@@ -7777,7 +7777,7 @@ interface TransitionEvent {
 interface TreeWalker {
     当前节点: Node;
     readonly 过滤: NodeFilter | null;
-    readonly 滤镜: NodeFilter | null;
+    readonly 筛选: NodeFilter | null;
     readonly 根元素: Node;
     readonly 显示过滤: number;
     首子节点(): Node | null;
@@ -8994,7 +8994,7 @@ interface BigInt64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> 
     全部满足(predicate: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => boolean, thisArg?: any): boolean;
     填充(value: bigint, start?: number, end?: number): this;
     过滤(predicate: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => any, thisArg?: any): BigInt64Array<ArrayBuffer>;
-    滤镜(predicate: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => any, thisArg?: any): BigInt64Array<ArrayBuffer>;
+    筛选(predicate: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => any, thisArg?: any): BigInt64Array<ArrayBuffer>;
     找出(predicate: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => boolean, thisArg?: any): bigint | undefined;
     找出序号(predicate: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => boolean, thisArg?: any): number;
     逐个处理(callbackfn: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => void, thisArg?: any): void;
@@ -9036,7 +9036,7 @@ interface BigUint64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike>
     全部满足(predicate: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => boolean, thisArg?: any): boolean;
     填充(value: bigint, start?: number, end?: number): this;
     过滤(predicate: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => any, thisArg?: any): BigUint64Array<ArrayBuffer>;
-    滤镜(predicate: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => any, thisArg?: any): BigUint64Array<ArrayBuffer>;
+    筛选(predicate: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => any, thisArg?: any): BigUint64Array<ArrayBuffer>;
     找出(predicate: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => boolean, thisArg?: any): bigint | undefined;
     找出序号(predicate: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => boolean, thisArg?: any): number;
     逐个处理(callbackfn: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => void, thisArg?: any): void;
@@ -9326,7 +9326,7 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
     全部满足(predicate: (value: number, index: number, array: this) => unknown, thisArg?: any): boolean;
     填充(value: number, start?: number, end?: number): this;
     过滤(predicate: (value: number, index: number, array: this) => any, thisArg?: any): Float16Array<ArrayBuffer>;
-    滤镜(predicate: (value: number, index: number, array: this) => any, thisArg?: any): Float16Array<ArrayBuffer>;
+    筛选(predicate: (value: number, index: number, array: this) => any, thisArg?: any): Float16Array<ArrayBuffer>;
     找出(predicate: (value: number, index: number, obj: this) => boolean, thisArg?: any): number | undefined;
     找出序号(predicate: (value: number, index: number, obj: this) => boolean, thisArg?: any): number;
     逐个处理(callbackfn: (value: number, index: number, array: this) => void, thisArg?: any): void;
@@ -9508,9 +9508,9 @@ interface Math {
     对数(x: number): number;
     日志(x: number): number;
     最大(...values: number[]): number;
-    最大限制(...values: number[]): number;
+    取最大(...values: number[]): number;
     最小(...values: number[]): number;
-    最小限制(...values: number[]): number;
+    取最小(...values: number[]): number;
     乘方(x: number, y: number): number;
     随机(): number;
     四舍五入(x: number): number;
@@ -9632,9 +9632,9 @@ interface ReadonlyArray<T> {
     逐个处理(callbackfn: (value: T, index: number, array: readonly T[]) => void, thisArg?: any): void;
     映射<U>(callbackfn: (value: T, index: number, array: readonly T[]) => U, thisArg?: any): U[];
     过滤<S extends T>(predicate: (value: T, index: number, array: readonly T[]) => value is S, thisArg?: any): S[];
-    滤镜<S extends T>(predicate: (value: T, index: number, array: readonly T[]) => value is S, thisArg?: any): S[];
+    筛选<S extends T>(predicate: (value: T, index: number, array: readonly T[]) => value is S, thisArg?: any): S[];
     过滤(predicate: (value: T, index: number, array: readonly T[]) => unknown, thisArg?: any): T[];
-    滤镜(predicate: (value: T, index: number, array: readonly T[]) => unknown, thisArg?: any): T[];
+    筛选(predicate: (value: T, index: number, array: readonly T[]) => unknown, thisArg?: any): T[];
     归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: readonly T[]) => T): T;
     归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: readonly T[]) => T, initialValue: T): T;
     归纳<U>(callbackfn: (previousValue: U, currentValue: T, currentIndex: number, array: readonly T[]) => U, initialValue: U): U;
@@ -9673,9 +9673,9 @@ interface Array<T> {
     逐个处理(callbackfn: (value: T, index: number, array: T[]) => void, thisArg?: any): void;
     映射<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any): U[];
     过滤<S extends T>(predicate: (value: T, index: number, array: T[]) => value is S, thisArg?: any): S[];
-    滤镜<S extends T>(predicate: (value: T, index: number, array: T[]) => value is S, thisArg?: any): S[];
+    筛选<S extends T>(predicate: (value: T, index: number, array: T[]) => value is S, thisArg?: any): S[];
     过滤(predicate: (value: T, index: number, array: T[]) => unknown, thisArg?: any): T[];
-    滤镜(predicate: (value: T, index: number, array: T[]) => unknown, thisArg?: any): T[];
+    筛选(predicate: (value: T, index: number, array: T[]) => unknown, thisArg?: any): T[];
     归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T): T;
     归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T, initialValue: T): T;
     归纳<U>(callbackfn: (previousValue: U, currentValue: T, currentIndex: number, array: T[]) => U, initialValue: U): U;

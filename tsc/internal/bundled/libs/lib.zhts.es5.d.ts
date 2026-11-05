@@ -160,9 +160,9 @@ interface Math {
     对数(x: number): number;
     日志(x: number): number;
     最大(...values: number[]): number;
-    最大限制(...values: number[]): number;
+    取最大(...values: number[]): number;
     最小(...values: number[]): number;
-    最小限制(...values: number[]): number;
+    取最小(...values: number[]): number;
     乘方(x: number, y: number): number;
     随机(): number;
     四舍五入(x: number): number;
@@ -284,9 +284,9 @@ interface ReadonlyArray<T> {
     逐个处理(callbackfn: (value: T, index: number, array: readonly T[]) => void, thisArg?: any): void;
     映射<U>(callbackfn: (value: T, index: number, array: readonly T[]) => U, thisArg?: any): U[];
     过滤<S extends T>(predicate: (value: T, index: number, array: readonly T[]) => value is S, thisArg?: any): S[];
-    滤镜<S extends T>(predicate: (value: T, index: number, array: readonly T[]) => value is S, thisArg?: any): S[];
+    筛选<S extends T>(predicate: (value: T, index: number, array: readonly T[]) => value is S, thisArg?: any): S[];
     过滤(predicate: (value: T, index: number, array: readonly T[]) => unknown, thisArg?: any): T[];
-    滤镜(predicate: (value: T, index: number, array: readonly T[]) => unknown, thisArg?: any): T[];
+    筛选(predicate: (value: T, index: number, array: readonly T[]) => unknown, thisArg?: any): T[];
     归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: readonly T[]) => T): T;
     归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: readonly T[]) => T, initialValue: T): T;
     归纳<U>(callbackfn: (previousValue: U, currentValue: T, currentIndex: number, array: readonly T[]) => U, initialValue: U): U;
@@ -325,9 +325,9 @@ interface Array<T> {
     逐个处理(callbackfn: (value: T, index: number, array: T[]) => void, thisArg?: any): void;
     映射<U>(callbackfn: (value: T, index: number, array: T[]) => U, thisArg?: any): U[];
     过滤<S extends T>(predicate: (value: T, index: number, array: T[]) => value is S, thisArg?: any): S[];
-    滤镜<S extends T>(predicate: (value: T, index: number, array: T[]) => value is S, thisArg?: any): S[];
+    筛选<S extends T>(predicate: (value: T, index: number, array: T[]) => value is S, thisArg?: any): S[];
     过滤(predicate: (value: T, index: number, array: T[]) => unknown, thisArg?: any): T[];
-    滤镜(predicate: (value: T, index: number, array: T[]) => unknown, thisArg?: any): T[];
+    筛选(predicate: (value: T, index: number, array: T[]) => unknown, thisArg?: any): T[];
     归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T): T;
     归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T, initialValue: T): T;
     归纳<U>(callbackfn: (previousValue: U, currentValue: T, currentIndex: number, array: T[]) => U, initialValue: U): U;

@@ -29,7 +29,7 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
     全部满足(predicate: (value: number, index: number, array: this) => unknown, thisArg?: any): boolean;
     填充(value: number, start?: number, end?: number): this;
     过滤(predicate: (value: number, index: number, array: this) => any, thisArg?: any): Float16Array<ArrayBuffer>;
-    滤镜(predicate: (value: number, index: number, array: this) => any, thisArg?: any): Float16Array<ArrayBuffer>;
+    筛选(predicate: (value: number, index: number, array: this) => any, thisArg?: any): Float16Array<ArrayBuffer>;
     找出(predicate: (value: number, index: number, obj: this) => boolean, thisArg?: any): number | undefined;
     找出序号(predicate: (value: number, index: number, obj: this) => boolean, thisArg?: any): number;
     逐个处理(callbackfn: (value: number, index: number, array: this) => void, thisArg?: any): void;

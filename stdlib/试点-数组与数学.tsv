@@ -389,7 +389,7 @@ member	textBaseline	文本基线
 member	globalAlpha	全局透明
 member	lineWidth	线宽
 member	miterLimit	尖角限制
-member	filter	滤镜
+member	filter	筛选
 member	imageSmoothingEnabled	图像平滑
 member	imageSmoothingQuality	平滑质量
 member	lineCap	线端
@@ -411,8 +411,8 @@ member	autocomplete	自动完成
 member	autofocus	自动聚焦
 member	accept	接受类型
 member	files	文件列
-member	min	最小限制
-member	max	最大限制
+member	min	取最小
+member	max	取最大
 member	step	步长
 member	selectedIndex	选中序号
 member	options	选项列

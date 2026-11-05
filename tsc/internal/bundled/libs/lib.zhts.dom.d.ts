@@ -447,9 +447,9 @@ interface DisplayMediaStreamOptions {
 
 interface DoubleRange {
     最大?: number;
-    最大限制?: number;
+    取最大?: number;
     最小?: number;
-    最小限制?: number;
+    取最小?: number;
 }
 
 interface DragEventInit {
@@ -1046,9 +1046,9 @@ interface MediaSessionActionDetails {
 
 interface MediaSettingsRange {
     最大?: number;
-    最大限制?: number;
+    取最大?: number;
     最小?: number;
-    最小限制?: number;
+    取最小?: number;
     步长?: number;
 }
 
@@ -1601,7 +1601,7 @@ interface RTCTrackEventInit {
 
 interface ReadableStreamBYOBReaderReadOptions {
     最小?: number;
-    最小限制?: number;
+    取最小?: number;
 }
 
 interface ReadableStreamGetReaderOptions {
@@ -1908,9 +1908,9 @@ interface UIEventInit {
 
 interface ULongRange {
     最大?: number;
-    最大限制?: number;
+    取最大?: number;
     最小?: number;
-    最小限制?: number;
+    取最小?: number;
 }
 
 interface URLPatternComponentResult {
@@ -2575,9 +2575,9 @@ interface CSSNumericValue {
     除以(...values: CSSNumberish[]): CSSNumericValue;
     等于(...value: CSSNumberish[]): boolean;
     最大(...values: CSSNumberish[]): CSSNumericValue;
-    最大限制(...values: CSSNumberish[]): CSSNumericValue;
+    取最大(...values: CSSNumberish[]): CSSNumericValue;
     最小(...values: CSSNumberish[]): CSSNumericValue;
-    最小限制(...values: CSSNumberish[]): CSSNumericValue;
+    取最小(...values: CSSNumberish[]): CSSNumericValue;
     乘以(...values: CSSNumberish[]): CSSNumericValue;
     相减(...values: CSSNumberish[]): CSSNumericValue;
     转换为(unit: string): CSSUnitValue;
@@ -2688,7 +2688,7 @@ interface CSSStyleProperties {
     显示方式: string;
     填充: string;
     过滤: string;
-    滤镜: string;
+    筛选: string;
     弹性: string;
     浮点: string;
     字体: string;
@@ -2851,7 +2851,7 @@ interface CanvasFillStrokeStyles {
 
 interface CanvasFilters {
     过滤: string;
-    滤镜: string;
+    筛选: string;
 }
 
 interface CanvasGradient {
@@ -4387,10 +4387,10 @@ interface HTMLInputElement {
     readonly 标签列: NodeListOf<HTMLLabelElement> | null;
     readonly 候选列表: HTMLDataListElement | null;
     最大: string;
-    最大限制: string;
+    取最大: string;
     最大长度: number;
     最小: string;
-    最小限制: string;
+    取最小: string;
     最小长度: number;
     多选: boolean;
     名称: string;
@@ -4564,9 +4564,9 @@ interface HTMLMeterElement {
     readonly 标签列: NodeListOf<HTMLLabelElement>;
     低值: number;
     最大: number;
-    最大限制: number;
+    取最大: number;
     最小: number;
-    最小限制: number;
+    取最小: number;
     最佳值: number;
     值内容: number;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLMeterElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -4714,7 +4714,7 @@ interface HTMLPreElement {
 interface HTMLProgressElement {
     readonly 标签列: NodeListOf<HTMLLabelElement>;
     最大: number;
-    最大限制: number;
+    取最大: number;
     readonly 位置: number;
     值内容: number;
     加事件监听<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLProgressElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
@@ -5797,7 +5797,7 @@ interface Node {
 
 interface NodeIterator {
     readonly 过滤: NodeFilter | null;
-    readonly 滤镜: NodeFilter | null;
+    readonly 筛选: NodeFilter | null;
     readonly 参考节点之前: boolean;
     readonly 参考节点: Node;
     readonly 根元素: Node;
@@ -7784,7 +7784,7 @@ interface TransitionEvent {
 interface TreeWalker {
     当前节点: Node;
     readonly 过滤: NodeFilter | null;
-    readonly 滤镜: NodeFilter | null;
+    readonly 筛选: NodeFilter | null;
     readonly 根元素: Node;
     readonly 显示过滤: number;
     首子节点(): Node | null;
