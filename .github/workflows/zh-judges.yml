@@ -9,6 +9,11 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+    inputs:
+      judge:
+        description: '只跑某一个判据（留空=全部）'
+        required: false
+        default: ''
 
 permissions:
   contents: read
@@ -39,12 +44,14 @@ jobs:
         shell: pwsh
         env:
           CHTSC: ${{ runner.temp }}/chtsc
+          JUDGE: ${{ inputs.judge }}
         # 逐个跑并【汇总】结果：以前是顺序调用，某一条失败会被后面的成功掩盖
         # （PowerShell 的 step 退出码只取最后一条命令），也会让失败原因不可见。
         # 失败原因要能【立刻】看到：job 日志要等整个 run 结束才放出，而 step summary
         # 在 job 一结束就可见。所以每条判据的输出都同时写进 GITHUB_STEP_SUMMARY。
         run: |
           $judges = @('zhstdlib','kwscope','zhdiag','langservice','tutorial','proj')
+          if ($env:JUDGE) { $judges = @($env:JUDGE) }
           $failed = @()
           $summary = $env:GITHUB_STEP_SUMMARY
           function Note([string]$s) { if ($summary) { Add-Content -Path $summary -Value $s -Encoding UTF8 } }
