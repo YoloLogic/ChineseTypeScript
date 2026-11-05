@@ -902,7 +902,7 @@ member	copyFromChannel	从声道复制
 member	copyToChannel	复制到声道
 member	stream	数据流
 member	mediaElement	媒体元素
-member	fftSize	变换长度
+member	fftSize	变换点数
 member	frequencyBinCount	频段数
 member	minDecibels	最小分贝
 member	maxDecibels	最大分贝

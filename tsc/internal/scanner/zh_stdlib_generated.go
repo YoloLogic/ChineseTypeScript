@@ -914,7 +914,7 @@ var zhStdlibMembers = map[string]string{
 	"复制到声道":  "copyToChannel",
 	"数据流":    "stream",
 	"媒体元素":   "mediaElement",
-	"变换长度":   "fftSize",
+	"变换点数":   "fftSize",
 	"频段数":    "frequencyBinCount",
 	"最小分贝":   "minDecibels",
 	"最大分贝":   "maxDecibels",

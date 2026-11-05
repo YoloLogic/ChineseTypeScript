@@ -52,7 +52,7 @@ interface Algorithm {
 }
 
 interface AnalyserOptions {
-    变换长度?: number;
+    变换点数?: number;
     最大分贝?: number;
     最小分贝?: number;
 }
@@ -2154,7 +2154,7 @@ interface AbstractWorker {
 }
 
 interface AnalyserNode {
-    变换长度: number;
+    变换点数: number;
     readonly 频段数: number;
     最大分贝: number;
     最小分贝: number;
