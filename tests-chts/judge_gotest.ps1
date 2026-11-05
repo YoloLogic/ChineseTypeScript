@@ -153,6 +153,8 @@ if (-not (Test-Path $locRoot)) {
 } else {
     $files = @(Get-ChildItem $locRoot -Recurse -File)
     $same = 0; $diffFiles = @(); $bad = @()
+    # 被「规范化抹平」的文件（原始不同、规范化后相同）—— 必须【报出来】，否则就是悄悄放水。
+    $normalizedFiles = @()
     foreach ($f in $files) {
         $rel = $f.FullName.Substring($locRoot.Length).TrimStart('\')
         $refPath = Join-Path $refRoot $rel
@@ -183,7 +185,11 @@ if (-not (Test-Path $locRoot)) {
             $attributed = @($d | Where-Object { $_.InputObject -match '[\u4e00-\u9fff]' -or $_.InputObject -match 'lib\.zhts\.' })
             if ($attributed.Count -gt 0) { $d = @() }
         }
-        if ($d.Count -eq 0) { $same++; continue }
+        if ($d.Count -eq 0) {
+            $raw = @(Compare-Object (@(Get-Content $refPath -Encoding UTF8)) (@(Get-Content $f.FullName -Encoding UTF8)) -CaseSensitive)
+            if ($raw.Count -gt 0) { $normalizedFiles += ($rel + ' (' + $raw.Count + ' 行)') }
+            $same++; continue
+        }
         $diffFiles += $rel
         # 允许的差异只有两类：
         #   (1) 行里含汉字 —— 本项目新增的汉语内容；
@@ -195,6 +201,8 @@ if (-not (Test-Path $locRoot)) {
     }
     Check '④ baseline 差异只与汉语有关' ($bad.Count -eq 0) `
         "有差异文件 $($diffFiles.Count) 个（相同 $same 个）；差异全部与汉语有关"
+    # 透明度：把「靠规范化才相同」的文件逐个列出来，任何人都能复核我的规范化是否合理。
+    Write-Host "  被规范化抹平的文件: $(if ($normalizedFiles) { ($normalizedFiles -join '; ') } else { '无' })"
     if ($bad.Count -gt 0) { $bad | Select-Object -First 10 | ForEach-Object { Write-Host "     $_" } }
 }
 
