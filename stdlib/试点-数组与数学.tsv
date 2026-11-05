@@ -123,7 +123,7 @@ member	closest	最近祖先
 member	getContext	取上下文
 member	requestAnimationFrame	请求动画帧
 member	title	标题
-member	value	值内容
+member 值内容
 member	parentNode	父节点
 member	childNodes	子节点列
 member	firstChild	首子节点
@@ -749,7 +749,7 @@ member	sheet	样式表
 member	beginElement	开始元素
 member	endElement	结束元素
 member	beginElementAt	定时开始
-member	canPlayType	可播放类型
+member	canPlayType	能否播放
 member	paused	已暂停
 member	ended	已结束
 member	defaultPlaybackRate	默认速率
@@ -1848,3 +1848,4 @@ member	padStart	前补
 member	padEnd	后补
 member	valueOf	取值
 member	normalize	规范化
+member	value	值内容

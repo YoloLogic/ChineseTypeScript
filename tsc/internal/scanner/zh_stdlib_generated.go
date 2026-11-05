@@ -135,7 +135,6 @@ var zhStdlibMembers = map[string]string{
 	"取上下文":   "getContext",
 	"请求动画帧":  "requestAnimationFrame",
 	"标题":     "title",
-	"值内容":    "value",
 	"父节点":    "parentNode",
 	"子节点列":   "childNodes",
 	"首子节点":   "firstChild",
@@ -761,7 +760,7 @@ var zhStdlibMembers = map[string]string{
 	"开始元素":   "beginElement",
 	"结束元素":   "endElement",
 	"定时开始":   "beginElementAt",
-	"可播放类型":  "canPlayType",
+	"能否播放":   "canPlayType",
 	"已暂停":    "paused",
 	"已结束":    "ended",
 	"默认速率":   "defaultPlaybackRate",
@@ -1860,4 +1859,5 @@ var zhStdlibMembers = map[string]string{
 	"后补":     "padEnd",
 	"取值":     "valueOf",
 	"规范化":    "normalize",
+	"值内容":    "value",
 }

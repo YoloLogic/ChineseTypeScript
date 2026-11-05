@@ -4524,7 +4524,7 @@ interface HTMLMediaElement {
     源对象: MediaProvider | null;
     音量: number;
     加文本轨(kind: TextTrackKind, label?: string, language?: string): TextTrack;
-    可播放类型(type: string): CanPlayTypeResult;
+    能否播放(type: string): CanPlayTypeResult;
     加载(): void;
     暂停(): void;
     播放(): Promise<void>;
