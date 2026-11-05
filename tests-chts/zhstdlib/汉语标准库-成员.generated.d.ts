@@ -1197,7 +1197,6 @@ interface PageSwapEventInit {
 }
 
 interface PageTransitionEventInit {
-    已保持?: boolean;
     已持久化?: boolean;
 }
 
@@ -1787,7 +1786,6 @@ interface StartViewTransitionOptions {
 
 interface StaticRangeInit {
     终点容器: Node;
-    终点偏移: number;
     结束偏移: number;
     起点容器: Node;
     起始偏移: number;
@@ -2142,7 +2140,6 @@ interface AbortSignal {
 interface AbstractRange {
     readonly 折叠态: boolean;
     readonly 终点容器: Node;
-    readonly 终点偏移: number;
     readonly 结束偏移: number;
     readonly 起点容器: Node;
     readonly 起始偏移: number;
@@ -5895,7 +5892,6 @@ interface PageSwapEvent {
 }
 
 interface PageTransitionEvent {
-    readonly 已保持: boolean;
     readonly 已持久化: boolean;
 }
 
@@ -5977,7 +5973,6 @@ interface Performance {
     标记(markName: string, markOptions?: PerformanceMarkOptions): PerformanceMark;
     度量(measureName: string, startOrMeasureOptions?: string | PerformanceMeasureOptions, endMark?: string): PerformanceMeasure;
     此刻(): DOMHighResTimeStamp;
-    当前值(): DOMHighResTimeStamp;
     转数据(): any;
     加事件监听<K extends keyof PerformanceEventMap>(type: K, listener: (this: Performance, ev: PerformanceEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -7559,7 +7554,6 @@ interface StorageManager {
     估算(): Promise<StorageEstimate>;
     取目录(): Promise<FileSystemDirectoryHandle>;
     持久化(): Promise<boolean>;
-    已保持(): Promise<boolean>;
     已持久化(): Promise<boolean>;
 }
 
@@ -7923,7 +7917,6 @@ interface VideoFrame {
 }
 
 interface ViewTimeline {
-    readonly 终点偏移: CSSNumericValue;
     readonly 结束偏移: CSSNumericValue;
     readonly 起始偏移: CSSNumericValue;
     readonly 主体元素: Element;
@@ -9558,7 +9551,6 @@ interface DateConstructor {
     readonly 原型: Date;
     解析(s: string): number;
     此刻(): number;
-    当前值(): number;
 }
 
 interface RegExpMatchArray {

@@ -206,7 +206,6 @@ interface DateConstructor {
     readonly 原型: Date;
     解析(s: string): number;
     此刻(): number;
-    当前值(): number;
 }
 
 interface RegExpMatchArray {
