@@ -24,7 +24,7 @@
 # ============================================================================
 
 param(
-    [string] $Version = '0.2.1',
+    [string] $Version = '0.2.2',
     [string] $OutDir,
     [string] $TscExe = 'E:\cts-build\chtsc.exe',
     [string] $NodeExe = 'E:\cts-build\node-dist\node-v24.15.0-win-x64\node.exe',
