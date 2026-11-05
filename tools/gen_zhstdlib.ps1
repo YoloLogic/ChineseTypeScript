@@ -78,6 +78,7 @@ foreach ($line in (Get-Content $Table -Encoding UTF8)) {
 # PowerShell 的 @{} 哈希表默认不区分大小写，会把它们误判成重复。
 $zhToEn = New-Object 'System.Collections.Generic.Dictionary[string,string]'
 $enToZh = New-Object 'System.Collections.Generic.Dictionary[string,string]'
+$enMulti = New-Object 'System.Collections.Generic.Dictionary[string,System.Collections.Generic.List[string]]'
 foreach ($line in (Get-Content $Table -Encoding UTF8)) {
     if ($line -notmatch '\S') { continue }
     $p = $line -split $TAB
@@ -89,8 +90,17 @@ foreach ($line in (Get-Content $Table -Encoding UTF8)) {
     # 两个汉语名都改写回 `log`，**改写结果同样正确**，而按语义分开命名反而更清楚。
     # （2026-10-08：原先多查了一层反向唯一性，被 console.log 与 Math.log 撞出来，属过度约束。）
     $zhToEn[$zh] = $en
+    if (-not $enMulti.ContainsKey($en)) { $enMulti[$en] = New-Object 'System.Collections.Generic.List[string]' }
+    if (-not $enMulti[$en].Contains($zh)) { $enMulti[$en].Add($zh) }
 }
 Write-Host ('唯一性守卫通过：' + $zhToEn.Count + ' 条一英一汉')
+# 信息项（不是失败）：同一个英文名有多个汉语名（按接口语义分开命名，故意允许）。
+# 后果：增补块按【名字】生成，所以这几个名字的每个译名会出现在**所有**含该英文名的接口上
+# （例如 `Array.过滤` 也能编译）。代码仍正确（都改写回同一个英文名），只是多认一个别名。
+$multi = @($enMulti.GetEnumerator() | Where-Object { $_.Value.Count -gt 1 } | Sort-Object Key)
+if ($multi.Count -gt 0) {
+    Write-Host ('  多译名（故意允许）：' + $multi.Count + ' 个 —— ' + (($multi | ForEach-Object { $_.Key + '={' + ($_.Value -join '/') + '}' }) -join ' '))
+}
 
 $content = @()
 $content += 'package scanner'
