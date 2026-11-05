@@ -39,11 +39,12 @@ jobs:
         shell: bash
         run: |
           cd tsc
-          go build -o "$RUNNER_TEMP/chtsc" ./cmd/tsc
+          # Windows 上必须带 .exe：不带后缀的文件即使存在，也无法被当作可执行文件启动。
+          go build -o "$RUNNER_TEMP/chtsc${{ runner.os == 'Windows' && '.exe' || '' }}" ./cmd/tsc
       - name: 跑本项目判据（汉语标准库 / 关键字作用域 / 中文诊断 / 语言服务 / 教程 / 许可 / 项目）
         shell: pwsh
         env:
-          CHTSC: ${{ runner.temp }}/chtsc
+          CHTSC: ${{ runner.temp }}/chtsc${{ runner.os == 'Windows' && '.exe' || '' }}
           JUDGE: ${{ inputs.judge }}
         # 逐个跑并【汇总】结果：以前是顺序调用，某一条失败会被后面的成功掩盖
         # （PowerShell 的 step 退出码只取最后一条命令），也会让失败原因不可见。
