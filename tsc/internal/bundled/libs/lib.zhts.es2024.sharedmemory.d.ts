@@ -26,7 +26,7 @@ interface Atomics {
 
 interface SharedArrayBuffer {
     get 可增长(): boolean;
-    get 最大字节长(): number;
+    get 最大字节长度(): number;
     增长(newByteLength?: number): void;
 }
 

@@ -505,7 +505,7 @@ member	isLockFree	无锁
 member	transfer	转移
 member	resize	调整大小
 member	resizable	可调整
-member	maxByteLength	最大字节长
+member	maxByteLength	最大字节长度
 member	detached	已分离
 member	transferToFixedLength	转移定长
 member	growable	可增长
@@ -715,8 +715,8 @@ member	getBBox	取包围盒
 member	getCTM	取变换矩阵
 member	getScreenCTM	取屏幕矩阵
 member	getNumberOfChars	取字符数
-member	getComputedTextLength	取计算文本长
-member	getSubStringLength	取子串长
+member	getComputedTextLength	计算文本长度
+member	getSubStringLength	取子串长度
 member	selectSubString	选子串
 member	isPointInFill	点在填充内
 member	getTotalLength	取总长度
@@ -938,8 +938,8 @@ member	maxLength	最大长度
 member	minLength	最小长度
 member	srcset	源集
 member	sizes	尺寸表
-member	naturalWidth	自然宽
-member	naturalHeight	自然高
+member	naturalWidth	自然宽度
+member	naturalHeight	自然高度
 member	referrerPolicy	来源页策略
 member	decoding	解码方式
 member	srcdoc	源文档
@@ -980,8 +980,8 @@ member	storage	存储管理
 member	userAgent	用户代理
 member	languages	语言列
 member	platform	平台
-member	availWidth	可用宽
-member	availHeight	可用高
+member	availWidth	可用宽度
+member	availHeight	可用高度
 member	colorDepth	颜色深度
 member	pixelDepth	像素深度
 member	hardwareConcurrency	硬件并发
@@ -1194,11 +1194,11 @@ member	createChannelSplitter	创建声道分离
 member	allocationSize	分配大小
 member	copyTo	复制到
 member	numberOfFrames	帧数
-member	codedHeight	编码高
-member	codedWidth	编码宽
+member	codedHeight	编码高度
+member	codedWidth	编码宽度
 member	colorSpace	色彩空间
-member	displayHeight	显示高
-member	displayWidth	显示宽
+member	displayHeight	显示高度
+member	displayWidth	显示宽度
 member	visibleRect	可见矩形
 member	decodeQueueSize	解码队列长度
 member	encodeQueueSize	编码队列长度

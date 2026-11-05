@@ -1988,8 +1988,8 @@ interface VideoConfiguration {
 
 interface VideoDecoderConfig {
     编解码器: string;
-    编码高?: number;
-    编码宽?: number;
+    编码高度?: number;
+    编码宽度?: number;
     色彩空间?: VideoColorSpaceInit;
     描述?: AllowSharedBufferSource;
 }
@@ -2010,8 +2010,8 @@ interface VideoEncoderConfig {
     比特率?: number;
     编解码器: string;
     内容提示?: string;
-    显示高?: number;
-    显示宽?: number;
+    显示高度?: number;
+    显示宽度?: number;
     帧率?: number;
     高度: number;
     宽度: number;
@@ -2036,11 +2036,11 @@ interface VideoEncoderSupport {
 }
 
 interface VideoFrameBufferInit {
-    编码高: number;
-    编码宽: number;
+    编码高度: number;
+    编码宽度: number;
     色彩空间?: VideoColorSpaceInit;
-    显示高?: number;
-    显示宽?: number;
+    显示高度?: number;
+    显示宽度?: number;
     时长?: number;
     格式化: VideoPixelFormat;
     布局?: PlaneLayout[];
@@ -2062,8 +2062,8 @@ interface VideoFrameCopyToOptions {
 
 interface VideoFrameInit {
     透明度?: AlphaOption;
-    显示高?: number;
-    显示宽?: number;
+    显示高度?: number;
+    显示宽度?: number;
     时长?: number;
     时间戳?: number;
     可见矩形?: DOMRectInit;
@@ -4354,8 +4354,8 @@ interface HTMLImageElement {
     加载方式: "eager" | "lazy";
     低清源: string;
     名称: string;
-    readonly 自然高: number;
-    readonly 自然宽: number;
+    readonly 自然高度: number;
+    readonly 自然宽度: number;
     来源页策略: string;
     尺寸表: string;
     源址: string;
@@ -7207,9 +7207,9 @@ interface SVGTSpanElement {
 
 interface SVGTextContentElement {
     readonly 文本长度: SVGAnimatedLength;
-    取计算文本长(): number;
+    计算文本长度(): number;
     取字符数(): number;
-    取子串长(charnum: number, nchars: number): number;
+    取子串长度(charnum: number, nchars: number): number;
     选子串(charnum: number, nchars: number): void;
     加事件监听<K extends keyof SVGElementEventMap>(type: K, listener: (this: SVGTextContentElement, ev: SVGElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
     加事件监听(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
@@ -7309,8 +7309,8 @@ interface Scheduler {
 }
 
 interface Screen {
-    readonly 可用高: number;
-    readonly 可用宽: number;
+    readonly 可用高度: number;
+    readonly 可用宽度: number;
     readonly 颜色深度: number;
     readonly 高度: number;
     readonly 朝向: ScreenOrientation;
@@ -7908,11 +7908,11 @@ interface VideoEncoder {
 }
 
 interface VideoFrame {
-    readonly 编码高: number;
-    readonly 编码宽: number;
+    readonly 编码高度: number;
+    readonly 编码宽度: number;
     readonly 色彩空间: VideoColorSpace;
-    readonly 显示高: number;
-    readonly 显示宽: number;
+    readonly 显示高度: number;
+    readonly 显示宽度: number;
     readonly 时长: number | null;
     readonly 格式化: VideoPixelFormat | null;
     readonly 时间戳: number;

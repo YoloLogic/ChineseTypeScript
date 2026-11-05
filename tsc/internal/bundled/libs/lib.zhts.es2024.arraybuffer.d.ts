@@ -20,7 +20,7 @@ and limitations under the License.
 // 自动加载：compiler 在加载 lib.<键>.d.ts 时一并加载本块，故本块引用的类型必定可用。
 
 interface ArrayBuffer {
-    get 最大字节长(): number;
+    get 最大字节长度(): number;
     get 可调整(): boolean;
     调整大小(newByteLength?: number): void;
     get 已分离(): boolean;
