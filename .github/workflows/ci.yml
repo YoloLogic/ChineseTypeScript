@@ -40,6 +40,8 @@ jobs:
   # 后续的“clone 上游基线”步骤）。
   # ==========================================================================
   zh-judges:
+    # 已迁移到 .github/workflows/zh-judges.yml（排队被上游长任务挤住，独立 workflow 才有反馈速度）
+    if: ${{ false }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false

@@ -1,0 +1,78 @@
+# 汉语判据（zh-judges）—— 独立 workflow
+#
+# 为什么不放在 ci.yml 里：上游 CI 一次推送会拉起 20+ 个长任务（test/lint/format…），
+# 判据夹在里面就排在它们后面几十小时，反馈速度归零。独立 workflow 有自己的排队队列。
+# 内容与 ci.yml 里当年的 zh-judges job 完全一致（同一段文本搬过来的，不是重写）。
+name: zh-judges
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  content
+s: read
+
+jobs:
+  zh-judges:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 'lts/*'
+      - uses: ./.github/actions/setup-go
+      - name: 装 pandoc（仅 ubuntu，教程 docx 校验要用）
+        if: matrix.os == 'ubuntu-latest'
+        shell: bash
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq pandoc
+      - name: 构建 chtsc
+        shell: bash
+        run: |
+          cd tsc
+          go build -o "$RUNNER_TEMP/chtsc" ./cmd/tsc
+      - name: 跑本项目判据（汉语标准库 / 关键字作用域 / 中文诊断 / 语言服务 / 教程 / 许可 / 项目）
+        shell: pwsh
+        env:
+          CHTSC: ${{ runner.temp }}/chtsc
+        # 逐个跑并【汇总】结果：以前是顺序调用，某一条失败会被后面的成功掩盖
+        # （PowerShell 的 step 退出码只取最后一条命令），也会让失败原因不可见。
+        # 失败原因要能【立刻】看到：job 日志要等整个 run 结束才放出，而 step summary
+        # 在 job 一结束就可见。所以每条判据的输出都同时写进 GITHUB_STEP_SUMMARY。
+        run: |
+          $judges = @('zhstdlib','kwscope','zhdiag','langservice','tutorial','proj')
+          $failed = @()
+          $summary = $env:GITHUB_STEP_SUMMARY
+          function Note([string]$s) { if ($summary) { Add-Content -Path $summary -Value $s -Encoding UTF8 } }
+          Note ('## zh-judges（' + $env:RUNNER_OS + '）' + "`n")
+          foreach ($j in $judges) {
+            $out = pwsh -NoProfile -File "./tests-chts/judge_$j.ps1" -NoBuild *>&1 | Out-String
+            $code = $LASTEXITCODE
+            Write-Host $out
+            Write-Host "---> judge_$j 退出码=$code"
+            Note ('- judge_' + $j + ' 退出码=' + $code)
+            if ($code -ne 0) {
+              # workflow 命令 → check-run annotation：日志要等整个 run 结束才放出，
+              # annotation 用 gh api .../check-runs/{id}/annotations 随时能读。
+              Write-Host ("::error title=judge_" + $j + " 失败::judge_" + $j + " 退出码=" + $code)
+              $failed += $j
+              Note ('<details><summary>judge_' + $j + ' 输出（失败）</summary>' + "`n`n" + '```' + "`n" + $out + '```' + "`n</details>")
+            }
+          }
+          $outLic = pwsh -NoProfile -File ./tests-chts/judge_licenses.ps1 *>&1 | Out-String
+          Write-Host $outLic
+          Note ('- judge_licenses 退出码=' + $LASTEXITCODE)
+          if ($LASTEXITCODE -ne 0) { $failed += 'licenses' }
+          if ($failed.Count -gt 0) {
+            Write-Host ("::error title=失败判据::失败判据: " + ($failed -join ', '))
+            Note ("`n**失败判据: " + ($failed -join ', ') + "**")
+            Write-Host ("失败判据: " + ($failed -join ', '))
+            exit 1
+          }
+          Note "`n全部判据通过"
+          Write-Host '全部判据通过'
