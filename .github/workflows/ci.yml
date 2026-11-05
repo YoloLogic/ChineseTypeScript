@@ -66,22 +66,35 @@ jobs:
           CHTSC: ${{ runner.temp }}/chtsc
         # 逐个跑并【汇总】结果：以前是顺序调用，某一条失败会被后面的成功掩盖
         # （PowerShell 的 step 退出码只取最后一条命令），也会让失败原因不可见。
+        # 失败原因要能【立刻】看到：job 日志要等整个 run 结束才放出，而 step summary
+        # 在 job 一结束就可见。所以每条判据的输出都同时写进 GITHUB_STEP_SUMMARY。
         run: |
           $judges = @('zhstdlib','kwscope','zhdiag','langservice','tutorial','proj')
           $failed = @()
+          $summary = $env:GITHUB_STEP_SUMMARY
+          function Note([string]$s) { if ($summary) { Add-Content -Path $summary -Value $s -Encoding UTF8 } }
+          Note ('## zh-judges（' + $env:RUNNER_OS + '）' + "`n")
           foreach ($j in $judges) {
-            Write-Host "===== judge_$j ====="
-            pwsh -NoProfile -File "./tests-chts/judge_$j.ps1" -NoBuild
+            $out = pwsh -NoProfile -File "./tests-chts/judge_$j.ps1" -NoBuild *>&1 | Out-String
             $code = $LASTEXITCODE
+            Write-Host $out
             Write-Host "---> judge_$j 退出码=$code"
-            if ($code -ne 0) { $failed += $j }
+            Note ('- judge_' + $j + ' 退出码=' + $code)
+            if ($code -ne 0) {
+              $failed += $j
+              Note ('<details><summary>judge_' + $j + ' 输出（失败）</summary>' + "`n`n" + '```' + "`n" + $out + '```' + "`n</details>")
+            }
           }
-          pwsh -NoProfile -File ./tests-chts/judge_licenses.ps1
+          $outLic = pwsh -NoProfile -File ./tests-chts/judge_licenses.ps1 *>&1 | Out-String
+          Write-Host $outLic
+          Note ('- judge_licenses 退出码=' + $LASTEXITCODE)
           if ($LASTEXITCODE -ne 0) { $failed += 'licenses' }
           if ($failed.Count -gt 0) {
+            Note ("`n**失败判据: " + ($failed -join ', ') + "**")
             Write-Host ("失败判据: " + ($failed -join ', '))
             exit 1
           }
+          Note "`n全部判据通过"
           Write-Host '全部判据通过'
   release-build:
     if: ${{ github.repository == 'microsoft/TypeScript' && github.event_name != 'merge_group' }}
