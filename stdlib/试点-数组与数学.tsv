@@ -430,8 +430,8 @@ member	scrollWidth	滚动宽度
 member	scrollHeight	滚动高度
 member	clientWidth	客户宽
 member	clientHeight	客户区高度
-member	offsetWidth	偏移宽
-member	offsetHeight	偏移高
+member	offsetWidth	偏移宽度
+member	offsetHeight	偏移高度
 member	offsetLeft	偏移左
 member	offsetTop	偏移顶
 member	scrollLeft	滚动左
@@ -726,8 +726,8 @@ member	className	类名
 member	preserveAspectRatio	保持纵横比
 member	viewBox	视图框
 member	markerUnits	标记单位
-member	markerWidth	标记宽
-member	markerHeight	标记高
+member	markerWidth	标记宽度
+member	markerHeight	标记高度
 member	orientAngle	朝向角
 member	orientType	朝向类型
 member	setOrientToAngle	设朝向角
@@ -758,8 +758,8 @@ member	seekable	可定位
 member	currentSrc	当前源
 member	networkState	网络状态
 member	preload	预加载
-member	videoWidth	视频宽
-member	videoHeight	视频高
+member	videoWidth	视频宽度
+member	videoHeight	视频高度
 member	poster	海报
 member	buffered	缓冲区间
 member	played	已播放区间

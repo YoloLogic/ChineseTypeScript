@@ -4156,11 +4156,11 @@ interface HTMLElement {
     惰性: boolean;
     内部文本: string;
     语言: string;
-    readonly 偏移高: number;
+    readonly 偏移高度: number;
     readonly 偏移左: number;
     readonly 偏移父: Element | null;
     readonly 偏移顶: number;
-    readonly 偏移宽: number;
+    readonly 偏移宽度: number;
     外部文本: string;
     浮层: string | null;
     拼写检查: boolean;
@@ -4987,8 +4987,8 @@ interface HTMLVideoElement {
     高度: number;
     内联播放: boolean;
     海报: string;
-    readonly 视频高: number;
-    readonly 视频宽: number;
+    readonly 视频高度: number;
+    readonly 视频宽度: number;
     宽度: number;
     请求画中画(): Promise<PictureInPictureWindow>;
     请求视频帧(callback: VideoFrameRequestCallback): number;
@@ -6997,9 +6997,9 @@ interface SVGMPathElement {
 }
 
 interface SVGMarkerElement {
-    readonly 标记高: SVGAnimatedLength;
+    readonly 标记高度: SVGAnimatedLength;
     readonly 标记单位: SVGAnimatedEnumeration;
-    readonly 标记宽: SVGAnimatedLength;
+    readonly 标记宽度: SVGAnimatedLength;
     readonly 朝向角: SVGAnimatedAngle;
     readonly 朝向类型: SVGAnimatedEnumeration;
     设朝向角(angle: SVGAngle): void;
