@@ -141,6 +141,12 @@ $docxGen = Join-Path $repo 'tools\make_tutorial_docx.ps1'
 if (-not (Test-Path $docxGen)) {
     Write-Host '  ❌ 找不到 tools\make_tutorial_docx.ps1' -ForegroundColor Red
     $bad++
+} elseif (-not $IsWindows) {
+    # docx 是与【本机 pandoc 版本】绑定的确定性字节产物：Linux 的 pandoc 与生成它时的
+    # Windows pandoc 版本不同，会产出合法但字节不同的 docx（2026-11-05 CI 实测如此：
+    # 唯一的失败就是这一项）。跨平台比字节没有意义，所以只在 Windows 上比对。
+    # 代价：Linux 不再守这一项；收益：判据不再因平台差异变红。文本层校验（①~④）仍全跑。
+    Say '  ⏭ 跳过：docx 字节与 pandoc 版本绑定，仅在与生成环境相同的 Windows 上比对'
 } elseif (-not (Get-Command pandoc -ErrorAction SilentlyContinue) -and -not $env:PANDOC -and -not (Test-Path 'E:\anaconda3\Library\bin\pandoc.exe') -and -not (Test-Path '/usr/bin/pandoc')) {
     # 没有 pandoc 就没法【重新生成】docx 来比对；这里**明确跳过并说明**，不假装通过、也不算失败。
     # （CI 的 ubuntu 任务会装 pandoc，所以那边真的会跑这一项。）
