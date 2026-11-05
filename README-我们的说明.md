@@ -342,7 +342,7 @@ run_all.ps1       八项：judge_chts / judge_proj / judge_oss / judge_tutorial 
    译文与 Chinese++ 的 7344 条**不保证同词同译**。
 5. ~~**未打包、未发布**~~ —— **已出独立发行包**（2026-10-07，见「六·五」节）：
    `dist\ChineseTypeScript-0.1-win64.zip`（自带便携 node），包内自测 21/21、打包判定 6/6。
-* **已发布**：<https://github.com/YoloLogic/ChineseTypeScript/releases/tag/v0.1>
+* **已发布**：<https://github.com/YoloLogic/ChineseTypeScript/releases/tag/v0.2>
   （资产 `ChineseTypeScript-0.1-win64.zip`，54,197,117 字节，sha256 `3df4ca16…`；
   Release 说明里含「许可与再分发」四句 + 「Assets 区块可能是折叠的」提醒）。
   **注意：GitHub 的 Assets 区块默认折叠**，下载时要先展开。
