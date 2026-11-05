@@ -453,6 +453,21 @@ run_all.ps1       八项：judge_chts / judge_proj / judge_oss / judge_tutorial 
 
 ⇒ 结论：④ **不是空转**，但也**不是零差异**（还剩 1 个被规范化掩盖的原始差异，待查）。
 **能作证「英文零回归」的是 `judge_oss`**：0 例需要规范化、250/250 逐字节一致。
+
+## 九·七、译名覆盖：高频区已完成，长尾有意不做（2026-10-10）
+
+**已覆盖**（100%，并经质量抽查修正 12 处语义问题）：
+
+`Array` · `String` · `Number` · `Math` · `console` · `Promise` · `Map` · `Set` ·
+`Date` · `RegExp` · `JSON` · `Error` · 事件对象 · 迭代器 · `URL` · `fetch`
+—— 其中 **es5 核心接口的未译成员数为 0**。
+
+**有意不做**：dom 长尾剩余 5834 个（`ALIASED_POINT_SIZE_RANGE`、`pendingRemoteDescription`、
+`dynamicRangeLimit` …）—— 它们是 WebGL/WebRTC/WebAudio 的底层接口与全大写常量，
+用户几乎不会直接写；把全大写常量译成汉语反而让人对不上规范。
+详见 `stdlib/规模化方案.md` 六·十五（含「将来若要做」的正确顺序）。
+
+**数字**：1853 / 7687 = 24.1%（**按使用频率算远高于此**：高频区已 100%）。
 ## 十、纪律（照本项目既有做法）
 
 1. **英文永不删除**：汉语关键字只是**并行拼写**，同一 `ast.Kind`；英文行为逐字节不变；
