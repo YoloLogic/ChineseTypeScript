@@ -1,0 +1,4 @@
+[chts 10:13:03] 激活：工作区=e:\cts-build\vscode-demo，编译器=E:\cts-build\chtsc.exe
+[chts 10:13:03] 启动语言服务: E:\cts-build\chtsc.exe --lsp --stdio
+[chts 10:13:03] 服务端=typescript 版本=7.1.0-dev
+[chts 10:13:03] 诊断 演示.ts => 1 条

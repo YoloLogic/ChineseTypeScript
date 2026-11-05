@@ -1,0 +1,30 @@
+{
+  "name": "chinese-typescript",
+  "displayName": "ChineseTypeScript（汉语标准库语言服务）",
+  "description": "把 ChineseTypeScript 自带的语言服务（chtsc --lsp）接到 VS Code：汉语关键字 + 汉语标准库的补全、悬浮与诊断。",
+  "version": "0.1.0",
+  "publisher": "chts",
+  "engines": {
+    "vscode": "^1.80.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "activationEvents": [
+    "onLanguage:typescript",
+    "onLanguage:typescriptreact"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "configuration": {
+      "title": "ChineseTypeScript",
+      "properties": {
+        "chts.serverPath": {
+          "type": "string",
+          "default": "",
+          "description": "chtsc 可执行文件路径（留空则用环境变量 CHTSC，再不行用 chtsc）"
+        }
+      }
+    }
+  }
+}
