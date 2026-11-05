@@ -28,18 +28,30 @@ function Resolve-GoPath([string]$explicit) {
     if ($env:GO_EXE -and (Test-Path $env:GO_EXE)) { return $env:GO_EXE }
     $cmd = Get-Command go -ErrorAction SilentlyContinue
     if ($cmd) { return $cmd.Source }
-    foreach ($c in @("E:\Go\bin\go.exe", "/usr/local/go/bin/go")) { if (Test-Path $c) { return $c } }
+    foreach ($c in @("E:\Go\bin\go.exe", "/usr/local/go/bin/go", "/usr/bin/go")) { if (Test-Path $c) { return $c } }
     throw "找不到 go：请把 go 放进 PATH 或设置 GO_EXE"
 }
 
 function Set-GoEnvironment() {
-    if (-not $env:GOPATH) { $env:GOPATH = "E:\gopath" }
-    if (-not $env:GOMODCACHE) { $env:GOMODCACHE = Join-Path $env:GOPATH "pkg\mod" }
+    if (-not $env:GOPATH) {
+        # 开发机用 E:\gopath；其它机器（CI）用 $HOME/go，否则 Go 会去建 E:\gopath 这样的怪目录。
+        $env:GOPATH = if (Test-Path "E:\gopath") { "E:\gopath" } else { Join-Path $HOME 'go' }
+    }
+    if (-not $env:GOMODCACHE) { $env:GOMODCACHE = Join-Path $env:GOPATH "pkg/mod" }
     if (-not $env:GOCACHE) { $env:GOCACHE = Join-Path $env:GOPATH "build-cache" }
 }
 
 function Resolve-JudgeWork([string]$explicit, [string]$name) {
     if ($explicit) { return $explicit }
     if ($env:CHTS_WORK) { return (Join-Path $env:CHTS_WORK $name) }
-    return (Join-Path $env:TEMP $name)
+    # 【不要用 $env:TEMP】：Linux/macOS 上没有 TEMP（只有 TMPDIR），
+    # Join-Path $null 会抛 "Cannot bind argument to parameter 'Path' because it is null"。
+    # GetTempPath() 在两个平台都对。
+    return (Join-Path ([System.IO.Path]::GetTempPath()) $name)
+}
+
+# 可执行文件名带平台后缀（Linux/macOS 上没有 .exe，写死 .exe 会找不到文件）。
+function Get-ExeName([string]$name) {
+    if ([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform([System.Runtime.InteropServices.OSPlatform]::Windows)) { return $name + '.exe' }
+    return $name
 }

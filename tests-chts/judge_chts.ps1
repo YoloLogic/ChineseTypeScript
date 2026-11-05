@@ -79,8 +79,8 @@ if (-not (Test-Path $Base)) {
 }
 if (-not (Test-Path $Base)) { throw "基线工作树建立失败：$Base" }
 
-$baseTsc = Join-Path $Work 'tsc-base.exe'
-$chtsTsc = Join-Path $Work 'chtsc.exe'
+$baseTsc = Join-Path $Work (Get-ExeName 'tsc-base')
+$chtsTsc = Join-Path $Work (Get-ExeName 'chtsc')
 
 Push-Location (Join-Path $Base 'tsc')
 try {

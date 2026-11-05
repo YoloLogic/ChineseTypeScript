@@ -23,7 +23,7 @@ if (-not $Tsc)  { $Tsc  = Resolve-ChtscPath '' }
 if (-not $Work) { $Work = Resolve-JudgeWork '' 'judge_langservice' }
 Set-GoEnvironment
 $repo    = Split-Path -Parent $PSScriptRoot
-$go      = 'E:\Go\bin\go.exe'
+$go      = Resolve-GoPath ''
 $tscDir  = Join-Path $repo 'tsc'
 
 $results = New-Object System.Collections.Generic.List[object]
@@ -39,7 +39,7 @@ New-Item -ItemType Directory -Force $Work | Out-Null
 # 只在缺失时构建，结果用着改动前的 chtsc，三条汉语建议全被误报为失败）。
 if (-not $NoBuild) {
     Write-Host '  从当前源码重建 chtsc.exe …'
-    & pwsh -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repo 'tools\build_chtsc.ps1') *>&1 | Out-Null
+    & pwsh -NoProfile -ExecutionPolicy Bypass -File (Join-Path (Join-Path $repo 'tools') 'build_chtsc.ps1') *>&1 | Out-Null
 }
 if (-not (Test-Path $Tsc)) { throw ('找不到编译器 ' + $Tsc) }
 
@@ -47,10 +47,8 @@ if (-not (Test-Path $Tsc)) { throw ('找不到编译器 ' + $Tsc) }
 # A) Go 机器守卫（判据要能失败：摘掉汉语接入，这几条会红）
 # ---------------------------------------------------------------------------
 Write-Host '=== A) Go 机器守卫 ==='
-$env:GOPATH = 'E:\gopath'
-$env:GOMODCACHE = 'E:\gopath\pkg\mod'
-$env:GOCACHE = 'E:\gopath\build-cache'
-$env:GOPROXY = 'https://goproxy.cn,direct'
+Set-GoEnvironment
+if (-not $env:GOPROXY) { $env:GOPROXY = 'https://proxy.golang.org,direct' }
 Push-Location $tscDir
 try {
     $t1 = (& $go test -v ./internal/scanner/ -run 'ChineseKeyword|StringToToken' 2>&1 | Out-String)

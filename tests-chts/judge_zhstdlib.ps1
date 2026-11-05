@@ -24,7 +24,7 @@ $ErrorActionPreference = 'Stop'
 if (-not $Tsc) { $Tsc = Resolve-ChtscPath '' }
 $repo = Split-Path -Parent $PSScriptRoot
 if (-not $Src)  { $Src  = Join-Path $repo 'tests-chts\zhstdlib' }
-if (-not $Work) { $Work = Join-Path $env:TEMP 'zhstdlib-judge' }
+if (-not $Work) { $Work = Resolve-JudgeWork '' 'zhstdlib-judge' }
 if (Test-Path $Work) { Remove-Item $Work -Recurse -Force }
 New-Item -ItemType Directory -Force $Work | Out-Null
 Copy-Item (Join-Path $Src '主.ts') $Work -Force
