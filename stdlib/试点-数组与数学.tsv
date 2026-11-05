@@ -432,10 +432,10 @@ member	clientWidth	客户宽
 member	clientHeight	客户区高度
 member	offsetWidth	偏移宽度
 member	offsetHeight	偏移高度
-member	offsetLeft	偏移左
-member	offsetTop	偏移顶
-member	scrollLeft	滚动左
-member	scrollTop	滚动顶
+member	offsetLeft	偏移左侧
+member	offsetTop	偏移顶部
+member	scrollLeft	滚动左侧
+member	scrollTop	滚动顶部
 member	hidden	隐藏
 member	tabIndex	制表序号
 member	contentEditable	可编辑
@@ -1187,7 +1187,7 @@ member	unloadEventEnd	卸载事件结束
 member	responseStatus	响应状态
 member	containerName	容器名
 member	element	元素
-member	pageLeft	页面左
+member	pageLeft	页面左侧
 member	pageTop	页面顶
 member	createChannelMerger	创建声道合并
 member	createChannelSplitter	创建声道分离

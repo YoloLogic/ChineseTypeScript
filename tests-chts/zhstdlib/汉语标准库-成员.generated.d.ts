@@ -3446,8 +3446,8 @@ interface Element {
     set 部件(value: string);
     readonly 前缀: string | null;
     readonly 滚动高度: number;
-    滚动左: number;
-    滚动顶: number;
+    滚动左侧: number;
+    滚动顶部: number;
     readonly 滚动宽度: number;
     readonly 影子根: ShadowRoot | null;
     插槽: string;
@@ -4157,9 +4157,9 @@ interface HTMLElement {
     内部文本: string;
     语言: string;
     readonly 偏移高度: number;
-    readonly 偏移左: number;
+    readonly 偏移左侧: number;
     readonly 偏移父: Element | null;
-    readonly 偏移顶: number;
+    readonly 偏移顶部: number;
     readonly 偏移宽度: number;
     外部文本: string;
     浮层: string | null;
@@ -7934,11 +7934,11 @@ interface ViewTransitionTypeSet {
 
 interface VisualViewport {
     readonly 高度: number;
-    readonly 偏移左: number;
-    readonly 偏移顶: number;
+    readonly 偏移左侧: number;
+    readonly 偏移顶部: number;
     改变大小时: ((this: VisualViewport, ev: Event) => any) | null;
     滚动时: ((this: VisualViewport, ev: Event) => any) | null;
-    readonly 页面左: number;
+    readonly 页面左侧: number;
     readonly 页面顶: number;
     readonly 缩放: number;
     readonly 宽度: number;
