@@ -224,7 +224,9 @@ interface RegExp {
     测试(string: string): boolean;
     readonly 来源: string;
     readonly 全局: boolean;
+    readonly 忽略大小写: boolean;
     readonly 多行: boolean;
+    匹配位置: number;
     编译(pattern: string, flags?: string): this;
 }
 

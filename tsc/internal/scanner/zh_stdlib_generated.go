@@ -1840,6 +1840,8 @@ var zhStdlibMembers = map[string]string{
 	"总帧数":    "frameCount",
 	"保持音高":   "preservesPitch",
 	"缓冲大小":   "bufferSize",
+	"忽略大小写":  "ignoreCase",
+	"匹配位置":   "lastIndex",
 	"视频":     "video",
 	"取字符":    "charAt",
 	"取字符码":   "charCodeAt",

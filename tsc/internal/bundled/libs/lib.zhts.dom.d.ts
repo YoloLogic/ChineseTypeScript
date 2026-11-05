@@ -1929,6 +1929,10 @@ interface URLPatternInit {
     用户名?: string;
 }
 
+interface URLPatternOptions {
+    忽略大小写?: boolean;
+}
+
 interface URLPatternResult {
     散列: URLPatternComponentResult;
     主机名: URLPatternComponentResult;
