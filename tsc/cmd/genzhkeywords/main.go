@@ -201,9 +201,18 @@ func render(entries []entry) []byte {
 	return b.Bytes()
 }
 
+// docProseDate 是 `docs/中文对照表.md` 里【手写文案】的最后更新日期。
+//
+// 为什么不写 time.Now()：`-check` 要逐字节比对生成物，写死当前时间会让它永远不一致。
+// 约定：改 renderMarkdown 里的任何说明文字，就同步改这里 —— 读者看到较早的日期，
+// 就知道那段说法是过去的；看到最新日期，就知道那段刚核对过。
+const docProseDate = "2026-11-06"
+
 // renderMarkdown 产出给用户看的对照表。
 //
 // ⚠ 本文件里所有「数字」都从 entries 算出来，不手写 —— 手写的数字一定会漂。
+// 例外：标准库译名的覆盖数字**不写在这里**（它随 `stdlib/试点-数组与数学.tsv` 变，
+// 由 `judge_zhstdlib` 第⑩项核对 `stdlib/README.md`）—— 这里只给指针，避免漂移。
 func renderMarkdown(entries []entry) []byte {
 	n := len(entries)
 
@@ -237,6 +246,9 @@ func renderMarkdown(entries []entry) []byte {
 	b.WriteString("> `go run ./cmd/genzhkeywords -check` 会核对**两份产物**是否都与词表一致，\n")
 	b.WriteString("> 而 `tests-chts/judge_chts.ps1` 第①项每次判定都在跑它 ——\n")
 	b.WriteString("> 也就是说「词表改了忘了重新生成」会被机器抓出来，不靠人记得。\n\n")
+	b.WriteString("> **手写文案更新：" + docProseDate + "** —— 下面的表格与数字由词表算出；\n")
+	b.WriteString("> 说明文字是手写的，这个日期就是那段文字的更新时间：**较早的日期 = 过去的说法**。\n")
+	b.WriteString("> 历史说法不删，改成「某日期更正」的形式留在原处（见第三节）。\n\n")
 	b.WriteString("**中英两种写法都可以用，而且可以混着写。** 中文不是替换英文，是并列多出来的一种拼写。\n\n")
 
 	// 一、关键字（4 列对开，与 Chinese++ 的对照表同款排版）
@@ -266,19 +278,23 @@ func renderMarkdown(entries []entry) []byte {
 	b.WriteString("* ⚠ **一处故意不同**：TypeScript 里 `class` 与 `type` 并存，\n")
 	b.WriteString("  故 `class`→类型（沿用 Chinese++「class 必须译作类型」的定例）、`type`→类型别名。\n")
 
-	b.WriteString("\n## 三、这些仍然必须写英文\n\n")
+	b.WriteString("\n## 三、什么时候仍然要写英文\n\n")
 	b.WriteString("| 东西 | 例子 | 为什么 |\n")
 	b.WriteString("|---|---|---|\n")
-	b.WriteString("| 库 / 框架 / JS 内建的名字与成员 | `console.log`、`Array.from`、`JSON.parse` | 它们是**别人**的标识符（JS 内建、npm 包、DOM），不是关键字 |\n")
-	b.WriteString("| 类型工具名 | `Partial<T>`、`Record<K, V>`、`Promise<T>` | 同上，来自 `lib.*.d.ts` |\n")
+	b.WriteString("| 第三方库 / 框架 / npm 包的名字 | `react`、`lodash`、`fs` | 它们是**别人**的标识符，不是关键字；本项目只汉化标准库的高频区 |\n")
+	b.WriteString("| 汉语标准库未覆盖的长尾名字 | `ALIASED_POINT_SIZE_RANGE`、`pendingRemoteDescription` | WebGL / WebRTC / WebAudio 的底层接口与全大写常量**有意不译**（覆盖面与准确数字见 `stdlib/README.md`，由 `judge_zhstdlib` 第⑩项核对，不在这里手写） |\n")
+	b.WriteString("| 类型工具名 | `Partial<T>`、`Record<K, V>` | 来自 `lib.*.d.ts` 的类型工具**尚未翻译**（`Promise<T>` 已有汉语别名 `承诺<T>`） |\n")
 	b.WriteString("| 字符串里的东西 | `导入 { 平方 } 来自 \"./数学\"` | 路径与包名是运行时要解析的字符串，翻译了就找不到文件 |\n")
 	b.WriteString("| 属性名 | `对象.名字`、`甲[\"对象\"]` | 属性名位允许任何标识符（**包括关键字**）—— 见第五节 |\n")
 	b.WriteString("| 命令行开关 | `--target es2020`、`--strict` | 构建系统靠它 |\n")
 	b.WriteString("| `--help` 的输出 | —— | **已汉化**：命令行默认 `--locale zh-CN`；要英文用 `--locale en` |\n\n")
-	b.WriteString("> ⚠ **与 Chinese++ 的一处重大差别**：Chinese++ 连标准库都做了汉化层\n")
-	b.WriteString("> （中文头名覆盖 103/103，`#包含 <向量>` 可用）。ChineseTypeScript **没有**做\n")
-	b.WriteString("> 「汉语标准库」—— `console`、`Array`、`Promise` 这些名字**没有**中文别名。\n")
-	b.WriteString("> 这是如实登记的一条，见 `README-我们的说明.md` 的「已知局限」。\n")
+	b.WriteString("> **2026-11-06 更正（旧说法已过时，保留在此以便对照）**：本文件早期版本写\n")
+	b.WriteString("> 「ChineseTypeScript **没有**做汉语标准库 —— `console`、`Array`、`Promise` 这些名字\n")
+	b.WriteString("> **没有**中文别名」。那是 2026-10-10 试点上线**之前**的实情。\n")
+	b.WriteString("> 现在：高频区已有汉语别名（`控制台.日志`、`数组`、`承诺<T>` …，随默认 lib 集合\n")
+	b.WriteString("> **自动加载**、不必写 `/// <reference>`），编译时打回英文规范名，产物是标准 JS。\n")
+	b.WriteString("> 与 Chinese++ 的差别只剩**覆盖面**：它 103/103 个头文件全译；我们按使用频率优先\n")
+	b.WriteString("> （es5 核心接口未译成员 = 0），长尾有意不译（理由见 `stdlib/规模化方案.md` 六·十五）。\n")
 
 	fmt.Fprintf(&b, "\n## 四、必须知道的副作用：这 %d 个词成了保留字\n\n", n)
 	b.WriteString("汉语关键字**在所有文件里都生效**（不限于 `.ts`）。因此：\n\n")

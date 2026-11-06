@@ -103,6 +103,22 @@ Check '⑥ 收窄守卫：用户自己的「追加」不被改写' (($js2Text -m
 & pwsh -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repo 'tools\gen_zhstdlib.ps1') -Check *>&1 | Out-Null
 Check '⑦ 生成物与译名表同步（单一真源守卫）' ($LASTEXITCODE -eq 0) ('gen_zhstdlib -Check exit=' + $LASTEXITCODE)
 
+# ⑦b 自带自测：译名表里的【坏行】必须报错，不许静默跳过。
+#    （2026-11-05 修）：原生成器是 `if ($p.Count -lt 3) { continue }`，于是少一列的行
+#    被悄悄丢掉 —— 表里真有一行 `member 值内容`（空格分隔、缺英文名）就这样消失了，
+#    谁也不知道少了一条译名。这与本项目「生成器一律报错退出，不静默」的纪律相悖。
+#    这条自测喂它一张【故意坏】的表，必须非零退出且不产出文件。
+$badTsv = Join-Path $Work '坏行-译名表.tsv'
+$badOut = Join-Path $Work '坏行-生成物.go'
+if (Test-Path $badOut) { Remove-Item $badOut -Force }
+$goodText = [System.IO.File]::ReadAllText((Join-Path $repo 'stdlib\试点-数组与数学.tsv'))
+if (-not $goodText.EndsWith("`n")) { $goodText += "`r`n" }
+[System.IO.File]::WriteAllText($badTsv, ($goodText + "member 值内容`r`n"), (New-Object System.Text.UTF8Encoding($false)))
+& pwsh -NoProfile -ExecutionPolicy Bypass -File (Join-Path $repo 'tools\gen_zhstdlib.ps1') -Table $badTsv -Out $badOut *>&1 | Out-Null
+$badExit = $LASTEXITCODE
+$produced = Test-Path $badOut
+Check '⑦b 译名表坏行必须报错（生成器不许静默跳过）' (($badExit -ne 0) -and (-not $produced)) ('坏行表 exit=' + $badExit + ' 误产出=' + $produced)
+
 # ⑧ 防漂移守卫：译名表里每个名字都必须【有对应声明】——
 #    防「先翻译、后补声明」：译名一进表 emit 改写就生效，声明没跟上会误改用户自己的标识符。
 $tsv = Join-Path $repo 'stdlib\试点-数组与数学.tsv'

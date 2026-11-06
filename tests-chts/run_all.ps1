@@ -2,7 +2,7 @@
 #
 #   pwsh -File tests-chts\run_all.ps1
 #
-# 十项判定按顺序跑，最后给汇总：
+# 十项判定（加 -SkipGoTest 时九项）按顺序跑，最后给汇总：
 #   —— 核心 ——
 #   1) judge_chts.ps1      关键字与端到端（生成器幂等、守卫、英文逐字节一致、
 #                          汉语源编译、产物无汉语关键字、node 真跑、非关键字汉语标识符）
@@ -62,6 +62,6 @@ Write-Host ('#' * 78)
 $summary | ForEach-Object { "  [$($_.结果)] $($_.判定脚本)  (退出码 $($_.退出码))" }
 $fail = ($summary | Where-Object { $_.退出码 -ne 0 }).Count
 Write-Host ''
-Write-Host "  九项判定，失败 $fail 项"
+Write-Host "  共 $($summary.Count) 项判定，失败 $fail 项"
 if ($fail -eq 0) { Write-Host '  结论：ChineseTypeScript 全部判定通过'; exit 0 }
 else { Write-Host '  结论：有判定失败，必须查清'; exit 1 }

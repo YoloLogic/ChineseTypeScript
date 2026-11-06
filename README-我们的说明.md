@@ -1,5 +1,9 @@
 # ChineseTypeScript —— 我们的工作副本
 
+> **最后更新：2026-11-06 19:42** —— 本次只改文档（对照表第三节的陈旧说法、判定项数、
+> 发布与 CI 现状），**编译器行为未变**。历史结论保留原日期，逐条改动见文末
+> 「十二、文档更新记录」；看到较早的日期，就按当时的说法读。
+
 > 本目录是 **ChineseTypeScript**（不要把名字写成 "ChineseScript"）。
 > 它是 Chinese++ 项目的第四条产品线：几何定位「最快的（C++）/ 最全面的（Python）/
 > 最适合浏览器页面的（JS 或 TS 魔改）」中**网页那一角**。
@@ -172,13 +176,19 @@
 | **语言服务判定** | `tests-chts/judge_langservice.ps1`（9 项：三组 Go 守卫 + CLI 真编译三条汉语建议 + 两条负对照） |
 | **中文诊断判定** | `tests-chts/judge_zhdiag.ps1`（7 项：默认中文 / `--locale en` 回英文 / 默认==显式 zh-CN / 抽样多码中文 / 正确程序无诊断 / 上游缺译条目也出中文 / **`--help` 首行中文 `chtsc:` 而英文仍 `tsc:`**） |
 | **关键字作用域判定** | `tests-chts/judge_kwscope.ps1`（6 项：普通 `.ts` 认汉语关键字 / 汉语保留字不能当标识符 → TS1389（代价自证） / `.tsx` 也认 / `.mts`·`.cts` 也认 / `.d.ts` 也认 / 负对照） |
-| **一条命令全跑** | `tests-chts/run_all.ps1`（**八项**：五套核心 + 三个特性判定 langservice/zhdiag/kwscope；`-SkipGoTest` 可跳过最慢的 gotest。打包判定 `judge_package.ps1` 仍需单独跑） |
+| **标准库汉化判定** | `tests-chts/judge_zhstdlib.ps1`（**17 项**：类型检查 → 标准 JS 产物 → node 真跑；符号感知 ⑬⑭⑯、自动加载 ⑮a/⑮b、生成器坏行自测 ⑦b、二进制新鲜度 ⑨） |
+| **真 LSP 判定** | `tests-chts/judge_lsp.ps1`（**6 项**：真起 `chtsc --lsp --stdio`，握手 / 汉语源零诊断 / 坏文件必报错 / 补全含汉语成员 / 悬浮给汉语签名 / 诊断随 locale 变中文） |
+| **许可与披露判定** | `tests-chts/judge_licenses.ps1`（**5 份文件齐备 + 两个哈希钉住 + NOTICE 13 条法定声明 + 三个反向自测**；实现在 `verify_licenses.py`） |
+| **一条命令全跑** | `tests-chts/run_all.ps1`（**十项**：五套核心 `judge_chts`/`judge_proj`/`judge_oss`/`judge_tutorial`/`judge_gotest` + 四个特性 `judge_langservice`/`judge_zhdiag`/`judge_kwscope`/`judge_zhstdlib` + `judge_licenses`；`-SkipGoTest` → 九项。`judge_lsp` 与 `judge_package` 仍需单独跑） |
 
 生成器**不信任任何手写清单**：它自己解析 `scanner.go` 的 `textToKeyword` 得到
 「英文关键字 → `ast.Kind`」，再与词表比对。因此扫描器新增英文关键字而词表漏译、
 词表写了扫描器没有的词、译名重复、汉字数不在 2–6 —— **一律报错退出，不静默**。
 
-## 六·五、独立发行包（0.1，win64）
+## 六·五、独立发行包（0.1 起；**当前 0.2.4**，win64）
+
+> **2026-11-06 19:42 复核**：`dist\ChineseTypeScript-0.2.4-win64.zip` 51.8 MB
+> （sha256 `CA3997B3…`），`judge_package.ps1` 6/6。下面 0.1 的数字是**首次发行**的留档。
 
 用户 2026-10-07 裁定：ChineseTypeScript 要出**独立发行包**，并**随包带便携版 node**。
 
@@ -213,7 +223,7 @@
 * **边界**：`StringToToken` **故意**保持只认英文（它被 `.d.ts` 生成、自动导入等位置用来
   判断「这个名字是不是关键字」，让汉语悄悄参与会波及英文路径的产物）；
   需要连汉语一起认的地方显式调用 `StringToTokenIncludingChinese`。
-* 判定：`judge_langservice.ps1` **9/9**；`ls` 6 条 + `parser` 4 条 + `scanner` 5 条 Go 守卫
+* 判定：`judge_langservice.ps1` **9/9**；`ls` 4 条 + `parser` 4 条 + `scanner` 5 条 Go 守卫
   （JS-only 过滤对汉语同样生效、补全确定、缓存不串扰）；
   英文路径零回归照旧（`judge_oss` 全量 5894/5894）；上游补全类测试多一类**有意**差异（见上）。
 
@@ -276,34 +286,38 @@
 ## 七、判定证据（本轮实测）
 
 ```
-judge_chts.ps1   18/18 通过（含第 8 节 --strict、第 9 节 关键字作属性名、
+2026-11-06 19:42 复核：run_all.ps1 十项 10/10 通过（退出码 0）；另单独跑 judge_lsp 6/6、judge_package 6/6。
+
+judge_chts.ps1   18/18 通过（第 8 节 --strict、第 9 节 关键字作属性名、
                  第 10 节 对照表新鲜度守卫的**自带自测**：改坏一个字节会被抓、
                  第 11 节 未定义 值位置归一化 / 属性名原样保留）
 judge_proj.ps1   15/15 通过
-judge_oss.ps1    真实语料 = 上游官方 conformance 目录里【全部】5894 个 .ts/.tsx（排除 .d.ts）
-                 全量跑：【诊断输出 + 退出码】5894/5894 逐字节相同（一个不落）
-                 另抽 300 个：产物【逐字节】300/300 相同
-                 （-Sample N 抽样、-Sample 0 全量；**本轮已跑全量：5894/5894 与 120/120**）
+judge_oss.ps1    本次抽样：诊断+退出码 600/600 相同、产物 60/60 逐字节相同
+                 全量口径（2026-10-08 记录）：5894/5894 诊断相同、120/120 产物相同
+                 （-Sample N 抽样、-Sample 0 全量，全量约 1 小时）
 judge_gotest.ps1  4/4 通过（上游自带 Go 测试全集，跑两遍：基线 vs 工作副本）
                  基线失败包 = astnav（缺 node_modules/typescript）、
                               fswatch（非管理员无建符号链接特权）—— 环境问题
                  工作副本多出的失败包 = tsctests、testrunner（baseline 文本差异）、
                               fourslash/tests（「汉语补全对所有 .ts 生效」的**有意**差异，已进允许清单）
-                 baseline 差异 = 0（不再有 .chts 插入类差异）
+                 baseline 差异 = 0
 judge_tutorial.ps1  5 步全过（9 个例子真编译真跑逐行比对、教程与模板/例子/对照表一致、
                     Word 版 .docx 与正文同步、例子目录构成守卫、改坏期望输出必须被抓的自测）
-judge_package.ps1   5/5（真打包 51.6 MB → 解压到含中文的外来目录 → install 写 env.cmd →
+judge_package.ps1 6/6（真打包 51.8 MB → 解压到含中文的外来目录 → install 写会话级 PATH →
                     包内 verify 21/21 → 把包内 chtsc 改名后 verify 必失败）
-judge_langservice.ps1  9/9（scanner 5 + parser 4 + ls 6 条 Go 守卫；CLI 三条汉语建议：
+judge_langservice.ps1  9/9（scanner 5 + parser 4 + ls 4 条 Go 守卫；CLI 三条汉语建议：
                        函树→函数、局部变两→局部变量、如果甲→如果；两条负对照无建议）
 judge_zhdiag.ps1    7/7（默认出中文 → --locale en 回英文 → 默认==显式 zh-CN 逐字节相同 →
                     TS2304/TS2554/TS2322 抽样都出中文 → 正确程序无诊断 →
                     上游缺译条目（如 TS5074）也出中文 → --help 首行中文 chtsc: / 英文 tsc:）
 judge_kwscope.ps1   6/6（普通 .ts 认汉语关键字 → 汉语保留字不能当标识符（TS1389，代价自证）→
                     .tsx 也认 → .mts/.cts 也认 → .d.ts 也认 → 负对照）
-run_all.ps1       八项：judge_chts / judge_proj / judge_oss / judge_tutorial /
-                  judge_langservice / judge_zhdiag / judge_kwscope / judge_gotest
-                  （judge_dchts.ps1 已随方向撤销删除）
+judge_zhstdlib.ps1  17/17（类型检查 → 标准 JS 产物 → node 真跑；符号感知 ⑬⑭⑯、
+                    自动加载 ⑮a/⑮b、生成器坏行自测 ⑦b、二进制新鲜度 ⑨）
+judge_licenses.ps1  全部通过（5 份文件齐备、两个哈希钉住、NOTICE 13 条声明、改坏必被抓的自测）
+judge_lsp.ps1    6/6（真 LSP：握手 typescript / 7.1.0-dev、汉语源零诊断、坏文件必报错、
+                 补全含「日志」、悬浮给出「归纳」签名、诊断随 locale 变中文）
+run_all.ps1      十项 = 上面除 judge_lsp / judge_package 外的全部（-SkipGoTest → 九项）
 ```
 
 > **为什么全集判定要这么麻烦**：改词法层（把汉语并进关键字表）本来不该影响英文路径，
@@ -340,13 +354,17 @@ run_all.ps1       八项：judge_chts / judge_proj / judge_oss / judge_tutorial 
 4. **诊断已是「默认中文」且覆盖 2204/2204**（2026-10-07/08，见「六·八」）：上游 zh-CN 2118 条
    + 我们补的 86 条（`zh_extra.go`）；中文 `--help` 首行是 `chtsc:`（英文仍是上游的 `tsc:`）。
    译文与 Chinese++ 的 7344 条**不保证同词同译**。
-5. ~~**未打包、未发布**~~ —— **已出独立发行包**（2026-10-07，见「六·五」节）：
-   `dist\ChineseTypeScript-0.1-win64.zip`（自带便携 node），包内自测 21/21、打包判定 6/6。
+5. ~~**未打包、未发布**~~ —— **已出独立发行包、也已发布到 GitHub Releases**（2026-10-07 起）：
+   当前包是 `dist\ChineseTypeScript-0.2.4-win64.zip`（51.8 MB；2026-11-06 19:42 复核：
+   打包判定 6/6、包内自测 21/21。0.1 的首次发行细节见「六·五」）。
 * **已发布**：<https://github.com/YoloLogic/ChineseTypeScript/releases/tag/v0.2>
   （资产 `ChineseTypeScript-0.1-win64.zip`，54,197,117 字节，sha256 `3df4ca16…`；
   Release 说明里含「许可与再分发」四句 + 「Assets 区块可能是折叠的」提醒）。
   **注意：GitHub 的 Assets 区块默认折叠**，下载时要先展开。
-   **但仍未发布到网上**（无上传 / 下载页 / CI）。
+* **CI 已接入**（2026-11-06 核实）：`.github/workflows/zh-judges.yml`，
+  `ubuntu-latest` + `windows-latest` 两平台跑 zhstdlib / kwscope / zhdiag / langservice /
+  tutorial / proj 六条判据 + licenses（`ci.yml` 仍只跑上游自己的任务）。
+* **仍未做**：官网下载页与 npm 发布（现在只有 GitHub Releases 这一个入口）。
 6. ~~**`未定义`（undefined）不能当【值】用**~~ —— **已修**（2026-10-07，写教程时真编译撞出来的）。
    症状：`常量 甲 = 未定义;` 报 `TS2304 找不到名字`，而 `: 未定义`（当类型）正常。
    根因：`null`/`true`/`false` 是 JS 的**字面量**（按种类驱动，所以汉语拼写天然等价）；
@@ -371,8 +389,9 @@ run_all.ps1       八项：judge_chts / judge_proj / judge_oss / judge_tutorial 
    它**不是** baseline 文本差异（baseline 差异为 0），也不影响英文 `.ts` 的产物与诊断。
 10. **标准库汉化：高频区已完成（2026-10-10，长目标第 60 轮）** —— 现状是：
     * **能力**：`甲.追加(4)` 编译成 `甲.push(4)`、`数学.向下取整(3.7)` 编译成 `Math.floor(3.7)`，
-      **产物是标准 JS**、node 真跑正确；判定 `tests-chts/judge_zhstdlib.ps1` **16/16**（含**符号感知** ⑬⑭⑯、
-      **自动加载** ⑮a/⑮b、**变量名不被误改** ⑯；⑪ 已降为信息行）。
+      **产物是标准 JS**、node 真跑正确；判定 `tests-chts/judge_zhstdlib.ps1` **17/17**
+      （2026-11-06 19:42 复核；含**符号感知** ⑬⑭⑯、**自动加载** ⑮a/⑮b、
+      **变量名不被误改** ⑯、生成器坏行自测 ⑦b；⑪ 已降为信息行）。
     * **规模**：标准库共 **7687 个名字**（全局 2445 + 成员 5242），已译 **1850 / 7687（24.1%）**——
       但**按使用频率算远高于此**：`Array`/`String`/`Number`/`Math`/`console`/`Promise`/`Map`/`Set`/
       `Date`/`RegExp`/`JSON`/`Error`/事件/迭代器/`URL`/`fetch` **高频区 100% 覆盖**，
@@ -454,8 +473,16 @@ run_all.ps1       八项：judge_chts / judge_proj / judge_oss / judge_tutorial 
 现在只剩 **1** 个 —— 而 ④ 报「相同 1、差异 0」，说明**那 1 个差异被我的规范化
 （`and N more` / `Decl(lib.zhts.*)`）抹平了**。
 
-⇒ 结论：④ **不是空转**，但也**不是零差异**（还剩 1 个被规范化掩盖的原始差异，待查）。
-**能作证「英文零回归」的是 `judge_oss`**：0 例需要规范化、250/250 逐字节一致。
+⇒ 结论：④ **不是空转**，但也**不是零差异**（那 1 个被规范化掩盖的原始差异已于
+2026-11-05 **查清并结案**，见下）。
+**能作证「英文零回归」的是 `judge_oss`**：0 例需要规范化、600/600（全量口径 5894/5894）逐字节一致。
+
+**那 1 个被掩盖的差异是什么（2026-11-05 结案）**：`local` 里唯一那个文件是
+`conformance\es2020IntlAPIs.symbols`，原始差异 **全部只是 `... and N more)` 的截断计数**
+（参考写 `and 1 more` / `and 2 more`，我们写 `and 3 more`）——
+自动加载的 49 个 `lib.zhts.*` 块让同一符号的声明条数变多，于是截断计数跟着变大。
+**没有任何语义差异**，规范化抹掉的正是它。至此「待查」项清空。
+（顺带记：④ 的实际证据力有限 —— 它全程只比了 1 个文件；真正的零回归证据是 `judge_oss`。）
 
 ## 九·七、译名覆盖：高频区已完成，长尾有意不做（2026-10-10）
 
@@ -490,13 +517,79 @@ run_all.ps1       八项：judge_chts / judge_proj / judge_oss / judge_tutorial 
 7. **改「横切」属性要用同级反查全仓**：扩展名这种贯穿解析/输出/诊断的属性，
    靠读一遍代码找不齐 —— 用 `ExtensionCts` 反查所有出现过它的地方，再逐处判断。
    （2026-10-08 扩展名方向已撤销，但这条方法仍然有效。）
+8. **文档更新必须写时间**（用户 2026-11-06 要求）：任何文档改动，都要在文首「最后更新」
+   与文末「文档更新记录」写下**日期 + 时间**；历史说法**不要改写成现在时**，要保留原日期、
+   注明何时被更正（例：`docs/中文对照表.md` 第三节的「2026-11-06 更正」）。
+   这样读者看到较早的时间，就知道那段是**过去的说法**，不必猜。生成物里的文案时间
+   用生成器里的固定常量（`docProseDate`），因为 `-check` 要求逐字节可比，不能写 `time.Now()`。
 
 生成时间：2026-10-06 23:18:59（初版）
-本版更新（2026-10-08）：**方向撤销** —— 不再有 `.chts`/`.d.chts`，ChineseTypeScript 直接用普通 `.ts`，
-汉语关键字与编辑器补全**对所有 `.ts` 全局生效**（推广考虑）；9 个扩展名相关文件已逐字节还原为上游，
-上游源码改动收敛为 **7 个文件**。当前判定：**八项全绿** —— 五套核心（`judge_chts` 18/18、
-`judge_proj` 15/15、`judge_oss` 全量 5894/5894 零回归、`judge_tutorial`、`judge_gotest` 4/4）
-+ 三个特性（`judge_langservice` 9/9、`judge_zhdiag` 7/7、`judge_kwscope` 6/6）；
-`judge_dchts.ps1` 已删除，`run_all.ps1` 现为**八项**。
-更早：词表落盘、生成器与守卫就位；独立发行包 0.1 与打包判定；
-item① 语言服务与建议（9/9）、item③ 诊断默认中文（7/7，含补译 86 条与中文 `--help` 产品名）。
+历史各版（**旧说法保留原日期，按时间倒序**）：
+* **2026-11-05**：测试轮 —— 修 6 处（见「十一」）；`judge_zhstdlib` 17/17。
+* **2026-10-10**：标准库汉化试点上线（自动加载 49 个块、符号感知屏蔽 pass）；九·六「英文零回归」结案。
+* **2026-10-08**：**方向撤销** —— 不再有 `.chts`/`.d.chts`，ChineseTypeScript 直接用普通 `.ts`，
+  汉语关键字与编辑器补全**对所有 `.ts` 全局生效**；9 个扩展名相关文件已逐字节还原为上游，
+  上游源码改动收敛为 **7 个文件**；`judge_dchts.ps1` 删除，`run_all.ps1` 当时为**八项**（现为十项）。
+* **2026-10-06**：初版（词表落盘、生成器与守卫、发行包 0.1、语言服务与诊断默认中文）。
+
+**最新一版（2026-11-06 19:42，只动文档，编译器未改）**：
+① 生成器 + `docs/中文对照表.md` 更正「没有汉语标准库」的旧说法（旧说法以「2026-11-06 更正」留在原处）；
+② §六/§七 判定项数对齐实际（`run_all` 十项、`judge_zhstdlib` 17/17、`judge_package` 6/6、
+补 `judge_lsp`/`judge_licenses`、`ls` 守卫 4 条）；
+③ §九 第 5 条把「已发布」与「无 CI」的自相矛盾改成现状（GitHub Releases + `zh-judges.yml`）；
+④ 新增纪律第 8 条「文档更新必须写时间」与下一节「十二、文档更新记录」。
+
+## 十一、2026-11-05 测试轮：判定全绿 + 修掉 6 处（含 1 处产品缺陷）
+
+**判定**：`run_all.ps1` 十项全过（`judge_chts` 18/18、`judge_proj` 15/15、
+`judge_oss` 600/600 诊断 + 60/60 产物、`judge_tutorial`、`judge_langservice` 9/9、
+`judge_zhdiag` 7/7、`judge_kwscope` 6/6、`judge_zhstdlib` **17/17**、`judge_licenses`、
+`judge_gotest` 4/4）；另有**独立验证**（不依赖本项目判据）：一份汉语源同时用
+关键词 + 标准库别名 + 「用户名撞译名」，编译产物为标准 JS、node 真跑 6 行全对，
+且用户自己声明的成员 `名称` **没有被**改写成 `name`。
+
+| # | 问题 | 修法 |
+|---|---|---|
+| 1 | **`数组` 只有类型别名、缺 `declare var`** —— `新建 数组(3)` 报 **TS2693**（「仅表示类型，却作为值使用」），是唯一漏掉值位的全局名（`日期`/`正则`/`错误`/`映射表`/`集合`/`承诺` 都有值位） | `汉语标准库.d.ts` 补 `declare var 数组: ArrayConstructor;`，重生成 49 个声明块、重编二进制；现 `新建 数组<数字>(3)`、`数组.isArray`、`数组.from` 都通 |
+| 2 | **教程说反了**：开篇与第 8 课写「ChineseTypeScript 没有汉语标准库，`console`/`Array`/`Math` 一律写英文」—— 与实现矛盾（已 1850 条、自动加载） | 改写开篇 + 第 8 课正文，给出中英对照表；例子 `08` 增补汉语别名三行（期望输出 10 → 13 行）；`judge_tutorial` 仍全过、docx 已重生成 |
+| 3 | **译名表有坏行被静默跳过**：`member 值内容`（空格分隔、缺英文名），生成器 `if ($p.Count -lt 3) { continue }` 悄悄丢掉 | 删掉该行（表尾已有正确的 `member value 值内容`）；生成器改用 `Split-TableRow`，**列数不为 3 / 缺英文 / 缺汉语一律报错并报行号**；`judge_zhstdlib` 新增 **⑦b 自测**（喂坏表必须非零退出且不产出） |
+| 4 | `run_all.ps1` 注释写「十项」、结论行却打印「九项」 | 改为按实际 `$summary.Count` 打印 |
+| 5 | `judge_gotest.ps1` 结论文本还写「差异全部是新增 **.chts** 的预期结果」（`.chts` 早已撤销） | 改成「多出的失败包都在允许清单内，baseline 差异只与汉语有关」 |
+| 6 | `judge_gotest` 允许清单里的 `internal/compiler` **这次没失败**（纯英文源码不再加载汉语块 → 文件清单与上游一致），注释已过期 | **从允许清单移除**并留历史说明 —— 它再红就是真问题，不该被清单盖住 |
+
+另：九·六 那处「被规范化掩盖的 1 个差异（待查）」已查清 —— 只是 `... and N more)` 的截断计数
+（`and 1/2 more` → `and 3 more`），源于 49 个自动加载块，**无语义差异**，已结案。
+
+## 十二、文档更新记录
+
+> 规则见「十、纪律」第 8 条：**每次更新都记日期 + 时间**；旧条目**只追加、不改写** ——
+> 旧条目就是「那是过去的信息」的凭据。看到较早的时间，那段就按当时的说法读。
+
+| 时间 | 文档 | 改了什么 |
+|---|---|---|
+| **2026-11-06 19:42** | `README-我们的说明.md`、`下一步.md`、`docs/中文对照表.md`、`教程`（模板 + md + docx）、`packaging`（CHANGELOG + 使用说明） | 见下方「本次」 |
+| 2026-11-05 | `README-我们的说明.md` | 测试轮：修 6 处（`数组` 值位 TS2693、教程说反、译名表坏行、`run_all` 九项、gotest 结论文本、允许清单过期） |
+| 2026-10-10 | `README-我们的说明.md` | 标准库汉化试点上线（自动加载 + 符号感知屏蔽 pass）；九·六 结案 |
+| 2026-10-08 | `README-我们的说明.md`、`下一步.md` | 方向撤销：删 `.chts`/`.d.chts`，改用普通 `.ts`、汉语关键字全局生效 |
+| 2026-10-06 23:18 | `README-我们的说明.md` | 初版（底本、许可、判定证据、纪律） |
+
+**本次（2026-11-06 19:42，只动文档，编译器行为未变）**：
+
+1. `docs/中文对照表.md`（**生成物**）第三节更正「ChineseTypeScript 没有汉语标准库」的旧说法；
+   源头是 `tsc/cmd/genzhkeywords/main.go` 的 `renderMarkdown`，同时新增常量 `docProseDate`
+   （生成物里的时间必须是固定值，否则 `-check` 永远不一致）。旧说法以「2026-11-06 更正」保留在原处。
+2. `README-我们的说明.md`：文首加「最后更新」；§六 工具表与 §七 判定证据对齐实际
+   （`run_all` **十项**、补 `judge_zhstdlib` 17/17 / `judge_lsp` 6/6 / `judge_licenses`、
+   `judge_package` 6/6、`ls` 守卫 4 条）；§九 第 5 条改掉「已发布 vs 无上传/下载页/CI」的矛盾；
+   §九 第 10 条 16/16 → 17/17；§六·五 标注当前 0.2.4；纪律加第 8 条；末尾加本节。
+3. `下一步.md`：文首加「最后更新」；第 5 条（发布）与第 7 条（CI）改成现状；末尾加更新记录。
+4. `教程/教程模板.md`：文首加「最后更新」；随后重生成
+   `教程/ChineseTypeScript-教学教程.md` 与 `.docx`（`judge_tutorial` 全过）。
+5. `packaging/CHANGELOG.md` 与 `packaging/README-使用说明.md`：补记 0.2 – 0.2.4（按 `git log`
+   的 `release: 0.2.x` 提交）；使用说明标题去掉写死的 `v0.1`（改以压缩包文件名为准），
+   「已知边界」里「没有汉语标准库」更正；随后**重打包**，`dist\ChineseTypeScript-0.2.4-win64.zip`
+   随之更新、`judge_package` 6/6。
+
+> 维护方式：以后每次改文档，**只在表里追加一行**，并把文首「最后更新」改成当前时间；
+> **不要删旧行**。生成物（`docs/中文对照表.md`、教程 md/docx、包）改文案时，
+> 先改生成器/模板，再重生成，最后跑对应判据 —— 手改生成物会被判定抓红。

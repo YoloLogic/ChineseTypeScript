@@ -14,7 +14,10 @@
 
 // @lib es5
 // 全局对象 / 类型别名（Array / Math / Date / RegExp / Error 都在 es5）
+// 【类型位与值位都要给】：只给 type 会让 `新建 数组(3)` 报 TS2693
+// （「数组」仅表示类型，却作为值使用）—— 2026-11-05 实测踩到，是唯一漏掉值位的全局名。
 type 数组<T> = Array<T>;
+declare var 数组: ArrayConstructor;
 declare var 数学: Math;
 type 日期 = Date;
 declare var 日期: DateConstructor;

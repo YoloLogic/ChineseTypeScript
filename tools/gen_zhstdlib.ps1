@@ -26,21 +26,37 @@ if (-not $Table) { $Table = Join-Path $repo 'stdlib\试点-数组与数学.tsv' 
 if (-not $Out)   { $Out   = Join-Path $repo 'tsc\internal\scanner\zh_stdlib_generated.go' }
 $TAB = [string][char]9
 
+# 【坏行必须报错，不许静默跳过】（2026-11-05 修）。
+# 原先这里是 `if ($p.Count -lt 3) { continue }`：少一列的行被悄悄丢掉，
+# 于是「漏了英文名」「用空格代替 Tab」这类错永远没人发现 —— 实测表里就真有一行
+# `member 值内容`（空格分隔、缺英文名）被静默跳过。
+# 本项目的纪律是「生成器不信任任何手写清单，一律报错退出，不静默」，这里补齐。
+function Split-TableRow([string]$line, [int]$lineNo) {
+    $p = $line -split $TAB
+    if ($p.Count -ne 3) {
+        throw ('译名表第 ' + $lineNo + ' 行不是三列（应为「类别<TAB>英文名<TAB>汉语名」；' +
+               '实际 ' + $p.Count + ' 列，用空格分隔也会这样）：' + $line)
+    }
+    if (-not $p[1].Trim()) { throw ('译名表第 ' + $lineNo + ' 行缺英文名：' + $line) }
+    if (-not $p[2].Trim()) { throw ('译名表第 ' + $lineNo + ' 行缺汉语名：' + $line) }
+    return $p
+}
+
 if (-not (Test-Path $Table)) { throw ('找不到译名表：' + $Table) }
 
 $globals = New-Object System.Collections.Generic.List[string]
 $members = New-Object System.Collections.Generic.List[string]
+$lineNo = 0
 foreach ($line in (Get-Content $Table -Encoding UTF8)) {
+    $lineNo++
     if ($line -notmatch '\S') { continue }
-    $p = $line -split $TAB
-    if ($p.Count -lt 2) { continue }
+    $p = Split-TableRow $line $lineNo
     $kind = $p[0].Trim()
     $zh = $p[2].Trim()
-    if (-not $zh) { throw ('译名为空：' + $line) }
-    if ($zh.Length -lt 2 -or $zh.Length -gt 6) { throw ('译名不合 2-6 汉字定则（按字符数粗查）：' + $line) }
+    if ($zh.Length -lt 2 -or $zh.Length -gt 6) { throw ('译名不合 2-6 汉字定则（按字符数粗查）：第 ' + $lineNo + ' 行 ' + $line) }
     if ($kind -eq 'global') { $globals.Add($zh) }
     elseif ($kind -eq 'member') { $members.Add($zh) }
-    else { throw ('未知 kind：' + $kind) }
+    else { throw ('未知 kind：第 ' + $lineNo + ' 行 ' + $line) }
 }
 
 function EmitTable([string]$varName, $names) {
@@ -64,10 +80,11 @@ function EmitTable([string]$varName, $names) {
 
 # 先建 汉->英 映射
 $rows = @{}
+$lineNo = 0
 foreach ($line in (Get-Content $Table -Encoding UTF8)) {
+    $lineNo++
     if ($line -notmatch '\S') { continue }
-    $p = $line -split $TAB
-    if ($p.Count -lt 3) { continue }
+    $p = Split-TableRow $line $lineNo
     $rows[$p[2].Trim()] = $p[1].Trim()
 }
 
@@ -79,10 +96,11 @@ foreach ($line in (Get-Content $Table -Encoding UTF8)) {
 $zhToEn = New-Object 'System.Collections.Generic.Dictionary[string,string]'
 $enToZh = New-Object 'System.Collections.Generic.Dictionary[string,string]'
 $enMulti = New-Object 'System.Collections.Generic.Dictionary[string,System.Collections.Generic.List[string]]'
+$lineNo = 0
 foreach ($line in (Get-Content $Table -Encoding UTF8)) {
+    $lineNo++
     if ($line -notmatch '\S') { continue }
-    $p = $line -split $TAB
-    if ($p.Count -lt 3) { continue }
+    $p = Split-TableRow $line $lineNo
     $en = $p[1].Trim(); $zh = $p[2].Trim()
     if ($zhToEn.ContainsKey($zh) -and $zhToEn[$zh] -ne $en) { throw ('译名重复映射：汉语「' + $zh + '」同时对应 ' + $zhToEn[$zh] + ' 与 ' + $en) }
     # 注意：这里【只】查「一个汉语名 → 一个英文名」（改写只需要这个方向）。

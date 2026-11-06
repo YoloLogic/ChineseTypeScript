@@ -123,7 +123,6 @@ member	closest	最近祖先
 member	getContext	取上下文
 member	requestAnimationFrame	请求动画帧
 member	title	标题
-member 值内容
 member	parentNode	父节点
 member	childNodes	子节点列
 member	firstChild	首子节点

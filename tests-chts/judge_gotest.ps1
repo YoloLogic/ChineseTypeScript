@@ -108,14 +108,15 @@ if (Select-String -Path $logWork -Pattern 'runtime: cannot allocate memory' -Qui
 #   * fourslash/tests      —— 汉语补全改变了补全项列表（早就在清单里）；
 #   * execute/tsctests     —— 含用 --lib 替换 lib 的场景（早就在清单里）；
 #   * testrunner           —— 符号基线里会多出汉语成员（早就在清单里）；
-#   * internal/compiler    —— 只失败 3 个：TestProgram/FileOrdering{Basic,Imports,Cycles}，
-#                             它们把「程序里的文件清单」硬编码在测试里，而我们现在多 49 个 lib.zhts.*；
+#   * （历史）internal/compiler —— 曾因「程序里的文件清单多出 49 个 lib.zhts.*」而失败 3 个
+#                             （TestProgram/FileOrdering{Basic,Imports,Cycles}）；2026-11-05 实测
+#                             【已不再失败】：纯英文源码不再加载汉语块（fileLoader.zhChunksEnabled），
+#                             文件清单回到与上游一致。故**已从清单移除** —— 它再红就是真问题。
 #   * （另记待修）--lib 替换场景下我们的块不该被注入 —— 见 规模化方案.md 六·十三。
 $allowed = @(
     'github.com/microsoft/TypeScript/tsc/internal/fourslash/tests',
     'github.com/microsoft/TypeScript/tsc/internal/execute/tsctests',
-    'github.com/microsoft/TypeScript/tsc/internal/testrunner',
-    'github.com/microsoft/TypeScript/tsc/internal/compiler'
+    'github.com/microsoft/TypeScript/tsc/internal/testrunner'
 )
 # 环境性抖动的识别（2026-10-08 二次踩到）：对允许清单外的失败包【单独重跑一次】。
 # 真回归必然复现；而内存压力等环境抖动单跑会通过 —— 用证据区分，不靠猜。
@@ -212,5 +213,5 @@ $results | ForEach-Object { "  [$($_.结果)] $($_.判定) —— $($_.说明)" 
 $fail = ($results | Where-Object { $_.结果 -ne '通过' }).Count
 Write-Host ''
 Write-Host "  合计 $($results.Count) 项，失败 $fail 项"
-if ($fail -eq 0) { Write-Host '  结论：全集回归通过（差异全部是新增 .chts 的预期结果）'; exit 0 }
+if ($fail -eq 0) { Write-Host '  结论：全集回归通过（多出的失败包都在允许清单内，baseline 差异只与汉语有关）'; exit 0 }
 else { Write-Host '  结论：有失败项，必须查清'; exit 1 }
