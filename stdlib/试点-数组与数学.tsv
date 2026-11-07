@@ -655,7 +655,7 @@ member	depthMask	深度掩码
 member	clearDepth	清深度
 member	createPanner	创建声像器
 member	createConstantSource	创建常量源
-member	connect	连接
+member	connect	连到
 member	loop	循环
 member	loopStart	循环起点
 member	loopEnd	循环终点
@@ -1685,7 +1685,7 @@ member	gpu	图形处理器
 member	imag	虚部
 member	kty	密钥类型
 member	redirected	已重定向
-member	reduction	归约
+member	reduction	缩减
 member	refresh	刷新
 member	released	已释放
 member	resolution	分辨率
@@ -1848,3 +1848,6 @@ member	padEnd	后补
 member	valueOf	取值
 member	normalize	规范化
 member	value	值内容
+member	concat	连接
+member	reduce	归约
+member	PI	圆周率

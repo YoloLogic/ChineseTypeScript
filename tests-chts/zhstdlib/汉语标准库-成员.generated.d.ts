@@ -2305,8 +2305,8 @@ interface AudioEncoder {
 
 interface AudioNode {
     readonly 上下文: BaseAudioContext;
-    连接(destinationNode: AudioNode, output?: number, input?: number): AudioNode;
-    连接(destinationParam: AudioParam, output?: number): void;
+    连到(destinationNode: AudioNode, output?: number, input?: number): AudioNode;
+    连到(destinationParam: AudioParam, output?: number): void;
     断开(): void;
     断开(output: number): void;
     断开(destinationNode: AudioNode): void;
@@ -3423,7 +3423,7 @@ interface DynamicsCompressorNode {
     readonly 攻击: AudioParam;
     readonly 拐点: AudioParam;
     readonly 比率: AudioParam;
-    readonly 归约: number;
+    readonly 缩减: number;
     readonly 释放: AudioParam;
     readonly 阈值: AudioParam;
 }
@@ -9003,7 +9003,9 @@ interface BigInt64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> 
     readonly 长度: number;
     映射(callbackfn: (value: bigint, index: number, array: BigInt64Array<TArrayBuffer>) => bigint, thisArg?: any): BigInt64Array<ArrayBuffer>;
     归纳(callbackfn: (previousValue: bigint, currentValue: bigint, currentIndex: number, array: BigInt64Array<TArrayBuffer>) => bigint): bigint;
+    归约(callbackfn: (previousValue: bigint, currentValue: bigint, currentIndex: number, array: BigInt64Array<TArrayBuffer>) => bigint): bigint;
     归纳<U>(callbackfn: (previousValue: U, currentValue: bigint, currentIndex: number, array: BigInt64Array<TArrayBuffer>) => U, initialValue: U): U;
+    归约<U>(callbackfn: (previousValue: U, currentValue: bigint, currentIndex: number, array: BigInt64Array<TArrayBuffer>) => U, initialValue: U): U;
     反向归纳(callbackfn: (previousValue: bigint, currentValue: bigint, currentIndex: number, array: BigInt64Array<TArrayBuffer>) => bigint): bigint;
     反向归纳<U>(callbackfn: (previousValue: U, currentValue: bigint, currentIndex: number, array: BigInt64Array<TArrayBuffer>) => U, initialValue: U): U;
     反转(): this;
@@ -9045,7 +9047,9 @@ interface BigUint64Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike>
     readonly 长度: number;
     映射(callbackfn: (value: bigint, index: number, array: BigUint64Array<TArrayBuffer>) => bigint, thisArg?: any): BigUint64Array<ArrayBuffer>;
     归纳(callbackfn: (previousValue: bigint, currentValue: bigint, currentIndex: number, array: BigUint64Array<TArrayBuffer>) => bigint): bigint;
+    归约(callbackfn: (previousValue: bigint, currentValue: bigint, currentIndex: number, array: BigUint64Array<TArrayBuffer>) => bigint): bigint;
     归纳<U>(callbackfn: (previousValue: U, currentValue: bigint, currentIndex: number, array: BigUint64Array<TArrayBuffer>) => U, initialValue: U): U;
+    归约<U>(callbackfn: (previousValue: U, currentValue: bigint, currentIndex: number, array: BigUint64Array<TArrayBuffer>) => U, initialValue: U): U;
     反向归纳(callbackfn: (previousValue: bigint, currentValue: bigint, currentIndex: number, array: BigUint64Array<TArrayBuffer>) => bigint): bigint;
     反向归纳<U>(callbackfn: (previousValue: U, currentValue: bigint, currentIndex: number, array: BigUint64Array<TArrayBuffer>) => U, initialValue: U): U;
     反转(): this;
@@ -9334,8 +9338,11 @@ interface Float16Array<TArrayBuffer extends ArrayBufferLike = ArrayBufferLike> {
     readonly 长度: number;
     映射(callbackfn: (value: number, index: number, array: this) => number, thisArg?: any): Float16Array<ArrayBuffer>;
     归纳(callbackfn: (previousValue: number, currentValue: number, currentIndex: number, array: this) => number): number;
+    归约(callbackfn: (previousValue: number, currentValue: number, currentIndex: number, array: this) => number): number;
     归纳(callbackfn: (previousValue: number, currentValue: number, currentIndex: number, array: this) => number, initialValue: number): number;
+    归约(callbackfn: (previousValue: number, currentValue: number, currentIndex: number, array: this) => number, initialValue: number): number;
     归纳<U>(callbackfn: (previousValue: U, currentValue: number, currentIndex: number, array: this) => U, initialValue: U): U;
+    归约<U>(callbackfn: (previousValue: U, currentValue: number, currentIndex: number, array: this) => U, initialValue: U): U;
     反向归纳(callbackfn: (previousValue: number, currentValue: number, currentIndex: number, array: this) => number): number;
     反向归纳(callbackfn: (previousValue: number, currentValue: number, currentIndex: number, array: this) => number, initialValue: number): number;
     反向归纳<U>(callbackfn: (previousValue: U, currentValue: number, currentIndex: number, array: this) => U, initialValue: U): U;
@@ -9446,6 +9453,7 @@ interface String {
     取字符(pos: number): string;
     取字符码(index: number): number;
     拼接(...strings: string[]): string;
+    连接(...strings: string[]): string;
     找序号(searchString: string, position?: number): number;
     末次序号(searchString: string, position?: number): number;
     本地比较(that: string): number;
@@ -9493,6 +9501,7 @@ interface TemplateStringsArray {
 }
 
 interface Math {
+    readonly 圆周率: number;
     绝对值(x: number): number;
     反余弦(x: number): number;
     反正弦(x: number): number;
@@ -9619,7 +9628,9 @@ interface ReadonlyArray<T> {
     转字符串(): string;
     本地转字符串(): string;
     拼接(...items: ConcatArray<T>[]): T[];
+    连接(...items: ConcatArray<T>[]): T[];
     拼接(...items: (T | ConcatArray<T>)[]): T[];
+    连接(...items: (T | ConcatArray<T>)[]): T[];
     连接成串(separator?: string): string;
     截取(start?: number, end?: number): T[];
     找序号(searchElement: T, fromIndex?: number): number;
@@ -9634,8 +9645,11 @@ interface ReadonlyArray<T> {
     过滤(predicate: (value: T, index: number, array: readonly T[]) => unknown, thisArg?: any): T[];
     筛选(predicate: (value: T, index: number, array: readonly T[]) => unknown, thisArg?: any): T[];
     归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: readonly T[]) => T): T;
+    归约(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: readonly T[]) => T): T;
     归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: readonly T[]) => T, initialValue: T): T;
+    归约(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: readonly T[]) => T, initialValue: T): T;
     归纳<U>(callbackfn: (previousValue: U, currentValue: T, currentIndex: number, array: readonly T[]) => U, initialValue: U): U;
+    归约<U>(callbackfn: (previousValue: U, currentValue: T, currentIndex: number, array: readonly T[]) => U, initialValue: U): U;
     反向归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: readonly T[]) => T): T;
     反向归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: readonly T[]) => T, initialValue: T): T;
     反向归纳<U>(callbackfn: (previousValue: U, currentValue: T, currentIndex: number, array: readonly T[]) => U, initialValue: U): U;
@@ -9654,7 +9668,9 @@ interface Array<T> {
     末尾弹出(): T | undefined;
     追加(...items: T[]): number;
     拼接(...items: ConcatArray<T>[]): T[];
+    连接(...items: ConcatArray<T>[]): T[];
     拼接(...items: (T | ConcatArray<T>)[]): T[];
+    连接(...items: (T | ConcatArray<T>)[]): T[];
     连接成串(separator?: string): string;
     反转(): T[];
     开头弹出(): T | undefined;
@@ -9675,8 +9691,11 @@ interface Array<T> {
     过滤(predicate: (value: T, index: number, array: T[]) => unknown, thisArg?: any): T[];
     筛选(predicate: (value: T, index: number, array: T[]) => unknown, thisArg?: any): T[];
     归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T): T;
+    归约(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T): T;
     归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T, initialValue: T): T;
+    归约(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T, initialValue: T): T;
     归纳<U>(callbackfn: (previousValue: U, currentValue: T, currentIndex: number, array: T[]) => U, initialValue: U): U;
+    归约<U>(callbackfn: (previousValue: U, currentValue: T, currentIndex: number, array: T[]) => U, initialValue: U): U;
     反向归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T): T;
     反向归纳(callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T, initialValue: T): T;
     反向归纳<U>(callbackfn: (previousValue: U, currentValue: T, currentIndex: number, array: T[]) => U, initialValue: U): U;

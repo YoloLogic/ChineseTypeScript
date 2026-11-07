@@ -43,6 +43,8 @@ type emitter struct {
 	tr                 *tracing.Tracing
 	// zhUserMembers 用户源码里声明过的汉语成员名（规格六·十一）：命中的不改写。
 	zhUserMembers map[string]bool
+	// zhStdlibMembers 被类型检查证明属于汉语标准库增补的成员位节点（B1）。
+	zhStdlibMembers map[*ast.Node]bool
 }
 
 func (e *emitter) emit() {
@@ -211,6 +213,7 @@ func (e *emitter) emitJSFile(sourceFile *ast.SourceFile, jsFilePath string, sour
 		Target:          options.Target,
 		// 用户自己声明过同名成员时不改写（规格六·十一）。
 		ZhUserDeclaredMembers: e.zhUserMembers,
+		ZhStdlibMembers:       e.zhStdlibMembers,
 		// !!!
 	}
 
@@ -270,6 +273,7 @@ func (e *emitter) emitDeclarationFile(sourceFile *ast.SourceFile, declarationFil
 		OmitBraceSourceMapPositions: true,
 		// 用户自己声明过同名成员时不改写（规格六·十一）。
 		ZhUserDeclaredMembers: e.zhUserMembers,
+		ZhStdlibMembers:       e.zhStdlibMembers,
 	}
 
 	// create a printer to print the nodes

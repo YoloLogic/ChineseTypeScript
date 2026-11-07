@@ -56,6 +56,11 @@ type PrinterOptions struct {
 	// —— 文本级改写的误伤面已发作三次（教程的 编号、demo_ident 的 描述 与 端口）。
 	// 由 compiler 侧收集后传入；nil / 空集合时行为与以前完全一致。
 	ZhUserDeclaredMembers map[string]bool
+
+	// ChineseTypeScript（B1）：成员位「可以改写」的节点集合 —— 只有被类型检查
+	// 证明属于我方标准库增补声明的位置才在集合里。
+	// nil 表示【不做类型校验】，行为退回纯语法判断（d.ts 生成等路径需要）。
+	ZhStdlibMembers map[*ast.Node]bool
 }
 
 type PrintHandlers struct {
@@ -1161,7 +1166,13 @@ func (p *Printer) emitIdentifierText(node *ast.Identifier) {
 			if english, ok := scanner.ChineseStdlibMemberName(text); ok {
 				// 用户在【自己的源码里】声明过同名成员 → 不改写（保守方向，规格六·十一）。
 				if !p.Options.ZhUserDeclaredMembers[text] {
-					text = english
+					// B1：只改写【类型检查证明它是我方标准库成员】的位置。
+					// 证明不了（接收者是 any/unknown、数据来自 JSON）就保持原样：
+					// 否则会把用户数据属性 `数据.长度` 静默改成 `数据.length`，运行时读到 undefined。
+					// 只用语法判断（不分类型）正是这个 bug 的成因，见 2026-11-06 的 B1 报告。
+					if p.Options.ZhStdlibMembers == nil || p.Options.ZhStdlibMembers[node.AsNode()] {
+						text = english
+					}
 				}
 			}
 		}

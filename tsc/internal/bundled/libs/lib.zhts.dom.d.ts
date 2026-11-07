@@ -2312,8 +2312,8 @@ interface AudioEncoder {
 
 interface AudioNode {
     readonly 上下文: BaseAudioContext;
-    连接(destinationNode: AudioNode, output?: number, input?: number): AudioNode;
-    连接(destinationParam: AudioParam, output?: number): void;
+    连到(destinationNode: AudioNode, output?: number, input?: number): AudioNode;
+    连到(destinationParam: AudioParam, output?: number): void;
     断开(): void;
     断开(output: number): void;
     断开(destinationNode: AudioNode): void;
@@ -3430,7 +3430,7 @@ interface DynamicsCompressorNode {
     readonly 攻击: AudioParam;
     readonly 拐点: AudioParam;
     readonly 比率: AudioParam;
-    readonly 归约: number;
+    readonly 缩减: number;
     readonly 释放: AudioParam;
     readonly 阈值: AudioParam;
 }
